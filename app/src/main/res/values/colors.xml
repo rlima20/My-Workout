@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="pending">#709B9B9B</color>
+    <color name="missed">#B34444</color>
+    <color name="achieved">#61AB64</color>
+    <color name="content">#B1B1B1</color>
+    <color name="empty">#D7D5D7</color>
 </resources>

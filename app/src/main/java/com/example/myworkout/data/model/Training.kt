@@ -9,5 +9,6 @@ data class Training(
     @PrimaryKey val id: Int,
     @ColumnInfo(name = "muscle_groups") val muscleGroups: List<MuscleGroup>,
     @ColumnInfo(name = "status") var status: Status,
-    @ColumnInfo(name = "day_of_week") val dayOfWeek: Int
+    @ColumnInfo(name = "day_of_week") val dayOfWeek: Int,
+    @ColumnInfo(name = "training_name") val trainingName: String
 )

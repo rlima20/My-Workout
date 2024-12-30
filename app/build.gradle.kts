@@ -78,6 +78,15 @@ dependencies {
     // Hilt Dependencies
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+
+    // Material Design Dependencies
+    implementation(libs.material3)
+    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
+    implementation("androidx.compose.material:material:1.2.0")
+    implementation("com.google.android.material:material:1.4.+")
+
+
 }
 
 // Allow references to generated code

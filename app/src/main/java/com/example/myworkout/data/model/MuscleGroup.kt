@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "muscle_group")
 data class MuscleGroup(
     @PrimaryKey val id: Int,
+    @ColumnInfo(name = "muscle_group_name") val name: String,
     @ColumnInfo(name = "muscle_sub_groups") val muscleSubGroups: List<MuscleSubGroup>
 )
