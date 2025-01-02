@@ -37,8 +37,9 @@ import com.example.myworkout.data.model.Training
 fun TrainingCard(
     modifier: Modifier = Modifier,
     training: Training,
-    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroup>) -> Unit,
-    onAddButtonClicked: () -> Unit
+    isFilterChipListEnabled: Boolean,
+    onAddButtonClicked: () -> Unit,
+    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroup>) -> Unit
 ) {
     var trainingStatus by remember { mutableStateOf(training.status) }
     val firstStatus by remember { mutableStateOf(training.status) }
@@ -80,7 +81,8 @@ fun TrainingCard(
 
                     onMuscleGroupSelected(muscleSubGroupsSelected)
                 },
-                onAddButtonClicked = { onAddButtonClicked() }
+                onAddButtonClicked = { onAddButtonClicked() },
+                isFilterChipListEnabled = isFilterChipListEnabled
             )
             TrainingCheckbox(
                 status = trainingStatus,
@@ -154,6 +156,7 @@ private fun MuscleGroupSection(
 private fun MuscleSubGroupSection(
     training: Training,
     listOfMuscleSubGroup: List<MuscleSubGroup>,
+    isFilterChipListEnabled: Boolean = false,
     onItemClick: (item: MuscleSubGroup) -> Unit,
     onAddButtonClicked: () -> Unit
 ) {
@@ -167,6 +170,7 @@ private fun MuscleSubGroupSection(
             FilterChipList(
                 listOfMuscleSubGroup = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
+                enabled = isFilterChipListEnabled
             )
         } else AddTrainingIconButton {
             onAddButtonClicked()
@@ -192,6 +196,7 @@ fun TrainingCardPreview() {
             TrainingCard(
                 modifier = Modifier,
                 training = Constants().trainingMock(it),
+                isFilterChipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {}
             )

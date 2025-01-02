@@ -23,7 +23,7 @@ import com.example.myworkout.data.model.MuscleSubGroup
 fun FilterChipList(
     listOfMuscleSubGroup: List<MuscleSubGroup>,
     onItemClick: (item: MuscleSubGroup) -> Unit,
-    enabled: Boolean = true
+    enabled: Boolean
 ) {
     LazyColumn(
         modifier = Modifier
@@ -54,6 +54,7 @@ fun AssistChipListPreview() {
     }
     FilterChipList(
         listOfMuscleSubGroup = listOfMuscleSubGroup,
+        enabled = false,
         onItemClick = {}
     )
 }
