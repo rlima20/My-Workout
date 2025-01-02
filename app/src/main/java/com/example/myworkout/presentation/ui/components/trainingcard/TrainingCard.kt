@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.ui.components
+package com.example.myworkout.presentation.ui.components.trainingcard
 
 import android.annotation.SuppressLint
 import androidx.annotation.RequiresApi
