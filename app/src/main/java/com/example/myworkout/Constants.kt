@@ -7,6 +7,8 @@ import com.example.myworkout.data.model.Status
 import com.example.myworkout.data.model.Training
 
 class Constants {
+    private var idCounter = 0
+
     @Composable
     fun trainingMock(status: Status) = Training(
         id = 0,
@@ -44,20 +46,15 @@ class Constants {
     @Composable
     private fun muscleSubGroupsMock(muscleSubGroupName: List<String>): List<MuscleSubGroup> {
         val listOfMuscleSubGroup: MutableList<MuscleSubGroup> = mutableListOf()
-
-        // Usando um contador para gerar IDs únicos
-        var idCounter = 1 // Começando o contador em 1, mas você pode escolher outro valor
-
         muscleSubGroupName.forEach { muscleGroupName ->
             listOfMuscleSubGroup.add(
                 MuscleSubGroup(
-                    id = idCounter, // Atribuindo o ID dinâmico
+                    id = idCounter,
                     name = muscleGroupName
                 )
             )
-            idCounter++ // Incrementando o contador para o próximo ID
+            idCounter++
         }
-
         return listOfMuscleSubGroup
     }
 

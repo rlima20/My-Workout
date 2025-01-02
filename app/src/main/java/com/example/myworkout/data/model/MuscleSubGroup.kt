@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "muscle_sub_group")
 data class MuscleSubGroup(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: Int = 0,
     @ColumnInfo(name = "name") val name: String = "",
     @ColumnInfo(name = "selected") var selected: Boolean = false
 )

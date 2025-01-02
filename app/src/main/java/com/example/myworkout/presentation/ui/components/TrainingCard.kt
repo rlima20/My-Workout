@@ -10,18 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,38 +25,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.R
-import com.example.myworkout.data.model.MuscleGroup
 import com.example.myworkout.data.model.MuscleSubGroup
 import com.example.myworkout.data.model.Status
 import com.example.myworkout.data.model.Training
-import java.util.function.UnaryOperator
 
 @RequiresApi(35)
-@SuppressLint(
-    "UnrememberedMutableState",
-    "MutableCollectionMutableState"
-)
+@SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @Composable
 fun TrainingCard(
     modifier: Modifier = Modifier,
     training: Training,
+    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroup>) -> Unit,
+    onAddButtonClicked: () -> Unit
 ) {
-    var isTrainingChecked by remember {
-        mutableStateOf(training.status == Status.ACHIEVED)
+    var trainingStatus by remember { mutableStateOf(training.status) }
+    val firstStatus by remember { mutableStateOf(training.status) }
+    var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
+
+    var muscleSubGroupsState: MutableList<MuscleSubGroup> by remember {
+        mutableStateOf(
+            training.muscleGroups.flatMap { muscleGroup ->
+                muscleGroup.muscleSubGroups
+            }.toMutableList()
+        )
     }
-
-    val listOfMuscleSubGroup: MutableList<MuscleSubGroup> = mutableListOf()
-
-    training.muscleGroups.forEach { muscleGroup ->
-        muscleGroup.muscleSubGroups.forEach { muscleSubGroup ->
-            listOfMuscleSubGroup.add(muscleSubGroup)
-        }
-    }
-
-    var muscleSubGroups: MutableList<MuscleSubGroup> by remember { mutableStateOf(listOfMuscleSubGroup) }
 
     Card(
         modifier = modifier.size(150.dp, 150.dp),
@@ -72,70 +58,95 @@ fun TrainingCard(
         elevation = CardDefaults.cardElevation(),
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            MuscleGroupSection(training)
+            MuscleGroupSection(
+                trainingName = training.trainingName,
+                status = trainingStatus
+            )
             MuscleSubGroupSection(
                 training = training,
-                listOfMuscleSubGroup = muscleSubGroups,
+                listOfMuscleSubGroup = muscleSubGroupsState,
                 onItemClick = { item ->
-                    muscleSubGroups = muscleSubGroups.map { muscleSubGroup ->
-                        if (muscleSubGroup.id == item.id) {
-                            // Retorna o item atualizado
-                            item.copy(selected = !item.selected) // Alternando o estado 'selected'
-                        } else {
-                            // Retorna o item original
-                            muscleSubGroup
-                        }
+                    val muscleSubGroupsSelected: MutableList<MuscleSubGroup> = mutableListOf()
+
+                    // Lista de Sub grupo de musculos
+                    muscleSubGroupsState = muscleSubGroupsState.map { muscleSubGroup ->
+                        if (muscleSubGroup.id == item.id) item.copy(selected = !item.selected)
+                        else muscleSubGroup
                     }.toMutableList()
-                }
+
+                    // Lógica para mostrar itens selecionados
+                    if (!item.selected) muscleSubGroupsSelected.remove(item)
+                    else muscleSubGroupsSelected.add(item.copy(selected = true))
+
+                    onMuscleGroupSelected(muscleSubGroupsSelected)
+                },
+                onAddButtonClicked = { onAddButtonClicked() }
             )
             TrainingCheckbox(
-                training = training,
+                status = trainingStatus,
                 isTrainingChecked = isTrainingChecked,
-                onChecked = { isTrainingChecked = it }
+                onChecked = {
+                    isTrainingChecked = !isTrainingChecked
+                    trainingStatus = setStatus(isTrainingChecked, trainingStatus, firstStatus)
+                },
             )
         }
     }
 }
 
-//onItemClick = { item ->
-//    muscleSubGroups.forEach { muscleSubGroup ->
-//        if (muscleSubGroup.id == item.id) {
-//            val position = item.
-//            val selected = muscleSubGroups.get(item.id item.id).selected
-//            muscleSubGroups[item.id].selected = !selected
-//        }
-//    }
-//    // Alterar o stado de selected do item e comparar os ids para confirmar qual deverá ser alterado.
+private fun setStatus(
+    isTrainingChecked: Boolean,
+    trainingStatus: Status,
+    firstStatus: Status
+) = if (isTrainingChecked) {
+    Status.ACHIEVED
+} else {
+    when (trainingStatus) {
+        Status.MISSED -> {
+            firstStatus
+        }
 
+        Status.EMPTY -> {
+            Status.EMPTY
+        }
+
+        else -> {
+            Status.PENDING
+        }
+    }
+}
 
 @Composable
 private fun TrainingCheckbox(
-    training: Training,
+    status: Status,
     isTrainingChecked: Boolean,
-    onChecked: (checked: Boolean) -> Unit
+    onChecked: () -> Unit,
 ) {
-    if (training.status != Status.EMPTY) {
+    if (status != Status.EMPTY) {
         Checkbox(
             modifier = Modifier.offset(x = 104.dp, y = (-22).dp),
             checked = isTrainingChecked,
-            onCheckedChange = { onChecked(!isTrainingChecked) },
+            onCheckedChange = { onChecked() },
         )
     }
 }
 
 @Composable
-private fun MuscleGroupSection(training: Training) {
+private fun MuscleGroupSection(
+    trainingName: String,
+    status: Status
+) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .background(
-                color = colorResource(setBackGroundColor(training.status))
+                color = colorResource(setBackGroundColor(status))
             )
             .height(30.dp)
             .fillMaxWidth(),
     ) {
-        if (training.status != Status.EMPTY) Text(training.trainingName)
+        if (status != Status.EMPTY) Text(trainingName)
     }
 }
 
@@ -143,7 +154,8 @@ private fun MuscleGroupSection(training: Training) {
 private fun MuscleSubGroupSection(
     training: Training,
     listOfMuscleSubGroup: List<MuscleSubGroup>,
-    onItemClick: (item: MuscleSubGroup) -> Unit
+    onItemClick: (item: MuscleSubGroup) -> Unit,
+    onAddButtonClicked: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -156,28 +168,9 @@ private fun MuscleSubGroupSection(
                 listOfMuscleSubGroup = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
             )
-        } else AddTrainingIconButton()
-    }
-}
-
-fun getAllMuscleSubGroups(listOfMuscleGroup: List<MuscleGroup>): List<MuscleSubGroup> {
-    val listOfMuscleSubGroup: MutableList<MuscleSubGroup> = mutableListOf()
-    listOfMuscleGroup.forEach { muscleGroup ->
-        muscleGroup.muscleSubGroups.forEach { muscleSubGroup ->
-            listOfMuscleSubGroup.add(muscleSubGroup)
+        } else AddTrainingIconButton {
+            onAddButtonClicked()
         }
-    }
-    return listOfMuscleSubGroup
-}
-
-@Composable
-fun AddTrainingIconButton() {
-    IconButton(onClick = {}) {
-        Icon(
-            modifier = Modifier.size(18.dp),
-            imageVector = Icons.Default.AddCircle,
-            contentDescription = null,
-        )
     }
 }
 
@@ -190,7 +183,6 @@ private fun setBackGroundColor(status: Status): Int =
         Status.EMPTY -> R.color.empty
     }
 
-
 @RequiresApi(35)
 @Preview
 @Composable
@@ -198,45 +190,11 @@ fun TrainingCardPreview() {
     Column {
         Status.entries.forEach {
             TrainingCard(
+                modifier = Modifier,
                 training = Constants().trainingMock(it),
+                onMuscleGroupSelected = {},
+                onAddButtonClicked = {}
             )
         }
     }
-}
-
-@Composable
-fun FilterChipList(
-    listOfMuscleSubGroup: List<MuscleSubGroup>,
-    onItemClick: (item: MuscleSubGroup) -> Unit
-) {
-    LazyColumn(
-        modifier = Modifier
-            .padding(start = 8.dp, top = 8.dp)
-            .background(colorResource(R.color.empty)),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        items(listOfMuscleSubGroup) { item ->
-            FilterChip(
-                modifier = Modifier.height(18.dp),
-                onClick = { onItemClick(item) },
-                label = { Text(fontSize = 8.sp, text = item.name) },
-                selected = item.selected
-            )
-        }
-    }
-}
-
-@Preview
-@Composable
-fun AssistChipListPreview() {
-    val listOfMuscleSubGroup: MutableList<MuscleSubGroup> = mutableListOf()
-    for (i in 1..5) {
-        listOfMuscleSubGroup.add(
-            MuscleSubGroup(id = i, name = "Grupo$i")
-        )
-    }
-    FilterChipList(
-        listOfMuscleSubGroup = listOfMuscleSubGroup,
-        onItemClick = {}
-    )
 }
