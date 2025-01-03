@@ -5,84 +5,46 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.example.myworkout.Constants
+import com.example.myworkout.data.model.Status
+import com.example.myworkout.data.model.Training
+import com.example.myworkout.presentation.ui.components.home.HomeScreen
+import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
+import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(35)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Vem da ViewModel
+        val trainingList: MutableList<Training> = mutableListOf()
+
         enableEdgeToEdge()
         setContent {
+            Status.entries.forEach {
+                trainingList.add(Constants().trainingMock(it))
+            }
+
             MyWorkoutTheme {
                 Scaffold(
                     topBar = { TopBar() },
-                    modifier = Modifier.fillMaxSize(),
-                    content = { HomeScreen() },
-                    bottomBar = { BottomAppBar() })
+                    content = { HomeScreen(trainingList) },
+                    bottomBar = {
+                        BottomBar(
+                            onNavigateToHomeScreen = { navigateToHomeScreen() },
+                            onNavigateToAddTrainingScreen = { navigateToAddTrainingScreen() }
+                        )
+                    }
+                )
             }
         }
-    }
-
-    @Composable
-    @OptIn(ExperimentalMaterial3Api::class)
-    private fun TopBar() {
-        CenterAlignedTopAppBar(
-            modifier = Modifier.padding(top = 8.dp),
-            title = { Text("Home Screen") })
-    }
-
-
-    @Composable
-    private fun BottomAppBar() {
-        BottomAppBar(
-            actions = {
-                IconButton(
-                    modifier = Modifier.padding(start = 8.dp),
-                    content = {
-                        Icon(
-                            Icons.Filled.Home,
-                            contentDescription = "Localized description",
-                        )
-                    },
-                    onClick = { navigateToHomeScreen() }
-                )
-                IconButton(
-                    content = {
-                        Icon(
-                            Icons.Filled.Face,
-                            contentDescription = "Training Icon",
-                        )
-                    },
-                    onClick = { navigateToAddTrainingScreen() })
-            },
-            floatingActionButton = {
-                FloatingActionButton(
-                    containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-                    elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                    content = { Icon(Icons.Filled.Add, "Add Training Icon") },
-                    onClick = { navigateToAddTrainingScreen() },
-                )
-            })
     }
 }
 
@@ -90,14 +52,12 @@ private fun navigateToAddTrainingScreen() {}
 
 private fun navigateToHomeScreen() {}
 
-@Composable
-fun HomeScreen() {
-}
 
+@RequiresApi(35)
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
     MyWorkoutTheme {
-        HomeScreen()
+        HomeScreen(mutableListOf(Constants().trainingMock(Status.PENDING)))
     }
 }
