@@ -1,4 +1,7 @@
 package com.example.myworkout.domain.usecase
 
-class SaveTrainingUseCase {
+import com.example.myworkout.data.model.Training
+
+interface SaveTrainingUseCase {
+    suspend fun saveTraining(training: Training)
 }

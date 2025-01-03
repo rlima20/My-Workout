@@ -6,14 +6,14 @@ import com.example.myworkout.data.model.Training
 
 class TrainingRepositoryImpl(private val trainingDao: TrainingDao) : TrainingRepository {
     override suspend fun addTraining(training: Training) {
-        TODO("Not yet implemented")
+        trainingDao.insertTraining(training)
     }
 
     override suspend fun getTrainings(): List<Training> {
-        TODO("Not yet implemented")
+        return trainingDao.getAllTrainings()
     }
 
     override suspend fun updateTrainingStatus(trainingId: Int, status: Status) {
-        TODO("Not yet implemented")
+        trainingDao.updateTrainingStatus(trainingId, status)
     }
 }

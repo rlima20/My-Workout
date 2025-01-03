@@ -1,4 +1,7 @@
 package com.example.myworkout.domain.usecase
 
-class GetTrainingsUseCase {
+import com.example.myworkout.data.model.Training
+
+interface GetTrainingsUseCase {
+    suspend fun getTrainings(): List<Training>
 }

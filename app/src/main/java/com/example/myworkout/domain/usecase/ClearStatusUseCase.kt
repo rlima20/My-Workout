@@ -1,4 +1,7 @@
 package com.example.myworkout.domain.usecase
 
-class ClearStatusUseCase {
+import com.example.myworkout.data.model.Status
+
+interface ClearStatusUseCase {
+    suspend fun clearStatus(trainingId: Int, status: Status)
 }
