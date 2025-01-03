@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.ui.components
+package com.example.myworkout.presentation.ui.components.trainingcard
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -16,12 +16,12 @@ import androidx.compose.ui.unit.dp
 import com.example.myworkout.R
 
 @Composable
-fun AddTrainingIconButton(
+internal fun AddTrainingIconButton(
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .padding(end = 4.dp, bottom = 16.dp)
+            .padding(top = 10.dp, end = 4.dp, bottom = 8.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -42,5 +42,5 @@ fun AddTrainingIconButton(
 @Composable
 @Preview
 private fun AddTrainingIconButtonPreview() {
-    AddTrainingIconButton({})
+    AddTrainingIconButton {}
 }

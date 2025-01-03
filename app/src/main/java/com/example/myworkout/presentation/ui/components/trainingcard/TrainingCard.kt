@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.ui.components
+package com.example.myworkout.presentation.ui.components.trainingcard
 
 import android.annotation.SuppressLint
 import androidx.annotation.RequiresApi
@@ -9,11 +9,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +27,8 @@ import com.example.myworkout.R
 import com.example.myworkout.data.model.MuscleSubGroup
 import com.example.myworkout.data.model.Status
 import com.example.myworkout.data.model.Training
+import com.example.myworkout.extensions.setBackGroundColor
+import com.example.myworkout.utils.setStatus
 
 @RequiresApi(35)
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
@@ -54,7 +53,7 @@ fun TrainingCard(
     }
 
     Card(
-        modifier = modifier.size(150.dp, 150.dp),
+        modifier = modifier,
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.cardElevation(),
     ) {
@@ -69,13 +68,11 @@ fun TrainingCard(
                 onItemClick = { item ->
                     val muscleSubGroupsSelected: MutableList<MuscleSubGroup> = mutableListOf()
 
-                    // Lista de Sub grupo de musculos
                     muscleSubGroupsState = muscleSubGroupsState.map { muscleSubGroup ->
                         if (muscleSubGroup.id == item.id) item.copy(selected = !item.selected)
                         else muscleSubGroup
                     }.toMutableList()
 
-                    // Lógica para mostrar itens selecionados
                     if (!item.selected) muscleSubGroupsSelected.remove(item)
                     else muscleSubGroupsSelected.add(item.copy(selected = true))
 
@@ -96,42 +93,6 @@ fun TrainingCard(
     }
 }
 
-private fun setStatus(
-    isTrainingChecked: Boolean,
-    trainingStatus: Status,
-    firstStatus: Status
-) = if (isTrainingChecked) {
-    Status.ACHIEVED
-} else {
-    when (trainingStatus) {
-        Status.MISSED -> {
-            firstStatus
-        }
-
-        Status.EMPTY -> {
-            Status.EMPTY
-        }
-
-        else -> {
-            Status.PENDING
-        }
-    }
-}
-
-@Composable
-private fun TrainingCheckbox(
-    status: Status,
-    isTrainingChecked: Boolean,
-    onChecked: () -> Unit,
-) {
-    if (status != Status.EMPTY) {
-        Checkbox(
-            modifier = Modifier.offset(x = 104.dp, y = (-22).dp),
-            checked = isTrainingChecked,
-            onCheckedChange = { onChecked() },
-        )
-    }
-}
 
 @Composable
 private fun MuscleGroupSection(
@@ -142,9 +103,7 @@ private fun MuscleGroupSection(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .background(
-                color = colorResource(setBackGroundColor(status))
-            )
+            .background(color = colorResource(status.setBackGroundColor()))
             .height(30.dp)
             .fillMaxWidth(),
     ) {
@@ -177,15 +136,6 @@ private fun MuscleSubGroupSection(
         }
     }
 }
-
-@Composable
-private fun setBackGroundColor(status: Status): Int =
-    when (status) {
-        Status.PENDING -> R.color.pending
-        Status.ACHIEVED -> R.color.achieved
-        Status.MISSED -> R.color.missed
-        Status.EMPTY -> R.color.empty
-    }
 
 @RequiresApi(35)
 @Preview

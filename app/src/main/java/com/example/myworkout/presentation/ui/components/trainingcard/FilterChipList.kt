@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.ui.components
+package com.example.myworkout.presentation.ui.components.trainingcard
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -20,7 +20,7 @@ import com.example.myworkout.data.model.MuscleSubGroup
 
 @SuppressLint("ResourceAsColor")
 @Composable
-fun FilterChipList(
+internal fun FilterChipList(
     listOfMuscleSubGroup: List<MuscleSubGroup>,
     onItemClick: (item: MuscleSubGroup) -> Unit,
     enabled: Boolean
@@ -29,14 +29,14 @@ fun FilterChipList(
         modifier = Modifier
             .padding(start = 8.dp, top = 8.dp)
             .background(colorResource(R.color.empty)),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(listOfMuscleSubGroup) { item ->
             FilterChip(
                 enabled = enabled,
-                modifier = Modifier.height(18.dp),
+                modifier = Modifier.height(22.dp),
                 onClick = { onItemClick(item) },
-                label = { Text(fontSize = 8.sp, text = item.name) },
+                label = { Text(fontSize = 16.sp, text = item.name) },
                 selected = item.selected
             )
         }
