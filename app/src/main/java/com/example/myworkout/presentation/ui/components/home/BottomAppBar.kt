@@ -13,7 +13,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.myworkout.R
 
 @Composable
 internal fun BottomAppBar(
@@ -27,7 +29,7 @@ internal fun BottomAppBar(
                 content = {
                     Icon(
                         Icons.Filled.Home,
-                        contentDescription = "Localized description",
+                        contentDescription = stringResource(R.string.home_icon),
                     )
                 },
                 onClick = { onNavigateToHomeScreen() }
@@ -36,7 +38,7 @@ internal fun BottomAppBar(
                 content = {
                     Icon(
                         Icons.Filled.Face,
-                        contentDescription = "Training Icon",
+                        contentDescription = stringResource(R.string.training_icon),
                     )
                 },
                 onClick = { onNavigateToAddTrainingScreen() })
@@ -45,10 +47,8 @@ internal fun BottomAppBar(
             FloatingActionButton(
                 containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                 elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation(),
-                content = { Icon(Icons.Filled.Add, "Add Training Icon") },
+                content = { Icon(Icons.Filled.Add, stringResource(R.string.add_training_icon)) },
                 onClick = { onNavigateToAddTrainingScreen() },
             )
         })
-
-    // Todo - Strings
 }
