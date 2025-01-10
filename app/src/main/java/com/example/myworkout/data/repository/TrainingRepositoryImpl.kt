@@ -10,10 +10,14 @@ class TrainingRepositoryImpl(private val trainingDao: TrainingDao) : TrainingRep
     }
 
     override suspend fun getTrainings(): List<Training> {
-        TODO("Not yet implemented")
+        return trainingDao.getAllTrainings()
     }
 
     override suspend fun updateTrainingStatus(trainingId: Int, status: Status) {
-        TODO("Not yet implemented")
+        trainingDao.updateTrainingStatus(trainingId, status)
+    }
+
+    override suspend fun getTrainingWithMuscleGroups(trainingId: Int) {
+        trainingDao.getTrainingWithMuscleGroups(trainingId)
     }
 }

@@ -7,4 +7,5 @@ interface TrainingRepository {
     suspend fun addTraining(training: Training)
     suspend fun getTrainings(): List<Training>
     suspend fun updateTrainingStatus(trainingId: Int, status: Status)
+    suspend fun getTrainingWithMuscleGroups(trainingId: Int)
 }
