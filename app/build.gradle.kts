@@ -80,6 +80,10 @@ dependencies {
     implementation(libs.androidx.material3.adaptive.navigation.suite)
     implementation("androidx.compose.material:material:1.2.0")
     implementation("com.google.android.material:material:1.4.+")
+
+    // Koin for Kotlin apps
+    implementation ("io.insert-koin:koin-core:2.2.0")
+    implementation ("io.insert-koin:koin-androidx-viewmodel:2.2.2")
 }
 
 // Allow references to generated code
