@@ -6,7 +6,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myworkout.data.model.Status
+import com.example.myworkout.enums.Status
 
 @Composable
 internal fun TrainingCheckbox(

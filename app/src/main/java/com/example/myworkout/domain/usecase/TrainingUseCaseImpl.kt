@@ -1,22 +1,22 @@
 package com.example.myworkout.domain.usecase
 
-import com.example.myworkout.data.model.Status
-import com.example.myworkout.data.model.Training
-import com.example.myworkout.data.repository.TrainingRepository
-
-interface TrainingUseCase {
-    suspend fun saveTraining(training: Training)
-    suspend fun getTrainings(): List<Training>
-    suspend fun clearStatus(trainingId: Int, status: Status)
-}
+import com.example.myworkout.enums.Status
+import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.domain.repository.TrainingRepository
+import com.example.myworkout.domain.room.entity.TrainingEntity
 
 class TrainingUseCaseImpl(private val repository: TrainingRepository) :
     TrainingUseCase {
-    override suspend fun saveTraining(training: Training) {
-        repository.getTrainings()
+    override suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel> {
+        return repository.getMuscleSubGroupsForTraining(trainingId)
     }
 
-    override suspend fun getTrainings(): List<Training> {
+    override suspend fun insertTraining(trainingEntity: TrainingEntity) {
+        repository.insertTraining(trainingEntity)
+    }
+
+    override suspend fun getTrainings(): List<TrainingModel> {
         return repository.getTrainings()
     }
 

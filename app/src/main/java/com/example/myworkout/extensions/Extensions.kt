@@ -2,7 +2,7 @@ package com.example.myworkout.extensions
 
 import androidx.compose.runtime.Composable
 import com.example.myworkout.R
-import com.example.myworkout.data.model.Status
+import com.example.myworkout.enums.Status
 
 @Composable
 fun Status.setBackGroundColor(): Int =

@@ -1,4 +1,4 @@
-package com.example.myworkout.data.model
+package com.example.myworkout.enums
 
 enum class Status {
     ACHIEVED,

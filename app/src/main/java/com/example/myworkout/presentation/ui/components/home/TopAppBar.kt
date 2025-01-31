@@ -15,13 +15,13 @@ import com.example.myworkout.R
 @OptIn(ExperimentalMaterial3Api::class)
 internal fun TopBar() {
     CenterAlignedTopAppBar(
-        colors = TopAppBarColors(
-            containerColor = colorResource(R.color.top_bar_color),
-            scrolledContainerColor = colorResource(R.color.top_bar_color),
-            navigationIconContentColor = colorResource(R.color.top_bar_color),
-            titleContentColor = colorResource(R.color.top_bar_color),
-            actionIconContentColor = colorResource(R.color.top_bar_color)
-        ),
+//        colors = TopAppBarColors(
+//            containerColor = colorResource(R.color.top_bar_color),
+//            scrolledContainerColor = colorResource(R.color.top_bar_color),
+//            navigationIconContentColor = colorResource(R.color.top_bar_color),
+//            titleContentColor = colorResource(R.color.top_bar_color),
+//            actionIconContentColor = colorResource(R.color.top_bar_color)
+//        ),
         modifier = Modifier.padding(top = 8.dp),
         title = {
             Text(

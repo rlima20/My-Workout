@@ -12,12 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myworkout.data.model.Training
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
 
 @RequiresApi(35)
 @Composable
-internal fun HomeScreen(trainingList: MutableList<Training>) {
+internal fun HomeScreen(trainingList: MutableList<TrainingModel>) {
     Column(
         modifier = Modifier.padding(top = 120.dp),
         verticalArrangement = Arrangement.Center,

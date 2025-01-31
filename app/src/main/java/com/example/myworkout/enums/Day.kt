@@ -1,6 +1,6 @@
-package com.example.myworkout.data.model
+package com.example.myworkout.enums
 
-enum class Day {
+enum class DayOfWeek {
     SUNDAY,
     MONDAY,
     TUESDAY,
