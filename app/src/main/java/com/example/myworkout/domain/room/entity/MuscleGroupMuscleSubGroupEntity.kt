@@ -9,5 +9,6 @@ import androidx.room.Entity
 )
 data class MuscleGroupMuscleSubGroupEntity(
     val muscleGroupId: Int,
-    val muscleSubGroupId: Int
+    val muscleSubGroupId: Int,
+    val selected: Boolean = false
 )

@@ -1,17 +1,22 @@
 package com.example.myworkout.domain.mapper
 
+import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.domain.model.TrainingMuscleGroupModel
+import com.example.myworkout.domain.room.entity.MuscleGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingEntity
+import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
 
-fun TrainingModel.toEntity(): TrainingEntity{
+fun TrainingModel.toEntity(): TrainingEntity {
     return TrainingEntity(
         trainingId = this.trainingId,
         status = this.status,
-        dayOfWeek = this.dayOfWeek
+        dayOfWeek = this.dayOfWeek,
+        trainingName = this.trainingName
     )
 }
 
@@ -24,17 +29,33 @@ fun TrainingEntity.toModel(): TrainingModel {
     )
 }
 
+fun MuscleGroupModel.toEntity(): MuscleGroupEntity {
+    return MuscleGroupEntity(
+        muscleGroupId = this.muscleGroupId,
+        name = this.name
+    )
+}
+
 fun MuscleSubGroupEntity.toModel(): MuscleSubGroupModel {
     return MuscleSubGroupModel(
         id = this.muscleSubGroupId,
-        name = this.name
+        name = this.name,
+        selected = this.selected
     )
 }
 
 fun MuscleSubGroupModel.toEntity(): MuscleSubGroupEntity {
     return MuscleSubGroupEntity(
         muscleSubGroupId = this.id,
-        name = this.name
+        name = this.name,
+        selected = this.selected
+    )
+}
+
+fun TrainingMuscleGroupModel.toEntity(): TrainingMuscleGroupEntity {
+    return TrainingMuscleGroupEntity(
+        trainingId = this.trainingId,
+        muscleGroupId = this.muscleGroupId
     )
 }
 

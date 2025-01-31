@@ -1,20 +1,21 @@
 package com.example.myworkout.domain.repository
 
-import com.example.myworkout.enums.Status
+import com.example.myworkout.domain.mapper.toEntity
 import com.example.myworkout.domain.mapper.toModel
 import com.example.myworkout.domain.mapper.toModelList
+import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.dao.MuscleGroupDao
 import com.example.myworkout.domain.room.dao.MuscleGroupMuscleSubGroupDao
 import com.example.myworkout.domain.room.dao.MuscleSubGroupDao
 import com.example.myworkout.domain.room.dao.TrainingDao
 import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
-import com.example.myworkout.domain.room.entity.MuscleGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
-import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
-import com.example.myworkout.domain.room.entity.TrainingEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
+import com.example.myworkout.enums.Status
 
 class TrainingRepositoryImpl(
     private val trainingDao: TrainingDao,
@@ -56,24 +57,24 @@ class TrainingRepositoryImpl(
     private fun muscleGroupMuscleSubGroups(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity> =
         muscleGroupMuscleSubGroupDao.getMuscleSubGroupsForMuscleGroup(trainingMuscleGroup.muscleGroupId)
 
-    override fun insertTraining(training: TrainingEntity) {
-        trainingDao.insert(training)
+    override fun insertTraining(training: TrainingModel) {
+        trainingDao.insert(training.toEntity())
     }
 
-    override fun insertMuscleGroup(muscleGroup: MuscleGroupEntity) {
-        muscleGroupDao.insert(muscleGroup)
+    override fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
+        muscleGroupDao.insert(muscleGroup.toEntity())
     }
 
-    override fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupEntity) {
-        muscleSubGroupDao.insert(muscleSubGroup)
+    override fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
+        muscleSubGroupDao.insert(muscleSubGroup.toEntity())
     }
 
-    override fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupEntity) {
-        muscleGroupMuscleSubGroupDao.insert(muscleGroupMuscleSubGroup)
+    override fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel) {
+        muscleGroupMuscleSubGroupDao.insert(muscleGroupMuscleSubGroup.toEntity())
     }
 
-    override fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity) {
-        trainingMuscleGroupDao.insert(trainingMuscleGroup)
+    override fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
+        trainingMuscleGroupDao.insert(trainingMuscleGroup.toEntity())
     }
 
     override suspend fun saveTraining(training: TrainingModel) {

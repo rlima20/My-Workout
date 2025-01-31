@@ -5,7 +5,7 @@ import com.example.myworkout.enums.Status
 
 
 data class TrainingModel(
-    val trainingId: Int,
+    val trainingId: Int = 0,
     val status: Status,
     val dayOfWeek: DayOfWeek,
     val trainingName: String

@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class MuscleSubGroupEntity(
     @PrimaryKey(autoGenerate = true)
     val muscleSubGroupId: Int = 0,
-    val name: String
+    val name: String,
+    val selected: Boolean = false
 )

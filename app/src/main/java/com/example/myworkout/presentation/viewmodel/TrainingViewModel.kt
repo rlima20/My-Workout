@@ -1,56 +1,115 @@
 package com.example.myworkout.presentation.viewmodel
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkout.domain.mapper.toEntity
+import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.enums.Status
 import com.example.myworkout.domain.model.TrainingModel
-import com.example.myworkout.domain.room.entity.MuscleGroupEntity
-import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
-import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
-import com.example.myworkout.domain.room.entity.TrainingEntity
-import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
+import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.TrainingUseCase
+import com.example.myworkout.enums.DayOfWeek
+import com.example.myworkout.enums.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.Timer
 
 @RequiresApi(Build.VERSION_CODES.O)
 class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
+    val viewState: MutableState<TrainingViewState> = mutableStateOf(TrainingViewState())
+    val listOfMuscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> = MutableStateFlow(listOf())
+    val listOfTrainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
 
-    data class TrainingViewState(
-        val trainings: List<TrainingModel> = emptyList(),
-        val isEmpty: Boolean = true,
-        val isLoading: Boolean = false,
-        val errorMessage: String? = null
-    )
+    fun setupDatabase(isFirstInstall: Boolean) {
+        if (isFirstInstall) {
+            insertTraining(
+                TrainingModel(
+                    status = Status.PENDING,
+                    dayOfWeek = DayOfWeek.MONDAY,
+                    trainingName = "Treino A"
+                )
+            )
 
-    val listOfTraining: MutableState<List<TrainingModel>> = mutableStateOf(listOf())
-    val listOfMuscleSubGroups: MutableState<List<MuscleSubGroupModel>> = mutableStateOf(listOf())
+            insertMuscleGroup(
+                MuscleGroupModel(
+                    name = "Ombro"
+                )
+            )
 
-    private val _viewState = MutableLiveData<TrainingViewState>()
-    val viewState: LiveData<TrainingViewState> get() = _viewState
+            insertMuscleSubGroup(
+                MuscleSubGroupModel(
+                    name = "Posterior"
+                )
+            )
 
-    private fun fetchTrainings() {
-        _viewState.value = TrainingViewState(isLoading = true)
+            insertMuscleSubGroup(
+                MuscleSubGroupModel(
+                    name = "Anterior"
+                )
+            )
+
+            insertMuscleSubGroup(
+                MuscleSubGroupModel(
+                    name = "Lateral"
+                )
+            )
+
+            insertTrainingMuscleGroup(
+                TrainingMuscleGroupModel(
+                    trainingId = 1,
+                    muscleGroupId = 1
+                )
+            )
+
+            for (i in 1..3) {
+                insertMuscleGroupMuscleSubGroup(
+                    MuscleGroupMuscleSubGroupModel(
+                        muscleGroupId = 1,
+                        muscleSubGroupId = i
+                    )
+                )
+            }
+        }
+    }
+
+    fun fetchTrainings() {
+        viewState.value = TrainingViewState(isLoading = true)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val trainings = trainingUseCase.getTrainings()
+                setListOfTrainings(trainings)
+            } catch (e: Exception) {
+               Log.e("RAPHAEL", "Erro: $e")
+            }
+        }
+    }
+
+    fun setListOfTrainings(value: List<TrainingModel>){
+        listOfTrainings.value = value
+    }
+
+    fun fetchTrainings2() {
+        viewState.value = TrainingViewState(isLoading = true)
 
         viewModelScope.launch {
             try {
                 val trainings = trainingUseCase.getTrainings()
-                _viewState.value = TrainingViewState(
+                viewState.value = TrainingViewState(
                     trainings = trainings,
                     isEmpty = trainings.isEmpty()
                 )
             } catch (e: Exception) {
-                _viewState.value = TrainingViewState(errorMessage = e.message)
+                viewState.value = TrainingViewState(errorMessage = e.message)
             }
         }
     }
@@ -66,26 +125,34 @@ class TrainingViewModel(
         listOfMuscleSubGroups.value = newList
     }
 
-    fun insertTraining(training: TrainingEntity) {
+    private fun insertTraining(training: TrainingModel) {
         viewModelScope.launch(Dispatchers.IO) {
             trainingUseCase.insertTraining(training)
         }
     }
 
-    fun insertMuscleGroup(muscleGroup: MuscleGroupEntity) {
-        /* Todo */
+    private fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            trainingUseCase.insertMuscleGroup(muscleGroup)
+        }
     }
 
-    fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupEntity) {
-        /* Todo */
+    private fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            trainingUseCase.insertMuscleSubGroup(muscleSubGroup)
+        }
     }
 
-    fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity) {
-        /* Todo */
+    private fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            trainingUseCase.insertTrainingMuscleGroup(trainingMuscleGroup)
+        }
     }
 
-    fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupEntity) {
-        /* Todo */
+    private fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            trainingUseCase.insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup)
+        }
     }
 
     sealed class TrainingIntent {
@@ -94,18 +161,7 @@ class TrainingViewModel(
         data class ClearStatus(val trainingId: Int, val status: Status) : TrainingIntent()
     }
 
-    init {
-//        processIntent(TrainingIntent.FetchTrainings)
-//        saveTraining(
-//            TrainingModel(
-//                trainingId = 0,
-//                status = Status.PENDING,
-//                dayOfWeek = java.time.DayOfWeek.SUNDAY,
-//            )
-//        )
-    }
-
-    private fun processIntent(intent: TrainingIntent) {
+    fun processIntent(intent: TrainingIntent) {
         when (intent) {
             is TrainingIntent.FetchTrainings -> fetchTrainings()
             is TrainingIntent.SaveTraining -> saveTraining(intent.training)
@@ -115,7 +171,7 @@ class TrainingViewModel(
 
     private fun saveTraining(training: TrainingModel) {
         viewModelScope.launch {
-            trainingUseCase.insertTraining(training.toEntity())
+            trainingUseCase.insertTraining(training)
             // fetchTrainings()
         }
     }

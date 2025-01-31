@@ -51,7 +51,11 @@ android {
 }
 
 dependencies {
+//    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
+//    implementation("androidx.compose.ui:ui-graphics")
+//    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
     val composeUiVersion = "1.4.3"
+//    debugImplementation("androidx.compose.ui:ui-test-manifest")
     val koin = "2.2.0"
     val navVersion = "2.5.3"
     val roomVersion = "2.5.1"

@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation
+package com.example.myworkout.presentation.ui.activity
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -7,10 +7,12 @@ import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myworkout.Constants
 import com.example.myworkout.enums.Status
-import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.preferences.isFirstInstall
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
@@ -27,21 +29,24 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Vem da ViewModel
-        var trainingList: MutableList<TrainingModel> = mutableListOf()
-
         setContent {
 
-//            Status.entries.forEach { _ ->
-//                viewModel.viewState.value?.trainings?.let {
-//                    trainingList = it.toMutableList()
-//                }
-//            }
+            val trainingList by viewModel.listOfTrainings.collectAsState(listOf())
+            val listOfMuscleSubGroup by viewModel.listOfMuscleSubGroups.collectAsState(listOf())
+
+            viewModel.setupDatabase(isFirstInstall(this.baseContext))
+            viewModel.getMuscleSubGroupsForTraining(1)
+            viewModel.fetchTrainings()
 
             MyWorkoutTheme {
                 Scaffold(
                     topBar = { TopBar() },
-                    content = { HomeScreen(trainingList) },
+                    content = {
+                        HomeScreen(
+                            trainingList,
+                            listOfMuscleSubGroup
+                        )
+                    },
                     bottomBar = {
                         BottomBar(
                             onNavigateToHomeScreen = { navigateToHomeScreen() },
@@ -64,6 +69,9 @@ private fun navigateToHomeScreen() {}
 @Composable
 fun HomeScreenPreview() {
     MyWorkoutTheme {
-        HomeScreen(mutableListOf(Constants().trainingMock(Status.PENDING)))
+        HomeScreen(
+            mutableListOf(Constants().trainingMock(Status.PENDING)),
+            listOf()
+        )
     }
 }
