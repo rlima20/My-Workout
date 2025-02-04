@@ -23,7 +23,7 @@ internal fun HomeScreen(
     listOfMuscleSubGroup: List<MuscleSubGroupModel>
 ) {
     Column(
-        modifier = Modifier.padding(top = 120.dp),
+        modifier = Modifier.padding(top = 90.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

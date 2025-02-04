@@ -8,3 +8,10 @@ data class TrainingViewState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 )
+
+enum class DatabaseState {
+    SUCCESS,
+    ISEMPTY,
+    ISLOADING,
+    ERROR
+}
