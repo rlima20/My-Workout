@@ -1,6 +1,7 @@
 package com.example.myworkout.presentation.ui.components.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -26,8 +27,8 @@ internal fun TopBar(
     onNavigateToHomeScreen: () -> Unit
 ) {
     TopAppBar(
-        modifier = Modifier.height(80.dp),
-        backgroundColor = Color(0xFFD0CFD2),
+        modifier = Modifier.height(70.dp),
+        backgroundColor = Color(0xFF6B757E),
         navigationIcon = { ShowBackIcon(isHomeScreen) { onNavigateToHomeScreen() } },
         title = { TopAppBarText(isHomeScreen, title) },
     )

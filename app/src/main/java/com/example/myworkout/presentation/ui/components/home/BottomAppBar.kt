@@ -3,6 +3,7 @@ package com.example.myworkout.presentation.ui.components.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -25,6 +26,7 @@ fun BottomAppBar(
     onNavigateToAddTrainingScreen: () -> Unit,
 ) {
     BottomAppBar(
+        modifier = Modifier.height(70.dp),
         containerColor = colorResource(R.color.pending),
         actions = {
             Row(horizontalArrangement = Arrangement.spacedBy(50.dp)) {

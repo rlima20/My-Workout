@@ -42,8 +42,8 @@ class SplashScreenActivity : ComponentActivity() {
         Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .background(color = colorResource(id = R.color.white)),
-            color = colorResource(id = R.color.white),
+                .background(color = colorResource(id = R.color.splash_screen_color)),
+            color = colorResource(id = R.color.splash_screen_color),
         ) {
             Box(
                 contentAlignment = androidx.compose.ui.Alignment.Center,
@@ -53,8 +53,8 @@ class SplashScreenActivity : ComponentActivity() {
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(244.dp)
-                        .background(color = colorResource(id = R.color.white)),
-                    painter = painterResource(id = R.drawable.workout),
+                        .background(color = colorResource(id = R.color.splash_screen_color)),
+                    painter = painterResource(id = R.drawable.gym_time),
                     contentDescription = null,
                 )
             }
