@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,13 +17,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
-import com.example.myworkout.data.model.MuscleSubGroup
+import com.example.myworkout.domain.model.MuscleSubGroupModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
 @Composable
 internal fun FilterChipList(
-    listOfMuscleSubGroup: List<MuscleSubGroup>,
-    onItemClick: (item: MuscleSubGroup) -> Unit,
+    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    onItemClick: (item: MuscleSubGroupModel) -> Unit,
     enabled: Boolean
 ) {
     LazyColumn(
@@ -37,7 +39,7 @@ internal fun FilterChipList(
                 modifier = Modifier.height(22.dp),
                 onClick = { onItemClick(item) },
                 label = { Text(fontSize = 16.sp, text = item.name) },
-                selected = item.selected
+                selected = false
             )
         }
     }
@@ -46,10 +48,10 @@ internal fun FilterChipList(
 @Preview
 @Composable
 fun AssistChipListPreview() {
-    val listOfMuscleSubGroup: MutableList<MuscleSubGroup> = mutableListOf()
+    val listOfMuscleSubGroup: MutableList<MuscleSubGroupModel> = mutableListOf()
     for (i in 1..5) {
         listOfMuscleSubGroup.add(
-            MuscleSubGroup(id = i, name = "Grupo$i")
+            MuscleSubGroupModel(id = i, name = "Grupo$i")
         )
     }
     FilterChipList(

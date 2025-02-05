@@ -1,18 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
+    id ("com.android.application")
+    id ("org.jetbrains.kotlin.android")
+    id ("kotlin-kapt")
 }
 
 android {
     namespace = "com.example.myworkout"
-    compileSdk = 35
+    compileSdk = 33
 
     defaultConfig {
         applicationId = "com.example.myworkout"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 33
         versionCode = 1
         versionName = "1.0"
 
@@ -42,9 +41,9 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packaging {
+    packagingOptions {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -52,44 +51,67 @@ android {
 }
 
 dependencies {
-    annotationProcessor(libs.androidx.room.compiler)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.room.common)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+//    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
+//    implementation("androidx.compose.ui:ui-graphics")
+//    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
+    val composeUiVersion = "1.4.3"
+//    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    val koin = "2.2.0"
+    val navVersion = "2.5.3"
+    val roomVersion = "2.5.1"
 
-    // Room Dependencies
-    annotationProcessor(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    testImplementation(libs.androidx.room.testing)
-
-    // Hilt Dependencies
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
-
-    // Material Design Dependencies
-    implementation(libs.material3)
-    implementation("androidx.compose.material3:material3-window-size-class:1.3.1")
-    implementation(libs.androidx.material3.adaptive.navigation.suite)
+    // Main libraries
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
+    implementation("androidx.activity:activity-compose:1.3.1")
+    implementation("androidx.compose.ui:ui:$composeUiVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeUiVersion")
     implementation("androidx.compose.material:material:1.2.0")
+    implementation("androidx.compose.material3:material3:1.2.0-alpha02")
+
+    // Testing libraries
+    testImplementation("junit:junit:4.13.2")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.4.0")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
+    debugImplementation("androidx.compose.ui:ui-tooling:$composeUiVersion")
+    implementation("androidx.compose.ui:ui-test-manifest:1.4.1")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+    testImplementation("io.kotlintest:kotlintest-assertions:3.4.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2")
+    testImplementation("org.robolectric:robolectric:3.7.1")
+    implementation("org.robolectric:robolectric:4.10.1")
+    implementation("androidx.test:core:1.5.0")
+    implementation("androidx.test.ext:junit-ktx:1.1.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0")
+    implementation("androidx.appcompat:appcompat:1.4.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.3")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation("com.google.android.gms:play-services-measurement-api:21.2.2")
+
+    // Material design
     implementation("com.google.android.material:material:1.4.+")
 
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.3.0")
 
-}
+    // Koin for Kotlin apps
+    implementation("io.insert-koin:koin-core:$koin")
+    implementation("io.insert-koin:koin-androidx-viewmodel:2.2.2")
 
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    // Mockk
+    testImplementation("io.mockk:mockk-android:1.12.3")
+    testImplementation("io.mockk:mockk-agent-jvm:1.12.3")
+
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
+    // Google fonts
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.4.3")
 }

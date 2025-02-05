@@ -1,6 +1,6 @@
 package com.example.myworkout.utils
 
-import com.example.myworkout.data.model.Status
+import com.example.myworkout.enums.Status
 
 fun setStatus(
     isTrainingChecked: Boolean,

@@ -1,20 +1,20 @@
 package com.example.myworkout
 
 import androidx.compose.runtime.Composable
-import com.example.myworkout.data.model.MuscleGroup
-import com.example.myworkout.data.model.MuscleSubGroup
-import com.example.myworkout.data.model.Status
-import com.example.myworkout.data.model.Training
+import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.enums.Status
+import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.DayOfWeek
 
 class Constants {
     private var idCounter = 0
 
     @Composable
-    fun trainingMock(status: Status) = Training(
-        id = 0,
-        muscleGroups = muscleGroups(),
+    fun trainingMock(status: Status) = TrainingModel(
+        trainingId = 0,
         status = status,
-        dayOfWeek = 0,
+        dayOfWeek = DayOfWeek.MONDAY,
         trainingName = "Treino A"
     )
 
@@ -37,18 +37,17 @@ class Constants {
     private fun muscleGroupMock(
         muscleGroupName: String,
         muscleSubGroupName: List<String>
-    ) = MuscleGroup(
-        id = 0,
+    ) = MuscleGroupModel(
+        muscleGroupId = 0,
         name = muscleGroupName,
-        muscleSubGroups = muscleSubGroupsMock(muscleSubGroupName)
     )
 
     @Composable
-    private fun muscleSubGroupsMock(muscleSubGroupName: List<String>): List<MuscleSubGroup> {
-        val listOfMuscleSubGroup: MutableList<MuscleSubGroup> = mutableListOf()
+    private fun muscleSubGroupsMock(muscleSubGroupName: List<String>): List<MuscleSubGroupModel> {
+        val listOfMuscleSubGroup: MutableList<MuscleSubGroupModel> = mutableListOf()
         muscleSubGroupName.forEach { muscleGroupName ->
             listOfMuscleSubGroup.add(
-                MuscleSubGroup(
+                MuscleSubGroupModel(
                     id = idCounter,
                     name = muscleGroupName
                 )

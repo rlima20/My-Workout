@@ -24,9 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
 import com.example.myworkout.R
-import com.example.myworkout.data.model.MuscleSubGroup
-import com.example.myworkout.data.model.Status
-import com.example.myworkout.data.model.Training
+import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.utils.setStatus
 
@@ -35,22 +35,17 @@ import com.example.myworkout.utils.setStatus
 @Composable
 fun TrainingCard(
     modifier: Modifier = Modifier,
-    training: Training,
+    training: TrainingModel,
+    muscleSubGroupModel: List<MuscleSubGroupModel>,
     isFilterChipListEnabled: Boolean,
     onAddButtonClicked: () -> Unit,
-    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroup>) -> Unit
+    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroupModel>) -> Unit
 ) {
     var trainingStatus by remember { mutableStateOf(training.status) }
     val firstStatus by remember { mutableStateOf(training.status) }
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
 
-    var muscleSubGroupsState: MutableList<MuscleSubGroup> by remember {
-        mutableStateOf(
-            training.muscleGroups.flatMap { muscleGroup ->
-                muscleGroup.muscleSubGroups
-            }.toMutableList()
-        )
-    }
+    var muscleSubGroupsState = muscleSubGroupModel
 
     Card(
         modifier = modifier,
@@ -64,9 +59,9 @@ fun TrainingCard(
             )
             MuscleSubGroupSection(
                 training = training,
-                listOfMuscleSubGroup = muscleSubGroupsState,
+                listOfMuscleSubGroup = muscleSubGroupModel,
                 onItemClick = { item ->
-                    val muscleSubGroupsSelected: MutableList<MuscleSubGroup> = mutableListOf()
+                    val muscleSubGroupsSelected: MutableList<MuscleSubGroupModel> = mutableListOf()
 
                     muscleSubGroupsState = muscleSubGroupsState.map { muscleSubGroup ->
                         if (muscleSubGroup.id == item.id) item.copy(selected = !item.selected)
@@ -113,10 +108,10 @@ private fun MuscleGroupSection(
 
 @Composable
 private fun MuscleSubGroupSection(
-    training: Training,
-    listOfMuscleSubGroup: List<MuscleSubGroup>,
+    training: TrainingModel,
+    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     isFilterChipListEnabled: Boolean = false,
-    onItemClick: (item: MuscleSubGroup) -> Unit,
+    onItemClick: (item: MuscleSubGroupModel) -> Unit,
     onAddButtonClicked: () -> Unit
 ) {
     Row(
@@ -142,10 +137,11 @@ private fun MuscleSubGroupSection(
 @Composable
 fun TrainingCardPreview() {
     Column {
-        Status.entries.forEach {
+        Status.values().forEach {
             TrainingCard(
                 modifier = Modifier,
                 training = Constants().trainingMock(it),
+                muscleSubGroupModel = listOf(),
                 isFilterChipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {}
