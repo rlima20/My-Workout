@@ -11,7 +11,7 @@ data class TrainingViewState(
 
 enum class DatabaseState {
     SUCCESS,
-    ISEMPTY,
-    ISLOADING,
+    EMPTY,
+    LOADING,
     ERROR
 }

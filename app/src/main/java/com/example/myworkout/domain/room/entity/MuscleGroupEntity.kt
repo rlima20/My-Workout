@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "muscle_group")
 data class MuscleGroupEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val muscleGroupId: Int = 0,
     val name: String
 )

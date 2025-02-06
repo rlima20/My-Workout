@@ -11,7 +11,6 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.TrainingUseCase
-import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +24,12 @@ class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
-    private val _databaseOperationStatus = MutableStateFlow(DatabaseState.ISEMPTY)
+    // Todo - verificar se vou usar esse viewState realmente
+    private val _viewState = MutableStateFlow(TrainingViewState())
+    val viewState: StateFlow<TrainingViewState>
+        get() = _viewState
+
+    private val _databaseOperationStatus = MutableStateFlow(DatabaseState.EMPTY)
     val databaseOperationStatus: StateFlow<DatabaseState>
         get() = _databaseOperationStatus
 
@@ -37,6 +41,11 @@ class TrainingViewModel(
     val appBarTitle: StateFlow<String>
         get() = _appBarTitle
 
+    val listOfMuscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> =
+        MutableStateFlow(listOf())
+
+    val listOfTrainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
+
     fun setIsHomeScreen(value: Boolean) {
         _isHomeScreen.value = value
     }
@@ -45,176 +54,199 @@ class TrainingViewModel(
         _appBarTitle.value = value
     }
 
-    // Todo - verificar se vou usar esse viewState realmente
-    private val _viewState = MutableStateFlow(TrainingViewState())
-    val viewState: StateFlow<TrainingViewState>
-        get() = _viewState
-
-    val listOfMuscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> =
-        MutableStateFlow(listOf())
-
-    val listOfTrainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
-
     fun setupDatabase(isFirstInstall: Boolean) {
-        CoroutineScope(Dispatchers.Main).launch {
-            _databaseOperationStatus.value = DatabaseState.ISLOADING
-            delay(1000)
-            try {
-                viewModelScope.launch(Dispatchers.Main) {
-                    if (isFirstInstall) {
-                        createTrainingAAndRelationships()
-                        createTrainingBAndRelationships()
+        if (isFirstInstall) {
+            CoroutineScope(Dispatchers.Main).launch {
+                _databaseOperationStatus.value = DatabaseState.LOADING
+                try {
+                    viewModelScope.launch(Dispatchers.Main) {
+                        createDatabase()
+                        delay(2000)
+                        _databaseOperationStatus.value = DatabaseState.EMPTY
                     }
-                    _databaseOperationStatus.value = DatabaseState.SUCCESS
+                } catch (e: Exception) {
+                    _databaseOperationStatus.value = DatabaseState.ERROR
                 }
-            } catch (e: Exception) {
-                _databaseOperationStatus.value = DatabaseState.ERROR
             }
         }
     }
 
-    private fun createTrainingAAndRelationships() {
-        insertTraining(
-            TrainingModel(
-                status = Status.PENDING,
-                dayOfWeek = DayOfWeek.SUNDAY,
-                trainingName = "Treino A"
-            )
-        )
+    private suspend fun createDatabase() {
+        createBack()
+        delay(2000)
+        createShoulder()
+        delay(2000)
+        createArm()
+        delay(2000)
+        createAbdomen()
+        delay(2000)
+        createChest()
+        delay(2000)
+        createLegs()
+        delay(2000)
+        createTrapezius()
+        delay(2000)
+    }
 
-        insertMuscleGroup(
-            MuscleGroupModel(
-                name = "Ombro"
-            )
-        )
+    private fun createBack() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 1, name = "Costas"))
+        createMuscleSubGroupBack()
+        createMuscleGroupMuscleSubGroupBackRelationship()
+    }
 
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = "Posterior"
-            )
-        )
+    private fun createMuscleSubGroupBack() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 1, name = "Superior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 2, name = "Dorsal"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 3, name = "Inferior"))
+    }
 
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = "Anterior"
-            )
-        )
-
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = "Lateral"
-            )
-        )
-
-        insertTrainingMuscleGroup(
-            TrainingMuscleGroupModel(
-                trainingId = 1,
-                muscleGroupId = 1
-            )
-        )
-
+    private fun createMuscleGroupMuscleSubGroupBackRelationship() {
         for (i in 1..3) {
             insertMuscleGroupMuscleSubGroup(
                 MuscleGroupMuscleSubGroupModel(
-                    muscleGroupId = 1,
+                    muscleGroupId = 1, // ID do grupo Back
                     muscleSubGroupId = i
                 )
             )
         }
     }
 
-    private fun createTrainingBAndRelationships() {
-        insertTraining(
-            TrainingModel(
-                status = Status.PENDING,
-                dayOfWeek = DayOfWeek.MONDAY,
-                trainingName = "Treino B"
-            )
-        )
-        insertMuscleGroup(
-            MuscleGroupModel(
-                name = "Peito"
-            )
-        )
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = "Supino Reto"
-            )
-        )
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = "Máquina x"
-            )
-        )
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = "Supino inclinado"
-            )
-        )
+    private fun createShoulder() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 2, name = "Ombro"))
+        createMuscleSubGroupShoulder()
+        createMuscleGroupMuscleSubGroupShoulderRelationship()
+    }
 
-        insertTrainingMuscleGroup(
-            TrainingMuscleGroupModel(
-                trainingId = 2,
-                muscleGroupId = 2
-            )
-        )
+    private fun createMuscleSubGroupShoulder() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 4, name = "Posterior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 5, name = "Anterior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 6, name = "Lateral"))
+    }
 
-        for (i in 3..6) {
+    private fun createMuscleGroupMuscleSubGroupShoulderRelationship() {
+        for (i in 4..6) {
             insertMuscleGroupMuscleSubGroup(
                 MuscleGroupMuscleSubGroupModel(
-                    muscleGroupId = 2,
+                    muscleGroupId = 2, // ID do grupo Shoulder
                     muscleSubGroupId = i
                 )
             )
         }
     }
 
+    private fun createArm() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 3, name = "Braço"))
+        createMuscleSubGroupArm()
+        createMuscleGroupMuscleSubGroupArmRelationship()
+    }
 
-    //
-    //                        )
-    //                        insertTraining(
-    //                            TrainingModel(
-    //                                status = Status.PENDING,
-    //                                dayOfWeek = DayOfWeek.TUESDAY,
-    //                                trainingName = "Treino C"
-    //                            )
-    //                        )
-    //                        insertTraining(
-    //                            TrainingModel(
-    //                                status = Status.PENDING,
-    //                                dayOfWeek = DayOfWeek.WEDNESDAY,
-    //                                trainingName = "Treino D"
-    //                            )
-    //                        )
-    //                        insertMuscleGroup(
-    //                            MuscleGroupModel(
-    //                                name = "Peito"
-    //                            )
-    //                        )
-    //                        insertMuscleGroup(
-    //                            MuscleGroupModel(
-    //                                name = "Bíceps"
-    //                            )
-    //                        )
-    //                        insertMuscleGroup(
-    //                            MuscleGroupModel(
-    //                                name = "Tríceps"
-    //                            )
-    //                        )
-    //                        insertMuscleGroup(
-    //                            MuscleGroupModel(
-    //                                name = "Pernas"
-    //                            )
-    //                        )
-    //                        insertMuscleGroup(
-    //                            MuscleGroupModel(
-    //                                name = "Abdômen"
-    //                            )
-    //                        )
+    private fun createMuscleSubGroupArm() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 7, name = "Bíceps"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 8, name = "Antebraço"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 9, name = "Tríceps"))
+    }
+
+    private fun createMuscleGroupMuscleSubGroupArmRelationship() {
+        for (i in 7..9) {
+            insertMuscleGroupMuscleSubGroup(
+                MuscleGroupMuscleSubGroupModel(
+                    muscleGroupId = 3, // ID do grupo Arm
+                    muscleSubGroupId = i
+                )
+            )
+        }
+    }
+
+    private fun createAbdomen() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 4, name = "Abdomem"))
+        createMuscleSubGroupAbdomen()
+        createMuscleGroupMuscleSubGroupAbdomenRelationship()
+    }
+
+    private fun createMuscleSubGroupAbdomen() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 10, name = "Superior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 11, name = "Inferior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 12, name = "Lateral"))
+    }
+
+    private fun createMuscleGroupMuscleSubGroupAbdomenRelationship() {
+        for (i in 10..12) {
+            insertMuscleGroupMuscleSubGroup(
+                MuscleGroupMuscleSubGroupModel(
+                    muscleGroupId = 4, // ID do grupo Abdomen
+                    muscleSubGroupId = i
+                )
+            )
+        }
+    }
+
+    private fun createChest() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 5, name = "Peito"))
+        createMuscleSubGroupChest()
+        createMuscleGroupMuscleSubGroupChestRelationship()
+    }
+
+    private fun createMuscleSubGroupChest() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 13, name = "Superior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 14, name = "Reto"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 15, name = "Medial"))
+    }
+
+    private fun createMuscleGroupMuscleSubGroupChestRelationship() {
+        for (i in 13..15) {
+            insertMuscleGroupMuscleSubGroup(
+                MuscleGroupMuscleSubGroupModel(
+                    muscleGroupId = 5, // ID do grupo Chest
+                    muscleSubGroupId = i
+                )
+            )
+        }
+    }
+
+    private fun createLegs() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 6, name = "Pernas"))
+        createMuscleSubGroupLegs()
+        createMuscleGroupMuscleSubGroupLegsRelationship()
+    }
+
+    private fun createMuscleSubGroupLegs() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 16, name = "Quadríceps"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 17, name = "Posterior"))
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 18, name = "Panturrilhas"))
+    }
+
+    private fun createMuscleGroupMuscleSubGroupLegsRelationship() {
+        for (i in 16..18) {
+            insertMuscleGroupMuscleSubGroup(
+                MuscleGroupMuscleSubGroupModel(
+                    muscleGroupId = 6, // ID do grupo Legs
+                    muscleSubGroupId = i
+                )
+            )
+        }
+    }
+
+    private fun createTrapezius() {
+        insertMuscleGroup(MuscleGroupModel(muscleGroupId = 7, name = "Trapézio"))
+        createMuscleSubGroupTrapezius()
+        createMuscleGroupMuscleSubGroupTrapeziusRelationship()
+    }
+
+    private fun createMuscleSubGroupTrapezius() {
+        insertMuscleSubGroup(MuscleSubGroupModel(id = 19, name = "Superior"))
+    }
+
+    private fun createMuscleGroupMuscleSubGroupTrapeziusRelationship() {
+        insertMuscleGroupMuscleSubGroup(
+            MuscleGroupMuscleSubGroupModel(
+                muscleGroupId = 7, // ID do grupo Trapezius
+                muscleSubGroupId = 19 // ID do subgrupo Upper
+            )
+        )
+    }
 
     fun fetchTrainings() {
         _viewState.value = TrainingViewState(isLoading = true)
-
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val trainings = trainingUseCase.getTrainings()
