@@ -9,12 +9,14 @@ fun isFirstInstall(context: Context): Boolean {
         "my_preferences", Context.MODE_PRIVATE
     )
 
-    val isFirstInstall = sharedPreferences.getBoolean("is_first_install", true)
+    return sharedPreferences.getBoolean("is_first_install", true)
+}
 
-    // Se for a primeira instalação, atualiza a preferência
-    if (isFirstInstall) {
-        sharedPreferences.edit().putBoolean("is_first_install", false).apply()
-    }
-
-    return isFirstInstall
+fun setFirstInstallValue(context: Context, value: Boolean) {
+    val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences(
+            "my_preferences",
+            Context.MODE_PRIVATE
+        )
+    sharedPreferences.edit().putBoolean("is_first_install", value).apply()
 }
