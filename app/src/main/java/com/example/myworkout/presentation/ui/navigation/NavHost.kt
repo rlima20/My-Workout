@@ -29,7 +29,8 @@ fun NavHost(
     onFetchTrainings: () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
-    onNavigateToNewTraining: () -> Unit
+    onNavigateToNewTraining: () -> Unit,
+    onDatabaseCreated: @Composable () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTraining: String = stringResource(R.string.new_training)
@@ -54,8 +55,8 @@ fun NavHost(
                     )
                 }
 
-                DatabaseState.ISLOADING -> {
-                    LoadingComponent()
+                DatabaseState.LOADING -> {
+                    LoadingComponent(info = stringResource(R.string.database))
                 }
 
                 DatabaseState.ERROR -> {
@@ -66,7 +67,7 @@ fun NavHost(
                     })
                 }
 
-                DatabaseState.ISEMPTY -> {
+                DatabaseState.EMPTY -> {
                     EmptyStateComponent(
                         modifier = Modifier.size(150.dp, 180.dp),
                         onClick = {
@@ -74,6 +75,7 @@ fun NavHost(
                         onChangeTopBarTitle(newTraining)
                         onNavigateToNewTraining()
                     })
+                    onDatabaseCreated()
                 }
             }
         }

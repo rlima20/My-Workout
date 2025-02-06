@@ -5,23 +5,42 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.Button
+import androidx.compose.material.ScaffoldState
+import androidx.compose.material.SnackbarData
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.myworkout.presentation.ui.navigation.HomeScreen
-import com.example.myworkout.presentation.ui.navigation.NewTraining
+import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.navigateSingleTopTo
+import com.example.myworkout.preferences.isFirstInstall
 import com.example.myworkout.presentation.ui.components.home.TopBar
+import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
+import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.DatabaseState
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.reflect.Modifier
 import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar
 
 class MainActivity : ComponentActivity() {
@@ -40,6 +59,8 @@ class MainActivity : ComponentActivity() {
             val isHomeScreen by viewModel.isHomeScreen.collectAsState()
             val appBarTitle by viewModel.appBarTitle.collectAsState()
             val navController = rememberNavController()
+
+            viewModel.setupDatabase(isFirstInstall(this.baseContext))
 
             MyWorkoutTheme {
                 ScaffoldComponent(
@@ -65,7 +86,10 @@ class MainActivity : ComponentActivity() {
         muscleSubGroupList: List<MuscleSubGroupModel>,
         databaseSetupState: DatabaseState
     ) {
+        val snackBarHostState = remember { SnackbarHostState() }
+
         Scaffold(
+            snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
             topBar = {
                 TopBar(
                     title = appBarTitle,
@@ -82,7 +106,12 @@ class MainActivity : ComponentActivity() {
                     onFetchTrainings = { viewModel.fetchTrainings() },
                     onChangeRoute = { viewModel.setIsHomeScreen(it) },
                     onChangeTopBarTitle = { viewModel.setAppBarTitle(it) },
-                    onNavigateToNewTraining = { navController.navigateSingleTopTo(NewTraining.route) }
+                    onNavigateToNewTraining = { navController.navigateSingleTopTo(NewTraining.route) },
+                    onDatabaseCreated = {
+                        LaunchedEffect(key1 = "") {
+                            snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
+                        }
+                    }
                 )
             },
             bottomBar = {
