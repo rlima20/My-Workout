@@ -3,12 +3,9 @@ package com.example.myworkout.preferences
 import android.content.Context
 import android.content.SharedPreferences
 
-fun isFirstInstall(context: Context): Boolean {
-
-    val sharedPreferences: SharedPreferences = context.getSharedPreferences(
-        "my_preferences", Context.MODE_PRIVATE
-    )
-
+fun isNotFirstInstall(context: Context): Boolean {
+    val sharedPreferences: SharedPreferences =
+        context.getSharedPreferences("my_preferences", Context.MODE_PRIVATE)
     return sharedPreferences.getBoolean("is_first_install", true)
 }
 

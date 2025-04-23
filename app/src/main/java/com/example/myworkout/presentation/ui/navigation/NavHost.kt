@@ -9,12 +9,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
+import com.example.myworkout.presentation.ui.components.training.TabRowComponent
 import com.example.myworkout.presentation.viewmodel.DatabaseState
 import androidx.navigation.compose.NavHost as NavHostCompose
 
@@ -23,7 +25,8 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 fun NavHost(
     navController: NavHostController,
     trainingList: List<TrainingModel>,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    muscleGroupList: List<MuscleGroupModel>,
+    muscleSubGroupList: List<MuscleSubGroupModel>,
     databaseSetupState: DatabaseState,
     onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
     onFetchTrainings: () -> Unit,
@@ -48,10 +51,9 @@ fun NavHost(
                 DatabaseState.SUCCESS -> {
                     onGetMuscleSubGroupsForTraining(1) // Todo - Esse 1 vai ser dinâmico
                     onFetchTrainings()
-
                     HomeScreen(
                         trainingList,
-                        listOfMuscleSubGroup
+                        muscleSubGroupList
                     )
                 }
 
@@ -71,10 +73,10 @@ fun NavHost(
                     EmptyStateComponent(
                         modifier = Modifier.size(150.dp, 180.dp),
                         onClick = {
-                        onChangeRoute(false)
-                        onChangeTopBarTitle(newTraining)
-                        onNavigateToNewTraining()
-                    })
+                            onChangeRoute(false)
+                            onChangeTopBarTitle(newTraining)
+                            onNavigateToNewTraining()
+                        })
                     onDatabaseCreated()
                 }
             }
@@ -82,6 +84,7 @@ fun NavHost(
         composable(route = NewTraining.route) {
             onChangeRoute(false)
             onChangeTopBarTitle(newTraining)
+            TabRowComponent(muscleGroups = muscleGroupList)
         }
     }
 }

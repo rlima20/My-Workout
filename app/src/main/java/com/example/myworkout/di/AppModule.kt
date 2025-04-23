@@ -2,11 +2,16 @@ package com.example.myworkout.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.myworkout.domain.repository.TrainingRepository
-import com.example.myworkout.domain.repository.TrainingRepositoryImpl
+import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
+import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepositoryImpl
+import com.example.myworkout.domain.repository.training.TrainingRepository
+import com.example.myworkout.domain.repository.training.TrainingRepositoryImpl
 import com.example.myworkout.domain.room.database.AppDatabase
-import com.example.myworkout.domain.usecase.TrainingUseCase
-import com.example.myworkout.domain.usecase.TrainingUseCaseImpl
+import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
+import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCaseImpl
+import com.example.myworkout.domain.usecase.training.TrainingUseCase
+import com.example.myworkout.domain.usecase.training.TrainingUseCaseImpl
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -42,17 +47,30 @@ val trainingMuscleGroupDaoDI = module {
     factory { get<AppDatabase>().trainingMuscleGroupDao() }
 }
 
-val repositoryDI = module {
-    factory<TrainingRepository> { TrainingRepositoryImpl(get(), get(), get(), get(), get()) }
+val muscleGroupRepositoryDI = module {
+    factory<MuscleGroupRepository> { MuscleGroupRepositoryImpl(get(), get(), get(), get()) }
+}
+
+val trainingRepositoryDI = module {
+    factory<TrainingRepository> { TrainingRepositoryImpl(get(), get()) }
 }
 
 val trainingUseCaseDI = module {
     factory<TrainingUseCase> { TrainingUseCaseImpl(get()) }
 }
 
+val muscleGroupUseCaseDI = module {
+    factory<MuscleGroupUseCase> { MuscleGroupUseCaseImpl(get()) }
+}
+
 @RequiresApi(Build.VERSION_CODES.O)
-val muscleViewModelDI = module {
+val trainingViewModelDI = module {
     viewModel { TrainingViewModel(get()) }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+val muscleGroupViewModelDI = module {
+    viewModel { MuscleGroupViewModel(get()) }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -64,7 +82,10 @@ val appModules = listOf(
     muscleSubGroupDaoDI,
     muscleGroupMuscleSubGroupDaoDI,
     trainingMuscleGroupDaoDI,
-    repositoryDI,
+    trainingRepositoryDI,
+    muscleGroupRepositoryDI,
     trainingUseCaseDI,
-    muscleViewModelDI
+    muscleGroupUseCaseDI,
+    trainingViewModelDI,
+    muscleGroupViewModelDI
 )

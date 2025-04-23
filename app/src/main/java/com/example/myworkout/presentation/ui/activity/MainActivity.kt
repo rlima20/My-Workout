@@ -16,10 +16,11 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.navigateSingleTopTo
-import com.example.myworkout.preferences.isFirstInstall
+import com.example.myworkout.preferences.isNotFirstInstall
 import com.example.myworkout.preferences.setFirstInstallValue
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
@@ -27,13 +28,15 @@ import com.example.myworkout.presentation.ui.navigation.NavHost
 import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.DatabaseState
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: TrainingViewModel by viewModel()
+    private val trainingViewModel: TrainingViewModel by viewModel()
+    private val muscleGroupViewModel: MuscleGroupViewModel by viewModel()
 
     @RequiresApi(35)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
@@ -41,14 +44,18 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val trainingList by viewModel.listOfTrainings.collectAsState(listOf())
-            val muscleSubGroupList by viewModel.listOfMuscleSubGroups.collectAsState(listOf())
-            val databaseSetupState by viewModel.databaseOperationStatus.collectAsState()
-            val isHomeScreen by viewModel.isHomeScreen.collectAsState()
-            val appBarTitle by viewModel.appBarTitle.collectAsState()
+            val trainingList by trainingViewModel.listOfTrainings.collectAsState(listOf())
+            val muscleGroupList by muscleGroupViewModel.listOfMuscleGroups.collectAsState(listOf())
+            val muscleSubGroupList by muscleGroupViewModel.listOfMuscleSubGroups.collectAsState(
+                listOf()
+            )
+            val databaseSetupState by muscleGroupViewModel.databaseOperationStatus.collectAsState()
+            val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
+            val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
             val navController = rememberNavController()
 
-            viewModel.setupDatabase(isFirstInstall(this.baseContext))
+            muscleGroupViewModel.setupDatabase(isNotFirstInstall(this.baseContext))
+            // muscleGroupViewModel.fetchMuscleGroups()
 
             MyWorkoutTheme {
                 ScaffoldComponent(
@@ -56,6 +63,7 @@ class MainActivity : ComponentActivity() {
                     isHomeScreen = isHomeScreen,
                     navController = navController,
                     trainingList = trainingList,
+                    muscleGroupList = muscleGroupList,
                     muscleSubGroupList = muscleSubGroupList,
                     databaseSetupState = databaseSetupState
                 )
@@ -71,6 +79,7 @@ class MainActivity : ComponentActivity() {
         isHomeScreen: Boolean,
         navController: NavHostController,
         trainingList: List<TrainingModel>,
+        muscleGroupList: List<MuscleGroupModel>,
         muscleSubGroupList: List<MuscleSubGroupModel>,
         databaseSetupState: DatabaseState
     ) {
@@ -88,20 +97,23 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navController,
                     trainingList = trainingList,
-                    listOfMuscleSubGroup = muscleSubGroupList,
+                    muscleGroupList = muscleGroupList,
+                    muscleSubGroupList = muscleSubGroupList,
                     databaseSetupState = databaseSetupState,
-                    onGetMuscleSubGroupsForTraining = { viewModel.getMuscleSubGroupsForTraining(it) },
-                    onFetchTrainings = { viewModel.fetchTrainings() },
-                    onChangeRoute = { viewModel.setIsHomeScreen(it) },
-                    onChangeTopBarTitle = { viewModel.setAppBarTitle(it) },
+                    onGetMuscleSubGroupsForTraining = {
+                        muscleGroupViewModel.getMuscleSubGroupsForTraining(it)
+                    },
+                    onFetchTrainings = { trainingViewModel.fetchTrainings() },
+                    onChangeRoute = { trainingViewModel.setIsHomeScreen(it) },
+                    onChangeTopBarTitle = { trainingViewModel.setAppBarTitle(it) },
                     onNavigateToNewTraining = { navController.navigateSingleTopTo(NewTraining.route) },
                     onDatabaseCreated = {
-                        if (isFirstInstall(this.baseContext) && isHomeScreen) {
-                            LaunchedEffect(key1 = "") {
-                                snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
-                                setFirstInstallValue(this@MainActivity.baseContext, false)
-                            }
-                        }
+//                        if (!isNotFirstInstall(this.baseContext) && isHomeScreen) {
+//                            LaunchedEffect(key1 = "") {
+//                                snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
+//                                setFirstInstallValue(this@MainActivity.baseContext, true)
+//                            }
+//                        }
                     }
                 )
             },

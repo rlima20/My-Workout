@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class MuscleGroupEntity(
     @PrimaryKey(autoGenerate = false)
     val muscleGroupId: Int = 0,
-    val name: String
+    val name: String,
+    val image: Int,
 )

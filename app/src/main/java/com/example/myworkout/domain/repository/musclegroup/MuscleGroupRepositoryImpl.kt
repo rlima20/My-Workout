@@ -1,29 +1,25 @@
-package com.example.myworkout.domain.repository
+package com.example.myworkout.domain.repository.musclegroup
 
 import com.example.myworkout.domain.mapper.toEntity
 import com.example.myworkout.domain.mapper.toModel
-import com.example.myworkout.domain.mapper.toModelList
+import com.example.myworkout.domain.mapper.toModelMuscleGroupList
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.dao.MuscleGroupDao
 import com.example.myworkout.domain.room.dao.MuscleGroupMuscleSubGroupDao
 import com.example.myworkout.domain.room.dao.MuscleSubGroupDao
-import com.example.myworkout.domain.room.dao.TrainingDao
 import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
-import com.example.myworkout.enums.Status
 
-class TrainingRepositoryImpl(
-    private val trainingDao: TrainingDao,
+class MuscleGroupRepositoryImpl(
     private val muscleGroupDao: MuscleGroupDao,
     private val trainingMuscleGroupDao: TrainingMuscleGroupDao,
     private val muscleGroupMuscleSubGroupDao: MuscleGroupMuscleSubGroupDao,
     private val muscleSubGroupDao: MuscleSubGroupDao
-) : TrainingRepository {
+) : MuscleGroupRepository {
 
     override suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel> {
         // Lista de subgrupos que vai ser retornada
@@ -57,10 +53,6 @@ class TrainingRepositoryImpl(
     private fun muscleGroupMuscleSubGroups(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity> =
         muscleGroupMuscleSubGroupDao.getMuscleSubGroupsForMuscleGroup(trainingMuscleGroup.muscleGroupId)
 
-    override fun insertTraining(training: TrainingModel) {
-        trainingDao.insert(training.toEntity())
-    }
-
     override fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
         muscleGroupDao.insert(muscleGroup.toEntity())
     }
@@ -77,19 +69,7 @@ class TrainingRepositoryImpl(
         trainingMuscleGroupDao.insert(trainingMuscleGroup.toEntity())
     }
 
-    override suspend fun saveTraining(training: TrainingModel) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun getTrainings(): List<TrainingModel> {
-        return trainingDao.getAllTrainings().toModelList()
-    }
-
-    override suspend fun clearStatus(trainingId: Int, status: Status) {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun updateTrainingStatus(trainingId: Int, status: Status) {
-        TODO("Not yet implemented")
+    override suspend fun getMuscleGroups(): List<MuscleGroupModel> {
+        return muscleGroupDao.getAllMuscleGroups().toModelMuscleGroupList()
     }
 }

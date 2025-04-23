@@ -40,6 +40,7 @@ class Constants {
     ) = MuscleGroupModel(
         muscleGroupId = 0,
         name = muscleGroupName,
+        image = 1
     )
 
     @Composable

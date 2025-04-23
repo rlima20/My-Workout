@@ -32,7 +32,8 @@ fun TrainingEntity.toModel(): TrainingModel {
 fun MuscleGroupModel.toEntity(): MuscleGroupEntity {
     return MuscleGroupEntity(
         muscleGroupId = this.muscleGroupId,
-        name = this.name
+        name = this.name,
+        image = this.image
     )
 }
 
@@ -78,18 +79,28 @@ fun List<TrainingModel>.toEntityList(): List<TrainingEntity> {
         TrainingEntity(
             trainingId = trainingModel.trainingId,
             status = trainingModel.status,
-            dayOfWeek = trainingModel.dayOfWeek // Descomente se precisar incluir
+            dayOfWeek = trainingModel.dayOfWeek
         )
     }
 }
 
-fun List<TrainingEntity>.toModelList(): List<TrainingModel> {
+fun List<TrainingEntity>.toModelTrainingList(): List<TrainingModel> {
     return this.map { trainingEntity ->
         TrainingModel(
             trainingId = trainingEntity.trainingId,
             status = trainingEntity.status,
             dayOfWeek = trainingEntity.dayOfWeek,
             trainingName = trainingEntity.trainingName
+        )
+    }
+}
+
+fun List<MuscleGroupEntity>.toModelMuscleGroupList(): List<MuscleGroupModel> {
+    return this.map { muscleGroupEntity ->
+        MuscleGroupModel(
+            muscleGroupId = muscleGroupEntity.muscleGroupId,
+            name = muscleGroupEntity.name,
+            image = muscleGroupEntity.image
         )
     }
 }
