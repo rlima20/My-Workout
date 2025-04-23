@@ -38,23 +38,23 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
 
-        val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                // Exemplo: Adicionar uma nova coluna à tabela existente
-                // database.execSQL("ALTER TABLE your_table_name ADD COLUMN new_column_name INTEGER DEFAULT 0 NOT NULL")
+        private lateinit var db: AppDatabase
+
+        private val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) { /* Comportamento de migração */
             }
         }
 
-        private lateinit var db: AppDatabase
 
         fun getInstance(context: Context): AppDatabase {
             if (Companion::db.isInitialized) return db
 
             db = Room.databaseBuilder(
-                context,
-                AppDatabase::class.java,
-                DATA_BASE_NAME,
-            ).addMigrations(MIGRATION_1_2) // Adiciona a migração aqui
+                context = context,
+                klass = AppDatabase::class.java,
+                name = DATA_BASE_NAME,
+            )
+                .addMigrations(MIGRATION_1_2)
                 .build()
 
             return db

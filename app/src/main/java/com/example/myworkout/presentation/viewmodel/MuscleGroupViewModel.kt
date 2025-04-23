@@ -30,7 +30,7 @@ class MuscleGroupViewModel(
         MutableStateFlow(listOf())
 
     fun setupDatabase(isFirstInstall: Boolean) {
-        if (!isFirstInstall) {
+        if (isFirstInstall) {
             CoroutineScope(Dispatchers.Main).launch {
                 _databaseOperationStatus.value = DatabaseState.LOADING
                 try {

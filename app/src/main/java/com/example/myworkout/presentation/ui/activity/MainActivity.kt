@@ -20,7 +20,7 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.navigateSingleTopTo
-import com.example.myworkout.preferences.isNotFirstInstall
+import com.example.myworkout.preferences.isFirstInstall
 import com.example.myworkout.preferences.setFirstInstallValue
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
             val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
             val navController = rememberNavController()
 
-            muscleGroupViewModel.setupDatabase(isNotFirstInstall(this.baseContext))
+            muscleGroupViewModel.setupDatabase(isFirstInstall(this.baseContext))
             // muscleGroupViewModel.fetchMuscleGroups()
 
             MyWorkoutTheme {
@@ -108,12 +108,12 @@ class MainActivity : ComponentActivity() {
                     onChangeTopBarTitle = { trainingViewModel.setAppBarTitle(it) },
                     onNavigateToNewTraining = { navController.navigateSingleTopTo(NewTraining.route) },
                     onDatabaseCreated = {
-//                        if (!isNotFirstInstall(this.baseContext) && isHomeScreen) {
-//                            LaunchedEffect(key1 = "") {
-//                                snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
-//                                setFirstInstallValue(this@MainActivity.baseContext, true)
-//                            }
-//                        }
+                        if (isFirstInstall(this.baseContext) && isHomeScreen) {
+                            LaunchedEffect(key1 = "") {
+                                snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
+                                setFirstInstallValue(this@MainActivity.baseContext, false)
+                            }
+                        }
                     }
                 )
             },
