@@ -112,8 +112,8 @@ class MainActivity : ComponentActivity() {
                             LaunchedEffect(key1 = "") {
                                 snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
                                 setFirstInstallValue(this@MainActivity.baseContext, false)
+                                trainingViewModel.dispatchViewAction(TrainingViewAction.CreateTrainings)
                             }
-                             trainingViewModel.dispatchViewAction(TrainingViewAction.CreateTrainings)
                         } else {
                             trainingViewModel.dispatchViewAction(TrainingViewAction.FetchTrainings)
                         }
