@@ -11,23 +11,23 @@ import androidx.navigation.compose.composable
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.ui.components.training.TabRowComponent
-import com.example.myworkout.presentation.viewmodel.DatabaseState
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
+import com.example.myworkout.presentation.viewmodel.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
 
 @RequiresApi(35)
 @Composable
 fun NavHost(
     navController: NavHostController,
-    trainingList: List<TrainingModel>,
     muscleGroupList: List<MuscleGroupModel>,
     muscleSubGroupList: List<MuscleSubGroupModel>,
-    databaseSetupState: DatabaseState,
+    muscleGroupViewState: MuscleGroupViewState,
+    trainingViewState: TrainingViewState,
     onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
     onFetchTrainings: () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
@@ -36,7 +36,7 @@ fun NavHost(
     onDatabaseCreated: @Composable () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
-    val newTraining: String = stringResource(R.string.new_training)
+    val createNewTraining: String = stringResource(R.string.new_training)
 
     NavHostCompose(
         navController = navController,
@@ -47,21 +47,24 @@ fun NavHost(
             onChangeRoute(true)
             onChangeTopBarTitle(homeScreen)
 
-            when (databaseSetupState) {
-                DatabaseState.SUCCESS -> {
-                    onGetMuscleSubGroupsForTraining(1) // Todo - Esse 1 vai ser dinâmico
-                    onFetchTrainings()
-                    HomeScreen(
-                        trainingList,
-                        muscleSubGroupList
-                    )
+            when (trainingViewState) {
+                is TrainingViewState.InitialState -> { }
+                is TrainingViewState.Loading -> {
+                    LoadingComponent(info = "Criando treinamentos")
                 }
 
-                DatabaseState.LOADING -> {
-                    LoadingComponent(info = stringResource(R.string.database))
+                is TrainingViewState.Empty -> {
+                    EmptyStateComponent(
+                        modifier = Modifier.size(150.dp, 180.dp),
+                        onClick = {
+                            onChangeRoute(false)
+                            onChangeTopBarTitle(createNewTraining)
+                            onNavigateToNewTraining()
+                        })
+                    onDatabaseCreated()
                 }
 
-                DatabaseState.ERROR -> {
+                is TrainingViewState.ErrorMessage -> {
                     ErrorStateComponent(onButtonClicked = {
                         onChangeRoute(true)
                         onChangeTopBarTitle(homeScreen)
@@ -69,21 +72,35 @@ fun NavHost(
                     })
                 }
 
-                DatabaseState.EMPTY -> {
-                    EmptyStateComponent(
-                        modifier = Modifier.size(150.dp, 180.dp),
-                        onClick = {
-                            onChangeRoute(false)
-                            onChangeTopBarTitle(newTraining)
-                            onNavigateToNewTraining()
-                        })
+                is TrainingViewState.Success -> {
+                    HomeScreen(
+                        trainingViewState.trainingData,
+                        muscleSubGroupList
+                    )
+                }
+            }
+
+            when (muscleGroupViewState) {
+                is MuscleGroupViewState.Success -> {
                     onDatabaseCreated()
+                }
+
+                is MuscleGroupViewState.Loading -> {
+                    LoadingComponent(info = "Criando base de dados")
+                }
+
+                is MuscleGroupViewState.ErrorMessage -> {
+                    ErrorStateComponent(onButtonClicked = {
+                        onChangeRoute(true)
+                        onChangeTopBarTitle(homeScreen)
+                        onNavigateToNewTraining()
+                    })
                 }
             }
         }
         composable(route = NewTraining.route) {
             onChangeRoute(false)
-            onChangeTopBarTitle(newTraining)
+            onChangeTopBarTitle(createNewTraining)
             TabRowComponent(muscleGroups = muscleGroupList)
         }
     }

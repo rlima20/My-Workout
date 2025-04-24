@@ -9,6 +9,7 @@
     <string name="something_went_wrong">Algo deu errado</string>
     <string name="error">Erro!</string>
     <string name="home_screen">Home Screen</string>
-    <string name="database">Criando base de dados...</string>
+    <string name="loading_database">Criando base de dados...</string>
+    <string name="loading_trainings">Carregando treinamentos...</string>
     <string name="database_created_with_success">Base de dados de criada com sucesso!</string>
 </resources>

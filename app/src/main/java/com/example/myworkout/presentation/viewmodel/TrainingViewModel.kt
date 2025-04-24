@@ -8,21 +8,23 @@ import androidx.lifecycle.viewModelScope
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
-    // Todo - verificar se vou usar esse viewState realmente
-    private val _viewState = MutableStateFlow(TrainingViewState())
-    val viewState: StateFlow<TrainingViewState>
-        get() = _viewState
+    private val _trainingViewState: MutableStateFlow<TrainingViewState> =
+        MutableStateFlow(TrainingViewState.InitialState)
+    val trainingViewState: StateFlow<TrainingViewState>
+        get() = _trainingViewState
 
     private val _isHomeScreen = MutableStateFlow(true)
     val isHomeScreen: StateFlow<Boolean>
@@ -32,8 +34,6 @@ class TrainingViewModel(
     val appBarTitle: StateFlow<String>
         get() = _appBarTitle
 
-    val listOfTrainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
-
     fun setIsHomeScreen(value: Boolean) {
         _isHomeScreen.value = value
     }
@@ -42,20 +42,55 @@ class TrainingViewModel(
         _appBarTitle.value = value
     }
 
+    fun dispatchViewAction(trainingViewAction: TrainingViewAction) {
+        when (trainingViewAction) {
+            is TrainingViewAction.FetchTrainings -> {
+                fetchTrainings()
+            }
+
+            is TrainingViewAction.CreateTrainings -> {
+                createTrainings()
+            }
+        }
+    }
+
+    /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
+    private fun createTrainings() {
+        _trainingViewState.value = TrainingViewState.Loading
+        try {
+            insertTraining(
+                TrainingModel(
+                    trainingId = 0,
+                    status = Status.PENDING,
+                    dayOfWeek = DayOfWeek.MONDAY,
+                    trainingName = "Peito e Ombro"
+                )
+            )
+            dispatchViewAction(TrainingViewAction.FetchTrainings)
+        } catch (e: Exception) {
+            _trainingViewState.value = TrainingViewState.ErrorMessage
+        }
+    }
+
     fun fetchTrainings() {
-        _viewState.value = TrainingViewState(isLoading = true)
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
             } catch (e: Exception) {
+                _trainingViewState.value = TrainingViewState.ErrorMessage
                 Log.e("RAPHAEL", "Erro: $e")
             }
         }
     }
 
-    private fun setListOfTrainings(value: List<TrainingModel>) {
-        listOfTrainings.value = value
+    private fun setListOfTrainings(data: List<TrainingModel>) {
+        verifyEmptyList(data)
+    }
+
+    private fun verifyEmptyList(data: List<TrainingModel>) {
+        if (data.isEmpty()) _trainingViewState.value = TrainingViewState.Empty
+        else _trainingViewState.value = TrainingViewState.Success(data)
     }
 
     private fun insertTraining(training: TrainingModel) {

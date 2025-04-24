@@ -3,23 +3,22 @@ package com.example.myworkout.presentation.viewmodel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 
-data class TrainingViewState(
-    val trainings: List<TrainingModel> = emptyList(),
-    val isEmpty: Boolean = true,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-)
 
-data class MuscleGroupViewState(
-    val muscleGroups: List<MuscleGroupModel> = emptyList(),
-    val isEmpty: Boolean = true,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
-)
+sealed class TrainingViewAction{
+    object FetchTrainings: TrainingViewAction()
+    object CreateTrainings: TrainingViewAction()
+}
 
-enum class DatabaseState {
-    SUCCESS,
-    EMPTY,
-    LOADING,
-    ERROR
+sealed class TrainingViewState {
+    object InitialState: TrainingViewState()
+    object Empty : TrainingViewState()
+    object ErrorMessage : TrainingViewState()
+    object Loading : TrainingViewState()
+    data class Success(val trainingData: List<TrainingModel>) : TrainingViewState()
+}
+
+sealed class MuscleGroupViewState {
+    object Success: MuscleGroupViewState()
+    object ErrorMessage : MuscleGroupViewState()
+    object Loading : MuscleGroupViewState()
 }

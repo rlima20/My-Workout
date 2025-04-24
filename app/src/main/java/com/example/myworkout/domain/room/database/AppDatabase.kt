@@ -41,7 +41,8 @@ abstract class AppDatabase : RoomDatabase() {
         private lateinit var db: AppDatabase
 
         private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) { /* Comportamento de migração */
+            override fun migrate(database: SupportSQLiteDatabase) {
+            /* Comportamento de migração */
             }
         }
 
@@ -54,7 +55,7 @@ abstract class AppDatabase : RoomDatabase() {
                 klass = AppDatabase::class.java,
                 name = DATA_BASE_NAME,
             )
-                .addMigrations(MIGRATION_1_2)
+                .fallbackToDestructiveMigration()
                 .build()
 
             return db

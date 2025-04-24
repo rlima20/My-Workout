@@ -19,12 +19,12 @@ class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase
 ) : ViewModel() {
 
-    private val _databaseOperationStatus = MutableStateFlow(DatabaseState.EMPTY)
-    val databaseOperationStatus: StateFlow<DatabaseState>
-        get() = _databaseOperationStatus
+    private val _muscleGroupViewState: MutableStateFlow<MuscleGroupViewState> =
+        MutableStateFlow(MuscleGroupViewState.Loading)
+    val muscleGroupViewState: StateFlow<MuscleGroupViewState>
+        get() = _muscleGroupViewState
 
-    val listOfMuscleGroups: MutableStateFlow<List<MuscleGroupModel>> =
-        MutableStateFlow(listOf())
+    val listOfMuscleGroups: MutableStateFlow<List<MuscleGroupModel>> = MutableStateFlow(listOf())
 
     val listOfMuscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> =
         MutableStateFlow(listOf())
@@ -32,15 +32,15 @@ class MuscleGroupViewModel(
     fun setupDatabase(isFirstInstall: Boolean) {
         if (isFirstInstall) {
             CoroutineScope(Dispatchers.Main).launch {
-                _databaseOperationStatus.value = DatabaseState.LOADING
+                _muscleGroupViewState.value = MuscleGroupViewState.Loading
                 try {
                     viewModelScope.launch(Dispatchers.Main) {
                         createDatabase()
                         delay(2000)
-                        _databaseOperationStatus.value = DatabaseState.EMPTY
+                        _muscleGroupViewState.value = MuscleGroupViewState.Success
                     }
                 } catch (e: Exception) {
-                    _databaseOperationStatus.value = DatabaseState.ERROR
+                    _muscleGroupViewState.value = MuscleGroupViewState.ErrorMessage
                 }
             }
         }
@@ -267,12 +267,12 @@ class MuscleGroupViewModel(
     }
 
     fun fetchMuscleGroups() {
-        _databaseOperationStatus.value = DatabaseState.LOADING
+        _muscleGroupViewState.value = MuscleGroupViewState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val muscleGroups = muscleGroupUseCase.getMuscleGroups()
                 setListOfMuscleGroups(muscleGroups)
-                _databaseOperationStatus.value = DatabaseState.SUCCESS
+//                _muscleGroupViewState.value = MuscleGroupViewState.Success
             } catch (e: Exception) {
                 Log.e("RAPHAEL", "Erro: $e")
             }
