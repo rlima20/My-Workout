@@ -34,6 +34,9 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.SetupDatabase -> {
                 setupDatabase(viewAction.isFirstInstall)
             }
+            is MuscleGroupViewAction.FetchMuscleGroups -> {
+                fetchMuscleGroups()
+            }
         }
     }
 
@@ -274,13 +277,13 @@ class MuscleGroupViewModel(
         listOfMuscleSubGroups.value = newList
     }
 
-    fun fetchMuscleGroups() {
+    private fun fetchMuscleGroups() {
         _muscleGroupViewState.value = MuscleGroupViewState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val muscleGroups = muscleGroupUseCase.getMuscleGroups()
                 setListOfMuscleGroups(muscleGroups)
-//                _muscleGroupViewState.value = MuscleGroupViewState.Success
+                _muscleGroupViewState.value = MuscleGroupViewState.Success
             } catch (e: Exception) {
                 Log.e("RAPHAEL", "Erro: $e")
             }

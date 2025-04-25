@@ -20,7 +20,7 @@ import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCar
 @Composable
 internal fun HomeScreen(
     trainingList: List<TrainingModel>,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>
+    muscleSubGroupList: List<MuscleSubGroupModel>
 ) {
     Column(
         modifier = Modifier.padding(top = 90.dp),
@@ -37,7 +37,7 @@ internal fun HomeScreen(
                 TrainingCard(
                     modifier = Modifier.size(150.dp, 180.dp),
                     training = trainingList[item],
-                    muscleSubGroupModel = listOfMuscleSubGroup,
+                    muscleSubGroupModel = muscleSubGroupList,
                     isFilterChipListEnabled = false,
                     onMuscleGroupSelected = {},
                     onAddButtonClicked = {}

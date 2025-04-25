@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
@@ -24,6 +25,7 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 @Composable
 fun NavHost(
     navController: NavHostController,
+    trainingList: List<TrainingModel>,
     muscleGroupList: List<MuscleGroupModel>,
     muscleSubGroupList: List<MuscleSubGroupModel>,
     muscleGroupViewState: MuscleGroupViewState,
@@ -32,7 +34,8 @@ fun NavHost(
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
-    onDatabaseCreated: @Composable () -> Unit
+    onDatabaseCreated: @Composable () -> Unit,
+    onFetchMuscleGroups: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -47,26 +50,24 @@ fun NavHost(
             onChangeTopBarTitle(homeScreen)
 
             setupTrainingStateObservers(
-                trainingViewState,
-                onChangeRoute,
-                onChangeTopBarTitle,
-                createNewTraining,
-                onNavigateToNewTraining,
-                onDatabaseCreated,
-                homeScreen,
-                muscleSubGroupList
+                trainingList = trainingList,
+                muscleSubGroupList = muscleSubGroupList,
+                trainingViewState = trainingViewState,
+                onChangeRoute = onChangeRoute,
+                onNavigateToNewTraining = onNavigateToNewTraining,
+                onDatabaseCreated = onDatabaseCreated
             )
 
             setupMuscleGroupStateObservers(
-                muscleGroupViewState,
-                onDatabaseCreated,
-                onChangeRoute,
-                onChangeTopBarTitle,
-                homeScreen,
-                onNavigateToNewTraining,
-                onGetMuscleSubGroupsForTraining
+                muscleGroupViewState = muscleGroupViewState,
+                onDatabaseCreated = onDatabaseCreated,
+                onChangeRoute = onChangeRoute,
+                onNavigateToNewTraining = onNavigateToNewTraining,
+                onGetMuscleSubGroupsForTraining = onGetMuscleSubGroupsForTraining,
+                onFetchMuscleGroups = onFetchMuscleGroups
             )
         }
+
         composable(route = NewTraining.route) {
             onChangeRoute(false)
             onChangeTopBarTitle(createNewTraining)
@@ -80,15 +81,15 @@ private fun setupMuscleGroupStateObservers(
     muscleGroupViewState: MuscleGroupViewState,
     onDatabaseCreated: @Composable () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
-    onChangeTopBarTitle: (title: String) -> Unit,
-    homeScreen: String,
     onNavigateToNewTraining: () -> Unit,
     onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
+    onFetchMuscleGroups: () -> Unit
 ) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.Success -> {
             onDatabaseCreated()
-            onGetMuscleSubGroupsForTraining(0)
+            onGetMuscleSubGroupsForTraining(0) // Todo - Isso vai ser dinâmico
+            onFetchMuscleGroups()
         }
 
         is MuscleGroupViewState.Loading -> {
@@ -98,7 +99,6 @@ private fun setupMuscleGroupStateObservers(
         is MuscleGroupViewState.Error -> {
             ErrorStateComponent(onButtonClicked = {
                 onChangeRoute(true)
-                onChangeTopBarTitle(homeScreen)
                 onNavigateToNewTraining()
             })
         }
@@ -110,14 +110,12 @@ private fun setupMuscleGroupStateObservers(
 
 @Composable
 private fun setupTrainingStateObservers(
+    trainingList: List<TrainingModel>,
+    muscleSubGroupList: List<MuscleSubGroupModel>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
-    onChangeTopBarTitle: (title: String) -> Unit,
-    createNewTraining: String,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    homeScreen: String,
-    muscleSubGroupList: List<MuscleSubGroupModel>
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -129,7 +127,6 @@ private fun setupTrainingStateObservers(
                 modifier = Modifier.size(150.dp, 180.dp),
                 onClick = {
                     onChangeRoute(false)
-                    onChangeTopBarTitle(createNewTraining)
                     onNavigateToNewTraining()
                 })
             onDatabaseCreated()
@@ -138,15 +135,14 @@ private fun setupTrainingStateObservers(
         is TrainingViewState.Error -> {
             ErrorStateComponent(onButtonClicked = {
                 onChangeRoute(true)
-                onChangeTopBarTitle(homeScreen)
                 onNavigateToNewTraining()
             })
         }
 
         is TrainingViewState.Success -> {
             HomeScreen(
-                trainingViewState.trainingData,
-                muscleSubGroupList
+                trainingList = trainingList,
+                muscleSubGroupList = muscleSubGroupList
             )
         }
 

@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.navigateSingleTopTo
 import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.components.home.TopBar
@@ -47,8 +48,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+            val trainingList by trainingViewModel.listOfTrainings.collectAsState(listOf())
             val muscleGroupList by muscleGroupViewModel.listOfMuscleGroups.collectAsState(listOf())
-            val muscleSubGroupList by muscleGroupViewModel.listOfMuscleSubGroups.collectAsState(listOf())
+            val muscleSubGroupList by muscleGroupViewModel.listOfMuscleSubGroups.collectAsState(
+                listOf()
+            )
             val muscleGroupViewState by muscleGroupViewModel.muscleGroupViewState.collectAsState()
             val trainingViewState by trainingViewModel.trainingViewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
@@ -64,6 +68,7 @@ class MainActivity : ComponentActivity() {
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
                     navController = navController,
+                    trainingList = trainingList,
                     muscleGroupList = muscleGroupList,
                     muscleSubGroupList = muscleSubGroupList,
                     muscleGroupViewState = muscleGroupViewState,
@@ -80,6 +85,7 @@ class MainActivity : ComponentActivity() {
         appBarTitle: String,
         isHomeScreen: Boolean,
         navController: NavHostController,
+        trainingList: List<TrainingModel>,
         muscleGroupList: List<MuscleGroupModel>,
         muscleSubGroupList: List<MuscleSubGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
@@ -99,6 +105,7 @@ class MainActivity : ComponentActivity() {
             content = {
                 NavHost(
                     navController = navController,
+                    trainingList = trainingList,
                     muscleGroupList = muscleGroupList,
                     muscleSubGroupList = muscleSubGroupList,
                     muscleGroupViewState = muscleGroupViewState,
@@ -113,7 +120,8 @@ class MainActivity : ComponentActivity() {
                             isHomeScreen,
                             snackBarHostState
                         )
-                    }
+                    },
+                    onFetchMuscleGroups = { fetchMuscleGroups() }
                 )
             },
             bottomBar = {
@@ -127,6 +135,21 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    @Composable
+    private fun DatabaseCreationDone(
+        prefs: TrainingPrefs,
+        isHomeScreen: Boolean,
+        snackBarHostState: SnackbarHostState
+    ) {
+        if (prefs.isNotFirstInstall(this.baseContext) && isHomeScreen) {
+            LaunchedEffect(key1 = "") {
+                createTransactions()
+                showSnackBar(snackBarHostState)
+                setInstallValue(prefs)
+            }
+        }
     }
 
     private fun fetchTrainingsIfNotFirstInstall(
@@ -158,6 +181,10 @@ class MainActivity : ComponentActivity() {
         trainingViewModel.dispatchViewAction(TrainingViewAction.FetchTrainings)
     }
 
+    private fun fetchMuscleGroups() {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleGroups)
+    }
+
     private fun getMuscleSubGroupsForTraining(it: Int) {
         muscleGroupViewModel.getMuscleSubGroupsForTraining(it)
     }
@@ -172,20 +199,5 @@ class MainActivity : ComponentActivity() {
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
         snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
-    }
-
-    @Composable
-    private fun DatabaseCreationDone(
-        prefs: TrainingPrefs,
-        isHomeScreen: Boolean,
-        snackBarHostState: SnackbarHostState
-    ) {
-        if (prefs.isNotFirstInstall(this.baseContext) && isHomeScreen) {
-            LaunchedEffect(key1 = "") {
-                createTransactions()
-                showSnackBar(snackBarHostState)
-                setInstallValue(prefs)
-            }
-        }
     }
 }

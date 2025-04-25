@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
@@ -25,6 +26,10 @@ class TrainingViewModel(
         MutableStateFlow(TrainingViewState.InitialState)
     val trainingViewState: StateFlow<TrainingViewState>
         get() = _trainingViewState
+
+    private val _listOfTrainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
+    val listOfTrainings: MutableStateFlow<List<TrainingModel>>
+        get() = _listOfTrainings
 
     private val _isHomeScreen = MutableStateFlow(true)
     val isHomeScreen: StateFlow<Boolean>
@@ -102,8 +107,13 @@ class TrainingViewModel(
     }
 
     private fun verifyEmptyList(data: List<TrainingModel>) {
-        if (data.isEmpty()) _trainingViewState.value = TrainingViewState.Empty
-        else _trainingViewState.value = TrainingViewState.Success(data)
+        if (data.isEmpty()){
+            _trainingViewState.value = TrainingViewState.Empty
+        }
+        else{
+            _trainingViewState.value = TrainingViewState.Success
+            _listOfTrainings.value = data
+        }
     }
 
     private fun insertTraining(training: TrainingModel) {
