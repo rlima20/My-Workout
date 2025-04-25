@@ -20,7 +20,7 @@ class MuscleGroupViewModel(
 ) : ViewModel() {
 
     private val _muscleGroupViewState: MutableStateFlow<MuscleGroupViewState> =
-        MutableStateFlow(MuscleGroupViewState.Loading)
+        MutableStateFlow(MuscleGroupViewState.InitialState)
     val muscleGroupViewState: StateFlow<MuscleGroupViewState>
         get() = _muscleGroupViewState
 
@@ -29,7 +29,15 @@ class MuscleGroupViewModel(
     val listOfMuscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> =
         MutableStateFlow(listOf())
 
-    fun setupDatabase(isFirstInstall: Boolean) {
+    fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
+        when (viewAction) {
+            is MuscleGroupViewAction.SetupDatabase -> {
+                setupDatabase(viewAction.isFirstInstall)
+            }
+        }
+    }
+
+    private fun setupDatabase(isFirstInstall: Boolean) {
         if (isFirstInstall) {
             CoroutineScope(Dispatchers.Main).launch {
                 _muscleGroupViewState.value = MuscleGroupViewState.Loading
@@ -40,7 +48,7 @@ class MuscleGroupViewModel(
                         _muscleGroupViewState.value = MuscleGroupViewState.Success
                     }
                 } catch (e: Exception) {
-                    _muscleGroupViewState.value = MuscleGroupViewState.ErrorMessage
+                    _muscleGroupViewState.value = MuscleGroupViewState.Error
                 }
             }
         }

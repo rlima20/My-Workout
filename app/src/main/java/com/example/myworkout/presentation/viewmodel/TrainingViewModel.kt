@@ -68,17 +68,17 @@ class TrainingViewModel(
             )
             dispatchViewAction(TrainingViewAction.FetchTrainings)
         } catch (e: Exception) {
-            _trainingViewState.value = TrainingViewState.ErrorMessage
+            _trainingViewState.value = TrainingViewState.Error
         }
     }
 
-    fun fetchTrainings() {
+    private fun fetchTrainings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
             } catch (e: Exception) {
-                _trainingViewState.value = TrainingViewState.ErrorMessage
+                _trainingViewState.value = TrainingViewState.Error
                 Log.e("RAPHAEL", "Erro: $e")
             }
         }

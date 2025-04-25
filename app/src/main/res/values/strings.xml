@@ -12,4 +12,6 @@
     <string name="loading_database">Criando base de dados...</string>
     <string name="loading_trainings">Carregando treinamentos...</string>
     <string name="database_created_with_success">Base de dados de criada com sucesso!</string>
+    <string name="preparing_everything">Estamos preparando tudo para você...</string>
+    <string name="creating_trainings">Criando treinamentos</string>
 </resources>
