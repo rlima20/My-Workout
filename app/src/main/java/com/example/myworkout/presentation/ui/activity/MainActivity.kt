@@ -104,7 +104,6 @@ class MainActivity : ComponentActivity() {
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
                     onGetMuscleSubGroupsForTraining = { getMuscleSubGroupsForTraining(it) },
-                    onFetchTrainings = { fetchTrainings() },
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },

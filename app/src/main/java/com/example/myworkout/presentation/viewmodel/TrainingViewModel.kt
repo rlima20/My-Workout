@@ -56,20 +56,33 @@ class TrainingViewModel(
 
     /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
     private fun createTrainings() {
-        _trainingViewState.value = TrainingViewState.Loading
-        try {
-            insertTraining(
-                TrainingModel(
-                    trainingId = 0,
-                    status = Status.PENDING,
-                    dayOfWeek = DayOfWeek.MONDAY,
-                    trainingName = "Peito e Ombro"
+        viewModelScope.launch(Dispatchers.IO) {
+            _trainingViewState.value = TrainingViewState.Loading
+            try {
+                trainingUseCase.insertTraining(
+                    TrainingModel(
+                        trainingId = 0,
+                        status = Status.PENDING,
+                        dayOfWeek = DayOfWeek.MONDAY,
+                        trainingName = "Peito e Ombro"
+                    )
                 )
-            )
-            dispatchViewAction(TrainingViewAction.FetchTrainings)
-        } catch (e: Exception) {
-            _trainingViewState.value = TrainingViewState.Error
+                createTrainingMuscleGroupRelation()
+                dispatchViewAction(TrainingViewAction.FetchTrainings)
+            } catch (e: Exception) {
+                _trainingViewState.value = TrainingViewState.Error
+            }
         }
+    }
+
+    /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
+    private fun createTrainingMuscleGroupRelation() {
+        insertTrainingMuscleGroup(
+            TrainingMuscleGroupModel(
+                trainingId = 0,
+                muscleGroupId = 5
+            )
+        )
     }
 
     private fun fetchTrainings() {

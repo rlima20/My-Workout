@@ -29,7 +29,6 @@ fun NavHost(
     muscleGroupViewState: MuscleGroupViewState,
     trainingViewState: TrainingViewState,
     onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
-    onFetchTrainings: () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
@@ -64,7 +63,8 @@ fun NavHost(
                 onChangeRoute,
                 onChangeTopBarTitle,
                 homeScreen,
-                onNavigateToNewTraining
+                onNavigateToNewTraining,
+                onGetMuscleSubGroupsForTraining
             )
         }
         composable(route = NewTraining.route) {
@@ -82,11 +82,13 @@ private fun setupMuscleGroupStateObservers(
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     homeScreen: String,
-    onNavigateToNewTraining: () -> Unit
+    onNavigateToNewTraining: () -> Unit,
+    onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
 ) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.Success -> {
             onDatabaseCreated()
+            onGetMuscleSubGroupsForTraining(0)
         }
 
         is MuscleGroupViewState.Loading -> {
