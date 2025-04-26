@@ -61,7 +61,7 @@ class MainActivity : ComponentActivity() {
             val prefs = TrainingPrefs()
 
             setupDatabase(prefs)
-            fetchTrainingsIfNotFirstInstall(prefs, isHomeScreen)
+            fetchInfoIfNotFirstInstall(prefs, isHomeScreen)
 
             MyWorkoutTheme {
                 ScaffoldComponent(
@@ -152,11 +152,14 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun fetchTrainingsIfNotFirstInstall(
+    private fun fetchInfoIfNotFirstInstall(
         prefs: TrainingPrefs,
         isHomeScreen: Boolean
     ) {
-        if (!(prefs.isNotFirstInstall(this.baseContext) && isHomeScreen)) fetchTrainings()
+        if (!(prefs.isNotFirstInstall(this.baseContext) && isHomeScreen)){
+            fetchTrainings()
+            fetchMuscleGroups()
+        }
     }
 
     private fun setupDatabase(prefs: TrainingPrefs) {

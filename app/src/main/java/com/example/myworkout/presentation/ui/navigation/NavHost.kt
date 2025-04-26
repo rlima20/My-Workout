@@ -16,6 +16,7 @@ import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
+import com.example.myworkout.presentation.ui.components.training.NewTraining
 import com.example.myworkout.presentation.ui.components.training.TabRowComponent
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.TrainingViewState
@@ -71,7 +72,7 @@ fun NavHost(
         composable(route = NewTraining.route) {
             onChangeRoute(false)
             onChangeTopBarTitle(createNewTraining)
-            TabRowComponent(muscleGroups = muscleGroupList)
+            NewTraining(muscleGroups = muscleGroupList)
         }
     }
 }
