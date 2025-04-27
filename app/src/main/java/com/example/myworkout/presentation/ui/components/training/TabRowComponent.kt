@@ -17,12 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.enums.BodyPart
 
 @SuppressLint("AutoboxingStateValueProperty")
 @Composable
 fun TabRowComponent(
     muscleGroups: List<MuscleGroupModel> = emptyList(),
-    onCreateImageSection: () -> Unit
+    onCreateImageSection: @Composable (bodyPartImage: BodyPart) -> Unit
 ) {
     val selectedTabIndex = remember { mutableIntStateOf(0) }
     val muscleGroupList = remember { mutableStateOf(muscleGroups) }
@@ -40,7 +41,7 @@ fun TabRowComponent(
             muscleGroupList = muscleGroupList,
             muscleGroups = muscleGroups,
             muscleGroupItem = muscleGroupItem,
-            onCreateImageSection = onCreateImageSection
+            onCreateImageSection = { onCreateImageSection(it) }
         )
     }
 }
@@ -51,7 +52,7 @@ private fun ValidateDataForScrollableTabRow(
     muscleGroupList: MutableState<List<MuscleGroupModel>>,
     muscleGroups: List<MuscleGroupModel>,
     muscleGroupItem: MutableState<MuscleGroupModel>,
-    onCreateImageSection: () -> Unit
+    onCreateImageSection: @Composable (bodyPartImage: BodyPart) -> Unit
 ) {
     if (selectedTabIndex.value in muscleGroupList.value.indices) {
         ScrollableTabRow(
@@ -68,7 +69,7 @@ private fun ValidateDataForScrollableTabRow(
         )
         CreateTabContent(
             muscleGroupItem = muscleGroupItem.value,
-            onCreateImageSection = onCreateImageSection
+            onCreateImageSection = { onCreateImageSection(it) }
         )
     } else {
         Text("Conteúdo não disponível") // Todo - Modificar o componente de erro para ser um erro genérico e usar aqui
@@ -98,21 +99,20 @@ private fun SetTabs(
 @Composable
 fun CreateTabContent(
     muscleGroupItem: MuscleGroupModel,
-    onCreateImageSection: () -> Unit
+    onCreateImageSection: @Composable (bodyPartImage: BodyPart) -> Unit
 ) {
     TabContent(
-        innerMuscleGroup = muscleGroupItem,
-        onCreateImageSection = onCreateImageSection
+        muscleGroupItem = muscleGroupItem,
+        onCreateImageSection = { onCreateImageSection(it) }
     )
 }
 
 // Todo - Aqui eu vou ter a imagem e os CHips com os subgrupos
 @Composable
 fun TabContent(
-    innerMuscleGroup: MuscleGroupModel,
-    onCreateImageSection: () -> Unit
+    muscleGroupItem: MuscleGroupModel,
+    onCreateImageSection: @Composable (bodyPartImage: BodyPart) -> Unit
 ) {
-    Text(innerMuscleGroup.name)
-    onCreateImageSection()
+    onCreateImageSection(muscleGroupItem.image)
 }
 

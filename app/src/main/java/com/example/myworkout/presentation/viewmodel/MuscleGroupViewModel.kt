@@ -3,11 +3,11 @@ package com.example.myworkout.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
+import com.example.myworkout.enums.BodyPart
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,6 +34,7 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.SetupDatabase -> {
                 setupDatabase(viewAction.isFirstInstall)
             }
+
             is MuscleGroupViewAction.FetchMuscleGroups -> {
                 fetchMuscleGroups()
             }
@@ -79,7 +80,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 1,
                 name = "Costas",
-                image = R.drawable.costas
+                image = BodyPart.BACK
             )
         )
         createMuscleSubGroupBack()
@@ -108,7 +109,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 2,
                 name = "Ombro",
-                image = R.drawable.ombro
+                image = BodyPart.SHOULDER
             )
         )
         createMuscleSubGroupShoulder()
@@ -137,7 +138,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 3,
                 name = "Braço",
-                image = R.drawable.braco
+                image = BodyPart.ARM
             )
         )
         createMuscleSubGroupArm()
@@ -166,7 +167,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 4,
                 name = "Abdomem",
-                image = R.drawable.abdomem
+                image = BodyPart.ABDOMEN
             )
         )
         createMuscleSubGroupAbdomen()
@@ -195,7 +196,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 5,
                 name = "Peito",
-                image = R.drawable.peito
+                image = BodyPart.CHEST
             )
         )
         createMuscleSubGroupChest()
@@ -224,7 +225,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 6,
                 name = "Pernas",
-                image = R.drawable.pernas
+                image = BodyPart.LEG
             )
         )
         createMuscleSubGroupLegs()
@@ -253,7 +254,7 @@ class MuscleGroupViewModel(
             MuscleGroupModel(
                 muscleGroupId = 7,
                 name = "Trapézio",
-                image = R.drawable.trapezio
+                image = BodyPart.TRAPEZIUS
             )
         )
         createMuscleSubGroupTrapezius()
