@@ -20,7 +20,12 @@ fun NewTraining(muscleGroups: List<MuscleGroupModel> = emptyList()) {
 
 @Composable
 fun TabRowSection(muscleGroups: List<MuscleGroupModel>) {
-    TabRowComponent(muscleGroups)
+    TabRowComponent(
+        muscleGroups = muscleGroups,
+        onCreateImageSection = {
+            // Todo - Aqui eu vou receber um id ou a imagem do grupo muscular para montar a sessão de imagem
+        }
+    )
 }
 
 @Composable
