@@ -19,7 +19,7 @@ class Constants {
     )
 
     @Composable
-    private fun Constants.muscleGroups() = listOf(
+    fun muscleGroups() = listOf(
         muscleGroupMock(
             muscleGroupName = MUSCLE_GROUP_CHEST,
             muscleSubGroupName = listOf(MUSCLE_GROUP_UPPER_CHEST)

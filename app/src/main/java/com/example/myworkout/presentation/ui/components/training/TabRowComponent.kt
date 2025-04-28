@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 
 @SuppressLint("AutoboxingStateValueProperty")
 @Composable
@@ -72,7 +73,7 @@ private fun ValidateDataForScrollableTabRow(
             onCreateImageSection = { onCreateImageSection(it) }
         )
     } else {
-        Text("Conteúdo não disponível") // Todo - Modificar o componente de erro para ser um erro genérico e usar aqui
+        ErrorStateComponent()
     }
 }
 
@@ -107,11 +108,10 @@ fun CreateTabContent(
     )
 }
 
-// Todo - Aqui eu vou ter a imagem e os CHips com os subgrupos
 @Composable
 fun TabContent(
     muscleGroupItem: MuscleGroupModel,
-    onCreateImageSection: @Composable (bodyPartImage: BodyPart) -> Unit
+    onCreateImageSection: @Composable (bodyPartImage: BodyPart) -> Unit,
 ) {
     onCreateImageSection(muscleGroupItem.image)
 }

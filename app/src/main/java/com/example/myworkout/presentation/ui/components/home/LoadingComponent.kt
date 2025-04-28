@@ -24,7 +24,9 @@ fun LoadingComponent(info: String = "") {
             color = colorResource(R.color.black),
         )
         Text(
-            modifier = Modifier.padding(top = 16.dp),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 16.dp),
             text = info
         )
     }
