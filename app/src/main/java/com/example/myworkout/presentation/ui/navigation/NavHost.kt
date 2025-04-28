@@ -17,7 +17,6 @@ import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.ui.components.training.NewTraining
-import com.example.myworkout.presentation.ui.components.training.TabRowComponent
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
@@ -94,7 +93,7 @@ private fun setupMuscleGroupStateObservers(
         }
 
         is MuscleGroupViewState.Loading -> {
-            LoadingComponent(info = stringResource(R.string.preparing_everything))
+            LoadingComponent(text = stringResource(R.string.preparing_everything))
         }
 
         is MuscleGroupViewState.Error -> {
@@ -120,7 +119,7 @@ private fun setupTrainingStateObservers(
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
-            LoadingComponent(info = stringResource(R.string.creating_trainings))
+            LoadingComponent(text = stringResource(R.string.creating_trainings))
         }
 
         is TrainingViewState.Empty -> {
