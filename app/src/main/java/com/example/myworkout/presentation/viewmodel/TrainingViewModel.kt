@@ -12,6 +12,7 @@ import com.example.myworkout.domain.usecase.training.TrainingUseCase
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -72,6 +73,7 @@ class TrainingViewModel(
                         trainingName = "Peito e Ombro"
                     )
                 )
+                delay(2000)
                 createTrainingMuscleGroupRelation()
                 dispatchViewAction(TrainingViewAction.FetchTrainings)
             } catch (e: Exception) {

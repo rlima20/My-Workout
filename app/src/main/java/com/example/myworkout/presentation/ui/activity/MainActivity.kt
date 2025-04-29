@@ -201,6 +201,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
-        snackBarHostState.showSnackbar(getString(R.string.database_created_with_success))
+        snackBarHostState.showSnackbar(getString(R.string.everything_ready))
     }
 }

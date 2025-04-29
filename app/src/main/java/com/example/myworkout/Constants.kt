@@ -44,7 +44,7 @@ class Constants {
     )
 
     @Composable
-    private fun muscleSubGroupsMock(muscleSubGroupName: List<String>): List<MuscleSubGroupModel> {
+    fun muscleSubGroupsMock(muscleSubGroupName: List<String>): List<MuscleSubGroupModel> {
         val listOfMuscleSubGroup: MutableList<MuscleSubGroupModel> = mutableListOf()
         muscleSubGroupName.forEach { muscleGroupName ->
             listOfMuscleSubGroup.add(
