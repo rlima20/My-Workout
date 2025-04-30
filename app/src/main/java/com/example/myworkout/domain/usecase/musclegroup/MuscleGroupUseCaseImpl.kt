@@ -12,6 +12,10 @@ class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
         return repository.getMuscleSubGroupsForTraining(trainingId)
     }
 
+    override suspend fun getMuscleSubGroupsByMuscleGroups(): List<MuscleSubGroupModel> {
+        return repository.getSubGroupsGroupedByMuscleGroups().flatMap { it.value }
+    }
+
     override suspend fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
         repository.insertMuscleGroup(muscleGroup)
     }

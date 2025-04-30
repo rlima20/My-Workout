@@ -36,7 +36,7 @@ import com.example.myworkout.utils.setStatus
 fun TrainingCard(
     modifier: Modifier = Modifier,
     training: TrainingModel,
-    muscleSubGroupModel: List<MuscleSubGroupModel>,
+    muscleSubGroupList: List<MuscleSubGroupModel>,
     isFilterChipListEnabled: Boolean,
     onAddButtonClicked: () -> Unit,
     onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroupModel>) -> Unit
@@ -45,7 +45,7 @@ fun TrainingCard(
     val firstStatus by remember { mutableStateOf(training.status) }
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
 
-    var muscleSubGroupsState = muscleSubGroupModel
+    var muscleSubGroupsState = muscleSubGroupList
 
     Card(
         modifier = modifier,
@@ -59,8 +59,9 @@ fun TrainingCard(
             )
             MuscleSubGroupSection(
                 training = training,
-                listOfMuscleSubGroup = muscleSubGroupModel,
+                listOfMuscleSubGroup = muscleSubGroupList,
                 onItemClick = { item ->
+                    // Todo - refatorar o que tem dentro do escopo do inItemClick
                     val muscleSubGroupsSelected: MutableList<MuscleSubGroupModel> = mutableListOf()
 
                     muscleSubGroupsState = muscleSubGroupsState.map { muscleSubGroup ->
@@ -141,7 +142,7 @@ fun TrainingCardPreview() {
             TrainingCard(
                 modifier = Modifier,
                 training = Constants().trainingMock(it),
-                muscleSubGroupModel = listOf(),
+                muscleSubGroupList = listOf(),
                 isFilterChipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {}

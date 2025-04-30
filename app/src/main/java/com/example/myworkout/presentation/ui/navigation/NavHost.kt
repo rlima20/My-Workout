@@ -30,7 +30,7 @@ fun NavHost(
     muscleSubGroupList: List<MuscleSubGroupModel>,
     muscleGroupViewState: MuscleGroupViewState,
     trainingViewState: TrainingViewState,
-    onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
+    onGetMuscleGroupMuscleSubGroup: () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
@@ -63,7 +63,7 @@ fun NavHost(
                 onDatabaseCreated = onDatabaseCreated,
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
-                onGetMuscleSubGroupsForTraining = onGetMuscleSubGroupsForTraining,
+                onGetMuscleGroupMuscleSubGroup = onGetMuscleGroupMuscleSubGroup,
                 onFetchMuscleGroups = onFetchMuscleGroups
             )
         }
@@ -71,7 +71,10 @@ fun NavHost(
         composable(route = NewTraining.route) {
             onChangeRoute(false)
             onChangeTopBarTitle(createNewTraining)
-            NewTraining(muscleGroups = muscleGroupList)
+            NewTraining(
+                muscleGroups = muscleGroupList,
+                muscleSubGroups = muscleSubGroupList
+            )
         }
     }
 }
@@ -82,13 +85,13 @@ private fun setupMuscleGroupStateObservers(
     onDatabaseCreated: @Composable () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
-    onGetMuscleSubGroupsForTraining: (trainingId: Int) -> Unit,
+    onGetMuscleGroupMuscleSubGroup: () -> Unit,
     onFetchMuscleGroups: () -> Unit
 ) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.Success -> {
             onDatabaseCreated()
-            onGetMuscleSubGroupsForTraining(0) // Todo - Isso vai ser dinâmico
+            onGetMuscleGroupMuscleSubGroup()
             onFetchMuscleGroups()
         }
 

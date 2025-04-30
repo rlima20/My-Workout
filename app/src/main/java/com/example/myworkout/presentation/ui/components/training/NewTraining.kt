@@ -2,7 +2,6 @@ package com.example.myworkout.presentation.ui.components.training
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,8 +26,12 @@ import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipL
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun NewTraining(muscleGroups: List<MuscleGroupModel> = emptyList()) {
+fun NewTraining(
+    muscleGroups: List<MuscleGroupModel> = emptyList(),
+    muscleSubGroups: List<MuscleSubGroupModel> = emptyList()
+) {
     val image = remember { mutableStateOf(BodyPart.LEG) }
+
 
     Column(Modifier.fillMaxSize()) {
         TabRowSection(
@@ -36,7 +39,7 @@ fun NewTraining(muscleGroups: List<MuscleGroupModel> = emptyList()) {
             onCreateImageSection = { image.value = it }
         )
         ImageSection(image.value)
-        ChipsSection()
+        ChipsSection(listOfMuscleGroup = muscleSubGroups)
     }
 }
 
@@ -68,27 +71,13 @@ fun ImageSection(bodyPartImage: BodyPart) {
     }
 }
 
-// Todo - Seção Chips
 @Composable
-fun ChipsSection() {
+fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
     FilterChipList(
         modifier = Modifier
             .padding(start = 4.dp, end = 4.dp)
             .height(50.dp),
-        listOfMuscleSubGroup = mutableListOf(
-            MuscleSubGroupModel(
-                id = 1,
-                name = "Superior"
-            ),
-            MuscleSubGroupModel(
-                id = 1,
-                name = "Inferior"
-            ),
-            MuscleSubGroupModel(
-                id = 1,
-                name = "Posterior"
-            )
-        ),
+        listOfMuscleSubGroup = listOfMuscleGroup,
         onItemClick = {},
         backGroundColor = R.color.white,
         orientation = Orientation.HORIZONTAL

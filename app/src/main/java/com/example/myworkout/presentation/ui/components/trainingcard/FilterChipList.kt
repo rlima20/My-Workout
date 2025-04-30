@@ -126,7 +126,7 @@ private fun FilterChip(
 }
 
 const val DEFAULT_COLOR = R.color.empty
-val DEFAULT_PADDING = 8.dp
+val DEFAULT_PADDING = 4.dp
 
 @Preview
 @Composable

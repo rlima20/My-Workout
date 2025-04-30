@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
@@ -37,7 +38,7 @@ internal fun HomeScreen(
                 TrainingCard(
                     modifier = Modifier.size(150.dp, 180.dp),
                     training = trainingList[item],
-                    muscleSubGroupModel = muscleSubGroupList,
+                    muscleSubGroupList = muscleSubGroupList,
                     isFilterChipListEnabled = false,
                     onMuscleGroupSelected = {},
                     onAddButtonClicked = {}

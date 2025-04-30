@@ -38,6 +38,10 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.FetchMuscleGroups -> {
                 fetchMuscleGroups()
             }
+
+            is MuscleGroupViewAction.FetchMuscleSubGroups -> {
+                fetchMuscleSubGroups()
+            }
         }
     }
 
@@ -291,15 +295,25 @@ class MuscleGroupViewModel(
         }
     }
 
+    private fun fetchMuscleSubGroups() {
+        _muscleGroupViewState.value = MuscleGroupViewState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val muscleSubGroups = muscleGroupUseCase.getMuscleSubGroupsByMuscleGroups()
+                setListOfMuscleSubGroups(muscleSubGroups)
+                _muscleGroupViewState.value = MuscleGroupViewState.Success
+            } catch (e: Exception) {
+                Log.e("RAPHAEL", "Erro: $e")
+            }
+        }
+    }
+
     private fun setListOfMuscleGroups(value: List<MuscleGroupModel>) {
         listOfMuscleGroups.value = value
     }
 
-    fun getMuscleSubGroupsForTraining(trainingId: Int) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val value = muscleGroupUseCase.getMuscleSubGroupsForTraining(trainingId)
-            updateMuscleSubGroups(value)
-        }
+    private fun setListOfMuscleSubGroups(value: List<MuscleSubGroupModel>) {
+        listOfMuscleSubGroups.value = value
     }
 
     private fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {

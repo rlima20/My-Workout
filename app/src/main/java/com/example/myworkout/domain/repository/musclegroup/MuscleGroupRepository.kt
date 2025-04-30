@@ -8,6 +8,8 @@ import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 interface MuscleGroupRepository {
     suspend fun getMuscleGroups(): List<MuscleGroupModel>
     suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel>
+    suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
+    suspend fun getMuscleSubGroupsByMuscleGroups(listOfMuscleGroups: List<MuscleSubGroupModel>): List<MuscleSubGroupModel>
     fun insertMuscleGroup(muscleGroup: MuscleGroupModel)
     fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)

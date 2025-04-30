@@ -110,7 +110,7 @@ class MainActivity : ComponentActivity() {
                     muscleSubGroupList = muscleSubGroupList,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
-                    onGetMuscleSubGroupsForTraining = { getMuscleSubGroupsForTraining(it) },
+                    onGetMuscleGroupMuscleSubGroup = { /* getMuscleSubGroupsForTraining(it) */ },
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
@@ -156,9 +156,10 @@ class MainActivity : ComponentActivity() {
         prefs: TrainingPrefs,
         isHomeScreen: Boolean
     ) {
-        if (!(prefs.isNotFirstInstall(this.baseContext) && isHomeScreen)){
+        if (!(prefs.isNotFirstInstall(this.baseContext) && isHomeScreen)) {
             fetchTrainings()
             fetchMuscleGroups()
+            fetchMuscleSubGroups()
         }
     }
 
@@ -188,8 +189,8 @@ class MainActivity : ComponentActivity() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleGroups)
     }
 
-    private fun getMuscleSubGroupsForTraining(it: Int) {
-        muscleGroupViewModel.getMuscleSubGroupsForTraining(it)
+    private fun fetchMuscleSubGroups() {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleSubGroups)
     }
 
     private fun createTransactions() {
