@@ -42,6 +42,10 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.FetchMuscleSubGroups -> {
                 fetchMuscleSubGroups()
             }
+
+            is MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId -> {
+                getMuscleSubGroupsByTrainingId(viewAction.trainingId)
+            }
         }
     }
 
@@ -331,6 +335,13 @@ class MuscleGroupViewModel(
     private fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel) {
         viewModelScope.launch(Dispatchers.IO) {
             muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup)
+        }
+    }
+
+    private fun getMuscleSubGroupsByTrainingId(trainingId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val value = muscleGroupUseCase.getMuscleSubGroupsByTrainingId(trainingId)
+            updateMuscleSubGroups(value)
         }
     }
 }

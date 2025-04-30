@@ -23,6 +23,10 @@ class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
+    private val _isDevMode: Boolean = true
+    val isDevMode: Boolean
+        get() = _isDevMode
+
     private val _trainingViewState: MutableStateFlow<TrainingViewState> =
         MutableStateFlow(TrainingViewState.InitialState)
     val trainingViewState: StateFlow<TrainingViewState>
@@ -57,7 +61,15 @@ class TrainingViewModel(
             is TrainingViewAction.CreateTrainings -> {
                 createTrainings()
             }
+
+            is TrainingViewAction.SetEmptyState -> {
+                setEmptyState()
+            }
         }
+    }
+
+    private fun setEmptyState(){
+        _trainingViewState.value = TrainingViewState.Empty
     }
 
     /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
@@ -86,7 +98,7 @@ class TrainingViewModel(
     private fun createTrainingMuscleGroupRelation() {
         insertTrainingMuscleGroup(
             TrainingMuscleGroupModel(
-                trainingId = 0,
+                trainingId = 1,
                 muscleGroupId = 5
             )
         )
@@ -130,32 +142,17 @@ class TrainingViewModel(
         }
     }
 
-
-    sealed class TrainingIntent {
-        object FetchTrainings : TrainingIntent()
-        data class SaveTraining(val training: TrainingModel) : TrainingIntent()
-        data class ClearStatus(val trainingId: Int, val status: Status) : TrainingIntent()
-    }
-
-    fun processIntent(intent: TrainingIntent) {
-        when (intent) {
-            is TrainingIntent.FetchTrainings -> fetchTrainings()
-            is TrainingIntent.SaveTraining -> saveTraining(intent.training)
-            is TrainingIntent.ClearStatus -> clearStatus(intent.trainingId, intent.status)
-        }
-    }
-
     private fun saveTraining(training: TrainingModel) {
         viewModelScope.launch {
             trainingUseCase.insertTraining(training)
-            // fetchTrainings()
+            fetchTrainings()
         }
     }
 
     private fun clearStatus(trainingId: Int, status: Status) {
         viewModelScope.launch {
             trainingUseCase.clearStatus(trainingId, status)
-            // fetchTrainings()
+            fetchTrainings()
         }
     }
 }

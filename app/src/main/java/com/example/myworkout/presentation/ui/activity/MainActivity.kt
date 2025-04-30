@@ -59,6 +59,7 @@ class MainActivity : ComponentActivity() {
             val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
             val navController = rememberNavController()
             val prefs = TrainingPrefs()
+            val isDevMode = trainingViewModel.isDevMode
 
             setupDatabase(prefs)
             fetchInfoIfNotFirstInstall(prefs, isHomeScreen)
@@ -73,7 +74,8 @@ class MainActivity : ComponentActivity() {
                     muscleSubGroupList = muscleSubGroupList,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
-                    prefs = prefs
+                    prefs = prefs,
+                    isDevMode = isDevMode
                 )
             }
         }
@@ -90,7 +92,8 @@ class MainActivity : ComponentActivity() {
         muscleSubGroupList: List<MuscleSubGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
         trainingViewState: TrainingViewState,
-        prefs: TrainingPrefs
+        prefs: TrainingPrefs,
+        isDevMode: Boolean
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -110,7 +113,7 @@ class MainActivity : ComponentActivity() {
                     muscleSubGroupList = muscleSubGroupList,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
-                    onGetMuscleGroupMuscleSubGroup = { /* getMuscleSubGroupsForTraining(it) */ },
+                    onGetMuscleGroupMuscleSubGroup = { }, // Todo - remover isso depois
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
@@ -118,10 +121,12 @@ class MainActivity : ComponentActivity() {
                         DatabaseCreationDone(
                             prefs,
                             isHomeScreen,
-                            snackBarHostState
+                            snackBarHostState,
+                            isDevMode
                         )
                     },
-                    onFetchMuscleGroups = { fetchMuscleGroups() }
+                    onFetchMuscleGroups = { fetchMuscleGroups() },
+                    onGetMuscleSubGroupsByTrainingId = { getMuscleSubGroupsByTrainingId(it) }
                 )
             },
             bottomBar = {
@@ -141,14 +146,24 @@ class MainActivity : ComponentActivity() {
     private fun DatabaseCreationDone(
         prefs: TrainingPrefs,
         isHomeScreen: Boolean,
-        snackBarHostState: SnackbarHostState
+        snackBarHostState: SnackbarHostState,
+        isDevMode: Boolean
     ) {
         if (prefs.isNotFirstInstall(this.baseContext) && isHomeScreen) {
             LaunchedEffect(key1 = "") {
-                createTransactions()
+                validateDevMode(isDevMode)
                 showSnackBar(snackBarHostState)
                 setInstallValue(prefs)
             }
+        }
+    }
+
+    // Todo - levar essa regra para dentro do viewmodel
+    private fun validateDevMode(isDevMode: Boolean) {
+        if (isDevMode) {
+            createTrainings()
+        } else {
+            trainingViewModel.dispatchViewAction(TrainingViewAction.SetEmptyState)
         }
     }
 
@@ -193,8 +208,14 @@ class MainActivity : ComponentActivity() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleSubGroups)
     }
 
-    private fun createTransactions() {
+    private fun createTrainings() {
         trainingViewModel.dispatchViewAction(TrainingViewAction.CreateTrainings)
+    }
+
+    private fun getMuscleSubGroupsByTrainingId(trainingId: Int) {
+        muscleGroupViewModel.dispatchViewAction(
+            MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId(trainingId)
+        )
     }
 
     private fun setInstallValue(prefs: TrainingPrefs) {

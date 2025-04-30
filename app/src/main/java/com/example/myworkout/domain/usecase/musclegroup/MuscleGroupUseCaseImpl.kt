@@ -8,8 +8,8 @@ import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 
 class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
     MuscleGroupUseCase {
-    override suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel> {
-        return repository.getMuscleSubGroupsForTraining(trainingId)
+    override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
+        return repository.getMuscleSubGroupsByTrainingId(trainingId)
     }
 
     override suspend fun getMuscleSubGroupsByMuscleGroups(): List<MuscleSubGroupModel> {

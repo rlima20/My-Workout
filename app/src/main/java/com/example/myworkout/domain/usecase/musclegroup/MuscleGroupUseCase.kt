@@ -6,7 +6,7 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 
 interface MuscleGroupUseCase {
-    suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel>
+    suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getMuscleSubGroupsByMuscleGroups(): List<MuscleSubGroupModel>
     suspend fun insertMuscleGroup(muscleGroup: MuscleGroupModel)
     suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)

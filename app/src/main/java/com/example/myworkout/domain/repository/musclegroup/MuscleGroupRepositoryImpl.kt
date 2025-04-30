@@ -21,7 +21,7 @@ class MuscleGroupRepositoryImpl(
     private val muscleSubGroupDao: MuscleSubGroupDao
 ) : MuscleGroupRepository {
 
-    override suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel> {
+    override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
         // Lista de subgrupos que vai ser retornada
         val muscleSubGroups = mutableListOf<MuscleSubGroupModel>()
 
@@ -52,7 +52,6 @@ class MuscleGroupRepositoryImpl(
     ): List<MuscleSubGroupModel> {
         // Lista de subgrupos que vai ser retornada
         val muscleSubGroups = mutableListOf<MuscleSubGroupModel>()
-
 
         // Obter todos os MuscleGroups
         val muscleGroupRelations = trainingMuscleGroupDao.getAllMuscleGroupRelations()

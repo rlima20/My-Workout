@@ -35,7 +35,8 @@ fun NavHost(
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onFetchMuscleGroups: () -> Unit
+    onFetchMuscleGroups: () -> Unit,
+    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -55,7 +56,8 @@ fun NavHost(
                 trainingViewState = trainingViewState,
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
-                onDatabaseCreated = onDatabaseCreated
+                onDatabaseCreated = onDatabaseCreated,
+                onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it)}
             )
 
             setupMuscleGroupStateObservers(
@@ -119,6 +121,7 @@ private fun setupTrainingStateObservers(
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
+    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -145,8 +148,12 @@ private fun setupTrainingStateObservers(
         is TrainingViewState.Success -> {
             HomeScreen(
                 trainingList = trainingList,
-                muscleSubGroupList = muscleSubGroupList
+                muscleSubGroupList = muscleSubGroupList,
+                onGetMuscleSubGroupsByTrainingId = { }
             )
+            trainingList.forEach {
+                onGetMuscleSubGroupsByTrainingId(it.trainingId)
+            }
         }
 
         else -> { /* Do nothing */

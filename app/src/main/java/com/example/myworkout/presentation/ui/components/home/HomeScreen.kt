@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
@@ -21,7 +20,8 @@ import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCar
 @Composable
 internal fun HomeScreen(
     trainingList: List<TrainingModel>,
-    muscleSubGroupList: List<MuscleSubGroupModel>
+    muscleSubGroupList: List<MuscleSubGroupModel>,
+    onGetMuscleSubGroupsByTrainingId: (training: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 90.dp),
@@ -34,10 +34,10 @@ internal fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             columns = GridCells.FixedSize(180.dp)
         ) {
-            items(trainingList.size) { item ->
+            items(trainingList.size) { index ->
                 TrainingCard(
                     modifier = Modifier.size(150.dp, 180.dp),
-                    training = trainingList[item],
+                    training = trainingList[index],
                     muscleSubGroupList = muscleSubGroupList,
                     isFilterChipListEnabled = false,
                     onMuscleGroupSelected = {},
