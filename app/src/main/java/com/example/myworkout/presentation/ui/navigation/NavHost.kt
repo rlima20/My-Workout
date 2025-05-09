@@ -26,17 +26,18 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 fun NavHost(
     navController: NavHostController,
     trainingList: List<TrainingModel>,
-    muscleGroupList: List<MuscleGroupModel>,
-    muscleSubGroupList: List<MuscleSubGroupModel>,
+    listOfMapOfMuscleGroupMuscleSubGroups: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
     muscleGroupViewState: MuscleGroupViewState,
     trainingViewState: TrainingViewState,
+    listOfMuscleSubGroupById: List<MuscleSubGroupModel>,
     onGetMuscleGroupMuscleSubGroup: () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onFetchMuscleGroups: () -> Unit,
-    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
+    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit,
+    onTrainingChecked: (training: TrainingModel) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -52,12 +53,14 @@ fun NavHost(
 
             setupTrainingStateObservers(
                 trainingList = trainingList,
-                muscleSubGroupList = muscleSubGroupList,
+                listOfMapOfMuscleGroupMuscleSubGroup = listOfMapOfMuscleGroupMuscleSubGroups,
                 trainingViewState = trainingViewState,
+                onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
                 onDatabaseCreated = onDatabaseCreated,
-                onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it)}
+                listOfMuscleSubGroupById = listOfMuscleSubGroupById,
+                onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
             )
 
             setupMuscleGroupStateObservers(
@@ -73,10 +76,7 @@ fun NavHost(
         composable(route = NewTraining.route) {
             onChangeRoute(false)
             onChangeTopBarTitle(createNewTraining)
-            NewTraining(
-                muscleGroups = muscleGroupList,
-                muscleSubGroups = muscleSubGroupList
-            )
+            NewTraining(listOfMapOfMuscleGroupMuscleSubGroups)
         }
     }
 }
@@ -116,10 +116,12 @@ private fun setupMuscleGroupStateObservers(
 @Composable
 private fun setupTrainingStateObservers(
     trainingList: List<TrainingModel>,
-    muscleSubGroupList: List<MuscleSubGroupModel>,
+    listOfMapOfMuscleGroupMuscleSubGroup: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+    listOfMuscleSubGroupById: List<MuscleSubGroupModel>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
+    onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
@@ -146,10 +148,13 @@ private fun setupTrainingStateObservers(
         }
 
         is TrainingViewState.Success -> {
+            // Todo - Preciso passar para muscleSubGroupList os muscleSubGroups ligados à
+            // todo - ligados ao training em questao.
             HomeScreen(
                 trainingList = trainingList,
-                muscleSubGroupList = muscleSubGroupList,
-                onGetMuscleSubGroupsByTrainingId = { }
+                muscleSubGroupList = listOfMuscleSubGroupById,//  muscleSubGroupList.flatMap { it.value }, // todo pegar esse cara e passar pra frente
+                onTrainingChecked = { onTrainingChecked(it) },
+                onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
             )
             trainingList.forEach {
                 onGetMuscleSubGroupsByTrainingId(it.trainingId)

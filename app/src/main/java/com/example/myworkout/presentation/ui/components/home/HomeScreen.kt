@@ -21,6 +21,7 @@ import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCar
 internal fun HomeScreen(
     trainingList: List<TrainingModel>,
     muscleSubGroupList: List<MuscleSubGroupModel>,
+    onTrainingChecked: (training: TrainingModel) -> Unit,
     onGetMuscleSubGroupsByTrainingId: (training: Int) -> Unit
 ) {
     Column(
@@ -41,7 +42,9 @@ internal fun HomeScreen(
                     muscleSubGroupList = muscleSubGroupList,
                     isFilterChipListEnabled = false,
                     onMuscleGroupSelected = {},
-                    onAddButtonClicked = {}
+                    onAddButtonClicked = {}, // Todo - Navega para a tela de novo treinamento
+                    onTrainingChecked = { onTrainingChecked(it) },
+                    onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
                 )
             }
         }

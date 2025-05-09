@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -39,7 +40,9 @@ fun TrainingCard(
     muscleSubGroupList: List<MuscleSubGroupModel>,
     isFilterChipListEnabled: Boolean,
     onAddButtonClicked: () -> Unit,
-    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroupModel>) -> Unit
+    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroupModel>) -> Unit,
+    onTrainingChecked: (training: TrainingModel) -> Unit,
+    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
     var trainingStatus by remember { mutableStateOf(training.status) }
     val firstStatus by remember { mutableStateOf(training.status) }
@@ -53,7 +56,7 @@ fun TrainingCard(
         elevation = CardDefaults.cardElevation(),
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
-            MuscleGroupSection(
+            SetTrainingName(
                 trainingName = training.trainingName,
                 status = trainingStatus
             )
@@ -75,7 +78,8 @@ fun TrainingCard(
                     onMuscleGroupSelected(muscleSubGroupsSelected)
                 },
                 onAddButtonClicked = { onAddButtonClicked() },
-                isFilterChipListEnabled = isFilterChipListEnabled
+                isFilterChipListEnabled = isFilterChipListEnabled,
+                onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
             )
             TrainingCheckbox(
                 status = trainingStatus,
@@ -83,6 +87,15 @@ fun TrainingCard(
                 onChecked = {
                     isTrainingChecked = !isTrainingChecked
                     trainingStatus = setStatus(isTrainingChecked, trainingStatus, firstStatus)
+
+                    onTrainingChecked(
+                        TrainingModel(
+                            trainingId = training.trainingId,
+                            status = trainingStatus,
+                            trainingName =  training.trainingName,
+                            dayOfWeek = training.dayOfWeek
+                        )
+                    )
                 },
             )
         }
@@ -91,7 +104,7 @@ fun TrainingCard(
 
 
 @Composable
-private fun MuscleGroupSection(
+private fun SetTrainingName(
     trainingName: String,
     status: Status
 ) {
@@ -113,7 +126,8 @@ private fun MuscleSubGroupSection(
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     isFilterChipListEnabled: Boolean = false,
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
-    onAddButtonClicked: () -> Unit
+    onAddButtonClicked: () -> Unit,
+    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -122,6 +136,8 @@ private fun MuscleSubGroupSection(
             .background(colorResource(R.color.empty))
     ) {
         if (training.status != Status.EMPTY) {
+            onGetMuscleSubGroupsByTrainingId(training.trainingId)
+
             FilterChipList(
                 listOfMuscleSubGroup = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
@@ -140,12 +156,14 @@ fun TrainingCardPreview() {
     Column {
         Status.values().forEach {
             TrainingCard(
-                modifier = Modifier,
+                modifier = Modifier.size(100.dp, 100.dp),
                 training = Constants().trainingMock(it),
                 muscleSubGroupList = listOf(),
                 isFilterChipListEnabled = false,
                 onMuscleGroupSelected = {},
-                onAddButtonClicked = {}
+                onAddButtonClicked = {},
+                onTrainingChecked = {},
+                onGetMuscleSubGroupsByTrainingId = {}
             )
         }
     }

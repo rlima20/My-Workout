@@ -75,6 +75,16 @@ class TrainingViewModel(
     /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
     private fun createTrainings() {
         viewModelScope.launch(Dispatchers.IO) {
+            createPeitoOmbroTraining()
+            delay(2000)
+            createTrapezioTraining()
+            delay(2000)
+        }
+
+    }
+
+    private fun createPeitoOmbroTraining() {
+        viewModelScope.launch(Dispatchers.IO) {
             _trainingViewState.value = TrainingViewState.Loading
             try {
                 trainingUseCase.insertTraining(
@@ -86,7 +96,28 @@ class TrainingViewModel(
                     )
                 )
                 delay(2000)
-                createTrainingMuscleGroupRelation()
+                createTrainingMuscleGroupRelationPeitoOmbro()
+                dispatchViewAction(TrainingViewAction.FetchTrainings)
+            } catch (e: Exception) {
+                _trainingViewState.value = TrainingViewState.Error
+            }
+        }
+    }
+
+    private fun createTrapezioTraining() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _trainingViewState.value = TrainingViewState.Loading
+            try {
+                trainingUseCase.insertTraining(
+                    TrainingModel(
+                        trainingId = 2,
+                        status = Status.PENDING,
+                        dayOfWeek = DayOfWeek.MONDAY,
+                        trainingName = "Trapézio"
+                    )
+                )
+                delay(2000)
+                createTrainingMuscleGroupRelationTrapezio()
                 dispatchViewAction(TrainingViewAction.FetchTrainings)
             } catch (e: Exception) {
                 _trainingViewState.value = TrainingViewState.Error
@@ -95,11 +126,20 @@ class TrainingViewModel(
     }
 
     /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
-    private fun createTrainingMuscleGroupRelation() {
+    private fun createTrainingMuscleGroupRelationPeitoOmbro() {
         insertTrainingMuscleGroup(
             TrainingMuscleGroupModel(
                 trainingId = 1,
                 muscleGroupId = 5
+            )
+        )
+    }
+
+    private fun createTrainingMuscleGroupRelationTrapezio() {
+        insertTrainingMuscleGroup(
+            TrainingMuscleGroupModel(
+                trainingId = 2,
+                muscleGroupId = 7
             )
         )
     }

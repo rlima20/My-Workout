@@ -3,6 +3,7 @@ package com.example.myworkout.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkout.Constants
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -26,8 +27,21 @@ class MuscleGroupViewModel(
 
     val listOfMuscleGroups: MutableStateFlow<List<MuscleGroupModel>> = MutableStateFlow(listOf())
 
-    val listOfMuscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> =
+    private val initialMuscleGroup = Constants().muscleGroups().firstOrNull() // Pega o primeiro grupo muscular, se existir
+
+    val listOfMuscleSubGroupsById: MutableStateFlow<List<MuscleSubGroupModel>> =
         MutableStateFlow(listOf())
+
+    val mapOfMuscleGroupsMuscleSubGroups: MutableStateFlow<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
+        MutableStateFlow(initialMuscleGroup?.let {
+                mapOf(it to listOf()) // Cria o mapa se o grupo muscular não for nulo
+            } ?: emptyMap() // Caso não exista grupo muscular, inicializa com um mapa vazio
+        )
+//    val mapOfMuscleGroupsMuscleSubGroups: MutableStateFlow<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
+//        MutableStateFlow(
+//            mapOf(
+//                Constants().muscleGroups()[0], listOf())
+//        )
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
@@ -283,7 +297,11 @@ class MuscleGroupViewModel(
     }
 
     private fun updateMuscleSubGroups(newList: List<MuscleSubGroupModel>) {
-        listOfMuscleSubGroups.value = newList
+        listOfMuscleSubGroupsById.value = newList
+    }
+
+    private fun updateMapOfMuscleSubGroups(newList: Map<MuscleGroupModel, List<MuscleSubGroupModel>>) {
+        mapOfMuscleGroupsMuscleSubGroups.value = newList
     }
 
     private fun fetchMuscleGroups() {
@@ -303,7 +321,7 @@ class MuscleGroupViewModel(
         _muscleGroupViewState.value = MuscleGroupViewState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                val muscleSubGroups = muscleGroupUseCase.getMuscleSubGroupsByMuscleGroups()
+                val muscleSubGroups = muscleGroupUseCase.getSubGroupsGroupedByMuscleGroups()
                 setListOfMuscleSubGroups(muscleSubGroups)
                 _muscleGroupViewState.value = MuscleGroupViewState.Success
             } catch (e: Exception) {
@@ -316,8 +334,8 @@ class MuscleGroupViewModel(
         listOfMuscleGroups.value = value
     }
 
-    private fun setListOfMuscleSubGroups(value: List<MuscleSubGroupModel>) {
-        listOfMuscleSubGroups.value = value
+    private fun setListOfMuscleSubGroups(value: Map<MuscleGroupModel, List<MuscleSubGroupModel>>) {
+        mapOfMuscleGroupsMuscleSubGroups.value = value
     }
 
     private fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {

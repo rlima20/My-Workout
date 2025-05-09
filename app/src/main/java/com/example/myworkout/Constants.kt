@@ -18,7 +18,7 @@ class Constants {
         trainingName = "Treino A"
     )
 
-    @Composable
+
     fun muscleGroups() = listOf(
         muscleGroupMock(
             muscleGroupName = MUSCLE_GROUP_CHEST,
@@ -33,7 +33,6 @@ class Constants {
         )
     )
 
-    @Composable
     private fun muscleGroupMock(
         muscleGroupName: String,
         muscleSubGroupName: List<String>

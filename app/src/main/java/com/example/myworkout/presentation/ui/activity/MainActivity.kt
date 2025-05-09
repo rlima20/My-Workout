@@ -50,9 +50,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             val trainingList by trainingViewModel.listOfTrainings.collectAsState(listOf())
             val muscleGroupList by muscleGroupViewModel.listOfMuscleGroups.collectAsState(listOf())
-            val muscleSubGroupList by muscleGroupViewModel.listOfMuscleSubGroups.collectAsState(
-                listOf()
-            )
+            val listOfMuscleSubGroupById by muscleGroupViewModel.listOfMuscleSubGroupsById.collectAsState(listOf())
+            val muscleSubGroupList by muscleGroupViewModel.mapOfMuscleGroupsMuscleSubGroups.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.muscleGroupViewState.collectAsState()
             val trainingViewState by trainingViewModel.trainingViewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
@@ -72,6 +71,7 @@ class MainActivity : ComponentActivity() {
                     trainingList = trainingList,
                     muscleGroupList = muscleGroupList,
                     muscleSubGroupList = muscleSubGroupList,
+                    listOfMuscleSubGroupById = listOfMuscleSubGroupById,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
                     prefs = prefs,
@@ -89,7 +89,8 @@ class MainActivity : ComponentActivity() {
         navController: NavHostController,
         trainingList: List<TrainingModel>,
         muscleGroupList: List<MuscleGroupModel>,
-        muscleSubGroupList: List<MuscleSubGroupModel>,
+        listOfMuscleSubGroupById: List<MuscleSubGroupModel>,
+        muscleSubGroupList: Map<MuscleGroupModel, List<MuscleSubGroupModel>>,
         muscleGroupViewState: MuscleGroupViewState,
         trainingViewState: TrainingViewState,
         prefs: TrainingPrefs,
@@ -109,10 +110,9 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     navController = navController,
                     trainingList = trainingList,
-                    muscleGroupList = muscleGroupList,
-                    muscleSubGroupList = muscleSubGroupList,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
+                    listOfMuscleSubGroupById = listOfMuscleSubGroupById,
                     onGetMuscleGroupMuscleSubGroup = { }, // Todo - remover isso depois
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
@@ -125,8 +125,20 @@ class MainActivity : ComponentActivity() {
                             isDevMode
                         )
                     },
+                    onTrainingChecked = { },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
-                    onGetMuscleSubGroupsByTrainingId = { getMuscleSubGroupsByTrainingId(it) }
+                    onGetMuscleSubGroupsByTrainingId = {
+                        /**
+                         * todo()
+                         * A partir daqui eu preciso atualizar e passar pra dentro do TrainingCard
+                         * o muscleSUbGroupList atualizado.
+                         * Esse objeto terá os subgrupos relacionados ao treinamento em questão.
+                         */
+                        muscleGroupViewModel.dispatchViewAction(
+                            MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId(it)
+                        )
+                    },
+                    listOfMapOfMuscleGroupMuscleSubGroups = listOf(muscleSubGroupList)
                 )
             },
             bottomBar = {

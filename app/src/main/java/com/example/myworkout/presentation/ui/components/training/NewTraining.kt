@@ -19,6 +19,7 @@ import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.setImageDrawable
@@ -27,19 +28,30 @@ import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipL
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun NewTraining(
-    muscleGroups: List<MuscleGroupModel> = emptyList(),
-    muscleSubGroups: List<MuscleSubGroupModel> = emptyList()
+    mapOfMuscleGroupMuscleSubGroup: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>
 ) {
     val image = remember { mutableStateOf(BodyPart.LEG) }
 
 
+    // Todo - estados by rememmber
+//    val listOfMuscleGroup: MutableList<MuscleGroupModel> = mutableListOf()
+//    val listOfMuscleSubGroup: MutableList<MuscleSubGroupModel> = mutableListOf()
+//
+//    mapOfMuscleGroupMuscleSubGroup.forEach { map ->
+//        listOfMuscleGroup.add(map.key)
+//        map.value.forEach {
+//            listOfMuscleSubGroup.add(it)
+//        }
+//    }
+
+
     Column(Modifier.fillMaxSize()) {
         TabRowSection(
-            muscleGroups = muscleGroups,
+            muscleGroups = mapOfMuscleGroupMuscleSubGroup.flatMap { it.keys },
             onCreateImageSection = { image.value = it }
         )
         ImageSection(image.value)
-        ChipsSection(listOfMuscleGroup = muscleSubGroups)
+        ChipsSection(listOfMuscleGroup = mapOfMuscleGroupMuscleSubGroup.flatMap { it.values.flatMap { it } })
     }
 }
 
@@ -88,6 +100,6 @@ fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
 @Preview
 @Composable
 fun NewTrainingPreview() {
-    NewTraining(Constants().muscleGroups())
+    // NewTraining(Constants().muscleGroups())
 }
 
