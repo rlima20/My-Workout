@@ -55,6 +55,10 @@ class MuscleGroupViewModel(
                 )
             }
 
+            is MuscleGroupViewAction.SetupInitialState -> {
+                _muscleGroupViewState.value = MuscleGroupViewState.InitialState
+            }
+
             is MuscleGroupViewAction.SetupDatabase -> {
                 // setupDatabase(viewAction.isFirstInstall)
             }

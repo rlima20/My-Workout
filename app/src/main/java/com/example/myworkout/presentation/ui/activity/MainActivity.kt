@@ -107,7 +107,10 @@ class MainActivity : ComponentActivity() {
                 TopBar(
                     title = appBarTitle,
                     isHomeScreen = isHomeScreen,
-                    onNavigateToHomeScreen = { navController.navigateSingleTopTo(HomeScreen.route) })
+                    onNavigateToHomeScreen = {
+                        navController.navigateSingleTopTo(HomeScreen.route)
+                        showMuscleGroupSection = true
+                    })
             },
             content = {
                 NavHost(
@@ -144,14 +147,17 @@ class MainActivity : ComponentActivity() {
                     listOfMapOfMuscleGroupMuscleSubGroups = listOf(muscleSubGroupList),
                     showMuscleGroupSection = showMuscleGroupSection,
                     onCreateMuscleGroup = { muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it)) },
-                    onShowMuscleGroupSection = { showMuscleGroupSection = false }
-                    // Todo - ver pq nao está desabilitando o EditField
+                    onShowMuscleGroupSection = {
+                        showMuscleGroupSection = false
+                        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
+                    }
                 )
             },
             bottomBar = {
                 BottomBar(
                     onNavigateToHomeScreen = {
                         navController.navigateSingleTopTo(HomeScreen.route)
+                        showMuscleGroupSection = true
                     },
                     onNavigateToAddTrainingScreen = {
                         navigateToNewTrainingScreen(navController)
