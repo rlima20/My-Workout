@@ -19,9 +19,6 @@
       <SelectionState runConfigName="AssistChipListPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AddTrainingIconButtonPreview">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
       <SelectionState runConfigName="NewTrainingPreview">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>

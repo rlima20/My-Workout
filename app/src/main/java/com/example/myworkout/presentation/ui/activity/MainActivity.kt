@@ -13,7 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkout.R
@@ -97,6 +99,7 @@ class MainActivity : ComponentActivity() {
         isDevMode: Boolean
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
+        var showMuscleGroupSection by remember { mutableStateOf(true) }
 
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -138,7 +141,11 @@ class MainActivity : ComponentActivity() {
                             MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId(it)
                         )
                     },
-                    listOfMapOfMuscleGroupMuscleSubGroups = listOf(muscleSubGroupList)
+                    listOfMapOfMuscleGroupMuscleSubGroups = listOf(muscleSubGroupList),
+                    showMuscleGroupSection = showMuscleGroupSection,
+                    onCreateMuscleGroup = { muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it)) },
+                    onShowMuscleGroupSection = { showMuscleGroupSection = false }
+                    // Todo - ver pq nao está desabilitando o EditField
                 )
             },
             bottomBar = {

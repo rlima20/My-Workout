@@ -3,6 +3,10 @@ package com.example.myworkout.presentation.ui.navigation
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -16,7 +20,7 @@ import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
-import com.example.myworkout.presentation.ui.components.training.NewTraining
+import com.example.myworkout.presentation.ui.components.training.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
@@ -30,6 +34,7 @@ fun NavHost(
     muscleGroupViewState: MuscleGroupViewState,
     trainingViewState: TrainingViewState,
     listOfMuscleSubGroupById: List<MuscleSubGroupModel>,
+    showMuscleGroupSection: Boolean,
     onGetMuscleGroupMuscleSubGroup: () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
@@ -37,7 +42,9 @@ fun NavHost(
     onDatabaseCreated: @Composable () -> Unit,
     onFetchMuscleGroups: () -> Unit,
     onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit,
-    onTrainingChecked: (training: TrainingModel) -> Unit
+    onTrainingChecked: (training: TrainingModel) -> Unit,
+    onCreateMuscleGroup: (name: String) -> Unit,
+    onShowMuscleGroupSection: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -63,7 +70,7 @@ fun NavHost(
                 onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
             )
 
-            setupMuscleGroupStateObservers(
+            setupMuscleGroupStateObservers2(
                 muscleGroupViewState = muscleGroupViewState,
                 onDatabaseCreated = onDatabaseCreated,
                 onChangeRoute = onChangeRoute,
@@ -76,13 +83,37 @@ fun NavHost(
         composable(route = NewTraining.route) {
             onChangeRoute(false)
             onChangeTopBarTitle(createNewTraining)
-            NewTraining(listOfMapOfMuscleGroupMuscleSubGroups)
+
+            NewMuscleGroupAndSubgroup(
+                showMuscleGroupSection = showMuscleGroupSection ,
+                onCreateMuscleGroup = { onCreateMuscleGroup(it) },
+                onCreateMuscleSubGroup = {}
+            )
+
+            setupMuscleGroupStateObservers(
+                muscleGroupViewState = muscleGroupViewState,
+                showMuscleGroupSection = { onShowMuscleGroupSection() }
+            )
         }
     }
 }
 
+
 @Composable
 private fun setupMuscleGroupStateObservers(
+    muscleGroupViewState: MuscleGroupViewState,
+    showMuscleGroupSection: () -> Unit
+) {
+    when (muscleGroupViewState) {
+        is MuscleGroupViewState.Success -> { showMuscleGroupSection() }
+        is MuscleGroupViewState.Loading -> { LoadingComponent(text = stringResource(R.string.loading)) }
+        is MuscleGroupViewState.Error -> { ErrorStateComponent(onButtonClicked = {}) }
+        else -> { /* Do nothing */ }
+    }
+}
+
+@Composable
+private fun setupMuscleGroupStateObservers2(
     muscleGroupViewState: MuscleGroupViewState,
     onDatabaseCreated: @Composable () -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,

@@ -7,5 +7,6 @@ enum class BodyPart {
     ABDOMEN,
     CHEST,
     LEG,
-    TRAPEZIUS
+    TRAPEZIUS,
+    OTHER
 }

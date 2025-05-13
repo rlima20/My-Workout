@@ -27,15 +27,16 @@ class MuscleGroupViewModel(
 
     val listOfMuscleGroups: MutableStateFlow<List<MuscleGroupModel>> = MutableStateFlow(listOf())
 
-    private val initialMuscleGroup = Constants().muscleGroups().firstOrNull() // Pega o primeiro grupo muscular, se existir
+    private val initialMuscleGroup =
+        Constants().muscleGroups().firstOrNull() // Pega o primeiro grupo muscular, se existir
 
     val listOfMuscleSubGroupsById: MutableStateFlow<List<MuscleSubGroupModel>> =
         MutableStateFlow(listOf())
 
     val mapOfMuscleGroupsMuscleSubGroups: MutableStateFlow<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
         MutableStateFlow(initialMuscleGroup?.let {
-                mapOf(it to listOf()) // Cria o mapa se o grupo muscular não for nulo
-            } ?: emptyMap() // Caso não exista grupo muscular, inicializa com um mapa vazio
+            mapOf(it to listOf()) // Cria o mapa se o grupo muscular não for nulo
+        } ?: emptyMap() // Caso não exista grupo muscular, inicializa com um mapa vazio
         )
 //    val mapOfMuscleGroupsMuscleSubGroups: MutableStateFlow<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
 //        MutableStateFlow(
@@ -45,20 +46,29 @@ class MuscleGroupViewModel(
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
+            is MuscleGroupViewAction.CreateMuscleGroup -> {
+                insertMuscleGroup(
+                    MuscleGroupModel(
+                        name = viewAction.name,
+                        image = BodyPart.OTHER
+                    )
+                )
+            }
+
             is MuscleGroupViewAction.SetupDatabase -> {
-                setupDatabase(viewAction.isFirstInstall)
+                // setupDatabase(viewAction.isFirstInstall)
             }
 
             is MuscleGroupViewAction.FetchMuscleGroups -> {
-                fetchMuscleGroups()
+                // fetchMuscleGroups()
             }
 
             is MuscleGroupViewAction.FetchMuscleSubGroups -> {
-                fetchMuscleSubGroups()
+                // fetchMuscleSubGroups()
             }
 
             is MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId -> {
-                getMuscleSubGroupsByTrainingId(viewAction.trainingId)
+                // getMuscleSubGroupsByTrainingId(viewAction.trainingId)
             }
         }
     }
@@ -339,14 +349,33 @@ class MuscleGroupViewModel(
     }
 
     private fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
+        _muscleGroupViewState.value = MuscleGroupViewState.Loading
+
         viewModelScope.launch(Dispatchers.IO) {
-            muscleGroupUseCase.insertMuscleGroup(muscleGroup)
+            delay(2000)
+            try {
+                viewModelScope.launch(Dispatchers.IO) {
+                    muscleGroupUseCase.insertMuscleGroup(muscleGroup)
+                    _muscleGroupViewState.value = MuscleGroupViewState.Success
+                }
+            } catch (e: Exception) {
+                Log.e("RAPHAEL", "Erro: $e")
+                _muscleGroupViewState.value = MuscleGroupViewState.Error
+            }
         }
     }
 
     private fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
+        _muscleGroupViewState.value = MuscleGroupViewState.Loading
+
         viewModelScope.launch(Dispatchers.IO) {
-            muscleGroupUseCase.insertMuscleSubGroup(muscleSubGroup)
+            try {
+                muscleGroupUseCase.insertMuscleSubGroup(muscleSubGroup)
+                _muscleGroupViewState.value = MuscleGroupViewState.Success
+            } catch (e: Exception) {
+                Log.e("RAPHAEL", "Erro: $e")
+                _muscleGroupViewState.value = MuscleGroupViewState.Error
+            }
         }
     }
 

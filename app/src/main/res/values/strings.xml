@@ -13,5 +13,8 @@
     <string name="loading_trainings">Carregando treinamentos...</string>
     <string name="everything_ready">Tudo pronto!</string>
     <string name="preparing_everything">Aguarde um momento, estamos preparando tudo para você...</string>
+    <string name="loading">Carregando</string>
     <string name="creating_trainings">Criando treinamentos</string>
+    <string name="button_section_add_button">Adicionar</string>
+    <string name="new_training_input_text_label">Grupo muscular</string>
 </resources>

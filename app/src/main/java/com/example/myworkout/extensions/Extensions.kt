@@ -41,4 +41,9 @@ fun BodyPart.setImageDrawable(): Int =
             R.drawable.ombro}
         BodyPart.TRAPEZIUS -> {
             R.drawable.trapezio}
+        BodyPart.OTHER -> {
+            R.drawable.ombro
+        }
     }
+
+fun String.emptyString(): String = ""
