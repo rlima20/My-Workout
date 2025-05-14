@@ -18,15 +18,12 @@ import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 
 @Composable
 fun NewMuscleGroupAndSubgroup(
-    showMuscleGroupSection: Boolean,
     onCreateMuscleGroup: (name: String) -> Unit,
     onCreateMuscleSubGroup: () -> Unit
 ) {
-    // Todo - iniciar o app com a base zerada
     // Todo Faz o fetch dos grupos musculares
 
     SetScreenVisibility(
-        muscleGroupSection = showMuscleGroupSection,
         onAddButtonClicked = {
             onCreateMuscleGroup(it)
         }
@@ -35,11 +32,11 @@ fun NewMuscleGroupAndSubgroup(
 
 @Composable
 fun SetScreenVisibility(
-    muscleGroupSection: Boolean,
+    // muscleGroupSection: Boolean,
     onAddButtonClicked: (name: String) -> Unit
 ) {
-    if (muscleGroupSection) SetMuscleGroupSection { onAddButtonClicked(it) }
-    else SetMuscleSubGroupSection()
+    SetMuscleGroupSection { onAddButtonClicked(it) }
+    // else SetMuscleSubGroupSection()
 }
 
 @Composable

@@ -132,7 +132,8 @@ class MainActivity : ComponentActivity() {
                     onShowMuscleGroupSection = {
                         showMuscleGroupSection = false
                         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
-                    }
+                    },
+                    onShowMuscleGroupSectionFromTraining = { showMuscleGroupSection = true }
                 )
             },
             bottomBar = {

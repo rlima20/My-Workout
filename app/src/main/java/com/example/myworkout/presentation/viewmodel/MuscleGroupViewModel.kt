@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase
@@ -125,7 +126,16 @@ class MuscleGroupViewModel(
     }
 
     private fun createMuscleGroup(name: String, image: BodyPart) {
-        insertMuscleGroup(MuscleGroupModel(name = name, image = image))
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = muscleGroupUseCase.getMuscleGroups().size + 1
+            insertMuscleGroup(
+                MuscleGroupModel(
+                    muscleGroupId = id,
+                    name = name,
+                    image = image
+                )
+            )
+        }
     }
 
     private fun createMuscleSubGroup(name: String) {
