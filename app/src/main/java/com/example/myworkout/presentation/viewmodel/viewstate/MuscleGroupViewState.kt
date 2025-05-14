@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.viewmodel
+package com.example.myworkout.presentation.viewmodel.viewstate
 
 sealed class MuscleGroupViewState {
     object InitialState : MuscleGroupViewState()

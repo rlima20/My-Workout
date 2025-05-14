@@ -8,8 +8,12 @@ import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 
 class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
     MuscleGroupUseCase {
-    override suspend fun getMuscleSubGroupsForTraining(trainingId: Int): List<MuscleSubGroupModel> {
-        return repository.getMuscleSubGroupsForTraining(trainingId)
+    override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
+        return repository.getMuscleSubGroupsByTrainingId(trainingId)
+    }
+
+    override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
+        return repository.getSubGroupsGroupedByMuscleGroups()
     }
 
     override suspend fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
@@ -30,5 +34,9 @@ class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
 
     override suspend fun getMuscleGroups(): List<MuscleGroupModel> {
         return repository.getMuscleGroups()
+    }
+
+    override suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel> {
+        return repository.getMuscleSubGroups()
     }
 }

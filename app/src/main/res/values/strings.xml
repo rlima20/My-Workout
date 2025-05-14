@@ -11,7 +11,11 @@
     <string name="home_screen">Home Screen</string>
     <string name="loading_database">Criando base de dados...</string>
     <string name="loading_trainings">Carregando treinamentos...</string>
-    <string name="database_created_with_success">Base de dados de criada com sucesso!</string>
-    <string name="preparing_everything">Estamos preparando tudo para você...</string>
+    <string name="everything_ready">Tudo pronto!</string>
+    <string name="preparing_everything">Aguarde um momento, estamos preparando tudo para você...</string>
+    <string name="loading">Carregando</string>
     <string name="creating_trainings">Criando treinamentos</string>
+    <string name="button_section_add_button">Adicionar</string>
+    <string name="new_training_input_text_label">Grupo muscular</string>
+    <string name="home_screen_name">Home</string>
 </resources>

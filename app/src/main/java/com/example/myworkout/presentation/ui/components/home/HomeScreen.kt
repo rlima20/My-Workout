@@ -20,7 +20,9 @@ import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCar
 @Composable
 internal fun HomeScreen(
     trainingList: List<TrainingModel>,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>
+    muscleSubGroupList: List<MuscleSubGroupModel>,
+    onTrainingChecked: (training: TrainingModel) -> Unit,
+    onGetMuscleSubGroupsByTrainingId: (training: Int) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(top = 90.dp),
@@ -33,14 +35,16 @@ internal fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             columns = GridCells.FixedSize(180.dp)
         ) {
-            items(trainingList.size) { item ->
+            items(trainingList.size) { index ->
                 TrainingCard(
                     modifier = Modifier.size(150.dp, 180.dp),
-                    training = trainingList[item],
-                    muscleSubGroupModel = listOfMuscleSubGroup,
+                    training = trainingList[index],
+                    muscleSubGroupList = muscleSubGroupList,
                     isFilterChipListEnabled = false,
                     onMuscleGroupSelected = {},
-                    onAddButtonClicked = {}
+                    onAddButtonClicked = {}, // Todo - Navega para a tela de novo treinamento
+                    onTrainingChecked = { onTrainingChecked(it) },
+                    onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
                 )
             }
         }

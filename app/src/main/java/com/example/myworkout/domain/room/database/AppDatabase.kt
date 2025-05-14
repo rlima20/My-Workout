@@ -4,8 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.migration.Migration
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.myworkout.domain.room.dao.MuscleGroupDao
 import com.example.myworkout.domain.room.dao.MuscleGroupMuscleSubGroupDao
 import com.example.myworkout.domain.room.dao.MuscleSubGroupDao
@@ -17,7 +15,7 @@ import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
 
-private const val DATA_BASE_NAME = "mystore_database"
+private const val DATA_BASE_NAME = "database"
 
 @Database(
     entities = [
@@ -27,7 +25,7 @@ private const val DATA_BASE_NAME = "mystore_database"
         MuscleGroupMuscleSubGroupEntity::class,
         TrainingMuscleGroupEntity::class
     ],
-    version = 2
+    version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun trainingDao(): TrainingDao
@@ -39,13 +37,6 @@ abstract class AppDatabase : RoomDatabase() {
     companion object {
 
         private lateinit var db: AppDatabase
-
-        private val MIGRATION_1_2 = object : Migration(1, 2) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-            /* Comportamento de migração */
-            }
-        }
-
 
         fun getInstance(context: Context): AppDatabase {
             if (Companion::db.isInitialized) return db

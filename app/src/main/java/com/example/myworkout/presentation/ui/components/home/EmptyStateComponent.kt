@@ -12,8 +12,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
@@ -21,6 +23,8 @@ import com.example.myworkout.R
 @Composable
 fun EmptyStateComponent(
     modifier: Modifier = Modifier,
+    text: String,
+    painter: Painter,
     onClick: () -> Unit
 ) {
     Column(
@@ -44,41 +48,26 @@ fun EmptyStateComponent(
                 ) {
                     Image(
                         modifier = Modifier.size(500.dp),
-                        painter = painterResource(R.drawable.add_icon),
+                        painter = painter,
                         contentDescription = null,
                     )
                 }
                 Text(
-                    text = stringResource(R.string.new_training),
+                    text = text,
                     fontSize = 16.sp
                 )
             }
         }
     }
-//    Card(
-//        modifier = modifier,
-//        shape = CardDefaults.elevatedShape,
-//        elevation = CardDefaults.cardElevation(),
-//    ) {
-//        Column(
-//            modifier = Modifier.fillMaxSize(),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            IconButton(
-//                modifier = Modifier.size(60.dp),
-//                onClick = { onClick() }
-//            ) {
-//                Image(
-//                    modifier = Modifier.size(500.dp),
-//                    painter = painterResource(R.drawable.add_icon),
-//                    contentDescription = null,
-//                )
-//            }
-//            Text(
-//                text = stringResource(R.string.new_training),
-//                fontSize = 16.sp
-//            )
-//        }
-//    }
+}
+
+@Composable
+@Preview
+fun EmptyStateComponentPreview() {
+    EmptyStateComponent(
+        modifier = Modifier.size(150.dp, 180.dp),
+        text = stringResource(R.string.new_training),
+        painter = painterResource(R.drawable.add_icon),
+        onClick = {}
+    )
 }

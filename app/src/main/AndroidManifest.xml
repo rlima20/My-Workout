@@ -16,7 +16,6 @@
         <activity
             android:name=".presentation.ui.activity.SplashScreenActivity"
             android:exported="true"
-            android:label="@string/title_activity_splash_screen"
             android:theme="@style/Theme.MyWorkout">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
