@@ -39,7 +39,8 @@ fun NavHost(
     onFetchMuscleSubGroups: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onCreateMuscleGroup: (name: String) -> Unit,
-    onShowMuscleGroupSection: () -> Unit
+    onShowMuscleGroupSection: () -> Unit,
+    onShowMuscleGroupSectionFromTraining: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -53,14 +54,15 @@ fun NavHost(
             onChangeRoute(true)
             onChangeTopBarTitle(homeScreen)
 
-            setupTrainingStateObservers(
-                trainingList = trainings,
-                trainingViewState = trainingViewState,
-                onTrainingChecked = { onTrainingChecked(it) },
-                onChangeRoute = onChangeRoute,
-                onNavigateToNewTraining = onNavigateToNewTraining,
-                onDatabaseCreated = onDatabaseCreated,
-            )
+//            setupTrainingStateObservers(
+//                trainingList = trainings,
+//                trainingViewState = trainingViewState,
+//                onTrainingChecked = { onTrainingChecked(it) },
+//                onChangeRoute = onChangeRoute,
+//                onNavigateToNewTraining = onNavigateToNewTraining,
+//                onDatabaseCreated = onDatabaseCreated,
+//                showMuscleGroupSection = { onShowMuscleGroupSectionFromTraining() }
+//            )
         }
 
         composable(route = NewTraining.route) {
@@ -68,7 +70,6 @@ fun NavHost(
             onChangeTopBarTitle(createNewTraining)
 
             NewMuscleGroupAndSubgroup(
-                showMuscleGroupSection = showMuscleGroupSection ,
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onCreateMuscleSubGroup = { }
             )
@@ -98,11 +99,13 @@ private fun setupMuscleGroupStateObservers(
     onDatabaseCreated: @Composable () -> Unit,
     ) {
     when (muscleGroupViewState) {
-        is MuscleGroupViewState.Success -> {
-            onDatabaseCreated()
-            // showMuscleGroupSection()
+        is MuscleGroupViewState.InitialState -> {
+            showMuscleGroupSection()
             onFetchMuscleGroups()
             onFetchMuscleSubGroups()
+        }
+        is MuscleGroupViewState.Success -> {
+            onDatabaseCreated()
         }
         is MuscleGroupViewState.Loading -> {
             LoadingComponent(text = stringResource(R.string.loading))
@@ -112,6 +115,18 @@ private fun setupMuscleGroupStateObservers(
                 onChangeRoute(true)
                 onNavigateToNewTraining()
             })
+        }
+        is MuscleGroupViewState.Empty -> {
+
+            EmptyStateComponent(
+                modifier = Modifier.size(150.dp, 180.dp),
+                text = stringResource(R.string.new_training),
+                painter = painterResource(R.drawable.add_icon),
+                onClick = {
+                    onChangeRoute(false)
+                    onNavigateToNewTraining()
+                })
+
         }
         else -> { /* Do nothing */ }
     }
@@ -123,6 +138,7 @@ private fun setupTrainingStateObservers(
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
+    showMuscleGroupSection: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
 ) {
@@ -130,22 +146,23 @@ private fun setupTrainingStateObservers(
         is TrainingViewState.Loading -> { /* Do nothing */ }
 
         is TrainingViewState.Empty -> {
-            EmptyStateComponent(
-                modifier = Modifier.size(150.dp, 180.dp),
-                text = stringResource(R.string.new_training),
-                painter = painterResource(R.drawable.add_icon),
-                onClick = {
-                    onChangeRoute(false)
-                    onNavigateToNewTraining()
-                })
+//            EmptyStateComponent(
+//                modifier = Modifier.size(150.dp, 180.dp),
+//                text = stringResource(R.string.new_training),
+//                painter = painterResource(R.drawable.add_icon),
+//                onClick = {
+//                    onChangeRoute(false)
+//                    onNavigateToNewTraining()
+//                })
             onDatabaseCreated()
+            // showMuscleGroupSection()
         }
 
         is TrainingViewState.Error -> {
-            ErrorStateComponent(onButtonClicked = {
-                onChangeRoute(true)
-                onNavigateToNewTraining()
-            })
+//            ErrorStateComponent(onButtonClicked = {
+//                onChangeRoute(true)
+//                onNavigateToNewTraining()
+//            })
         }
 
         is TrainingViewState.Success -> { /* Do nothing */ }

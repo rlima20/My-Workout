@@ -5,4 +5,5 @@ sealed class MuscleGroupViewState {
     object Success : MuscleGroupViewState()
     object Error : MuscleGroupViewState()
     object Loading : MuscleGroupViewState()
+    object Empty : MuscleGroupViewState()
 }
