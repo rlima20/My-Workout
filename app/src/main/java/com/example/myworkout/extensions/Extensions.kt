@@ -27,22 +27,14 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 
 fun BodyPart.setImageDrawable(): Int =
     when(this){
-        BodyPart.LEG -> {
-            R.drawable.pernas}
-        BodyPart.BACK -> {
-            R.drawable.costas}
-        BodyPart.ARM -> {
-            R.drawable.braco}
-        BodyPart.CHEST -> {
-            R.drawable.peito}
-        BodyPart.ABDOMEN -> {
-            R.drawable.abdomem}
-        BodyPart.SHOULDER -> {
-            R.drawable.ombro}
-        BodyPart.TRAPEZIUS -> {
-            R.drawable.trapezio}
-        BodyPart.OTHER -> {
-            R.drawable.ombro
+        BodyPart.LEG -> { R.drawable.pernas}
+        BodyPart.BACK -> { R.drawable.costas}
+        BodyPart.ARM -> { R.drawable.braco}
+        BodyPart.CHEST -> { R.drawable.peito}
+        BodyPart.ABDOMEN -> { R.drawable.abdomem}
+        BodyPart.SHOULDER -> { R.drawable.ombro}
+        BodyPart.TRAPEZIUS -> { R.drawable.trapezio}
+        BodyPart.OTHER -> { R.drawable.ombro
         }
     }
 

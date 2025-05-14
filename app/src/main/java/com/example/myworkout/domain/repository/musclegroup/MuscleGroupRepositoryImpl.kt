@@ -3,6 +3,7 @@ package com.example.myworkout.domain.repository.musclegroup
 import com.example.myworkout.domain.mapper.toEntity
 import com.example.myworkout.domain.mapper.toModel
 import com.example.myworkout.domain.mapper.toModelMuscleGroupList
+import com.example.myworkout.domain.mapper.toModelMuscleSubGroupList
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -120,5 +121,9 @@ class MuscleGroupRepositoryImpl(
 
     override suspend fun getMuscleGroups(): List<MuscleGroupModel> {
         return muscleGroupDao.getAllMuscleGroups().toModelMuscleGroupList()
+    }
+
+    override suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel> {
+        return muscleSubGroupDao.getAllMuscleSubGroups().toModelMuscleSubGroupList()
     }
 }

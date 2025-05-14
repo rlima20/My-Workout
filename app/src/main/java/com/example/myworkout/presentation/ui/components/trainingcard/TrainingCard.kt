@@ -21,6 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
@@ -29,6 +30,8 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
+import com.example.myworkout.presentation.ui.components.commons.CheckBox
+import com.example.myworkout.presentation.ui.components.commons.IconButton
 import com.example.myworkout.utils.setStatus
 
 @RequiresApi(35)
@@ -81,7 +84,7 @@ fun TrainingCard(
                 isFilterChipListEnabled = isFilterChipListEnabled,
                 onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
             )
-            TrainingCheckbox(
+            CheckBox(
                 status = trainingStatus,
                 isTrainingChecked = isTrainingChecked,
                 onChecked = {
@@ -92,7 +95,7 @@ fun TrainingCard(
                         TrainingModel(
                             trainingId = training.trainingId,
                             status = trainingStatus,
-                            trainingName =  training.trainingName,
+                            trainingName = training.trainingName,
                             dayOfWeek = training.dayOfWeek
                         )
                     )
@@ -143,9 +146,10 @@ private fun MuscleSubGroupSection(
                 onItemClick = { onItemClick(it) },
                 enabled = isFilterChipListEnabled
             )
-        } else AddTrainingIconButton {
-            onAddButtonClicked()
-        }
+        } else IconButton(
+            painter = painterResource(R.drawable.add_icon),
+            onClick = { onAddButtonClicked() }
+        )
     }
 }
 

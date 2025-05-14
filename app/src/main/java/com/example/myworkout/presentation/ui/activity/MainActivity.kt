@@ -29,12 +29,12 @@ import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
 import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
-import com.example.myworkout.presentation.viewmodel.MuscleGroupViewAction
+import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
-import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
-import com.example.myworkout.presentation.viewmodel.TrainingViewAction
+import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
+import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
-import com.example.myworkout.presentation.viewmodel.TrainingViewState
+import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar
 
@@ -50,34 +50,30 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val trainingList by trainingViewModel.listOfTrainings.collectAsState(listOf())
-            val muscleGroupList by muscleGroupViewModel.listOfMuscleGroups.collectAsState(listOf())
-            val listOfMuscleSubGroupById by muscleGroupViewModel.listOfMuscleSubGroupsById.collectAsState(listOf())
-            val muscleSubGroupList by muscleGroupViewModel.mapOfMuscleGroupsMuscleSubGroups.collectAsState()
-            val muscleGroupViewState by muscleGroupViewModel.muscleGroupViewState.collectAsState()
-            val trainingViewState by trainingViewModel.trainingViewState.collectAsState()
+            val trainings by trainingViewModel.trainings.collectAsState(listOf())
+            val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
+            val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
+            val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
+            val trainingViewState by trainingViewModel.viewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
             val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
             val navController = rememberNavController()
             val prefs = TrainingPrefs()
-            val isDevMode = trainingViewModel.isDevMode
 
             setupDatabase(prefs)
-            fetchInfoIfNotFirstInstall(prefs, isHomeScreen)
+            fetchInfoIfNotFirstInstall(prefs)
 
             MyWorkoutTheme {
                 ScaffoldComponent(
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
                     navController = navController,
-                    trainingList = trainingList,
-                    muscleGroupList = muscleGroupList,
-                    muscleSubGroupList = muscleSubGroupList,
-                    listOfMuscleSubGroupById = listOfMuscleSubGroupById,
+                    trainings = trainings,
+                    muscleGroups = muscleGroups,
+                    muscleSubGroups = muscleSubGroups,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
                     prefs = prefs,
-                    isDevMode = isDevMode
                 )
             }
         }
@@ -89,14 +85,12 @@ class MainActivity : ComponentActivity() {
         appBarTitle: String,
         isHomeScreen: Boolean,
         navController: NavHostController,
-        trainingList: List<TrainingModel>,
-        muscleGroupList: List<MuscleGroupModel>,
-        listOfMuscleSubGroupById: List<MuscleSubGroupModel>,
-        muscleSubGroupList: Map<MuscleGroupModel, List<MuscleSubGroupModel>>,
+        trainings: List<TrainingModel>,
+        muscleGroups: List<MuscleGroupModel>,
+        muscleSubGroups:List<MuscleSubGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
         trainingViewState: TrainingViewState,
         prefs: TrainingPrefs,
-        isDevMode: Boolean
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
         var showMuscleGroupSection by remember { mutableStateOf(true) }
@@ -115,36 +109,24 @@ class MainActivity : ComponentActivity() {
             content = {
                 NavHost(
                     navController = navController,
-                    trainingList = trainingList,
+                    trainings = trainings,
+                    muscleGroups = muscleGroups,
+                    muscleSubGroups = muscleSubGroups,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
-                    listOfMuscleSubGroupById = listOfMuscleSubGroupById,
-                    onGetMuscleGroupMuscleSubGroup = { }, // Todo - remover isso depois
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
                     onDatabaseCreated = {
                         DatabaseCreationDone(
-                            prefs,
-                            isHomeScreen,
-                            snackBarHostState,
-                            isDevMode
+                            prefs = prefs,
+                            isHomeScreen = isHomeScreen,
+                            snackBarHostState = snackBarHostState,
                         )
                     },
                     onTrainingChecked = { },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
-                    onGetMuscleSubGroupsByTrainingId = {
-                        /**
-                         * todo()
-                         * A partir daqui eu preciso atualizar e passar pra dentro do TrainingCard
-                         * o muscleSUbGroupList atualizado.
-                         * Esse objeto terá os subgrupos relacionados ao treinamento em questão.
-                         */
-                        muscleGroupViewModel.dispatchViewAction(
-                            MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId(it)
-                        )
-                    },
-                    listOfMapOfMuscleGroupMuscleSubGroups = listOf(muscleSubGroupList),
+                    onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     showMuscleGroupSection = showMuscleGroupSection,
                     onCreateMuscleGroup = { muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it)) },
                     onShowMuscleGroupSection = {
@@ -172,40 +154,28 @@ class MainActivity : ComponentActivity() {
         prefs: TrainingPrefs,
         isHomeScreen: Boolean,
         snackBarHostState: SnackbarHostState,
-        isDevMode: Boolean
     ) {
-        if (prefs.isNotFirstInstall(this.baseContext) && isHomeScreen) {
+        if (prefs.isFirstInstall(this.baseContext) && isHomeScreen) {
             LaunchedEffect(key1 = "") {
-                validateDevMode(isDevMode)
+                trainingViewModel.dispatchViewAction(TrainingViewAction.SetEmptyState)
                 showSnackBar(snackBarHostState)
                 setInstallValue(prefs)
             }
         }
     }
 
-    // Todo - levar essa regra para dentro do viewmodel
-    private fun validateDevMode(isDevMode: Boolean) {
-        if (isDevMode) {
-            createTrainings()
-        } else {
-            trainingViewModel.dispatchViewAction(TrainingViewAction.SetEmptyState)
-        }
-    }
-
-    private fun fetchInfoIfNotFirstInstall(
-        prefs: TrainingPrefs,
-        isHomeScreen: Boolean
-    ) {
-        if (!(prefs.isNotFirstInstall(this.baseContext) && isHomeScreen)) {
+    private fun fetchInfoIfNotFirstInstall( prefs: TrainingPrefs ) {
+        if (prefs.isFirstInstall(this.baseContext)) {
             fetchTrainings()
-            fetchMuscleGroups()
-            fetchMuscleSubGroups()
+            // fetchMuscleGroups()
+            // fetchMuscleSubGroups()
         }
     }
 
     private fun setupDatabase(prefs: TrainingPrefs) {
+        val isFirstInstall = prefs.isFirstInstall(this.baseContext)
         muscleGroupViewModel.dispatchViewAction(
-            MuscleGroupViewAction.SetupDatabase(prefs.isNotFirstInstall(this.baseContext))
+            MuscleGroupViewAction.CreateInitialDatabase(isFirstInstall)
         )
     }
 
@@ -233,21 +203,15 @@ class MainActivity : ComponentActivity() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleSubGroups)
     }
 
-    private fun createTrainings() {
-        trainingViewModel.dispatchViewAction(TrainingViewAction.CreateTrainings)
-    }
-
-    private fun getMuscleSubGroupsByTrainingId(trainingId: Int) {
-        muscleGroupViewModel.dispatchViewAction(
-            MuscleGroupViewAction.FetchMuscleSubGroupsByTrainingId(trainingId)
-        )
-    }
-
     private fun setInstallValue(prefs: TrainingPrefs) {
-        prefs.setFirstInstallValue(this@MainActivity.baseContext, false)
+        prefs.setFirstInstallValue(this@MainActivity.baseContext, true)
     }
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
         snackBarHostState.showSnackbar(getString(R.string.everything_ready))
+    }
+
+    private fun createTrainings() {
+        trainingViewModel.dispatchViewAction(TrainingViewAction.NewTraining)
     }
 }

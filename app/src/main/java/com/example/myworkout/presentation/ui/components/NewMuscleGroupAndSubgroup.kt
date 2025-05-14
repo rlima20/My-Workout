@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.ui.components.training
+package com.example.myworkout.presentation.ui.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.R
+import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 
 @Composable
 fun NewMuscleGroupAndSubgroup(
@@ -21,6 +22,8 @@ fun NewMuscleGroupAndSubgroup(
     onCreateMuscleGroup: (name: String) -> Unit,
     onCreateMuscleSubGroup: () -> Unit
 ) {
+    // Todo - iniciar o app com a base zerada
+    // Todo Faz o fetch dos grupos musculares
 
     SetScreenVisibility(
         muscleGroupSection = showMuscleGroupSection,

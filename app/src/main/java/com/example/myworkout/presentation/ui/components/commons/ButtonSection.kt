@@ -1,4 +1,4 @@
-package com.example.myworkout.presentation.ui.components.training
+package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

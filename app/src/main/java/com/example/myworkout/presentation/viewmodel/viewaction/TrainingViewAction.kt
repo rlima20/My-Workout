@@ -1,7 +1,7 @@
-package com.example.myworkout.presentation.viewmodel
+package com.example.myworkout.presentation.viewmodel.viewaction
 
 sealed class TrainingViewAction {
     object FetchTrainings : TrainingViewAction()
-    object CreateTrainings : TrainingViewAction()
+    object NewTraining : TrainingViewAction()
     object SetEmptyState : TrainingViewAction()
 }

@@ -1,6 +1,4 @@
-package com.example.myworkout.presentation.viewmodel
-
-import com.example.myworkout.domain.model.TrainingModel
+package com.example.myworkout.presentation.viewmodel.viewstate
 
 sealed class TrainingViewState {
     object InitialState : TrainingViewState()

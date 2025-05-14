@@ -5,143 +5,44 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
-import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
+import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
+import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
-    private val _isDevMode: Boolean = true
-    val isDevMode: Boolean
-        get() = _isDevMode
+    private val _viewState: MutableStateFlow<TrainingViewState> = MutableStateFlow(TrainingViewState.InitialState)
+    val viewState: StateFlow<TrainingViewState> get() = _viewState
 
-    private val _trainingViewState: MutableStateFlow<TrainingViewState> =
-        MutableStateFlow(TrainingViewState.InitialState)
-    val trainingViewState: StateFlow<TrainingViewState>
-        get() = _trainingViewState
-
-    private val _listOfTrainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
-    val listOfTrainings: MutableStateFlow<List<TrainingModel>>
-        get() = _listOfTrainings
+    private val _trainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
+    val trainings: MutableStateFlow<List<TrainingModel>> get() = _trainings
 
     private val _isHomeScreen = MutableStateFlow(true)
-    val isHomeScreen: StateFlow<Boolean>
-        get() = _isHomeScreen
+    val isHomeScreen: StateFlow<Boolean> get() = _isHomeScreen
 
     private val _appBarTitle = MutableStateFlow("Home Screen")
-    val appBarTitle: StateFlow<String>
-        get() = _appBarTitle
-
-    fun setIsHomeScreen(value: Boolean) {
-        _isHomeScreen.value = value
-    }
-
-    fun setAppBarTitle(value: String) {
-        _appBarTitle.value = value
-    }
+    val appBarTitle: StateFlow<String> get() = _appBarTitle
 
     fun dispatchViewAction(trainingViewAction: TrainingViewAction) {
         when (trainingViewAction) {
-            is TrainingViewAction.FetchTrainings -> {
-                fetchTrainings()
-            }
-
-            is TrainingViewAction.CreateTrainings -> {
-                createTrainings()
-            }
-
-            is TrainingViewAction.SetEmptyState -> {
-                setEmptyState()
-            }
+            is TrainingViewAction.FetchTrainings -> { fetchTrainings() }
+            is TrainingViewAction.NewTraining -> { }
+            is TrainingViewAction.SetEmptyState -> { setEmptyState() }
         }
     }
 
     private fun setEmptyState(){
-        _trainingViewState.value = TrainingViewState.Empty
-    }
-
-    /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
-    private fun createTrainings() {
-        viewModelScope.launch(Dispatchers.IO) {
-            createPeitoOmbroTraining()
-            delay(2000)
-            createTrapezioTraining()
-            delay(2000)
-        }
-
-    }
-
-    private fun createPeitoOmbroTraining() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _trainingViewState.value = TrainingViewState.Loading
-            try {
-                trainingUseCase.insertTraining(
-                    TrainingModel(
-                        trainingId = 0,
-                        status = Status.PENDING,
-                        dayOfWeek = DayOfWeek.MONDAY,
-                        trainingName = "Peito e Ombro"
-                    )
-                )
-                delay(2000)
-                createTrainingMuscleGroupRelationPeitoOmbro()
-                dispatchViewAction(TrainingViewAction.FetchTrainings)
-            } catch (e: Exception) {
-                _trainingViewState.value = TrainingViewState.Error
-            }
-        }
-    }
-
-    private fun createTrapezioTraining() {
-        viewModelScope.launch(Dispatchers.IO) {
-            _trainingViewState.value = TrainingViewState.Loading
-            try {
-                trainingUseCase.insertTraining(
-                    TrainingModel(
-                        trainingId = 2,
-                        status = Status.PENDING,
-                        dayOfWeek = DayOfWeek.MONDAY,
-                        trainingName = "Trapézio"
-                    )
-                )
-                delay(2000)
-                createTrainingMuscleGroupRelationTrapezio()
-                dispatchViewAction(TrainingViewAction.FetchTrainings)
-            } catch (e: Exception) {
-                _trainingViewState.value = TrainingViewState.Error
-            }
-        }
-    }
-
-    /* Essa função será usada somente no desenvolvimento. Após isso, a criação será feita dinamicamente*/
-    private fun createTrainingMuscleGroupRelationPeitoOmbro() {
-        insertTrainingMuscleGroup(
-            TrainingMuscleGroupModel(
-                trainingId = 1,
-                muscleGroupId = 5
-            )
-        )
-    }
-
-    private fun createTrainingMuscleGroupRelationTrapezio() {
-        insertTrainingMuscleGroup(
-            TrainingMuscleGroupModel(
-                trainingId = 2,
-                muscleGroupId = 7
-            )
-        )
+        _viewState.value = TrainingViewState.Empty
     }
 
     private fun fetchTrainings() {
@@ -150,7 +51,7 @@ class TrainingViewModel(
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
             } catch (e: Exception) {
-                _trainingViewState.value = TrainingViewState.Error
+                _viewState.value = TrainingViewState.Error
                 Log.e("RAPHAEL", "Erro: $e")
             }
         }
@@ -162,37 +63,46 @@ class TrainingViewModel(
 
     private fun verifyEmptyList(data: List<TrainingModel>) {
         if (data.isEmpty()){
-            _trainingViewState.value = TrainingViewState.Empty
+            _viewState.value = TrainingViewState.Empty
         }
         else{
-            _trainingViewState.value = TrainingViewState.Success
-            _listOfTrainings.value = data
+            _viewState.value = TrainingViewState.Success
+            _trainings.value = data
         }
     }
 
     private fun insertTraining(training: TrainingModel) {
-        viewModelScope.launch(Dispatchers.IO) {
-            trainingUseCase.insertTraining(training)
+        viewModelScope.launch {
+            setLoadingState()
+            try{
+                trainingUseCase.insertTraining(training)
+                setSuccessState()
+            }catch (e: Exception){
+                setErrorState()
+            }
+        }
+    }
+
+    private fun setSuccessState() { _viewState.value = TrainingViewState.Success }
+
+    private fun setErrorState() { _viewState.value = TrainingViewState.Error }
+
+    private fun setLoadingState() { _viewState.value = TrainingViewState.Loading }
+
+    fun setIsHomeScreen(value: Boolean) { _isHomeScreen.value = value }
+
+    fun setAppBarTitle(value: String) { _appBarTitle.value = value }
+
+    private fun clearStatus(trainingId: Int, status: Status) {
+        viewModelScope.launch {
+            trainingUseCase.clearStatus(trainingId, status)
+            fetchTrainings()
         }
     }
 
     private fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         viewModelScope.launch(Dispatchers.IO) {
             trainingUseCase.insertTrainingMuscleGroup(trainingMuscleGroup)
-        }
-    }
-
-    private fun saveTraining(training: TrainingModel) {
-        viewModelScope.launch {
-            trainingUseCase.insertTraining(training)
-            fetchTrainings()
-        }
-    }
-
-    private fun clearStatus(trainingId: Int, status: Status) {
-        viewModelScope.launch {
-            trainingUseCase.clearStatus(trainingId, status)
-            fetchTrainings()
         }
     }
 }
