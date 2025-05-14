@@ -71,7 +71,6 @@ fun NavHost(
 
             NewMuscleGroupAndSubgroup(
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
-                onCreateMuscleSubGroup = { }
             )
 
             setupMuscleGroupStateObservers(
