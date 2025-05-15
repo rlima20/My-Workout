@@ -3,6 +3,7 @@ package com.example.myworkout.presentation.ui.activity
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -129,11 +130,9 @@ class MainActivity : ComponentActivity() {
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     showMuscleGroupSection = showMuscleGroupSection,
                     onCreateMuscleGroup = { muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it)) },
-                    onShowMuscleGroupSection = {
-                        showMuscleGroupSection = false
-                        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
-                    },
-                    onShowMuscleGroupSectionFromTraining = { showMuscleGroupSection = true }
+                    onShowMuscleGroupSection = { showMuscleGroupSection = false },
+                    onShowSnackBar = { showToast(message = it) },
+                    onSetInitialState = { setInitialState() }
                 )
             },
             bottomBar = {
@@ -148,6 +147,10 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
     }
 
     @Composable
@@ -168,8 +171,6 @@ class MainActivity : ComponentActivity() {
     private fun fetchInfoIfNotFirstInstall( prefs: TrainingPrefs ) {
         if (prefs.isFirstInstall(this.baseContext)) {
             fetchTrainings()
-            // fetchMuscleGroups()
-            // fetchMuscleSubGroups()
         }
     }
 
@@ -194,6 +195,10 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchTrainings() {
         trainingViewModel.dispatchViewAction(TrainingViewAction.FetchTrainings)
+    }
+
+    private fun setInitialState() {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
     }
 
     private fun fetchMuscleGroups() {
