@@ -21,7 +21,7 @@ class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
-    private val _viewState: MutableStateFlow<TrainingViewState> = MutableStateFlow(TrainingViewState.InitialState)
+    private val _viewState: MutableStateFlow<TrainingViewState> = MutableStateFlow(TrainingViewState.Empty)
     val viewState: StateFlow<TrainingViewState> get() = _viewState
 
     private val _trainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
