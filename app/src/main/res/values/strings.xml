@@ -19,4 +19,5 @@
     <string name="button_section_save_button">Salvar</string>
     <string name="new_training_input_text_label">Grupo muscular</string>
     <string name="home_screen_name">Home</string>
+    <string name="success_operation">Operação bem sucedida</string>
 </resources>

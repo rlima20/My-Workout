@@ -15,7 +15,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase
@@ -47,7 +46,7 @@ class MuscleGroupViewModel(
             try {
                 val muscleGroups = muscleGroupUseCase.getMuscleGroups()
                 setMuscleGroups(muscleGroups)
-                setSuccessState()
+                setSuccessState(MuscleGroupViewState.SuccessFetchMuscleGroups)
             } catch (e: Exception) { setErrorState() }
         }
     }
@@ -58,7 +57,7 @@ class MuscleGroupViewModel(
             try {
                 val muscleSubGroups = muscleGroupUseCase.getMuscleSubGroups()
                 setListOfMuscleSubGroups(muscleSubGroups)
-                setSuccessState()
+                setSuccessState(MuscleGroupViewState.SuccessFetchMuscleSubGroups)
             } catch (e: Exception) { setErrorState() }
         }
     }
@@ -71,7 +70,7 @@ class MuscleGroupViewModel(
             try {
                 viewModelScope.launch(Dispatchers.IO) {
                     muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup)
-                    setSuccessState()
+                    setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup)
                 }
             } catch (e: Exception) { setErrorState() }
         }
@@ -83,7 +82,7 @@ class MuscleGroupViewModel(
             viewModelScope.launch(Dispatchers.IO) {
                 try{
                     insertMuscleSubGroups()
-                    setSuccessState()
+                    setSuccessState(MuscleGroupViewState.SuccessDatabaseCreated)
                 } catch (e: Exception) { setErrorState() }
             }
         }
@@ -107,7 +106,7 @@ class MuscleGroupViewModel(
             try {
                 viewModelScope.launch(Dispatchers.IO) {
                     muscleGroupUseCase.insertMuscleGroup(muscleGroup)
-                    setSuccessState()
+                    setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
                 }
             } catch (e: Exception) { setErrorState() }
         }
@@ -120,7 +119,7 @@ class MuscleGroupViewModel(
             delay(2000)
             try {
                 muscleGroupUseCase.insertMuscleSubGroup(muscleSubGroup)
-                setSuccessState()
+                setSuccessState(MuscleGroupViewState.SuccessInsertMuscleSubGroup)
             } catch (e: Exception) { setErrorState() }
         }
     }
@@ -162,8 +161,8 @@ class MuscleGroupViewModel(
         _viewState.value = MuscleGroupViewState.Loading
     }
 
-    private fun setSuccessState() {
-        _viewState.value = MuscleGroupViewState.Success
+    private fun setSuccessState(state: MuscleGroupViewState) {
+        _viewState.value = state
     }
 
     private fun setErrorState() {

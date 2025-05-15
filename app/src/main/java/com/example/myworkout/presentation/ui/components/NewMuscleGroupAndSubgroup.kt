@@ -18,10 +18,13 @@ import com.example.myworkout.R
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 
 @Composable
-fun NewMuscleGroupAndSubgroup(onCreateMuscleGroup: (name: String) -> Unit) {
+fun NewMuscleGroupAndSubgroup(
+    onCreateMuscleGroup: (name: String) -> Unit,
+    enableSubGroupSection: Boolean
+) {
     Column(modifier = Modifier.padding(top = 70.dp)) {
         SetMuscleGroupSection { onCreateMuscleGroup(it) }
-        SetMuscleSubGroupSection()
+        SetMuscleSubGroupSection(enableSubGroupSection)
     }
 }
 
@@ -57,11 +60,11 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 }
 
 @Composable
-fun SetMuscleSubGroupSection() {
+fun SetMuscleSubGroupSection(enableSubGroupSection: Boolean) {
     ButtonSection(
         modifier = Modifier,
         buttonName = stringResource(R.string.button_section_save_button),
-        buttonEnabled = false,
+        buttonEnabled = enableSubGroupSection,
         onButtonClick = { },
         content = { Text(text = "Exemplo") }
     )
@@ -70,8 +73,8 @@ fun SetMuscleSubGroupSection() {
 
 @Composable
 @Preview
-fun NewMuscleGroupAndSubgroupPreview(){
-    NewMuscleGroupAndSubgroup { }
+fun NewMuscleGroupAndSubgroupPreview() {
+    NewMuscleGroupAndSubgroup({}, true)
 }
 
 
