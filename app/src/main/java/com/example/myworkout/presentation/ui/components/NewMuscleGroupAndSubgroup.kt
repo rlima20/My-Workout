@@ -137,27 +137,31 @@ private fun MuscleGroups(
     onItemClick: (item: MuscleGroupModel) -> Unit
 ) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-        items(muscleGroups) { item ->
+        items(muscleGroups) { muscleGroup ->
 
             FilterChip(
                 border = BorderStroke(1.dp, color = colorResource(R.color.title_color)),
-                enabled = item.enabled,
+                enabled = muscleGroup.enabled,
                 shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 15)),
                 modifier = Modifier.height(42.dp),
-                colors = ChipDefaults.filterChipColors(
-                    backgroundColor = Color(0xB2DCDCDC),
-                    selectedContentColor = Color(0xFF070707),
-                    disabledBackgroundColor = Color(0xFFCDC7D1),
-                    disabledContentColor = Color(0x7FFFFFFF),
-                    selectedBackgroundColor = Color(0xFF9C93A6)
-                ),
-                onClick = { onItemClick(item) },
-                selected = item.selected,
-                content = { Text(fontSize = 18.sp, text = item.name) },
+                colors = selectableChipColors(),
+                selected = muscleGroup.selected,
+                content = { Text(fontSize = 18.sp, text = muscleGroup.name) },
+                onClick = { onItemClick(muscleGroup) },
             )
         }
     }
 }
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun selectableChipColors() = ChipDefaults.filterChipColors(
+    backgroundColor = Color(0xB2DCDCDC),
+    selectedContentColor = Color(0xFF070707),
+    disabledBackgroundColor = Color(0xFFCDC7D1),
+    disabledContentColor = Color(0x7FFFFFFF),
+    selectedBackgroundColor = Color(0xFF9C93A6)
+)
 
 @Composable
 @Preview
