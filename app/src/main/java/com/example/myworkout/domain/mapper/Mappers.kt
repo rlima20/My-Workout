@@ -1,6 +1,5 @@
 package com.example.myworkout.domain.mapper
 
-import com.example.myworkout.domain.model.MuscleGroup
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -112,16 +111,6 @@ fun List<MuscleSubGroupEntity>.toModelMuscleSubGroupList(): List<MuscleSubGroupM
             id = muscleSubGroupEntity.muscleSubGroupId,
             name = muscleSubGroupEntity.name,
             selected = muscleSubGroupEntity.selected
-        )
-    }
-}
-
-fun List<MuscleGroupModel>.toListOfMuscleGroup(): List<MuscleGroup> {
-    return this.map {
-        MuscleGroup(
-            muscleGroupId = it.muscleGroupId,
-            name = it.name,
-            image = it.image
         )
     }
 }

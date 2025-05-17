@@ -107,6 +107,8 @@ class MuscleGroupViewModel(
                 viewModelScope.launch(Dispatchers.IO) {
                     muscleGroupUseCase.insertMuscleGroup(muscleGroup)
                     setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
+                    delay(2000)
+                    fetchMuscleGroups()
                 }
             } catch (e: Exception) { setErrorState() }
         }

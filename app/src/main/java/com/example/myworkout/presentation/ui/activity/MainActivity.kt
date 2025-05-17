@@ -118,22 +118,12 @@ class MainActivity : ComponentActivity() {
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
-                    onDatabaseCreated = {
-                        DatabaseCreationDone(
-                            prefs = prefs,
-                            isHomeScreen = isHomeScreen,
-                            snackBarHostState = snackBarHostState,
-                        )
-                    },
+                    onDatabaseCreated = { DatabaseCreationDone(prefs, isHomeScreen, snackBarHostState,) },
                     onTrainingChecked = { },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     showMuscleGroupSection = showMuscleGroupSection,
-                    onCreateMuscleGroup = {
-                        muscleGroupViewModel.dispatchViewAction(
-                            MuscleGroupViewAction.CreateMuscleGroup(it)
-                        )
-                    },
+                    onCreateMuscleGroup = { createMuscleGroup(it) },
                     onShowMuscleGroupSection = { showMuscleGroupSection = false },
                     onShowSnackBar = { showToast(message = it) },
                     onSetInitialState = { setInitialState() }
@@ -173,8 +163,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun fetchInfoIfNotFirstInstall(prefs: TrainingPrefs) {
-        if (prefs.isFirstInstall(this.baseContext)) {
+        if (!prefs.isFirstInstall(this.baseContext)) {
             fetchTrainings()
+            fetchMuscleGroups()
+            fetchMuscleSubGroups()
         }
     }
 
@@ -203,6 +195,10 @@ class MainActivity : ComponentActivity() {
 
     private fun setInitialState() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
+    }
+
+    private fun createMuscleGroup(it: String) {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it))
     }
 
     private fun fetchMuscleGroups() {

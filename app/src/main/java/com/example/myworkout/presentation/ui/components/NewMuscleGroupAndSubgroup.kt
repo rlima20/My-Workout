@@ -22,13 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
-import com.example.myworkout.domain.mapper.toListOfMuscleGroup
-import com.example.myworkout.domain.model.MuscleGroup
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
@@ -37,15 +36,17 @@ import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PAD
 @Composable
 fun NewMuscleGroupAndSubgroup(
     muscleGroups: List<MuscleGroupModel>,
+    enableSubGroupSection: Boolean,
     onCreateMuscleGroup: (name: String) -> Unit,
-    enableSubGroupSection: Boolean
 ) {
     Column(modifier = Modifier.padding(top = 70.dp)) {
         SetMuscleGroupSection { onCreateMuscleGroup(it) }
-        SetMuscleSubGroupSection(
-            muscleGroups = muscleGroups,
-            enableSubGroupSection = enableSubGroupSection
-        )
+        if (muscleGroups.isNotEmpty()) {
+            SetMuscleSubGroupSection(
+                muscleGroups = muscleGroups,
+                enableSubGroupSection = enableSubGroupSection
+            )
+        }
     }
 }
 
@@ -85,21 +86,17 @@ fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     enableSubGroupSection: Boolean
 ) {
-    var muscleGroupList by remember { mutableStateOf(muscleGroups.toListOfMuscleGroup()) }
-
     ButtonSection(
         modifier = Modifier,
         buttonName = stringResource(R.string.button_section_save_button),
         buttonEnabled = enableSubGroupSection,
-        onButtonClick = {
-            // Todo
-        },
+        onButtonClick = {},
         content = {
             MuscleGroups(
-                muscleGroups = muscleGroupList,
+                muscleGroups = muscleGroups,
                 onItemClick = {
-                    muscleGroupList = muscleGroupList.map { muscleGroup ->
-                        MuscleGroup(
+                    muscleGroups.map { muscleGroup ->
+                        MuscleGroupModel(
                             muscleGroupId = muscleGroup.muscleGroupId,
                             name = muscleGroup.name,
                             image = muscleGroup.image,
@@ -115,8 +112,8 @@ fun SetMuscleSubGroupSection(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MuscleGroups(
-    muscleGroups: List<MuscleGroup>,
-    onItemClick: (item: MuscleGroup) -> Unit
+    muscleGroups: List<MuscleGroupModel>,
+    onItemClick: (item: MuscleGroupModel) -> Unit
 ) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { item ->
