@@ -21,7 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 
@@ -55,26 +59,35 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 
     var muscleGroupName by remember { mutableStateOf(String()) }
     var buttonEnabled by remember { mutableStateOf(false) }
-    var enableTextField by remember { mutableStateOf(true) }
+    var textFieldFocused by remember { mutableStateOf(true) }
+
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     ButtonSection(
         modifier = Modifier,
+        titleSection = stringResource(R.string.new_muscle_group),
         buttonName = stringResource(R.string.button_section_add_button),
         buttonEnabled = buttonEnabled,
         onButtonClick = {
             buttonEnabled = false
-            enableTextField = false
             onAddButtonClicked(muscleGroupName)
+            textFieldFocused = false
+            muscleGroupName = String().emptyString()
+            focusManager.clearFocus()
         },
         content = {
+
             TextField(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 value = muscleGroupName,
+                singleLine = true,
                 onValueChange = {
                     muscleGroupName = it
                     buttonEnabled = it.isNotEmpty()
                 },
-                enabled = enableTextField,
                 label = { Text(stringResource(R.string.new_training_input_text_label)) }
             )
         }
@@ -88,23 +101,31 @@ fun SetMuscleSubGroupSection(
 ) {
     ButtonSection(
         modifier = Modifier,
+        titleSection = stringResource(R.string.new_sub_group),
         buttonName = stringResource(R.string.button_section_save_button),
         buttonEnabled = enableSubGroupSection,
         onButtonClick = {},
         content = {
-            MuscleGroups(
-                muscleGroups = muscleGroups,
-                onItemClick = {
-                    muscleGroups.map { muscleGroup ->
-                        MuscleGroupModel(
-                            muscleGroupId = muscleGroup.muscleGroupId,
-                            name = muscleGroup.name,
-                            image = muscleGroup.image,
-                            selected = muscleGroup.muscleGroupId == it.muscleGroupId,
-                            enabled = muscleGroup.muscleGroupId == it.muscleGroupId
-                        )
-                    }
-                })
+            Column {
+                Text(
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    text = stringResource(R.string.select_your_group)
+                )
+                MuscleGroups(
+                    muscleGroups = muscleGroups,
+                    onItemClick = {
+                        muscleGroups.map { muscleGroup ->
+                            MuscleGroupModel(
+                                muscleGroupId = muscleGroup.muscleGroupId,
+                                name = muscleGroup.name,
+                                image = muscleGroup.image,
+                                selected = muscleGroup.muscleGroupId == it.muscleGroupId,
+                                enabled = muscleGroup.muscleGroupId == it.muscleGroupId
+                            )
+                        }
+                    })
+            }
         }
     )
 }
@@ -119,7 +140,7 @@ private fun MuscleGroups(
         items(muscleGroups) { item ->
 
             FilterChip(
-                border = BorderStroke(1.dp, Color(0x7FE1E1E1)),
+                border = BorderStroke(1.dp, color = colorResource(R.color.title_color)),
                 enabled = item.enabled,
                 shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 15)),
                 modifier = Modifier.height(42.dp),
