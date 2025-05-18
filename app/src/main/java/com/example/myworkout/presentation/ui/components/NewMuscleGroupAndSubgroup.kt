@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -99,6 +100,9 @@ fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     enableSubGroupSection: Boolean
 ) {
+    var selected by remember { mutableStateOf(false) }
+    var muscleGroupId by remember { mutableIntStateOf(0) }
+
     ButtonSection(
         modifier = Modifier,
         titleSection = stringResource(R.string.new_sub_group),
@@ -112,18 +116,17 @@ fun SetMuscleSubGroupSection(
                     modifier = Modifier.padding(bottom = 4.dp),
                     text = stringResource(R.string.select_your_group)
                 )
+                // Todo - Análise
+                /**
+                 * A lista muscleGroups não está sendo atualizada pois ela está na viewModel.
+                 * Com isso eu não consigo setar um item como selecionado e os outros não.
+                 */
                 MuscleGroups(
+                    objSelected = Pair(muscleGroupId, selected),
                     muscleGroups = muscleGroups,
                     onItemClick = {
-                        muscleGroups.map { muscleGroup ->
-                            MuscleGroupModel(
-                                muscleGroupId = muscleGroup.muscleGroupId,
-                                name = muscleGroup.name,
-                                image = muscleGroup.image,
-                                selected = muscleGroup.muscleGroupId == it.muscleGroupId,
-                                enabled = muscleGroup.muscleGroupId == it.muscleGroupId
-                            )
-                        }
+                        selected = true
+                        muscleGroupId = it.muscleGroupId
                     })
             }
         }
@@ -133,6 +136,7 @@ fun SetMuscleSubGroupSection(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MuscleGroups(
+    objSelected: Pair<Int, Boolean>,
     muscleGroups: List<MuscleGroupModel>,
     onItemClick: (item: MuscleGroupModel) -> Unit
 ) {
@@ -145,13 +149,17 @@ private fun MuscleGroups(
                 shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 15)),
                 modifier = Modifier.height(42.dp),
                 colors = selectableChipColors(),
-                selected = muscleGroup.selected,
+                selected = setSelectedItem(objSelected, muscleGroup),
                 content = { Text(fontSize = 18.sp, text = muscleGroup.name) },
                 onClick = { onItemClick(muscleGroup) },
             )
         }
     }
 }
+
+@Composable
+private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: MuscleGroupModel) =
+    if (objSelected.first == muscleGroup.muscleGroupId) objSelected.second else muscleGroup.selected
 
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
