@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CornerSize
-import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material3.MaterialTheme
@@ -31,15 +30,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
+import com.example.myworkout.utils.selectableChipColors
+
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -49,17 +50,40 @@ fun NewMuscleGroupAndSubgroup(
     enableSubGroupSection: Boolean,
     onCreateMuscleGroup: (name: String) -> Unit,
 ) {
-    val muscleSubGroupsSelected: MutableList<MuscleSubGroupModel>
-    by remember {  mutableStateOf(mutableListOf())}
+    var muscleSubGroupsSelected: MutableList<MuscleSubGroupModel> by remember {
+        mutableStateOf(
+            mutableListOf()
+        )
+    }
+    var newMuscleSubGroupsSelected: MutableList<MuscleSubGroupModel> by remember {
+        mutableStateOf(
+            mutableListOf()
+        )
+    }
 
     Column(modifier = Modifier.padding(top = 70.dp)) {
         SetMuscleGroupSection { onCreateMuscleGroup(it) }
         SetMuscleSubGroupSection(
             muscleGroups = muscleGroups,
             muscleSubGroups = muscleSubGroups,
-            muscleSubGroupsSelected = muscleSubGroupsSelected,
+            muscleSubGroupsSelected = newMuscleSubGroupsSelected,
             enableSubGroupSection = enableSubGroupSection,
-            onAddMuscleSubGroup = { muscleSubGroupsSelected.add(it) }
+            onAddMuscleSubGroup = {
+                if (!it.selected) {
+                    muscleSubGroupsSelected.add(it)
+                    val updatedMuscleSubGroups = muscleSubGroups.map { subGroup ->
+                        if (muscleSubGroupsSelected.contains(subGroup)) subGroup.copy(selected = true)
+                        else subGroup.copy(selected = false)
+                    }
+                    newMuscleSubGroupsSelected = updatedMuscleSubGroups.toMutableList()
+                } else {
+                    val updatedMuscleSubGroups = muscleSubGroups.map { subGroup ->
+                        if (muscleSubGroupsSelected.contains(subGroup)) subGroup.copy(selected = false)
+                        else subGroup.copy(selected = true)
+                    }
+                    newMuscleSubGroupsSelected = updatedMuscleSubGroups.toMutableList()
+                }
+            }
         )
     }
 }
@@ -169,7 +193,7 @@ private fun MuscleGroupsWithMuscleSubGroups(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(42.dp),
-            muscleSubGroups = muscleSubGroups,
+            muscleSubGroups = muscleSubGroupsSelected.ifEmpty { muscleSubGroups },
             orientation = Orientation.HORIZONTAL,
             onItemClick = { onAddMuscleSubGroup(it) }
         )
@@ -199,65 +223,13 @@ private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: Muscle
     if (objSelected.first == muscleGroup.muscleGroupId) objSelected.second else muscleGroup.selected
 
 @Composable
-@OptIn(ExperimentalMaterialApi::class)
-private fun selectableChipColors() = ChipDefaults.filterChipColors(
-    backgroundColor = colorResource(R.color.content),
-    selectedContentColor = colorResource(R.color.button_color),
-    disabledBackgroundColor = colorResource(R.color.content),
-    disabledContentColor = colorResource(R.color.pending),
-    selectedBackgroundColor = colorResource(R.color.button_color)
-)
-
-@Composable
 @Preview
 fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
-        muscleGroups = mutableListOf(
-            MuscleGroupModel(
-                muscleGroupId = 1,
-                name = "Peito e Ombro",
-                image = BodyPart.OTHER
-            ),
-            MuscleGroupModel(
-                muscleGroupId = 2,
-                name = "Ombro",
-                image = BodyPart.OTHER
-            ),
-            MuscleGroupModel(
-                muscleGroupId = 3,
-                name = "Braço",
-                image = BodyPart.OTHER
-            ),
-            MuscleGroupModel(
-                muscleGroupId = 4,
-                name = "Pernas",
-                image = BodyPart.OTHER
-            ),
-            MuscleGroupModel(
-                muscleGroupId = 5,
-                name = "Abdômen",
-                image = BodyPart.OTHER
-            ),
-        ),
+        muscleGroups = Constants().muscleGroups,
         onCreateMuscleGroup = {},
         enableSubGroupSection = true,
-        muscleSubGroups = mutableListOf(
-            MuscleSubGroupModel(
-                id = 0,
-                name = "Superior",
-                selected = false
-            ),
-            MuscleSubGroupModel(
-                id = 1,
-                name = "Lateral",
-                selected = false
-            ),
-            MuscleSubGroupModel(
-                id = 2,
-                name = "Posterior",
-                selected = false
-            )
-        )
+        muscleSubGroups = Constants().muscleSubGroups
     )
 }
 
