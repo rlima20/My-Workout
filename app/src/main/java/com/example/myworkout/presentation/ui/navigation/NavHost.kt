@@ -34,7 +34,6 @@ fun NavHost(
     muscleSubGroups: List<MuscleSubGroupModel>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
-    showMuscleGroupSection: Boolean,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
@@ -76,6 +75,7 @@ fun NavHost(
 
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
+                muscleSubGroups = muscleSubGroups,
                 enableSubGroupSection = enableSubGroupSection,
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) }
             )

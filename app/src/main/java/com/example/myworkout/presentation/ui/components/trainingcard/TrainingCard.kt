@@ -142,7 +142,7 @@ private fun MuscleSubGroupSection(
             onGetMuscleSubGroupsByTrainingId(training.trainingId)
 
             FilterChipList(
-                listOfMuscleSubGroup = listOfMuscleSubGroup,
+                muscleSubGroups = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
                 enabled = isFilterChipListEnabled
             )

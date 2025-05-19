@@ -122,7 +122,6 @@ class MainActivity : ComponentActivity() {
                     onTrainingChecked = { },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
-                    showMuscleGroupSection = showMuscleGroupSection,
                     onCreateMuscleGroup = { createMuscleGroup(it) },
                     onShowMuscleGroupSection = { showMuscleGroupSection = false },
                     onShowSnackBar = { showToast(message = it) },

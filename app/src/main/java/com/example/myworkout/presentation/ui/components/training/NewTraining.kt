@@ -15,11 +15,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.setImageDrawable
@@ -89,7 +87,7 @@ fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
         modifier = Modifier
             .padding(start = 4.dp, end = 4.dp)
             .height(50.dp),
-        listOfMuscleSubGroup = listOfMuscleGroup,
+        muscleSubGroups = listOfMuscleGroup,
         onItemClick = {},
         backGroundColor = R.color.white,
         orientation = Orientation.HORIZONTAL

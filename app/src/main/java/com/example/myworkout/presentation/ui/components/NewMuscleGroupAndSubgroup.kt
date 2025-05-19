@@ -1,5 +1,6 @@
 package com.example.myworkout.presentation.ui.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -33,25 +33,34 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
+import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
 fun NewMuscleGroupAndSubgroup(
     muscleGroups: List<MuscleGroupModel>,
+    muscleSubGroups: List<MuscleSubGroupModel>,
     enableSubGroupSection: Boolean,
     onCreateMuscleGroup: (name: String) -> Unit,
 ) {
+    val muscleSubGroupsSelected: MutableList<MuscleSubGroupModel>
+    by remember {  mutableStateOf(mutableListOf())}
+
     Column(modifier = Modifier.padding(top = 70.dp)) {
         SetMuscleGroupSection { onCreateMuscleGroup(it) }
-        if (muscleGroups.isNotEmpty()) {
-            SetMuscleSubGroupSection(
-                muscleGroups = muscleGroups,
-                enableSubGroupSection = enableSubGroupSection
-            )
-        }
+        SetMuscleSubGroupSection(
+            muscleGroups = muscleGroups,
+            muscleSubGroups = muscleSubGroups,
+            muscleSubGroupsSelected = muscleSubGroupsSelected,
+            enableSubGroupSection = enableSubGroupSection,
+            onAddMuscleSubGroup = { muscleSubGroupsSelected.add(it) }
+        )
     }
 }
 
@@ -61,7 +70,6 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
     var muscleGroupName by remember { mutableStateOf(String()) }
     var buttonEnabled by remember { mutableStateOf(false) }
     var textFieldFocused by remember { mutableStateOf(true) }
-
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
@@ -78,7 +86,6 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
             focusManager.clearFocus()
         },
         content = {
-
             TextField(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -98,63 +105,93 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 @Composable
 fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
-    enableSubGroupSection: Boolean
+    muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleSubGroupsSelected: List<MuscleSubGroupModel>,
+    enableSubGroupSection: Boolean,
+    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit
 ) {
-    var selected by remember { mutableStateOf(false) }
-    var muscleGroupId by remember { mutableIntStateOf(0) }
+    if (muscleGroups.isNotEmpty()) {
+        var selected by remember { mutableStateOf(false) }
+        var muscleGroupId by remember { mutableIntStateOf(0) }
 
-    ButtonSection(
-        modifier = Modifier,
-        titleSection = stringResource(R.string.new_sub_group),
-        buttonName = stringResource(R.string.button_section_save_button),
-        buttonEnabled = enableSubGroupSection,
-        onButtonClick = {},
-        content = {
-            Column {
-                Text(
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    text = stringResource(R.string.select_your_group)
-                )
-                // Todo - Análise
-                /**
-                 * A lista muscleGroups não está sendo atualizada pois ela está na viewModel.
-                 * Com isso eu não consigo setar um item como selecionado e os outros não.
-                 */
-                MuscleGroups(
+        ButtonSection(
+            modifier = Modifier,
+            titleSection = stringResource(R.string.new_sub_group),
+            buttonName = stringResource(R.string.button_section_save_button),
+            buttonEnabled = enableSubGroupSection,
+            onButtonClick = {},
+            content = {
+                MuscleGroupsWithMuscleSubGroups(
                     objSelected = Pair(muscleGroupId, selected),
                     muscleGroups = muscleGroups,
+                    muscleSubGroups = muscleSubGroups,
+                    muscleSubGroupsSelected = muscleSubGroupsSelected,
                     onItemClick = {
                         selected = true
                         muscleGroupId = it.muscleGroupId
-                    })
+                    },
+                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) }
+                )
             }
-        }
-    )
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun MuscleGroups(
+private fun MuscleGroupsWithMuscleSubGroups(
     objSelected: Pair<Int, Boolean>,
     muscleGroups: List<MuscleGroupModel>,
-    onItemClick: (item: MuscleGroupModel) -> Unit
+    muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleSubGroupsSelected: List<MuscleSubGroupModel>,
+    onItemClick: (item: MuscleGroupModel) -> Unit,
+    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit
 ) {
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-        items(muscleGroups) { muscleGroup ->
-
-            FilterChip(
-                border = BorderStroke(1.dp, color = colorResource(R.color.title_color)),
-                enabled = muscleGroup.enabled,
-                shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 15)),
-                modifier = Modifier.height(42.dp),
-                colors = selectableChipColors(),
-                selected = setSelectedItem(objSelected, muscleGroup),
-                content = { Text(fontSize = 18.sp, text = muscleGroup.name) },
-                onClick = { onItemClick(muscleGroup) },
-            )
+    Column {
+        MuscleGroupLabel()
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+            items(muscleGroups) { muscleGroup ->
+                FilterChip(
+                    border = BorderStroke(0.5.dp, color = colorResource(R.color.pending)),
+                    enabled = muscleGroup.enabled,
+                    shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 15)),
+                    modifier = Modifier.height(42.dp),
+                    colors = selectableChipColors(),
+                    selected = setSelectedItem(objSelected, muscleGroup),
+                    content = { Text(fontSize = 18.sp, text = muscleGroup.name) },
+                    onClick = { onItemClick(muscleGroup) },
+                )
+            }
         }
+
+        MuscleSubGroupLabel()
+        FilterChipList(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(42.dp),
+            muscleSubGroups = muscleSubGroups,
+            orientation = Orientation.HORIZONTAL,
+            onItemClick = { onAddMuscleSubGroup(it) }
+        )
     }
+}
+
+@Composable
+private fun MuscleGroupLabel() {
+    Text(
+        fontSize = 14.sp,
+        modifier = Modifier.padding(bottom = 4.dp),
+        text = stringResource(R.string.select_your_group)
+    )
+}
+
+@Composable
+private fun MuscleSubGroupLabel() {
+    Text(
+        fontSize = 14.sp,
+        modifier = Modifier.padding(top = 16.dp),
+        text = "(Selecione os subgrupos que quer vincular ao grupo escolhido)"
+    )
 }
 
 @Composable
@@ -164,11 +201,11 @@ private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: Muscle
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 private fun selectableChipColors() = ChipDefaults.filterChipColors(
-    backgroundColor = Color(0xB2DCDCDC),
-    selectedContentColor = Color(0xFF070707),
-    disabledBackgroundColor = Color(0xFFCDC7D1),
-    disabledContentColor = Color(0x7FFFFFFF),
-    selectedBackgroundColor = Color(0xFF9C93A6)
+    backgroundColor = colorResource(R.color.content),
+    selectedContentColor = colorResource(R.color.button_color),
+    disabledBackgroundColor = colorResource(R.color.content),
+    disabledContentColor = colorResource(R.color.pending),
+    selectedBackgroundColor = colorResource(R.color.button_color)
 )
 
 @Composable
@@ -203,7 +240,24 @@ fun NewMuscleGroupAndSubgroupPreview() {
             ),
         ),
         onCreateMuscleGroup = {},
-        enableSubGroupSection = true
+        enableSubGroupSection = true,
+        muscleSubGroups = mutableListOf(
+            MuscleSubGroupModel(
+                id = 0,
+                name = "Superior",
+                selected = false
+            ),
+            MuscleSubGroupModel(
+                id = 1,
+                name = "Lateral",
+                selected = false
+            ),
+            MuscleSubGroupModel(
+                id = 2,
+                name = "Posterior",
+                selected = false
+            )
+        )
     )
 }
 
