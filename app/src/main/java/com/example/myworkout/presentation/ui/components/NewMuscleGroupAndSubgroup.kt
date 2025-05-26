@@ -68,35 +68,53 @@ fun NewMuscleGroupAndSubgroup(
             muscleSubGroups = muscleSubGroups,
             muscleSubGroupsSelected = newMuscleSubGroupsSelected,
             enableSubGroupSection = enableSubGroupSection,
-            onAddMuscleSubGroup = {
-                if (!it.selected) {
-                    if (!muscleSubGroupsSelected.contains(it)) muscleSubGroupsSelected.add(it)
+            onAddMuscleSubGroup = { subGroupSelected ->
+
+                if (!subGroupSelected.selected) {
+                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) muscleSubGroupsSelected.add(subGroupSelected)
 
                     val updatedMuscleSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
-                    muscleSubGroups.forEach { subGroup ->
-                        if (it == subGroup) {
-                            updatedMuscleSubGroups.add(
-                                MuscleSubGroupModel(
-                                    id = it.id,
-                                    name = it.name,
-                                    selected = true
+
+                    if (newMuscleSubGroupsSelected.isNotEmpty()){
+                        newMuscleSubGroupsSelected.forEach { subGroup ->
+                            if (subGroupSelected == subGroup) {
+                                updatedMuscleSubGroups.add(
+                                    MuscleSubGroupModel(
+                                        id = subGroupSelected.id,
+                                        name = subGroupSelected.name,
+                                        selected = true
+                                    )
                                 )
-                            )
-                        } else {
-                            updatedMuscleSubGroups.add(subGroup.copy())
+                            } else {
+                                updatedMuscleSubGroups.add(subGroup.copy())
+                            }
+                        }
+                    } else {
+                        muscleSubGroups.forEach { subGroup ->
+                            if (subGroupSelected == subGroup) {
+                                updatedMuscleSubGroups.add(
+                                    MuscleSubGroupModel(
+                                        id = subGroupSelected.id,
+                                        name = subGroupSelected.name,
+                                        selected = true
+                                    )
+                                )
+                            } else {
+                                updatedMuscleSubGroups.add(subGroup.copy())
+                            }
                         }
                     }
                     newMuscleSubGroupsSelected = updatedMuscleSubGroups.toMutableList()
                 } else {
-                    muscleSubGroupsSelected.remove(it)
+                    muscleSubGroupsSelected.remove(subGroupSelected)
                     val updatedMuscleSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
 
                     newMuscleSubGroupsSelected.forEach { subGroup ->
-                        if (it == subGroup) {
+                        if (subGroupSelected == subGroup) {
                             updatedMuscleSubGroups.add(
                                 MuscleSubGroupModel(
-                                    id = it.id,
-                                    name = it.name,
+                                    id = subGroupSelected.id,
+                                    name = subGroupSelected.name,
                                     selected = false
                                 )
                             )
