@@ -70,18 +70,42 @@ fun NewMuscleGroupAndSubgroup(
             enableSubGroupSection = enableSubGroupSection,
             onAddMuscleSubGroup = {
                 if (!it.selected) {
-                    muscleSubGroupsSelected.add(it)
-                    val updatedMuscleSubGroups = muscleSubGroups.map { subGroup ->
-                        if (muscleSubGroupsSelected.contains(subGroup)) subGroup.copy(selected = true)
-                        else subGroup.copy(selected = false)
+                    if (!muscleSubGroupsSelected.contains(it)) muscleSubGroupsSelected.add(it)
+
+                    val updatedMuscleSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
+                    muscleSubGroups.forEach { subGroup ->
+                        if (it == subGroup) {
+                            updatedMuscleSubGroups.add(
+                                MuscleSubGroupModel(
+                                    id = it.id,
+                                    name = it.name,
+                                    selected = true
+                                )
+                            )
+                        } else {
+                            updatedMuscleSubGroups.add(subGroup.copy())
+                        }
                     }
                     newMuscleSubGroupsSelected = updatedMuscleSubGroups.toMutableList()
                 } else {
-                    val updatedMuscleSubGroups = muscleSubGroups.map { subGroup ->
-                        if (muscleSubGroupsSelected.contains(subGroup)) subGroup.copy(selected = false)
-                        else subGroup.copy(selected = true)
+                    muscleSubGroupsSelected.remove(it)
+                    val updatedMuscleSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
+
+                    newMuscleSubGroupsSelected.forEach { subGroup ->
+                        if (it == subGroup) {
+                            updatedMuscleSubGroups.add(
+                                MuscleSubGroupModel(
+                                    id = it.id,
+                                    name = it.name,
+                                    selected = false
+                                )
+                            )
+                        } else {
+                            updatedMuscleSubGroups.add(subGroup.copy())
+                        }
+
+                        newMuscleSubGroupsSelected = updatedMuscleSubGroups
                     }
-                    newMuscleSubGroupsSelected = updatedMuscleSubGroups.toMutableList()
                 }
             }
         )
