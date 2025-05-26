@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -39,8 +37,7 @@ import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
-import com.example.myworkout.utils.selectableChipColors
-
+import com.example.myworkout.utils.Utils
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -50,7 +47,9 @@ fun NewMuscleGroupAndSubgroup(
     enableSubGroupSection: Boolean,
     onCreateMuscleGroup: (name: String) -> Unit,
 ) {
-    var muscleSubGroupsSelected: MutableList<MuscleSubGroupModel> by remember {
+
+    // Todo - levar esses states para o viewModel
+    val muscleSubGroupsSelected: MutableList<MuscleSubGroupModel> by remember {
         mutableStateOf(
             mutableListOf()
         )
@@ -71,68 +70,39 @@ fun NewMuscleGroupAndSubgroup(
             onAddMuscleSubGroup = { subGroupSelected ->
 
                 if (!subGroupSelected.selected) {
-                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) muscleSubGroupsSelected.add(subGroupSelected)
-
-                    val updatedMuscleSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
-
-                    if (newMuscleSubGroupsSelected.isNotEmpty()){
-                        newMuscleSubGroupsSelected.forEach { subGroup ->
-                            if (subGroupSelected == subGroup) {
-                                updatedMuscleSubGroups.add(
-                                    MuscleSubGroupModel(
-                                        id = subGroupSelected.id,
-                                        name = subGroupSelected.name,
-                                        selected = true
-                                    )
-                                )
-                            } else {
-                                updatedMuscleSubGroups.add(subGroup.copy())
-                            }
-                        }
-                    } else {
-                        muscleSubGroups.forEach { subGroup ->
-                            if (subGroupSelected == subGroup) {
-                                updatedMuscleSubGroups.add(
-                                    MuscleSubGroupModel(
-                                        id = subGroupSelected.id,
-                                        name = subGroupSelected.name,
-                                        selected = true
-                                    )
-                                )
-                            } else {
-                                updatedMuscleSubGroups.add(subGroup.copy())
-                            }
-                        }
-                    }
-                    newMuscleSubGroupsSelected = updatedMuscleSubGroups.toMutableList()
+                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) muscleSubGroupsSelected.add(
+                        subGroupSelected
+                    )
+                    newMuscleSubGroupsSelected = updateMuscleSubGroups(
+                        muscleSubGroups = newMuscleSubGroupsSelected.ifEmpty { muscleSubGroups },
+                        subGroupSelected = subGroupSelected,
+                        isSelected = true
+                    )
                 } else {
                     muscleSubGroupsSelected.remove(subGroupSelected)
-                    val updatedMuscleSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
-
-                    newMuscleSubGroupsSelected.forEach { subGroup ->
-                        if (subGroupSelected == subGroup) {
-                            updatedMuscleSubGroups.add(
-                                MuscleSubGroupModel(
-                                    id = subGroupSelected.id,
-                                    name = subGroupSelected.name,
-                                    selected = false
-                                )
-                            )
-                        } else {
-                            updatedMuscleSubGroups.add(subGroup.copy())
-                        }
-
-                        newMuscleSubGroupsSelected = updatedMuscleSubGroups
-                    }
+                    newMuscleSubGroupsSelected = updateMuscleSubGroups(
+                        muscleSubGroups = newMuscleSubGroupsSelected,
+                        subGroupSelected = subGroupSelected,
+                        isSelected = false
+                    )
                 }
             }
         )
     }
 }
 
+private fun updateMuscleSubGroups(
+    muscleSubGroups: List<MuscleSubGroupModel>,
+    subGroupSelected: MuscleSubGroupModel,
+    isSelected: Boolean
+): MutableList<MuscleSubGroupModel> {
+    return muscleSubGroups.map { subGroup ->
+        if (subGroupSelected == subGroup) subGroup.copy(selected = isSelected) else subGroup.copy()
+    }.toMutableList()
+}
+
 @Composable
 fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
-
     var muscleGroupName by remember { mutableStateOf(String()) }
     var buttonEnabled by remember { mutableStateOf(false) }
     var textFieldFocused by remember { mutableStateOf(true) }
@@ -185,7 +155,7 @@ fun SetMuscleSubGroupSection(
             titleSection = stringResource(R.string.new_sub_group),
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = enableSubGroupSection,
-            onButtonClick = {},
+            onButtonClick = { /* todo - salva o relacionamento entre grupo e subgrpos */ },
             content = {
                 MuscleGroupsWithMuscleSubGroups(
                     objSelected = Pair(muscleGroupId, selected),
@@ -220,11 +190,16 @@ private fun MuscleGroupsWithMuscleSubGroups(
                 FilterChip(
                     border = BorderStroke(0.5.dp, color = colorResource(R.color.pending)),
                     enabled = muscleGroup.enabled,
-                    shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 15)),
                     modifier = Modifier.height(42.dp),
-                    colors = selectableChipColors(),
+                    colors = Utils().selectableChipColors(),
                     selected = setSelectedItem(objSelected, muscleGroup),
-                    content = { Text(fontSize = 18.sp, text = muscleGroup.name) },
+                    content = {
+                        Text(
+                            color = colorResource(R.color.white),
+                            fontSize = 18.sp,
+                            text = muscleGroup.name
+                        )
+                    },
                     onClick = { onItemClick(muscleGroup) },
                 )
             }
@@ -235,6 +210,7 @@ private fun MuscleGroupsWithMuscleSubGroups(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(42.dp),
+            colors = Utils().selectableChipColors(),
             muscleSubGroups = muscleSubGroupsSelected.ifEmpty { muscleSubGroups },
             orientation = Orientation.HORIZONTAL,
             onItemClick = { onAddMuscleSubGroup(it) }
@@ -255,8 +231,8 @@ private fun MuscleGroupLabel() {
 private fun MuscleSubGroupLabel() {
     Text(
         fontSize = 14.sp,
-        modifier = Modifier.padding(top = 16.dp),
-        text = "(Selecione os subgrupos que quer vincular ao grupo escolhido)"
+        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+        text = stringResource(R.string.match_subgroup_with_group)
     )
 }
 
