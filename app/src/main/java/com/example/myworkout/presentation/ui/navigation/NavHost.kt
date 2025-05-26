@@ -34,7 +34,6 @@ fun NavHost(
     muscleSubGroups: List<MuscleSubGroupModel>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
-    showMuscleGroupSection: Boolean,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
@@ -75,8 +74,10 @@ fun NavHost(
             onChangeTopBarTitle(createNewTraining)
 
             NewMuscleGroupAndSubgroup(
-                onCreateMuscleGroup = { onCreateMuscleGroup(it) },
-                enableSubGroupSection = enableSubGroupSection
+                muscleGroups = muscleGroups,
+                muscleSubGroups = muscleSubGroups,
+                enableSubGroupSection = enableSubGroupSection,
+                onCreateMuscleGroup = { onCreateMuscleGroup(it) }
             )
 
             setupMuscleGroupStateObservers(
@@ -119,7 +120,7 @@ private fun setupMuscleGroupStateObservers(
         }
 
         is MuscleGroupViewState.SuccessDatabaseCreated -> { onDatabaseCreated() }
-        is MuscleGroupViewState.Loading -> { LoadingComponent(text = stringResource(R.string.loading)) }
+        is MuscleGroupViewState.Loading -> { LoadingComponent() }
 
         is MuscleGroupViewState.Error -> {
             ErrorStateComponent(onButtonClicked = {

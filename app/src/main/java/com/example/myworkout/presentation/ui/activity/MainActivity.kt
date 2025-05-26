@@ -30,11 +30,11 @@ import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
 import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
-import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
-import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
-import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
+import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
+import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
+import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar
@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
         navController: NavHostController,
         trainings: List<TrainingModel>,
         muscleGroups: List<MuscleGroupModel>,
-        muscleSubGroups:List<MuscleSubGroupModel>,
+        muscleSubGroups: List<MuscleSubGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
         trainingViewState: TrainingViewState,
         prefs: TrainingPrefs,
@@ -118,18 +118,11 @@ class MainActivity : ComponentActivity() {
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
-                    onDatabaseCreated = {
-                        DatabaseCreationDone(
-                            prefs = prefs,
-                            isHomeScreen = isHomeScreen,
-                            snackBarHostState = snackBarHostState,
-                        )
-                    },
+                    onDatabaseCreated = { DatabaseCreationDone(prefs, isHomeScreen, snackBarHostState,) },
                     onTrainingChecked = { },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
-                    showMuscleGroupSection = showMuscleGroupSection,
-                    onCreateMuscleGroup = { muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it)) },
+                    onCreateMuscleGroup = { createMuscleGroup(it) },
                     onShowMuscleGroupSection = { showMuscleGroupSection = false },
                     onShowSnackBar = { showToast(message = it) },
                     onSetInitialState = { setInitialState() }
@@ -168,9 +161,11 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun fetchInfoIfNotFirstInstall( prefs: TrainingPrefs ) {
-        if (prefs.isFirstInstall(this.baseContext)) {
+    private fun fetchInfoIfNotFirstInstall(prefs: TrainingPrefs) {
+        if (!prefs.isFirstInstall(this.baseContext)) {
             fetchTrainings()
+            fetchMuscleGroups()
+            fetchMuscleSubGroups()
         }
     }
 
@@ -199,6 +194,10 @@ class MainActivity : ComponentActivity() {
 
     private fun setInitialState() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
+    }
+
+    private fun createMuscleGroup(it: String) {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it))
     }
 
     private fun fetchMuscleGroups() {

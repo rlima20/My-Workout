@@ -6,4 +6,6 @@ data class MuscleGroupModel(
     val muscleGroupId: Int,
     val name: String,
     val image: BodyPart,
+    val selected: Boolean = false,
+    val enabled: Boolean = true
 )

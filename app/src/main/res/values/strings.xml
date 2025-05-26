@@ -20,4 +20,7 @@
     <string name="new_training_input_text_label">Grupo muscular</string>
     <string name="home_screen_name">Home</string>
     <string name="success_operation">Operação bem sucedida</string>
+    <string name="new_muscle_group">Novo grupo muscular</string>
+    <string name="new_sub_group">Novo sub grupo</string>
+    <string name="select_your_group">(Selecione o grupo desejado)</string>
 </resources>

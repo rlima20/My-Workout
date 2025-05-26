@@ -14,9 +14,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.extensions.emptyString
 
@@ -24,21 +27,39 @@ import com.example.myworkout.extensions.emptyString
 @Composable
 fun ButtonSection(
     modifier: Modifier,
+    titleSection: String,
     buttonName: String,
     buttonEnabled: Boolean,
     onButtonClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = modifier.fillMaxWidth().padding(8.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp),
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.cardElevation()
     ) {
-        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+        Text(
+            modifier = Modifier.padding(start = 16.dp, top = 8.dp),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colorResource(R.color.title_color),
+            maxLines = 1,
+            text = titleSection
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+        ) {
             content()
         }
         Button(
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
             onClick = { onButtonClick() },
             enabled = buttonEnabled
         ) {
@@ -55,6 +76,7 @@ private fun NewMuscleGroupPreview() {
 
     ButtonSection(
         modifier = Modifier,
+        titleSection = stringResource(R.string.new_muscle_group),
         buttonName = stringResource(R.string.button_section_add_button),
         buttonEnabled = buttonEnabled,
         onButtonClick = { },
