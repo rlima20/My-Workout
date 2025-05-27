@@ -1,5 +1,9 @@
 package com.example.myworkout.presentation.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkout.Constants
@@ -29,6 +33,24 @@ class MuscleGroupViewModel(
     private val _muscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> = MutableStateFlow(listOf())
     val muscleSubGroups: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroups
 
+    private val _muscleSubGroupsSelected: MutableStateFlow<MutableList<MuscleSubGroupModel>> = MutableStateFlow(mutableListOf())
+    val muscleSubGroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroupsSelected
+
+    private fun addToMuscleSubGroupSelected(value: MuscleSubGroupModel){
+        _muscleSubGroupsSelected.value.add(value)
+    }
+
+    private fun removeFromMuscleSubGroupSelected(value: MuscleSubGroupModel){
+        _muscleSubGroupsSelected.value.remove(value)
+    }
+
+    private val _newMuscleSubGroupsSelected:  MutableStateFlow<MutableList<MuscleSubGroupModel>> = MutableStateFlow(mutableListOf())
+    val newMuscleSubGroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _newMuscleSubGroupsSelected
+
+    private fun setNewMuscleSubGroupSelected(value: MutableList<MuscleSubGroupModel>){
+        _newMuscleSubGroupsSelected.value = value
+    }
+
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
             is MuscleGroupViewAction.SetupInitialState -> { setInitialViewState() }
@@ -37,6 +59,9 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.CreateMuscleSubGroup -> { createMuscleSubGroup(viewAction.name) }
             is MuscleGroupViewAction.FetchMuscleGroups -> { fetchMuscleGroups() }
             is MuscleGroupViewAction.FetchMuscleSubGroups -> { fetchMuscleSubGroups() }
+            is MuscleGroupViewAction.AddNewSubGroupsSelected -> { addToMuscleSubGroupSelected(viewAction.subGroup) }
+            is MuscleGroupViewAction.RemoveSubGroupsSelected -> { removeFromMuscleSubGroupSelected(viewAction.subGroup) }
+            is MuscleGroupViewAction.SetNewSubGroupsSelected -> { setNewMuscleSubGroupSelected(viewAction.newList) }
         }
     }
 

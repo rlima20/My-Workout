@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -32,7 +33,7 @@ import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.presentation.ui.components.commons.CheckBox
 import com.example.myworkout.presentation.ui.components.commons.IconButton
-import com.example.myworkout.utils.setStatus
+import com.example.myworkout.utils.Utils
 
 @RequiresApi(35)
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
@@ -89,7 +90,7 @@ fun TrainingCard(
                 isTrainingChecked = isTrainingChecked,
                 onChecked = {
                     isTrainingChecked = !isTrainingChecked
-                    trainingStatus = setStatus(isTrainingChecked, trainingStatus, firstStatus)
+                    trainingStatus = Utils().setStatus(isTrainingChecked, trainingStatus, firstStatus)
 
                     onTrainingChecked(
                         TrainingModel(
@@ -123,6 +124,7 @@ private fun SetTrainingName(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MuscleSubGroupSection(
     training: TrainingModel,
@@ -144,6 +146,7 @@ private fun MuscleSubGroupSection(
             FilterChipList(
                 muscleSubGroups = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
+                colors = Utils().selectableChipColors(),
                 enabled = isFilterChipListEnabled
             )
         } else IconButton(

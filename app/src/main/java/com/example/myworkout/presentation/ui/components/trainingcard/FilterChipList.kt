@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.ChipColors
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.SelectableChipColors
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,32 +21,38 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.Orientation
+import com.example.myworkout.utils.Utils
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("ResourceAsColor")
 @Composable
 internal fun FilterChipList(
     modifier: Modifier = Modifier,
     muscleSubGroups: List<MuscleSubGroupModel>,
     enabled: Boolean = true,
+    colors: SelectableChipColors,
     orientation: Orientation = Orientation.VERTICAL,
     backGroundColor: Int = DEFAULT_COLOR,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
-    ) {
+) {
     val modifier = modifier
         .background(colorResource(backGroundColor))
 
     SetFilterChipListOrientation(
         orientation = orientation,
+        colors = colors,
         modifier = modifier,
         listOfMuscleSubGroup = muscleSubGroups,
         onItemClick = onItemClick
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SetFilterChipListOrientation(
     orientation: Orientation,
     modifier: Modifier,
+    colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
@@ -56,6 +60,7 @@ private fun SetFilterChipListOrientation(
         Orientation.VERTICAL -> {
             SetLazyColumn(
                 modifier = modifier,
+                colors = colors,
                 listOfMuscleSubGroup = listOfMuscleSubGroup,
                 onItemClick = onItemClick
             )
@@ -64,6 +69,7 @@ private fun SetFilterChipListOrientation(
         Orientation.HORIZONTAL -> {
             SetLazyRow(
                 modifier = modifier,
+                colors = colors,
                 listOfMuscleSubGroup = listOfMuscleSubGroup,
                 onItemClick = onItemClick
             )
@@ -71,9 +77,11 @@ private fun SetFilterChipListOrientation(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SetLazyRow(
     modifier: Modifier,
+    colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
@@ -82,14 +90,16 @@ private fun SetLazyRow(
         horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
     ) {
         items(listOfMuscleSubGroup) { item ->
-            FilterChip(modifier, onItemClick, item)
+            FilterChip(modifier, colors, item, onItemClick)
         }
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun SetLazyColumn(
     modifier: Modifier,
+    colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
@@ -98,29 +108,38 @@ private fun SetLazyColumn(
         verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
     ) {
         items(listOfMuscleSubGroup) { item ->
-            FilterChip(modifier, onItemClick, item)
+            FilterChip(modifier, colors, item, onItemClick)
         }
     }
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 private fun FilterChip(
     modifier: Modifier,
+    colors: SelectableChipColors,
+    item: MuscleSubGroupModel,
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
-    item: MuscleSubGroupModel
 ) {
-    FilterChip(
+    androidx.compose.material.FilterChip(
         modifier = modifier.height(22.dp),
+        colors = colors,
         onClick = { onItemClick(item) },
-        label = { Text(fontSize = 16.sp, text = item.name) },
+        content = {
+            Text(
+                color = colorResource(R.color.white),
+                fontSize = 16.sp,
+                text = item.name
+            )
+        },
         selected = item.selected
     )
 }
 
 const val DEFAULT_COLOR = R.color.empty_2
-val DEFAULT_PADDING = 4.dp
+val DEFAULT_PADDING = 8.dp
 
+@OptIn(ExperimentalMaterialApi::class)
 @Preview
 @Composable
 fun AssistChipListPreview() {
@@ -135,6 +154,7 @@ fun AssistChipListPreview() {
     ) {
         FilterChipList(
             muscleSubGroups = listOfMuscleSubGroup,
+            colors = Utils().selectableChipColors(),
             enabled = false,
             onItemClick = {}
         )
@@ -142,6 +162,7 @@ fun AssistChipListPreview() {
         FilterChipList(
             muscleSubGroups = listOfMuscleSubGroup,
             enabled = false,
+            colors = Utils().selectableChipColors(),
             onItemClick = {},
             orientation = Orientation.HORIZONTAL
         )

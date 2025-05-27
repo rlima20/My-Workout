@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,6 +23,7 @@ import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.setImageDrawable
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
+import com.example.myworkout.utils.Utils
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
@@ -81,13 +83,13 @@ fun ImageSection(bodyPartImage: BodyPart) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
     FilterChipList(
-        modifier = Modifier
-            .padding(start = 4.dp, end = 4.dp)
-            .height(50.dp),
+        modifier = Modifier.padding(start = 4.dp, end = 4.dp).height(50.dp),
         muscleSubGroups = listOfMuscleGroup,
+        colors = Utils().selectableChipColors(),
         onItemClick = {},
         backGroundColor = R.color.white,
         orientation = Orientation.HORIZONTAL
