@@ -32,6 +32,8 @@ fun NavHost(
     trainings: List<TrainingModel>,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleSubGroupsSelected: List<MuscleSubGroupModel>,
+    newMuscleSubGroupsSelected: List<MuscleSubGroupModel>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
     onChangeRoute: (value: Boolean) -> Unit,
@@ -44,7 +46,10 @@ fun NavHost(
     onCreateMuscleGroup: (name: String) -> Unit,
     onShowMuscleGroupSection: () -> Unit,
     onShowSnackBar: (message: String) -> Unit,
-    onSetInitialState: () -> Unit
+    onSetInitialState: () -> Unit,
+    onAddSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
+    onRemoveSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
+    onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -76,8 +81,13 @@ fun NavHost(
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
                 muscleSubGroups = muscleSubGroups,
+                muscleSubGroupsSelected = muscleSubGroupsSelected,
+                newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
                 enableSubGroupSection = enableSubGroupSection,
-                onCreateMuscleGroup = { onCreateMuscleGroup(it) }
+                onCreateMuscleGroup = { onCreateMuscleGroup(it) },
+                onAddSubGroupSelected = { onAddSubGroupSelected(it) },
+                onRemoveSubGroupSelected = { onRemoveSubGroupSelected(it) },
+                onChangeNewMuscleSubGroupsSelected = { onChangeNewMuscleSubGroupsSelected(it) }
             )
 
             setupMuscleGroupStateObservers(
