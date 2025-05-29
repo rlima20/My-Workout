@@ -198,7 +198,9 @@ private fun MuscleGroupsWithMuscleSubGroups(
     onButtonEnabled: (value: Boolean) -> Unit
 ) {
     Column {
-        onButtonEnabled(verifyEnabledButton(muscleSubGroupsSelected))
+        val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any{it.selected})
+        val shouldEnableSaveButton = verifyEnabledButton(muscleSubGroupsSelected)
+        onButtonEnabled(shouldEnableSaveButton && isMuscleGroupSelected)
 
         MuscleGroupLabel()
         LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {

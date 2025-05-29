@@ -1,9 +1,5 @@
 package com.example.myworkout.presentation.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkout.Constants
@@ -63,6 +59,7 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.RemoveSubGroupsSelected -> { removeFromMuscleSubGroupSelected(viewAction.subGroup) }
             is MuscleGroupViewAction.SetNewSubGroupsSelected -> { setNewMuscleSubGroupSelected(viewAction.newList) }
             is MuscleGroupViewAction.SaveGroupSubGroupRelation -> { insertMuscleGroupMuscleSubGroup(viewAction.newList) }
+            is MuscleGroupViewAction.ClearSubGroupsSelected -> { clearMuscleSubGroupsSelected() }
         }
     }
 
@@ -174,6 +171,11 @@ class MuscleGroupViewModel(
                 name = name
             )
         )
+    }
+
+    private fun clearMuscleSubGroupsSelected() {
+        _muscleSubGroupsSelected.value.clear()
+        _newMuscleSubGroupsSelected.value.clear()
     }
 
     private fun setMuscleGroups(value: List<MuscleGroupModel>) {

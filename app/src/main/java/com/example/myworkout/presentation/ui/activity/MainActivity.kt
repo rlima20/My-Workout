@@ -144,10 +144,12 @@ class MainActivity : ComponentActivity() {
             bottomBar = {
                 BottomBar(
                     onNavigateToHomeScreen = {
+                        clearSubGroupsSelected()
                         navController.navigateSingleTopTo(HomeScreen.route)
                         showMuscleGroupSection = true
                     },
                     onNavigateToAddTrainingScreen = {
+                        clearSubGroupsSelected()
                         navigateToNewTrainingScreen(navController)
                     }
                 )
@@ -244,6 +246,10 @@ class MainActivity : ComponentActivity() {
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
         snackBarHostState.showSnackbar(getString(R.string.everything_ready))
+    }
+
+    private fun clearSubGroupsSelected(){
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.ClearSubGroupsSelected)
     }
 
     private fun createTrainings() {
