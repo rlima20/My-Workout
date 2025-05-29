@@ -62,6 +62,7 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.AddNewSubGroupsSelected -> { addToMuscleSubGroupSelected(viewAction.subGroup) }
             is MuscleGroupViewAction.RemoveSubGroupsSelected -> { removeFromMuscleSubGroupSelected(viewAction.subGroup) }
             is MuscleGroupViewAction.SetNewSubGroupsSelected -> { setNewMuscleSubGroupSelected(viewAction.newList) }
+            is MuscleGroupViewAction.SaveGroupSubGroupRelation -> { insertMuscleGroupMuscleSubGroup(viewAction.newList) }
         }
     }
 
@@ -88,13 +89,16 @@ class MuscleGroupViewModel(
     }
 
     private fun insertMuscleGroupMuscleSubGroup(
-        muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel
+        muscleGroupMuscleSubGroups: MutableList<MuscleGroupMuscleSubGroupModel>
     ) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 viewModelScope.launch(Dispatchers.IO) {
-                    muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup)
+                    muscleGroupMuscleSubGroups.forEach {
+                        muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(it)
+                        delay(2000)
+                    }
                     setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup)
                 }
             } catch (e: Exception) { setErrorState() }

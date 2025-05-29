@@ -21,6 +21,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.navigateSingleTopTo
@@ -136,7 +137,8 @@ class MainActivity : ComponentActivity() {
                     onSetInitialState = { setInitialState() },
                     onAddSubGroupSelected = { addSubGroupSelected(it) },
                     onRemoveSubGroupSelected = { removeSubGroupSelected(it) },
-                    onChangeNewMuscleSubGroupsSelected = { setNewMuscleSubGroupsSelected(it) }
+                    onChangeNewMuscleSubGroupsSelected = { setNewMuscleSubGroupsSelected(it) },
+                    onSaveRelation = { saveGroupSubGroupRelation(it) }
                 )
             },
             bottomBar = {
@@ -234,6 +236,10 @@ class MainActivity : ComponentActivity() {
 
     private fun removeSubGroupSelected(subGroup: MuscleSubGroupModel){
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.RemoveSubGroupsSelected(subGroup))
+    }
+
+    private fun saveGroupSubGroupRelation(list: MutableList<MuscleGroupMuscleSubGroupModel>){
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SaveGroupSubGroupRelation(list))
     }
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {

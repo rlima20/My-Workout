@@ -15,6 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
@@ -49,7 +50,8 @@ fun NavHost(
     onSetInitialState: () -> Unit,
     onAddSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
     onRemoveSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
-    onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit
+    onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit,
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -87,7 +89,9 @@ fun NavHost(
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onAddSubGroupSelected = { onAddSubGroupSelected(it) },
                 onRemoveSubGroupSelected = { onRemoveSubGroupSelected(it) },
-                onChangeNewMuscleSubGroupsSelected = { onChangeNewMuscleSubGroupsSelected(it) }
+                onChangeNewMuscleSubGroupsSelected = { onChangeNewMuscleSubGroupsSelected(it) },
+                onSaveRelation = { onSaveRelation(it) },
+                onButtonEnabled = { enableSubGroupSection = it }
             )
 
             setupMuscleGroupStateObservers(

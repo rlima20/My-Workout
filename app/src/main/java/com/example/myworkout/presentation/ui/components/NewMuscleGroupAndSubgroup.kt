@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
@@ -50,7 +51,9 @@ fun NewMuscleGroupAndSubgroup(
     onCreateMuscleGroup: (name: String) -> Unit,
     onAddSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
     onRemoveSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
-    onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit
+    onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit,
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
+    onButtonEnabled: (value: Boolean) -> Unit
 ) {
 
     Column(modifier = Modifier.padding(top = 70.dp)) {
@@ -63,7 +66,9 @@ fun NewMuscleGroupAndSubgroup(
             onAddMuscleSubGroup = { subGroupSelected ->
 
                 if (!subGroupSelected.selected) {
-                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) onAddSubGroupSelected(subGroupSelected)
+                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) onAddSubGroupSelected(
+                        subGroupSelected
+                    )
                     onChangeNewMuscleSubGroupsSelected(
                         updateMuscleSubGroups(
                             muscleSubGroups = newMuscleSubGroupsSelected.ifEmpty { muscleSubGroups },
@@ -81,7 +86,22 @@ fun NewMuscleGroupAndSubgroup(
                         )
                     )
                 }
-            }
+            },
+            onSaveRelation = { muscleGroupId ->
+                val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> =
+                    mutableListOf()
+
+                muscleSubGroupsSelected.forEach {
+                    muscleGroupSubGroups.add(
+                        MuscleGroupMuscleSubGroupModel(
+                            muscleGroupId = muscleGroupId,
+                            muscleSubGroupId = it.id
+                        )
+                    )
+                }
+
+                onSaveRelation(muscleGroupSubGroups)
+            },
         )
     }
 }
@@ -139,8 +159,12 @@ fun SetMuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleSubGroupsSelected: List<MuscleSubGroupModel>,
     enableSubGroupSection: Boolean,
-    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit
+    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    onSaveRelation: (muscleGroupId: Int) -> Unit,
 ) {
+
+    var buttonEnabled by remember { mutableStateOf(false) }
+
     if (muscleGroups.isNotEmpty()) {
         var selected by remember { mutableStateOf(false) }
         var muscleGroupId by remember { mutableIntStateOf(0) }
@@ -149,8 +173,10 @@ fun SetMuscleSubGroupSection(
             modifier = Modifier,
             titleSection = stringResource(R.string.new_sub_group),
             buttonName = stringResource(R.string.button_section_save_button),
-            buttonEnabled = enableSubGroupSection,
-            onButtonClick = { /* todo - salva o relacionamento entre grupo e subgrpos */ },
+            buttonEnabled = buttonEnabled,
+            onButtonClick = {
+                onSaveRelation(muscleGroupId)
+            },
             content = {
                 MuscleGroupsWithMuscleSubGroups(
                     objSelected = Pair(muscleGroupId, selected),
@@ -161,7 +187,8 @@ fun SetMuscleSubGroupSection(
                         selected = true
                         muscleGroupId = it.muscleGroupId
                     },
-                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) }
+                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
+                    onButtonEnabled = { buttonEnabled = it }
                 )
             }
         )
@@ -176,9 +203,15 @@ private fun MuscleGroupsWithMuscleSubGroups(
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleSubGroupsSelected: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleGroupModel) -> Unit,
-    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit
+    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    onButtonEnabled: (value: Boolean) -> Unit
 ) {
     Column {
+        var enabled = false
+        muscleSubGroupsSelected.forEach {
+            if (it.selected) enabled = true
+        }
+        onButtonEnabled(enabled)
         MuscleGroupLabel()
         LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
             items(muscleGroups) { muscleGroup ->
@@ -247,7 +280,9 @@ fun NewMuscleGroupAndSubgroupPreview() {
         muscleSubGroups = Constants().muscleSubGroups,
         onAddSubGroupSelected = {},
         onRemoveSubGroupSelected = {},
-        onChangeNewMuscleSubGroupsSelected = {}
+        onChangeNewMuscleSubGroupsSelected = {},
+        onSaveRelation = {},
+        onButtonEnabled = {}
     )
 }
 
