@@ -85,13 +85,11 @@ fun NavHost(
                 muscleSubGroups = muscleSubGroups,
                 muscleSubGroupsSelected = muscleSubGroupsSelected,
                 newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
-                enableSubGroupSection = enableSubGroupSection,
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onAddSubGroupSelected = { onAddSubGroupSelected(it) },
                 onRemoveSubGroupSelected = { onRemoveSubGroupSelected(it) },
                 onChangeNewMuscleSubGroupsSelected = { onChangeNewMuscleSubGroupsSelected(it) },
                 onSaveRelation = { onSaveRelation(it) },
-                onButtonEnabled = { enableSubGroupSection = it }
             )
 
             setupMuscleGroupStateObservers(

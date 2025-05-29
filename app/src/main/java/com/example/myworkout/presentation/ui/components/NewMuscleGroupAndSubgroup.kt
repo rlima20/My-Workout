@@ -47,13 +47,11 @@ fun NewMuscleGroupAndSubgroup(
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleSubGroupsSelected: List<MuscleSubGroupModel>,
     newMuscleSubGroupsSelected: List<MuscleSubGroupModel>,
-    enableSubGroupSection: Boolean,
     onCreateMuscleGroup: (name: String) -> Unit,
     onAddSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
     onRemoveSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
     onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
-    onButtonEnabled: (value: Boolean) -> Unit
 ) {
 
     Column(modifier = Modifier.padding(top = 70.dp)) {
@@ -62,7 +60,6 @@ fun NewMuscleGroupAndSubgroup(
             muscleGroups = muscleGroups,
             muscleSubGroups = muscleSubGroups,
             muscleSubGroupsSelected = newMuscleSubGroupsSelected,
-            enableSubGroupSection = enableSubGroupSection,
             onAddMuscleSubGroup = { subGroupSelected ->
 
                 if (!subGroupSelected.selected) {
@@ -88,8 +85,7 @@ fun NewMuscleGroupAndSubgroup(
                 }
             },
             onSaveRelation = { muscleGroupId ->
-                val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> =
-                    mutableListOf()
+                val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
 
                 muscleSubGroupsSelected.forEach {
                     muscleGroupSubGroups.add(
@@ -112,7 +108,8 @@ private fun updateMuscleSubGroups(
     isSelected: Boolean
 ): MutableList<MuscleSubGroupModel> {
     return muscleSubGroups.map { subGroup ->
-        if (subGroupSelected == subGroup) subGroup.copy(selected = isSelected) else subGroup.copy()
+        if (subGroupSelected == subGroup) subGroup.copy(selected = isSelected)
+        else subGroup.copy()
     }.toMutableList()
 }
 
@@ -138,9 +135,7 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
         },
         content = {
             TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 value = muscleGroupName,
                 singleLine = true,
                 onValueChange = {
@@ -158,11 +153,9 @@ fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleSubGroupsSelected: List<MuscleSubGroupModel>,
-    enableSubGroupSection: Boolean,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
 ) {
-
     var buttonEnabled by remember { mutableStateOf(false) }
 
     if (muscleGroups.isNotEmpty()) {
@@ -174,9 +167,7 @@ fun SetMuscleSubGroupSection(
             titleSection = stringResource(R.string.new_sub_group),
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = buttonEnabled,
-            onButtonClick = {
-                onSaveRelation(muscleGroupId)
-            },
+            onButtonClick = { onSaveRelation(muscleGroupId) },
             content = {
                 MuscleGroupsWithMuscleSubGroups(
                     objSelected = Pair(muscleGroupId, selected),
@@ -207,11 +198,8 @@ private fun MuscleGroupsWithMuscleSubGroups(
     onButtonEnabled: (value: Boolean) -> Unit
 ) {
     Column {
-        var enabled = false
-        muscleSubGroupsSelected.forEach {
-            if (it.selected) enabled = true
-        }
-        onButtonEnabled(enabled)
+        onButtonEnabled(verifyEnabledButton(muscleSubGroupsSelected))
+
         MuscleGroupLabel()
         LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
             items(muscleGroups) { muscleGroup ->
@@ -221,13 +209,7 @@ private fun MuscleGroupsWithMuscleSubGroups(
                     modifier = Modifier.height(42.dp),
                     colors = Utils().selectableChipColors(),
                     selected = setSelectedItem(objSelected, muscleGroup),
-                    content = {
-                        Text(
-                            color = colorResource(R.color.white),
-                            fontSize = 18.sp,
-                            text = muscleGroup.name
-                        )
-                    },
+                    content = { MuscleGroupName(muscleGroup) },
                     onClick = { onItemClick(muscleGroup) },
                 )
             }
@@ -244,6 +226,19 @@ private fun MuscleGroupsWithMuscleSubGroups(
             onItemClick = { onAddMuscleSubGroup(it) }
         )
     }
+}
+
+private fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupModel>): Boolean {
+    return muscleSubGroupsSelected.any { it.selected }
+}
+
+@Composable
+private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
+    Text(
+        color = colorResource(R.color.white),
+        fontSize = 18.sp,
+        text = muscleGroup.name
+    )
 }
 
 @Composable
@@ -276,13 +271,11 @@ fun NewMuscleGroupAndSubgroupPreview() {
         muscleSubGroupsSelected = Constants().muscleSubGroups,
         newMuscleSubGroupsSelected = Constants().muscleSubGroups,
         onCreateMuscleGroup = {},
-        enableSubGroupSection = true,
         muscleSubGroups = Constants().muscleSubGroups,
         onAddSubGroupSelected = {},
         onRemoveSubGroupSelected = {},
         onChangeNewMuscleSubGroupsSelected = {},
         onSaveRelation = {},
-        onButtonEnabled = {}
     )
 }
 
