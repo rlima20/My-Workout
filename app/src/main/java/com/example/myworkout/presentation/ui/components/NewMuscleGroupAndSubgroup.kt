@@ -33,6 +33,7 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
@@ -54,6 +55,8 @@ fun NewMuscleGroupAndSubgroup(
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
 
+    var previousId = 0
+
     Column(modifier = Modifier.padding(top = 70.dp)) {
         SetMuscleGroupSection { onCreateMuscleGroup(it) }
         SetMuscleSubGroupSection(
@@ -63,9 +66,9 @@ fun NewMuscleGroupAndSubgroup(
             onAddMuscleSubGroup = { subGroupSelected ->
 
                 if (!subGroupSelected.selected) {
-                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) onAddSubGroupSelected(
-                        subGroupSelected
-                    )
+//                    if (!muscleSubGroupsSelected.contains(subGroupSelected)) onAddSubGroupSelected(
+//                        subGroupSelected
+//                    )
                     onChangeNewMuscleSubGroupsSelected(
                         updateMuscleSubGroups(
                             muscleSubGroups = newMuscleSubGroupsSelected.ifEmpty { muscleSubGroups },
@@ -85,6 +88,7 @@ fun NewMuscleGroupAndSubgroup(
                 }
             },
             onSaveRelation = { muscleGroupId ->
+                // Todo - Problema pode estar aqui
                 val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
 
                 muscleSubGroupsSelected.forEach {

@@ -13,6 +13,6 @@ sealed class MuscleGroupViewAction {
     data class SaveGroupSubGroupRelation(val newList: MutableList<MuscleGroupMuscleSubGroupModel>) : MuscleGroupViewAction()
     object FetchMuscleGroups : MuscleGroupViewAction()
     object FetchMuscleSubGroups : MuscleGroupViewAction()
-    object ClearSubGroupsSelected : MuscleGroupViewAction()
+    object ClearGroupsAndSubGroupsSelected : MuscleGroupViewAction()
     object SetupInitialState : MuscleGroupViewAction()
 }

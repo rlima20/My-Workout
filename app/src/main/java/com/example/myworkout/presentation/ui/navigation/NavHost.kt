@@ -51,7 +51,8 @@ fun NavHost(
     onAddSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
     onRemoveSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
     onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit,
-    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
+    onClearGroupsAndSubGroups: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -103,6 +104,7 @@ fun NavHost(
                 onShowToast = { onShowSnackBar(it) },
                 onSetInitialState = { onSetInitialState() },
                 onShowMuscleGroupSection = { onShowMuscleGroupSection() },
+                onClearGroupsAndSubGroups = { onClearGroupsAndSubGroups() }
             )
         }
     }
@@ -121,7 +123,7 @@ private fun setupMuscleGroupStateObservers(
     onShowToast: (message: String) -> Unit,
     onSetInitialState: () -> Unit,
     onShowMuscleGroupSection: () -> Unit,
-
+    onClearGroupsAndSubGroups: () -> Unit
     ) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.InitialState -> {
@@ -166,8 +168,9 @@ private fun setupMuscleGroupStateObservers(
 
         MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
         MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
-        MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {}
-
+        MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
+            onClearGroupsAndSubGroups()
+        }
     }
 }
 

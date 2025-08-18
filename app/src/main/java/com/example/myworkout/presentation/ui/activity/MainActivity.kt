@@ -138,18 +138,19 @@ class MainActivity : ComponentActivity() {
                     onAddSubGroupSelected = { addSubGroupSelected(it) },
                     onRemoveSubGroupSelected = { removeSubGroupSelected(it) },
                     onChangeNewMuscleSubGroupsSelected = { setNewMuscleSubGroupsSelected(it) },
-                    onSaveRelation = { saveGroupSubGroupRelation(it) }
+                    onSaveRelation = { saveGroupSubGroupRelation(it) },
+                    onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() }
                 )
             },
             bottomBar = {
                 BottomBar(
                     onNavigateToHomeScreen = {
-                        clearSubGroupsSelected()
+                        clearGroupsAndSubGroupsSelected()
                         navController.navigateSingleTopTo(HomeScreen.route)
                         showMuscleGroupSection = true
                     },
                     onNavigateToAddTrainingScreen = {
-                        clearSubGroupsSelected()
+                        clearGroupsAndSubGroupsSelected()
                         navigateToNewTrainingScreen(navController)
                     }
                 )
@@ -248,8 +249,8 @@ class MainActivity : ComponentActivity() {
         snackBarHostState.showSnackbar(getString(R.string.everything_ready))
     }
 
-    private fun clearSubGroupsSelected(){
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.ClearSubGroupsSelected)
+    private fun clearGroupsAndSubGroupsSelected(){
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected)
     }
 
     private fun createTrainings() {

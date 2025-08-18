@@ -59,7 +59,7 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.RemoveSubGroupsSelected -> { removeFromMuscleSubGroupSelected(viewAction.subGroup) }
             is MuscleGroupViewAction.SetNewSubGroupsSelected -> { setNewMuscleSubGroupSelected(viewAction.newList) }
             is MuscleGroupViewAction.SaveGroupSubGroupRelation -> { insertMuscleGroupMuscleSubGroup(viewAction.newList) }
-            is MuscleGroupViewAction.ClearSubGroupsSelected -> { clearMuscleSubGroupsSelected() }
+            is MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected -> { clearGroupsAndSubGroupsSelected() }
         }
     }
 
@@ -125,6 +125,7 @@ class MuscleGroupViewModel(
         }
     }
 
+    // Todo - Melhorar essas chamadas assíncronas
     private fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
@@ -135,6 +136,7 @@ class MuscleGroupViewModel(
                     setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
                     delay(2000)
                     fetchMuscleGroups()
+                    clearGroupsAndSubGroupsSelected()
                 }
             } catch (e: Exception) { setErrorState() }
         }
@@ -173,9 +175,10 @@ class MuscleGroupViewModel(
         )
     }
 
-    private fun clearMuscleSubGroupsSelected() {
-        _muscleSubGroupsSelected.value.clear()
-        _newMuscleSubGroupsSelected.value.clear()
+    private fun clearGroupsAndSubGroupsSelected() {
+        _muscleSubGroupsSelected.value = emptyList<MuscleSubGroupModel>().toMutableList()
+        _newMuscleSubGroupsSelected.value = emptyList<MuscleSubGroupModel>().toMutableList()
+        setInitialViewState()
     }
 
     private fun setMuscleGroups(value: List<MuscleGroupModel>) {
