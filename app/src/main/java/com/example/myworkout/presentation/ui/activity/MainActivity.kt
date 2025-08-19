@@ -55,8 +55,7 @@ class MainActivity : ComponentActivity() {
             val trainings by trainingViewModel.trainings.collectAsState(listOf())
             val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
             val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
-            val muscleSubGroupsSelected by muscleGroupViewModel.muscleSubGroupsSelected.collectAsState()
-            val newMuscleSubGroupsSelected by muscleGroupViewModel.newMuscleSubGroupsSelected.collectAsState()
+            val newMuscleSubGroupsSelected by muscleGroupViewModel.muscleSubGroupsSelected.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
             val trainingViewState by trainingViewModel.viewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
@@ -75,7 +74,6 @@ class MainActivity : ComponentActivity() {
                     trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
-                    muscleSubGroupsSelected = muscleSubGroupsSelected,
                     newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
@@ -94,7 +92,6 @@ class MainActivity : ComponentActivity() {
         trainings: List<TrainingModel>,
         muscleGroups: List<MuscleGroupModel>,
         muscleSubGroups: List<MuscleSubGroupModel>,
-        muscleSubGroupsSelected: List<MuscleSubGroupModel>,
         newMuscleSubGroupsSelected: List<MuscleSubGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
         trainingViewState: TrainingViewState,
@@ -120,7 +117,6 @@ class MainActivity : ComponentActivity() {
                     trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
-                    muscleSubGroupsSelected = muscleSubGroupsSelected,
                     newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
@@ -135,7 +131,6 @@ class MainActivity : ComponentActivity() {
                     onShowMuscleGroupSection = { showMuscleGroupSection = false },
                     onShowSnackBar = { showToast(message = it) },
                     onSetInitialState = { setInitialState() },
-                    onAddSubGroupSelected = { addSubGroupSelected(it) },
                     onRemoveSubGroupSelected = { removeSubGroupSelected(it) },
                     onChangeNewMuscleSubGroupsSelected = { setNewMuscleSubGroupsSelected(it) },
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
