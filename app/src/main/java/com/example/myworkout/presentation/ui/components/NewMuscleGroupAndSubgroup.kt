@@ -1,7 +1,6 @@
 package com.example.myworkout.presentation.ui.components
 
 import android.annotation.SuppressLint
-import android.util.MutableBoolean
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,6 +35,7 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
+import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.utils.Utils
@@ -60,7 +59,6 @@ fun NewMuscleGroupAndSubgroup(
             objSelected = objSelected,
             onItemClick = { onItemClick(it) },
             onAddMuscleSubGroup = { subGroupSelected ->
-                // Todo - melhorar isso
                 if (!subGroupSelected.selected) {
                     onUpdateSubGroup(subGroupSelected.copy(selected = true))
                 } else {
@@ -174,7 +172,11 @@ private fun MuscleGroupSection(
     objSelected: Pair<Int, Boolean>,
     onItemClick: (item: MuscleGroupModel) -> Unit,
 ) {
-    MuscleGroupLabel()
+    Label(
+        modifier = Modifier.padding(bottom = 4.dp),
+        text = stringResource(R.string.select_your_group),
+        fontSize = 14.sp,
+    )
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { muscleGroup ->
             FilterChip(
@@ -196,7 +198,11 @@ private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
-    MuscleSubGroupLabel()
+    Label(
+        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+        text = stringResource(R.string.match_subgroup_with_group),
+        fontSize = 14.sp,
+    )
     FilterChipList(
         modifier = Modifier.fillMaxWidth().height(42.dp),
         colors = Utils().selectableChipColors(),
@@ -216,24 +222,6 @@ private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
         color = colorResource(R.color.white),
         fontSize = 18.sp,
         text = muscleGroup.name
-    )
-}
-
-@Composable
-private fun MuscleGroupLabel() {
-    Text(
-        fontSize = 14.sp,
-        modifier = Modifier.padding(bottom = 4.dp),
-        text = stringResource(R.string.select_your_group)
-    )
-}
-
-@Composable
-private fun MuscleSubGroupLabel() {
-    Text(
-        fontSize = 14.sp,
-        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-        text = stringResource(R.string.match_subgroup_with_group)
     )
 }
 
