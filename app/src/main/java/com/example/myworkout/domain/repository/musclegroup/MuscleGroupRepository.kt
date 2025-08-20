@@ -15,4 +15,5 @@ interface MuscleGroupRepository {
     fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)
     fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel)
+    fun updateSubGroup(subGroup: MuscleSubGroupModel)
 }

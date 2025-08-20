@@ -33,9 +33,10 @@ fun NavHost(
     trainings: List<TrainingModel>,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
-    newMuscleSubGroupsSelected: List<MuscleSubGroupModel>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
+    objSelected: Pair<Int, Boolean>,
+    onItemClick: (Pair<Int, Boolean>) -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
@@ -44,11 +45,9 @@ fun NavHost(
     onFetchMuscleSubGroups: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onCreateMuscleGroup: (name: String) -> Unit,
-    onShowMuscleGroupSection: () -> Unit,
     onShowSnackBar: (message: String) -> Unit,
     onSetInitialState: () -> Unit,
-    onRemoveSubGroupSelected: (item: MuscleSubGroupModel) -> Unit,
-    onChangeNewMuscleSubGroupsSelected: (newList: MutableList<MuscleSubGroupModel>) -> Unit,
+    onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
     onClearGroupsAndSubGroups: () -> Unit
 ) {
@@ -64,7 +63,7 @@ fun NavHost(
             onChangeRoute(true)
             onChangeTopBarTitle(homeScreen)
 
-            setupTrainingStateObservers(
+            SetupTrainingStateObservers(
                 trainingList = trainings,
                 trainingViewState = trainingViewState,
                 onTrainingChecked = { onTrainingChecked(it) },
@@ -75,31 +74,28 @@ fun NavHost(
         }
 
         composable(route = NewTraining.route) {
-            var enableSubGroupSection by remember { mutableStateOf(false) }
             onChangeRoute(false)
             onChangeTopBarTitle(createNewTraining)
 
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
                 muscleSubGroups = muscleSubGroups,
-                newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
+                objSelected = objSelected,
+                onItemClick = { onItemClick(it) },
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
-                onRemoveSubGroupSelected = { onRemoveSubGroupSelected(it) },
-                onChangeNewMuscleSubGroupsSelected = { onChangeNewMuscleSubGroupsSelected(it) },
+                onUpdateSubGroup = { onUpdateSubGroup(it) },
                 onSaveRelation = { onSaveRelation(it) },
             )
 
-            setupMuscleGroupStateObservers(
+            SetupMuscleGroupStateObservers(
                 muscleGroupViewState = muscleGroupViewState,
                 onDatabaseCreated = onDatabaseCreated,
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
                 onFetchMuscleGroups = onFetchMuscleGroups,
                 onFetchMuscleSubGroups = onFetchMuscleSubGroups,
-                onEnableSubGroupSection = { enableSubGroupSection = true },
                 onShowToast = { onShowSnackBar(it) },
                 onSetInitialState = { onSetInitialState() },
-                onShowMuscleGroupSection = { onShowMuscleGroupSection() },
                 onClearGroupsAndSubGroups = { onClearGroupsAndSubGroups() }
             )
         }
@@ -108,23 +104,19 @@ fun NavHost(
 
 
 @Composable
-private fun setupMuscleGroupStateObservers(
+private fun SetupMuscleGroupStateObservers(
     muscleGroupViewState: MuscleGroupViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onFetchMuscleGroups: () -> Unit,
     onFetchMuscleSubGroups: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onEnableSubGroupSection: () -> Unit,
     onShowToast: (message: String) -> Unit,
     onSetInitialState: () -> Unit,
-    onShowMuscleGroupSection: () -> Unit,
     onClearGroupsAndSubGroups: () -> Unit
     ) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.InitialState -> {
-            onShowMuscleGroupSection()
-            onSetInitialState()
             onFetchMuscleGroups()
             onFetchMuscleSubGroups()
         }
@@ -152,7 +144,6 @@ private fun setupMuscleGroupStateObservers(
 
         MuscleGroupViewState.SuccessInsertMuscleGroup -> {
             onShowToast(stringResource(R.string.success_operation))
-            onEnableSubGroupSection()
             onSetInitialState()
         }
 
@@ -164,14 +155,16 @@ private fun setupMuscleGroupStateObservers(
 
         MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
         MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
+
         MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
+            onShowToast(stringResource(R.string.success_operation))
             onClearGroupsAndSubGroups()
         }
     }
 }
 
 @Composable
-private fun setupTrainingStateObservers(
+private fun SetupTrainingStateObservers(
     trainingList: List<TrainingModel>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,

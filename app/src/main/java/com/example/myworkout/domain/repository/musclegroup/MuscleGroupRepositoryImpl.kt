@@ -126,4 +126,8 @@ class MuscleGroupRepositoryImpl(
     override suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel> {
         return muscleSubGroupDao.getAllMuscleSubGroups().toModelMuscleSubGroupList()
     }
+
+    override fun updateSubGroup(subGroup: MuscleSubGroupModel) {
+        muscleSubGroupDao.updateSubGroup(subGroup.toEntity())
+    }
 }

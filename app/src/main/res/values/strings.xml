@@ -21,7 +21,7 @@
     <string name="home_screen_name">Home</string>
     <string name="success_operation">Operação bem sucedida</string>
     <string name="new_muscle_group">Novo grupo muscular</string>
-    <string name="new_sub_group">Novo sub grupo</string>
-    <string name="select_your_group">(Selecione o grupo desejado)</string>
-    <string name="match_subgroup_with_group">(Vincule os subgroups ao grupo acima)</string>
+    <string name="new_sub_group">Sub grupos</string>
+    <string name="select_your_group">Selecione o grupo</string>
+    <string name="match_subgroup_with_group">Selecione os subgroups</string>
 </resources>

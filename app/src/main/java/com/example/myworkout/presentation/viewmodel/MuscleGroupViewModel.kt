@@ -12,11 +12,12 @@ import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.collections.filter
 
-// Todo - Arrumar as chamadas assíncronas
 class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase
 ) : ViewModel() {
@@ -32,9 +33,9 @@ class MuscleGroupViewModel(
         MutableStateFlow(listOf())
     val muscleSubGroups: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroups
 
-    private val _muscleSubGroupsSelected: MutableStateFlow<MutableList<MuscleSubGroupModel>> =
-        MutableStateFlow(mutableListOf())
-    val muscleSubGroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroupsSelected
+    private val _objSelected: MutableStateFlow<Pair<Int,Boolean>> = MutableStateFlow(Pair(0, false))
+    val objSelected: MutableStateFlow<Pair<Int, Boolean>> get() = _objSelected
+
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
@@ -44,24 +45,11 @@ class MuscleGroupViewModel(
             is MuscleGroupViewAction.CreateMuscleSubGroup -> { createMuscleSubGroup(viewAction.name) }
             is MuscleGroupViewAction.FetchMuscleGroups -> { fetchMuscleGroups() }
             is MuscleGroupViewAction.FetchMuscleSubGroups -> { fetchMuscleSubGroups() }
-            is MuscleGroupViewAction.AddNewSubGroupsSelected -> { addToMuscleSubGroupSelected(viewAction.subGroup) }
-            is MuscleGroupViewAction.RemoveSubGroupsSelected -> { removeFromMuscleSubGroupSelected(viewAction.subGroup) }
-            is MuscleGroupViewAction.SetNewSubGroupsSelected -> { setNewMuscleSubGroupSelected(viewAction.newList) }
             is MuscleGroupViewAction.SaveGroupSubGroupRelation -> { insertMuscleGroupMuscleSubGroup(viewAction.newList) }
-            is MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected -> { clearGroupsAndSubGroupsSelected() }
+            is MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected -> { clearSubGroups() }
+            is MuscleGroupViewAction.UpdateSubGroup -> { updateSubGroup(viewAction.subGroup) }
+            is MuscleGroupViewAction.UpdateObjSelected -> { setMuscleGroups(viewAction.objSelected) }
         }
-    }
-
-    private fun addToMuscleSubGroupSelected(value: MuscleSubGroupModel) {
-        _muscleSubGroupsSelected.value.add(value)
-    }
-
-    private fun removeFromMuscleSubGroupSelected(value: MuscleSubGroupModel) {
-        _muscleSubGroupsSelected.value.remove(value)
-    }
-
-    private fun setNewMuscleSubGroupSelected(value: MutableList<MuscleSubGroupModel>) {
-        _muscleSubGroupsSelected.value = value
     }
 
     private fun fetchMuscleGroups() {
@@ -83,6 +71,7 @@ class MuscleGroupViewModel(
             try {
                 val muscleSubGroups = muscleGroupUseCase.getMuscleSubGroups()
                 setListOfMuscleSubGroups(muscleSubGroups)
+                delay(3000)
                 setSuccessState(MuscleGroupViewState.SuccessFetchMuscleSubGroups)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -99,6 +88,7 @@ class MuscleGroupViewModel(
                 muscleGroupMuscleSubGroups.forEach {
                     muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(it)
                 }
+                setMuscleGroups(Pair(0, false))
                 setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -138,7 +128,7 @@ class MuscleGroupViewModel(
                     muscleGroupUseCase.insertMuscleGroup(muscleGroup)
                     setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
                     fetchMuscleGroups()
-                    clearGroupsAndSubGroupsSelected()
+                    clearSubGroups()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
@@ -178,9 +168,46 @@ class MuscleGroupViewModel(
         )
     }
 
-    private fun clearGroupsAndSubGroupsSelected() {
-        _muscleSubGroupsSelected.value = emptyList<MuscleSubGroupModel>().toMutableList()
-        setInitialViewState()
+    private fun clearSubGroups() {
+        setLoadingState()
+
+        val subGroupsSelected: List<MuscleSubGroupModel> =
+            _muscleSubGroups.value.filter { it.selected }
+        val muscleGroupSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
+
+        subGroupsSelected.forEach { subGroup ->
+            muscleGroupSubGroups.add(
+                subGroup.copy(selected = false)
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                muscleGroupSubGroups.forEach { subGroup ->
+                    updateSubGroup(subGroup)
+                }
+                setSuccessState(MuscleGroupViewState.InitialState)
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
+        }
+    }
+
+    private fun updateSubGroup(subGroup: MuscleSubGroupModel){
+        setLoadingState()
+        viewModelScope.launch(Dispatchers.IO) {
+            try{
+                muscleGroupUseCase.updateSubGroup(subGroup)
+                setSuccessState(MuscleGroupViewState.InitialState)
+            }catch (exception: Exception){
+                setErrorState(exception.message.toString())
+            }
+        }
+
+    }
+
+    private fun setMuscleGroups(objSelected: Pair<Int, Boolean>){
+        _objSelected.value = objSelected
     }
 
     private fun setMuscleGroups(value: List<MuscleGroupModel>) {
