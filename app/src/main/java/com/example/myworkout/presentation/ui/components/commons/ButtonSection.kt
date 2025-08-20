@@ -23,12 +23,12 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.extensions.emptyString
 
-
 @Composable
 fun ButtonSection(
     modifier: Modifier,
     titleSection: String,
     buttonName: String,
+    buttonVisibility: Boolean = true,
     buttonEnabled: Boolean,
     onButtonClick: () -> Unit,
     content: @Composable () -> Unit
@@ -56,14 +56,16 @@ fun ButtonSection(
         ) {
             content()
         }
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
-            onClick = { onButtonClick() },
-            enabled = buttonEnabled
-        ) {
-            Text(text = buttonName)
+        if (buttonVisibility) {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+                onClick = { onButtonClick() },
+                enabled = buttonEnabled
+            ) {
+                Text(text = buttonName)
+            }
         }
     }
 }
