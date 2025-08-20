@@ -14,13 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.navigateSingleTopTo
@@ -54,9 +53,8 @@ class MainActivity : ComponentActivity() {
             val trainings by trainingViewModel.trainings.collectAsState(listOf())
             val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
             val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
-            val muscleSubGroupsSelected by muscleGroupViewModel.muscleSubGroupsSelected.collectAsState()
-            val newMuscleSubGroupsSelected by muscleGroupViewModel.newMuscleSubGroupsSelected.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
+            val objSelected by muscleGroupViewModel.objSelected.collectAsState()
             val trainingViewState by trainingViewModel.viewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
             val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
@@ -74,9 +72,8 @@ class MainActivity : ComponentActivity() {
                     trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
-                    muscleSubGroupsSelected = muscleSubGroupsSelected,
-                    newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
                     muscleGroupViewState = muscleGroupViewState,
+                    objSelected = objSelected,
                     trainingViewState = trainingViewState,
                     prefs = prefs,
                 )
@@ -93,14 +90,12 @@ class MainActivity : ComponentActivity() {
         trainings: List<TrainingModel>,
         muscleGroups: List<MuscleGroupModel>,
         muscleSubGroups: List<MuscleSubGroupModel>,
-        muscleSubGroupsSelected: List<MuscleSubGroupModel>,
-        newMuscleSubGroupsSelected: List<MuscleSubGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
+        objSelected: Pair<Int, Boolean>,
         trainingViewState: TrainingViewState,
         prefs: TrainingPrefs,
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
-        var showMuscleGroupSection by remember { mutableStateOf(true) }
 
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
@@ -108,10 +103,7 @@ class MainActivity : ComponentActivity() {
                 TopBar(
                     title = appBarTitle,
                     isHomeScreen = isHomeScreen,
-                    onNavigateToHomeScreen = {
-                        navController.navigateSingleTopTo(HomeScreen.route)
-                        showMuscleGroupSection = true
-                    })
+                    onNavigateToHomeScreen = { navController.navigateSingleTopTo(HomeScreen.route) })
             },
             content = {
                 NavHost(
@@ -119,33 +111,39 @@ class MainActivity : ComponentActivity() {
                     trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
-                    muscleSubGroupsSelected = muscleSubGroupsSelected,
-                    newMuscleSubGroupsSelected = newMuscleSubGroupsSelected,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
+                    onItemClick = { setNewObjSelected(it) },
+                    objSelected = objSelected,
                     onChangeRoute = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
                     onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
-                    onDatabaseCreated = { DatabaseCreationDone(prefs, isHomeScreen, snackBarHostState,) },
+                    onDatabaseCreated = {
+                        DatabaseCreationDone(
+                            prefs,
+                            isHomeScreen,
+                            snackBarHostState,
+                        )
+                    },
                     onTrainingChecked = { },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     onCreateMuscleGroup = { createMuscleGroup(it) },
-                    onShowMuscleGroupSection = { showMuscleGroupSection = false },
                     onShowSnackBar = { showToast(message = it) },
                     onSetInitialState = { setInitialState() },
-                    onAddSubGroupSelected = { addSubGroupSelected(it) },
-                    onRemoveSubGroupSelected = { removeSubGroupSelected(it) },
-                    onChangeNewMuscleSubGroupsSelected = { setNewMuscleSubGroupsSelected(it) }
+                    onSaveRelation = { saveGroupSubGroupRelation(it) },
+                    onUpdateSubGroup = { updateSubGroup(it) },
+                    onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() }
                 )
             },
             bottomBar = {
                 BottomBar(
                     onNavigateToHomeScreen = {
+                        clearGroupsAndSubGroupsSelected()
                         navController.navigateSingleTopTo(HomeScreen.route)
-                        showMuscleGroupSection = true
                     },
                     onNavigateToAddTrainingScreen = {
+                        clearGroupsAndSubGroupsSelected()
                         navigateToNewTrainingScreen(navController)
                     }
                 )
@@ -223,21 +221,25 @@ class MainActivity : ComponentActivity() {
         prefs.setFirstInstallValue(this@MainActivity.baseContext, true)
     }
 
-    private fun setNewMuscleSubGroupsSelected(newList: MutableList<MuscleSubGroupModel>){
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetNewSubGroupsSelected(newList))
-    }
-
-    private fun addSubGroupSelected(subGroup: MuscleSubGroupModel){
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.AddNewSubGroupsSelected(subGroup))
-
-    }
-
-    private fun removeSubGroupSelected(subGroup: MuscleSubGroupModel){
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.RemoveSubGroupsSelected(subGroup))
+    private fun saveGroupSubGroupRelation(list: MutableList<MuscleGroupMuscleSubGroupModel>) {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SaveGroupSubGroupRelation(list))
     }
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
         snackBarHostState.showSnackbar(getString(R.string.everything_ready))
+    }
+
+    private fun clearGroupsAndSubGroupsSelected() {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected)
+    }
+
+    private fun updateSubGroup(subGroup: MuscleSubGroupModel) {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateSubGroup(subGroup))
+
+    }
+
+    private fun setNewObjSelected(objSelected: Pair<Int, Boolean>) {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateObjSelected(objSelected))
     }
 
     private fun createTrainings() {

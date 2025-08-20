@@ -39,4 +39,8 @@ class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
     override suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel> {
         return repository.getMuscleSubGroups()
     }
+
+    override suspend fun updateSubGroup(subGroup: MuscleSubGroupModel) {
+        repository.updateSubGroup(subGroup)
+    }
 }
