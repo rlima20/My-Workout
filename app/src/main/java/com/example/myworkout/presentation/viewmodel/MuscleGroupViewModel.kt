@@ -71,7 +71,6 @@ class MuscleGroupViewModel(
             try {
                 val muscleSubGroups = muscleGroupUseCase.getMuscleSubGroups()
                 setListOfMuscleSubGroups(muscleSubGroups)
-                delay(3000)
                 setSuccessState(MuscleGroupViewState.SuccessFetchMuscleSubGroups)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -128,6 +127,7 @@ class MuscleGroupViewModel(
                     muscleGroupUseCase.insertMuscleGroup(muscleGroup)
                     setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
                     fetchMuscleGroups()
+                    fetchMuscleSubGroups()
                     clearSubGroups()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
