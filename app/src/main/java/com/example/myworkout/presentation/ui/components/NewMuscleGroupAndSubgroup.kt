@@ -100,7 +100,7 @@ private fun SetCardSection(
 ) {
     if (muscleGroups.isNotEmpty()) {
         ButtonSection(
-            modifier = Modifier,
+            modifier = Modifier.height(200.dp),
             titleSection = stringResource(R.string.create_training),
             buttonVisibility = false,
             content = {

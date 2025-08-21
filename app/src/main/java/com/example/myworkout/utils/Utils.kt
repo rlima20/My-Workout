@@ -1,5 +1,6 @@
 package com.example.myworkout.utils
 
+import android.content.Context
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.CardColors
@@ -48,3 +49,10 @@ fun getCardColors(): CardColors = CardDefaults.cardColors(
     disabledContainerColor = colorResource(R.color.top_bar_color),
     disabledContentColor = colorResource(R.color.top_bar_color)
 )
+
+@Composable
+fun getScreenHeight(context: Context): Float {
+    val context = context
+    val metrics = context.resources.displayMetrics
+    return metrics.heightPixels / metrics.density
+}
