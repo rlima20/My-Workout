@@ -82,6 +82,7 @@ fun NavHost(
                 muscleSubGroups = muscleSubGroups,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
+                onGroupClicked = {},
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onUpdateSubGroup = { onUpdateSubGroup(it) },
                 onSaveRelation = { onSaveRelation(it) },
