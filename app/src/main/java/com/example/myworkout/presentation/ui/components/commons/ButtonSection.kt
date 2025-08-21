@@ -27,10 +27,10 @@ import com.example.myworkout.extensions.emptyString
 fun ButtonSection(
     modifier: Modifier,
     titleSection: String,
-    buttonName: String,
+    buttonName: String = String().emptyString(),
     buttonVisibility: Boolean = true,
-    buttonEnabled: Boolean,
-    onButtonClick: () -> Unit,
+    buttonEnabled: Boolean = false,
+    onButtonClick: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Card(

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -36,9 +37,11 @@ import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.Label
+import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.utils.Utils
+import com.example.myworkout.utils.getCardColors
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -48,6 +51,7 @@ fun NewMuscleGroupAndSubgroup(
     onCreateMuscleGroup: (name: String) -> Unit,
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
+    onGroupClicked: (muscleGroup: MuscleGroupModel) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
@@ -83,11 +87,45 @@ fun NewMuscleGroupAndSubgroup(
                 onSaveRelation(muscleGroupSubGroups)
             }
         )
+        SetCardSection(
+            muscleGroups = muscleGroups,
+            onGroupClicked = { onGroupClicked(it) })
     }
 }
 
 @Composable
-fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
+private fun SetCardSection(
+    muscleGroups: List<MuscleGroupModel>,
+    onGroupClicked: (muscleGroup: MuscleGroupModel) -> Unit
+) {
+    if (muscleGroups.isNotEmpty()) {
+        ButtonSection(
+            modifier = Modifier,
+            titleSection = stringResource(R.string.create_training),
+            buttonVisibility = false,
+            content = {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+                    items(muscleGroups) { item ->
+                        ItemCard(
+                            modifier = Modifier.fillMaxWidth().height(60.dp),
+                            colors = getCardColors(),
+                            onClick = { onGroupClicked(item) }
+                        ) {
+                            Label(
+                                modifier = Modifier.padding(start = 16.dp),
+                                text = item.name,
+                                fontSize = 14.sp,
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
     var muscleGroupName by remember { mutableStateOf(String()) }
     var buttonEnabled by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
@@ -122,7 +160,7 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 }
 
 @Composable
-fun SetMuscleSubGroupSection(
+private fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
@@ -231,12 +269,13 @@ private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: Muscle
 
 @Composable
 @Preview
-fun NewMuscleGroupAndSubgroupPreview() {
+private fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
         muscleGroups = Constants().muscleGroups,
         onCreateMuscleGroup = {},
         objSelected = Pair(0, false),
         onItemClick = {},
+        onGroupClicked = {},
         muscleSubGroups = Constants().muscleSubGroups,
         onUpdateSubGroup = {},
         onSaveRelation = {},
