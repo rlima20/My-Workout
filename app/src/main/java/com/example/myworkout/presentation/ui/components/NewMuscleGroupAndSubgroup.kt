@@ -1,13 +1,13 @@
 package com.example.myworkout.presentation.ui.components
 
 import android.annotation.SuppressLint
-import android.util.MutableBoolean
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
@@ -16,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,18 +36,23 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
+import com.example.myworkout.presentation.ui.components.commons.Label
+import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.utils.Utils
+import com.example.myworkout.utils.getCardColors
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun NewMuscleGroupAndSubgroup(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleGroupsWithRelation: List<MuscleGroupModel>,
     onCreateMuscleGroup: (name: String) -> Unit,
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
+    onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
@@ -59,37 +63,44 @@ fun NewMuscleGroupAndSubgroup(
             muscleSubGroups = muscleSubGroups,
             objSelected = objSelected,
             onItemClick = { onItemClick(it) },
-            onAddMuscleSubGroup = { subGroupSelected ->
-                // Todo - melhorar isso
-                if (!subGroupSelected.selected) {
-                    onUpdateSubGroup(subGroupSelected.copy(selected = true))
-                } else {
-                    onUpdateSubGroup(subGroupSelected.copy(selected = false))
-                }
-            },
-            onSaveRelation = { muscleGroupId ->
-                val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> =
-                    mutableListOf()
-
-                val subGroupsSelected: List<MuscleSubGroupModel> =
-                    muscleSubGroups.filter { it.selected }
-
-                subGroupsSelected.forEach { subGroup ->
-                    muscleGroupSubGroups.add(
-                        MuscleGroupMuscleSubGroupModel(
-                            muscleGroupId = muscleGroupId,
-                            muscleSubGroupId = subGroup.id
-                        )
-                    )
-                }
-                onSaveRelation(muscleGroupSubGroups)
-            }
+            onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
+            onSaveRelation = { createRelations(muscleSubGroups, it, onSaveRelation) }
         )
+        SetCardSection(
+            muscleGroupsWithRelation = muscleGroupsWithRelation,
+            onGroupWithRelationClicked = { onGroupWithRelationClicked(it) })
     }
 }
 
+private fun createRelations(
+    muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleGroupId: Int,
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
+) {
+    val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
+
+    val subGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
+
+    subGroupsSelected.forEach { subGroup ->
+        muscleGroupSubGroups.add(
+            MuscleGroupMuscleSubGroupModel(
+                muscleGroupId = muscleGroupId,
+                muscleSubGroupId = subGroup.id
+            )
+        )
+    }
+    onSaveRelation(muscleGroupSubGroups)
+}
+
+private fun verifySubGroupSelected(
+    subGroupSelected: MuscleSubGroupModel,
+    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit
+) {
+    onUpdateSubGroup(subGroupSelected.copy(selected = !subGroupSelected.selected))
+}
+
 @Composable
-fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
+private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
     var muscleGroupName by remember { mutableStateOf(String()) }
     var buttonEnabled by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
@@ -124,7 +135,7 @@ fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 }
 
 @Composable
-fun SetMuscleSubGroupSection(
+private fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
@@ -147,7 +158,8 @@ fun SetMuscleSubGroupSection(
             content = {
                 val objSelected = Pair(muscleGroupId, selected)
                 Column {
-                    val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any { it.selected })
+                    val isMuscleGroupSelected =
+                        (objSelected.second) || (muscleGroups.any { it.selected })
                     val shouldEnableSaveButton = verifyEnabledButton(muscleSubGroups)
                     buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
 
@@ -174,7 +186,11 @@ private fun MuscleGroupSection(
     objSelected: Pair<Int, Boolean>,
     onItemClick: (item: MuscleGroupModel) -> Unit,
 ) {
-    MuscleGroupLabel()
+    Label(
+        modifier = Modifier.padding(bottom = 4.dp),
+        text = stringResource(R.string.select_your_group),
+        fontSize = 14.sp,
+    )
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { muscleGroup ->
             FilterChip(
@@ -196,7 +212,11 @@ private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
-    MuscleSubGroupLabel()
+    Label(
+        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+        text = stringResource(R.string.match_subgroup_with_group),
+        fontSize = 14.sp,
+    )
     FilterChipList(
         modifier = Modifier.fillMaxWidth().height(42.dp),
         colors = Utils().selectableChipColors(),
@@ -204,6 +224,39 @@ private fun MuscleSubGroupSection(
         orientation = Orientation.HORIZONTAL,
         onItemClick = { onAddMuscleSubGroup(it) }
     )
+}
+
+@Composable
+private fun SetCardSection(
+    muscleGroupsWithRelation: List<MuscleGroupModel>,
+    onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit
+) {
+    if (muscleGroupsWithRelation.isNotEmpty()) {
+        ButtonSection(
+            modifier = Modifier.height(200.dp),
+            titleSection = stringResource(R.string.create_training),
+            buttonVisibility = false,
+            content = {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+                    items(muscleGroupsWithRelation) { item ->
+                        ItemCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp),
+                            colors = getCardColors(),
+                            onClick = { onGroupWithRelationClicked(item) }
+                        ) {
+                            Label(
+                                modifier = Modifier.padding(start = 16.dp),
+                                text = item.name,
+                                fontSize = 14.sp,
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
 }
 
 private fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupModel>): Boolean {
@@ -220,39 +273,32 @@ private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
 }
 
 @Composable
-private fun MuscleGroupLabel() {
-    Text(
-        fontSize = 14.sp,
-        modifier = Modifier.padding(bottom = 4.dp),
-        text = stringResource(R.string.select_your_group)
-    )
-}
-
-@Composable
-private fun MuscleSubGroupLabel() {
-    Text(
-        fontSize = 14.sp,
-        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
-        text = stringResource(R.string.match_subgroup_with_group)
-    )
-}
-
-@Composable
 private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: MuscleGroupModel) =
     if (objSelected.first == muscleGroup.muscleGroupId) objSelected.second else muscleGroup.selected
 
 @Composable
 @Preview
-fun NewMuscleGroupAndSubgroupPreview() {
+private fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
         muscleGroups = Constants().muscleGroups,
+        muscleGroupsWithRelation = listOf(),
         onCreateMuscleGroup = {},
         objSelected = Pair(0, false),
         onItemClick = {},
+        onGroupWithRelationClicked = {},
         muscleSubGroups = Constants().muscleSubGroups,
         onUpdateSubGroup = {},
         onSaveRelation = {},
     )
 }
 
-
+//private fun verifySubGroupSelected(
+//    subGroupSelected: MuscleSubGroupModel,
+//    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit
+//) {
+//    if (!subGroupSelected.selected) {
+//        onUpdateSubGroup(subGroupSelected.copy(selected = true))
+//    } else {
+//        onUpdateSubGroup(subGroupSelected.copy(selected = false))
+//    }
+//}

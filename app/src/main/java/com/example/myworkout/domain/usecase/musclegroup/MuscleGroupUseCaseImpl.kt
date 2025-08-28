@@ -5,6 +5,7 @@ import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
+import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 
 class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
     MuscleGroupUseCase {
@@ -42,5 +43,13 @@ class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
 
     override suspend fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         repository.updateSubGroup(subGroup)
+    }
+
+    override suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity> {
+        return repository.getRelationById(muscleGroupId)
+    }
+
+    override suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel> {
+        return repository.getAllRelations()
     }
 }
