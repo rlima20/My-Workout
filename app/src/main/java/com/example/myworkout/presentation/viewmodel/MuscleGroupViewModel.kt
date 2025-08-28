@@ -15,10 +15,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlin.collections.filter
 
 class MuscleGroupViewModel(
-    private val muscleGroupUseCase: MuscleGroupUseCase
+    private val muscleGroupUseCase: MuscleGroupUseCase,
+    private val dispatchers: Dispatchers
 ) : ViewModel() {
 
     private val _viewState: MutableStateFlow<MuscleGroupViewState> =
@@ -28,69 +28,97 @@ class MuscleGroupViewModel(
     private val _muscleGroups: MutableStateFlow<List<MuscleGroupModel>> = MutableStateFlow(listOf())
     val muscleGroups: StateFlow<List<MuscleGroupModel>> get() = _muscleGroups
 
-    private val _muscleGroupsWithRelation: MutableStateFlow<List<MuscleGroupModel>> = MutableStateFlow(listOf())
+    private val _muscleGroupsWithRelation: MutableStateFlow<List<MuscleGroupModel>> =
+        MutableStateFlow(listOf())
     val muscleGroupsWithRelation: StateFlow<List<MuscleGroupModel>> get() = _muscleGroupsWithRelation
 
     private val _muscleSubGroups: MutableStateFlow<List<MuscleSubGroupModel>> =
         MutableStateFlow(listOf())
     val muscleSubGroups: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroups
 
-    private val _relations: MutableStateFlow<List<MuscleGroupMuscleSubGroupModel>> = MutableStateFlow(listOf())
+    private val _relations: MutableStateFlow<List<MuscleGroupMuscleSubGroupModel>> =
+        MutableStateFlow(listOf())
     val relations: StateFlow<List<MuscleGroupMuscleSubGroupModel>> get() = _relations
 
-    private val _objSelected: MutableStateFlow<Pair<Int,Boolean>> = MutableStateFlow(Pair(0, false))
+    private val _objSelected: MutableStateFlow<Pair<Int, Boolean>> =
+        MutableStateFlow(Pair(0, false))
     val objSelected: MutableStateFlow<Pair<Int, Boolean>> get() = _objSelected
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
-            is MuscleGroupViewAction.SetupInitialState -> { setInitialViewState() }
-            is MuscleGroupViewAction.CreateInitialDatabase -> { createInitialDatabase(viewAction.isFirstInstall) }
-            is MuscleGroupViewAction.CreateMuscleGroup -> { createMuscleGroup(viewAction.name, BodyPart.OTHER) }
-            is MuscleGroupViewAction.CreateMuscleSubGroup -> { createMuscleSubGroup(viewAction.name) }
-            is MuscleGroupViewAction.FetchMuscleGroups -> { fetchMuscleGroups() }
-            is MuscleGroupViewAction.FetchMuscleSubGroups -> { fetchMuscleSubGroups() }
-            is MuscleGroupViewAction.SaveGroupSubGroupRelation -> { insertMuscleGroupMuscleSubGroup(viewAction.newList) }
-            is MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected -> { clearSubGroups() }
-            is MuscleGroupViewAction.UpdateSubGroup -> { updateSubGroup(viewAction.subGroup) }
-            is MuscleGroupViewAction.UpdateObjSelected -> { setMuscleGroups(viewAction.objSelected) }
-            is MuscleGroupViewAction.GetRelationById -> { getRelationById(viewAction.muscleGroupId) }
-            is MuscleGroupViewAction.FetchRelations -> { getGroupsWithRelations() }
+            is MuscleGroupViewAction.SetupInitialState -> {
+                setInitialViewState()
+            }
+
+            is MuscleGroupViewAction.CreateInitialDatabase -> {
+                createInitialDatabase(viewAction.isFirstInstall)
+            }
+
+            is MuscleGroupViewAction.CreateMuscleGroup -> {
+                insertMuscleGroup(viewAction.name, BodyPart.OTHER)
+            }
+
+            is MuscleGroupViewAction.CreateMuscleSubGroup -> {
+                insertMuscleSubGroup(MuscleSubGroupModel(name = viewAction.name))
+            }
+
+            is MuscleGroupViewAction.FetchMuscleGroups -> {
+                fetchMuscleGroups()
+            }
+
+            is MuscleGroupViewAction.FetchMuscleSubGroups -> {
+                fetchMuscleSubGroups()
+            }
+
+            is MuscleGroupViewAction.SaveGroupSubGroupRelation -> {
+                insertMuscleGroupMuscleSubGroup(viewAction.newList)
+            }
+
+            is MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected -> {
+                clearSubGroups()
+            }
+
+            is MuscleGroupViewAction.UpdateSubGroup -> {
+                updateSubGroup(viewAction.subGroup)
+            }
+
+            is MuscleGroupViewAction.UpdateObjSelected -> {
+                setMuscleGroupSelected(viewAction.objSelected)
+            }
+
+            is MuscleGroupViewAction.GetRelationById -> {
+                getRelationById(viewAction.muscleGroupId)
+            }
+
+            is MuscleGroupViewAction.FetchRelations -> {
+                getGroupsWithRelations()
+            }
         }
     }
 
     private fun getGroupsWithRelations() {
-        fetchRelations()
-        // Conjunto de IDs de grupos musculares para verificar a existência
-        val muscleGroupIdsWithRelations = _relations.value.map { it.muscleGroupId }.toSet()
-
-        // Filtra os grupos musculares que têm relacionamentos
-        val groupsWithRelation = _muscleGroups.value.filter { muscleGroup ->
-            muscleGroup.muscleGroupId in muscleGroupIdsWithRelations
-        }
-
-        _muscleGroupsWithRelation.value = groupsWithRelation
-    }
-
-
-    private fun fetchRelations(){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
             setLoadingState()
             try {
-                val result: List<MuscleGroupMuscleSubGroupModel> = muscleGroupUseCase.getAllRelations()
-                setRelations(result)
-            }catch (exception: Exception){
+                val groupsWithRelation = muscleGroupUseCase.getMuscleGroupsWithRelations()
+                _muscleGroupsWithRelation.value = groupsWithRelation
+                setSuccessState(
+                    MuscleGroupViewState.SuccessGetGroupsWithRelations(
+                        _muscleGroupsWithRelation.value
+                    )
+                )
+            } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
         }
     }
 
-
     private fun fetchMuscleGroups() {
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
             try {
                 val muscleGroups = muscleGroupUseCase.getMuscleGroups()
-                setMuscleGroups(muscleGroups)
+                setMuscleGroupsSelected(muscleGroups)
                 setSuccessState(MuscleGroupViewState.SuccessFetchMuscleGroups)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -99,8 +127,8 @@ class MuscleGroupViewModel(
     }
 
     private fun fetchMuscleSubGroups() {
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
             try {
                 val muscleSubGroups = muscleGroupUseCase.getMuscleSubGroups()
                 setListOfMuscleSubGroups(muscleSubGroups)
@@ -112,8 +140,8 @@ class MuscleGroupViewModel(
     }
 
     private fun getRelationById(muscleGroupId: Int) {
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
             try {
                 setSuccessState(
                     MuscleGroupViewState
@@ -130,13 +158,13 @@ class MuscleGroupViewModel(
     private fun insertMuscleGroupMuscleSubGroup(
         muscleGroupMuscleSubGroups: MutableList<MuscleGroupMuscleSubGroupModel>
     ) {
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
             try {
                 muscleGroupMuscleSubGroups.forEach {
                     muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(it)
                 }
-                setMuscleGroups(Pair(0, false))
+                setMuscleGroupSelected(Pair(0, false))
                 setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -147,7 +175,7 @@ class MuscleGroupViewModel(
     private fun createInitialDatabase(isFirstInstall: Boolean) {
         if (isFirstInstall) {
             setLoadingState()
-            viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(dispatchers.IO) {
                 try {
                     insertMuscleSubGroups()
                     setSuccessState(MuscleGroupViewState.SuccessDatabaseCreated)
@@ -169,25 +197,9 @@ class MuscleGroupViewModel(
         }
     }
 
-    private fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                    muscleGroupUseCase.insertMuscleGroup(muscleGroup)
-                    setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
-                    fetchMuscleGroups()
-                    fetchMuscleSubGroups()
-                    clearSubGroups()
-            } catch (exception: Exception) {
-                setErrorState(exception.message.toString())
-            }
-        }
-    }
-
     private fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
-        setLoadingState()
-
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
             try {
                 muscleGroupUseCase.insertMuscleSubGroup(muscleSubGroup)
                 setSuccessState(MuscleGroupViewState.SuccessInsertMuscleSubGroup)
@@ -197,44 +209,27 @@ class MuscleGroupViewModel(
         }
     }
 
-    private fun createMuscleGroup(name: String, image: BodyPart) {
+    private fun insertMuscleGroup(name: String, image: BodyPart) {
         viewModelScope.launch(Dispatchers.IO) {
-            insertMuscleGroup(
-                MuscleGroupModel(
-                    muscleGroupId = muscleGroupUseCase.getMuscleGroups().size + 1,
-                    name = name,
-                    image = image
-                )
-            )
+            try {
+                muscleGroupUseCase.insertMuscleGroup(name, image)
+                setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroup)
+                fetchMuscleGroups()
+                fetchMuscleSubGroups()
+                clearSubGroups()
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
         }
-    }
-
-    private fun createMuscleSubGroup(name: String) {
-        insertMuscleSubGroup(
-            MuscleSubGroupModel(
-                name = name
-            )
-        )
     }
 
     private fun clearSubGroups() {
-        setLoadingState()
-
         val subGroupsSelected: List<MuscleSubGroupModel> =
             _muscleSubGroups.value.filter { it.selected }
-        val muscleGroupSubGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
-
-        subGroupsSelected.forEach { subGroup ->
-            muscleGroupSubGroups.add(
-                subGroup.copy(selected = false)
-            )
-        }
-
         viewModelScope.launch(Dispatchers.IO) {
+            setLoadingState()
             try {
-                muscleGroupSubGroups.forEach { subGroup ->
-                    updateSubGroup(subGroup)
-                }
+                muscleGroupUseCase.clearSelectedMuscleSubGroups(subGroupsSelected)
                 setSuccessState(MuscleGroupViewState.InitialState)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -242,29 +237,24 @@ class MuscleGroupViewModel(
         }
     }
 
-    private fun updateSubGroup(subGroup: MuscleSubGroupModel){
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
-            try{
+    private fun updateSubGroup(subGroup: MuscleSubGroupModel) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
+            try {
                 muscleGroupUseCase.updateSubGroup(subGroup)
                 setSuccessState(MuscleGroupViewState.InitialState)
-            }catch (exception: Exception){
+            } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
         }
-
     }
 
-    private fun setMuscleGroups(objSelected: Pair<Int, Boolean>){
+    private fun setMuscleGroupSelected(objSelected: Pair<Int, Boolean>) {
         _objSelected.value = objSelected
     }
 
-    private fun setMuscleGroups(value: List<MuscleGroupModel>) {
+    private fun setMuscleGroupsSelected(value: List<MuscleGroupModel>) {
         _muscleGroups.value = value
-    }
-
-    private fun setRelations(value: List<MuscleGroupMuscleSubGroupModel>) {
-        _relations.value = value
     }
 
     private fun setListOfMuscleSubGroups(muscleSubGroups: List<MuscleSubGroupModel>) {
@@ -276,10 +266,12 @@ class MuscleGroupViewModel(
     }
 
     private fun setLoadingState() {
+        Log.e(LOADING, LOADING)
         _viewState.value = MuscleGroupViewState.Loading
     }
 
     private fun setSuccessState(state: MuscleGroupViewState) {
+        Log.e(SUCCESS, state.javaClass.name.toString())
         _viewState.value = state
     }
 
@@ -288,7 +280,9 @@ class MuscleGroupViewModel(
         _viewState.value = MuscleGroupViewState.Error
     }
 
-    companion object{
+    companion object {
         const val EXCEPTION = "Exception"
+        const val SUCCESS = "Success"
+        const val LOADING = "Loading"
     }
 }
