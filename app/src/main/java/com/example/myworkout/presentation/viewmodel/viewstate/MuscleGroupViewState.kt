@@ -6,6 +6,7 @@ sealed class MuscleGroupViewState {
     object SuccessInsertMuscleGroup : MuscleGroupViewState()
     object SuccessInsertMuscleSubGroup : MuscleGroupViewState()
     object SuccessFetchMuscleGroups : MuscleGroupViewState()
+    data class SuccessGetRelation(val result: Boolean) : MuscleGroupViewState()
     object SuccessFetchMuscleSubGroups : MuscleGroupViewState()
     object SuccessInsertMuscleGroupMuscleSubGroup : MuscleGroupViewState()
     object Error : MuscleGroupViewState()

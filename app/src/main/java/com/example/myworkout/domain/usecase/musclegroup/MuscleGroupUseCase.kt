@@ -4,6 +4,7 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
+import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 
 interface MuscleGroupUseCase {
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
@@ -15,4 +16,6 @@ interface MuscleGroupUseCase {
     suspend fun getMuscleGroups(): List<MuscleGroupModel>
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
     suspend fun updateSubGroup(subGroup: MuscleSubGroupModel)
+    suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
+    suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
 }

@@ -4,6 +4,7 @@ import com.example.myworkout.domain.mapper.toEntity
 import com.example.myworkout.domain.mapper.toModel
 import com.example.myworkout.domain.mapper.toModelMuscleGroupList
 import com.example.myworkout.domain.mapper.toModelMuscleSubGroupList
+import com.example.myworkout.domain.mapper.toMuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -32,7 +33,7 @@ class MuscleGroupRepositoryImpl(
         // Coleta todos os MuscleSubGroups
         muscleGroupRelations.forEach { trainingMuscleGroup ->
             // Atribui valor
-            val muscleSubGroupRelations = getMuscleGroupMuscleSubGroups(trainingMuscleGroup)
+            val muscleSubGroupRelations = getRelationByTrainingMuscleGroup(trainingMuscleGroup)
 
             // Passa pela lista coletando os items
             muscleSubGroupRelations.forEach { subGroupRelation ->
@@ -60,7 +61,7 @@ class MuscleGroupRepositoryImpl(
         // Coleta todos os MuscleSubGroups
         muscleGroupRelations.forEach { trainingMuscleGroup ->
             // Atribui valor
-            val muscleSubGroupRelations = getMuscleGroupMuscleSubGroups(trainingMuscleGroup)
+            val muscleSubGroupRelations = getRelationByTrainingMuscleGroup(trainingMuscleGroup)
 
             // Passa pela lista coletando os items
             muscleSubGroupRelations.forEach { subGroupRelation ->
@@ -85,7 +86,7 @@ class MuscleGroupRepositoryImpl(
 
         // Iterar sobre cada grupo muscular
         muscleGroups.forEach { muscleGroup ->
-            val muscleSubGroupsForGroup = getMuscleGroupMuscleSubGroups(muscleGroup) // Obter os subgrupos relacionados a cada grupo muscular
+            val muscleSubGroupsForGroup = getRelationById(muscleGroup.muscleGroupId) // Obter os subgrupos relacionados a cada grupo muscular
             groupedSubGroups[muscleGroup] = muscleSubGroupsForGroup.mapNotNull { // Adicionar os subgrupos ao mapa
                     getMuscleSubGroup(it)?.toModel()
                 }.toMutableList()
@@ -94,17 +95,21 @@ class MuscleGroupRepositoryImpl(
         return groupedSubGroups
     }
 
-    private fun getMuscleGroupMuscleSubGroups(muscleGroup: MuscleGroupModel): List<MuscleGroupMuscleSubGroupEntity> =
-        muscleGroupMuscleSubGroupDao.getMuscleSubGroupsForMuscleGroup(muscleGroup.muscleGroupId)
+    override suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity> =
+        muscleGroupMuscleSubGroupDao.getRelationById(muscleGroupId)
 
-    private fun getMuscleSubGroup(groupRelation: MuscleGroupMuscleSubGroupEntity) =
+    override suspend fun getMuscleSubGroup(groupRelation: MuscleGroupMuscleSubGroupEntity) =
         muscleSubGroupDao.getMuscleSubGroupById(groupRelation.muscleSubGroupId)
 
-    private fun getMuscleGroupMuscleSubGroups(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity> =
-        muscleGroupMuscleSubGroupDao.getMuscleSubGroupsForMuscleGroup(trainingMuscleGroup.muscleGroupId)
+    override suspend fun getRelationByTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity> =
+        muscleGroupMuscleSubGroupDao.getRelationById(trainingMuscleGroup.muscleGroupId)
 
     override fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
         muscleGroupDao.insert(muscleGroup.toEntity())
+    }
+
+    override suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel> {
+        return muscleGroupMuscleSubGroupDao.getAllMuscleGroupMuscleSubGroups().toMuscleGroupMuscleSubGroupModel()
     }
 
     override fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {

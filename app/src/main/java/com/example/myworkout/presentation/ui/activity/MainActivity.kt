@@ -54,6 +54,7 @@ class MainActivity : ComponentActivity() {
             val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
             val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
+            val muscleGroupsWithRelation by muscleGroupViewModel.muscleGroupsWithRelation.collectAsState()
             val objSelected by muscleGroupViewModel.objSelected.collectAsState()
             val trainingViewState by trainingViewModel.viewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
@@ -72,6 +73,7 @@ class MainActivity : ComponentActivity() {
                     trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
+                    muscleGroupsWithRelation = muscleGroupsWithRelation,
                     muscleGroupViewState = muscleGroupViewState,
                     objSelected = objSelected,
                     trainingViewState = trainingViewState,
@@ -90,6 +92,7 @@ class MainActivity : ComponentActivity() {
         trainings: List<TrainingModel>,
         muscleGroups: List<MuscleGroupModel>,
         muscleSubGroups: List<MuscleSubGroupModel>,
+        muscleGroupsWithRelation: List<MuscleGroupModel>,
         muscleGroupViewState: MuscleGroupViewState,
         objSelected: Pair<Int, Boolean>,
         trainingViewState: TrainingViewState,
@@ -110,6 +113,7 @@ class MainActivity : ComponentActivity() {
                     navController = navController,
                     trainings = trainings,
                     muscleGroups = muscleGroups,
+                    muscleGroupsWithRelation = muscleGroupsWithRelation,
                     muscleSubGroups = muscleSubGroups,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
@@ -133,7 +137,11 @@ class MainActivity : ComponentActivity() {
                     onSetInitialState = { setInitialState() },
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
                     onUpdateSubGroup = { updateSubGroup(it) },
-                    onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() }
+                    onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() },
+                    onGetRelationById = {},
+                    onVerifyRelation = {fetchRelations()},
+                    onFetchGroupsWithRelations = { fetchRelations() },
+                    onGroupWithRelationClicked = { /* Todo */ }
                 )
             },
             bottomBar = {
@@ -175,6 +183,7 @@ class MainActivity : ComponentActivity() {
             fetchTrainings()
             fetchMuscleGroups()
             fetchMuscleSubGroups()
+            fetchRelations()
         }
     }
 
@@ -240,6 +249,14 @@ class MainActivity : ComponentActivity() {
 
     private fun setNewObjSelected(objSelected: Pair<Int, Boolean>) {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateObjSelected(objSelected))
+    }
+
+    private fun getRelationById(muscleGroupId: Int){
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.GetRelationById(muscleGroupId))
+    }
+
+    private fun fetchRelations(){
+       muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchRelations)
     }
 
     private fun createTrainings() {

@@ -15,5 +15,5 @@ interface MuscleGroupMuscleSubGroupDao {
     fun getAllMuscleGroupMuscleSubGroups(): List<MuscleGroupMuscleSubGroupEntity>
 
     @Query("SELECT * FROM muscle_group_muscle_sub_group WHERE muscleGroupId = :muscleGroupId")
-    fun getMuscleSubGroupsForMuscleGroup(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
+    fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
 }

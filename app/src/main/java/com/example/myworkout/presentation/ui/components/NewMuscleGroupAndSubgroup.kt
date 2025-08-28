@@ -48,10 +48,11 @@ import com.example.myworkout.utils.getCardColors
 fun NewMuscleGroupAndSubgroup(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleGroupsWithRelation: List<MuscleGroupModel>,
     onCreateMuscleGroup: (name: String) -> Unit,
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
-    onGroupClicked: (muscleGroup: MuscleGroupModel) -> Unit,
+    onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
@@ -62,66 +63,40 @@ fun NewMuscleGroupAndSubgroup(
             muscleSubGroups = muscleSubGroups,
             objSelected = objSelected,
             onItemClick = { onItemClick(it) },
-            onAddMuscleSubGroup = { subGroupSelected ->
-                if (!subGroupSelected.selected) {
-                    onUpdateSubGroup(subGroupSelected.copy(selected = true))
-                } else {
-                    onUpdateSubGroup(subGroupSelected.copy(selected = false))
-                }
-            },
-            onSaveRelation = { muscleGroupId ->
-                val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> =
-                    mutableListOf()
-
-                val subGroupsSelected: List<MuscleSubGroupModel> =
-                    muscleSubGroups.filter { it.selected }
-
-                subGroupsSelected.forEach { subGroup ->
-                    muscleGroupSubGroups.add(
-                        MuscleGroupMuscleSubGroupModel(
-                            muscleGroupId = muscleGroupId,
-                            muscleSubGroupId = subGroup.id
-                        )
-                    )
-                }
-                onSaveRelation(muscleGroupSubGroups)
-            }
+            onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
+            onSaveRelation = { createRelations(muscleSubGroups, it, onSaveRelation) }
         )
         SetCardSection(
-            muscleGroups = muscleGroups,
-            onGroupClicked = { onGroupClicked(it) })
+            muscleGroupsWithRelation = muscleGroupsWithRelation,
+            onGroupWithRelationClicked = { onGroupWithRelationClicked(it) })
     }
 }
 
-@Composable
-private fun SetCardSection(
-    muscleGroups: List<MuscleGroupModel>,
-    onGroupClicked: (muscleGroup: MuscleGroupModel) -> Unit
+private fun createRelations(
+    muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleGroupId: Int,
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
 ) {
-    if (muscleGroups.isNotEmpty()) {
-        ButtonSection(
-            modifier = Modifier.height(200.dp),
-            titleSection = stringResource(R.string.create_training),
-            buttonVisibility = false,
-            content = {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-                    items(muscleGroups) { item ->
-                        ItemCard(
-                            modifier = Modifier.fillMaxWidth().height(60.dp),
-                            colors = getCardColors(),
-                            onClick = { onGroupClicked(item) }
-                        ) {
-                            Label(
-                                modifier = Modifier.padding(start = 16.dp),
-                                text = item.name,
-                                fontSize = 14.sp,
-                            )
-                        }
-                    }
-                }
-            }
+    val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
+
+    val subGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
+
+    subGroupsSelected.forEach { subGroup ->
+        muscleGroupSubGroups.add(
+            MuscleGroupMuscleSubGroupModel(
+                muscleGroupId = muscleGroupId,
+                muscleSubGroupId = subGroup.id
+            )
         )
     }
+    onSaveRelation(muscleGroupSubGroups)
+}
+
+private fun verifySubGroupSelected(
+    subGroupSelected: MuscleSubGroupModel,
+    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit
+) {
+    onUpdateSubGroup(subGroupSelected.copy(selected = !subGroupSelected.selected))
 }
 
 @Composable
@@ -183,7 +158,8 @@ private fun SetMuscleSubGroupSection(
             content = {
                 val objSelected = Pair(muscleGroupId, selected)
                 Column {
-                    val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any { it.selected })
+                    val isMuscleGroupSelected =
+                        (objSelected.second) || (muscleGroups.any { it.selected })
                     val shouldEnableSaveButton = verifyEnabledButton(muscleSubGroups)
                     buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
 
@@ -250,6 +226,39 @@ private fun MuscleSubGroupSection(
     )
 }
 
+@Composable
+private fun SetCardSection(
+    muscleGroupsWithRelation: List<MuscleGroupModel>,
+    onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit
+) {
+    if (muscleGroupsWithRelation.isNotEmpty()) {
+        ButtonSection(
+            modifier = Modifier.height(200.dp),
+            titleSection = stringResource(R.string.create_training),
+            buttonVisibility = false,
+            content = {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+                    items(muscleGroupsWithRelation) { item ->
+                        ItemCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp),
+                            colors = getCardColors(),
+                            onClick = { onGroupWithRelationClicked(item) }
+                        ) {
+                            Label(
+                                modifier = Modifier.padding(start = 16.dp),
+                                text = item.name,
+                                fontSize = 14.sp,
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+}
+
 private fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupModel>): Boolean {
     return muscleSubGroupsSelected.any { it.selected }
 }
@@ -272,14 +281,24 @@ private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: Muscle
 private fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
         muscleGroups = Constants().muscleGroups,
+        muscleGroupsWithRelation = listOf(),
         onCreateMuscleGroup = {},
         objSelected = Pair(0, false),
         onItemClick = {},
-        onGroupClicked = {},
+        onGroupWithRelationClicked = {},
         muscleSubGroups = Constants().muscleSubGroups,
         onUpdateSubGroup = {},
         onSaveRelation = {},
     )
 }
 
-
+//private fun verifySubGroupSelected(
+//    subGroupSelected: MuscleSubGroupModel,
+//    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit
+//) {
+//    if (!subGroupSelected.selected) {
+//        onUpdateSubGroup(subGroupSelected.copy(selected = true))
+//    } else {
+//        onUpdateSubGroup(subGroupSelected.copy(selected = false))
+//    }
+//}
