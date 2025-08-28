@@ -33,6 +33,7 @@ fun NavHost(
     trainings: List<TrainingModel>,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    muscleGroupsWithRelation: List<MuscleGroupModel>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
     objSelected: Pair<Int, Boolean>,
@@ -49,7 +50,11 @@ fun NavHost(
     onSetInitialState: () -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
-    onClearGroupsAndSubGroups: () -> Unit
+    onClearGroupsAndSubGroups: () -> Unit,
+    onGetRelationById: (muscleGroupId: Int) -> Unit,
+    onVerifyRelation: () -> Unit,
+    onFetchGroupsWithRelations: () -> Unit,
+    onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val createNewTraining: String = stringResource(R.string.new_training)
@@ -80,12 +85,13 @@ fun NavHost(
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
                 muscleSubGroups = muscleSubGroups,
+                muscleGroupsWithRelation = muscleGroupsWithRelation,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
-                onGroupClicked = {},
+                onGroupWithRelationClicked = { onGroupWithRelationClicked(it) },
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onUpdateSubGroup = { onUpdateSubGroup(it) },
-                onSaveRelation = { onSaveRelation(it) },
+                onSaveRelation = { relationList -> onSaveRelation(relationList)}
             )
 
             SetupMuscleGroupStateObservers(
@@ -97,7 +103,9 @@ fun NavHost(
                 onFetchMuscleSubGroups = onFetchMuscleSubGroups,
                 onShowToast = { onShowSnackBar(it) },
                 onSetInitialState = { onSetInitialState() },
-                onClearGroupsAndSubGroups = { onClearGroupsAndSubGroups() }
+                onClearGroupsAndSubGroups = { onClearGroupsAndSubGroups() },
+                onVerifyRelation = { onVerifyRelation() },
+                onFetchGroupsWithRelations = { onFetchGroupsWithRelations() }
             )
         }
     }
@@ -114,12 +122,15 @@ private fun SetupMuscleGroupStateObservers(
     onDatabaseCreated: @Composable () -> Unit,
     onShowToast: (message: String) -> Unit,
     onSetInitialState: () -> Unit,
-    onClearGroupsAndSubGroups: () -> Unit
+    onClearGroupsAndSubGroups: () -> Unit,
+    onVerifyRelation: () -> Unit,
+    onFetchGroupsWithRelations: () -> Unit
     ) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.InitialState -> {
             onFetchMuscleGroups()
             onFetchMuscleSubGroups()
+            onFetchGroupsWithRelations()
         }
 
         is MuscleGroupViewState.SuccessDatabaseCreated -> { onDatabaseCreated() }
@@ -143,22 +154,22 @@ private fun SetupMuscleGroupStateObservers(
                 })
         }
 
+        is MuscleGroupViewState.SuccessGetRelation -> {
+            muscleGroupViewState.result
+        }
+
         MuscleGroupViewState.SuccessInsertMuscleGroup -> {
             onShowToast(stringResource(R.string.success_operation))
             onSetInitialState()
         }
 
-        MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {
-            // Todo - Limpar dados da tela
-            // Todo - Desabilitar seção SubGrupo
-            // Todo - Habilitar seção Grupo
-        }
-
+        MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {}
         MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
         MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
 
         MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
             onShowToast(stringResource(R.string.success_operation))
+            onVerifyRelation()
             onClearGroupsAndSubGroups()
         }
     }

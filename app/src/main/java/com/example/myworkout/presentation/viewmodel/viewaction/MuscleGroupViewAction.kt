@@ -10,6 +10,8 @@ sealed class MuscleGroupViewAction {
     data class SaveGroupSubGroupRelation(val newList: MutableList<MuscleGroupMuscleSubGroupModel>) : MuscleGroupViewAction()
     data class UpdateSubGroup(val subGroup: MuscleSubGroupModel): MuscleGroupViewAction()
     data class UpdateObjSelected(val objSelected: Pair<Int, Boolean>): MuscleGroupViewAction()
+    data class GetRelationById(val muscleGroupId: Int): MuscleGroupViewAction()
+    object FetchRelations : MuscleGroupViewAction()
     object FetchMuscleGroups : MuscleGroupViewAction()
     object FetchMuscleSubGroups : MuscleGroupViewAction()
     object ClearGroupsAndSubGroupsSelected : MuscleGroupViewAction()
