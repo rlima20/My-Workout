@@ -158,6 +158,10 @@ private fun SetupMuscleGroupStateObservers(
             muscleGroupViewState.result
         }
 
+        is MuscleGroupViewState.SuccessGetGroupsWithRelations ->{
+
+        }
+
         MuscleGroupViewState.SuccessInsertMuscleGroup -> {
             onShowToast(stringResource(R.string.success_operation))
             onSetInitialState()

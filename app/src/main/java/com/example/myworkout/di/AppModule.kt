@@ -70,7 +70,7 @@ val trainingViewModelDI = module {
 
 @RequiresApi(Build.VERSION_CODES.O)
 val muscleGroupViewModelDI = module {
-    viewModel { MuscleGroupViewModel(get()) }
+    viewModel { MuscleGroupViewModel(get(), get()) }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

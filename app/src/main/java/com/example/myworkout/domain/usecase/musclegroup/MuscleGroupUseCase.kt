@@ -5,11 +5,11 @@ import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
+import com.example.myworkout.enums.BodyPart
 
 interface MuscleGroupUseCase {
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
-    suspend fun insertMuscleGroup(muscleGroup: MuscleGroupModel)
     suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel)
     suspend fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)
@@ -18,4 +18,7 @@ interface MuscleGroupUseCase {
     suspend fun updateSubGroup(subGroup: MuscleSubGroupModel)
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
     suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
+    suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel>
+    suspend fun insertMuscleGroup(name: String, image: BodyPart): MuscleGroupModel
+    suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>)
 }

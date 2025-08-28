@@ -6,6 +6,7 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
+import com.example.myworkout.enums.BodyPart
 
 class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
     MuscleGroupUseCase {
@@ -13,12 +14,29 @@ class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
         return repository.getMuscleSubGroupsByTrainingId(trainingId)
     }
 
-    override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
-        return repository.getSubGroupsGroupedByMuscleGroups()
+    override suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel> {
+        val muscleGroups = repository.getMuscleGroups()
+        val relations = repository.getAllRelations().map { it.muscleGroupId }.toSet()
+        return muscleGroups.filter { it.muscleGroupId in relations }
     }
 
-    override suspend fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
-        repository.insertMuscleGroup(muscleGroup)
+    override suspend fun insertMuscleGroup(name: String, image: BodyPart): MuscleGroupModel {
+        val newGroup = MuscleGroupModel(
+            muscleGroupId = repository.getMuscleGroups().size + 1,
+            name = name,
+            image = image
+        )
+        repository.insertMuscleGroup(newGroup)
+        return newGroup
+    }
+
+    override suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>) {
+        val updatedSubGroups = subGroups.map { it.copy(selected = false) }
+        updatedSubGroups.forEach { updateSubGroup(it) }
+    }
+
+    override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
+        return repository.getSubGroupsGroupedByMuscleGroups()
     }
 
     override suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
