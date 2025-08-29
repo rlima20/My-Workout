@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.testImplementation
+
 plugins {
     id ("com.android.application")
     id ("org.jetbrains.kotlin.android")
@@ -89,6 +91,8 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation("com.google.android.gms:play-services-measurement-api:21.2.2")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+
 
     // Material design
     implementation("com.google.android.material:material:1.4.+")
