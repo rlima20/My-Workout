@@ -276,7 +276,7 @@ class MuscleGroupViewModel(
     }
 
     private fun setErrorState(exception: String) {
-        Log.e(EXCEPTION, exception)
+//        Log.e(EXCEPTION, exception)
         _viewState.value = MuscleGroupViewState.Error
     }
 

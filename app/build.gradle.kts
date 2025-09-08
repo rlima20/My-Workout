@@ -1,9 +1,8 @@
-import org.gradle.kotlin.dsl.testImplementation
 
 plugins {
-    id ("com.android.application")
-    id ("org.jetbrains.kotlin.android")
-    id ("kotlin-kapt")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
 }
 
 android {
@@ -31,7 +30,12 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {// Habilite o JaCoCo para o tipo de build
+            enableAndroidTestCoverage = true
+            enableUnitTestCoverage = true
+        }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -52,15 +56,36 @@ android {
     }
 }
 
+tasks.register<JacocoReport>("jacocoTestReport") {
+    group = "verification"
+    description = "Task to generate JaCoCo code coverage report."
+
+    // Especifique que essa tarefa depende de outras tarefas
+    dependsOn("testDebugUnitTest", "createDebugCoverageReport")
+
+    // Defina o diretório de classes para o debug
+    val debugTree = fileTree("${buildDir}/intermediates/classes/debug")
+
+    // Defina o caminho do diretório de origem principal
+    val mainSrc = "${project.projectDir}/src/main/java"
+
+    // Configure os diretórios de origem e classes
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+
+    // Especifique os arquivos de dados de execução que o JaCoCo usará para gerar o relatório de cobertura
+    executionData.setFrom(fileTree(buildDir).apply {
+        include("jacoco/testDebugUnitTest.exec")
+        include("outputs/code-coverage/connected/*coverage.ec")
+    })
+}
+
 dependencies {
-//    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
-//    implementation("androidx.compose.ui:ui-graphics")
-//    androidTestImplementation(platform("androidx.compose:compose-bom:2024.04.01"))
     val composeUiVersion = "1.4.3"
-//    debugImplementation("androidx.compose.ui:ui-test-manifest")
     val koin = "2.2.0"
     val navVersion = "2.5.3"
     val roomVersion = "2.5.1"
+    val jacocoVersion = "0.8.13"
 
     // Main libraries
     implementation("androidx.core:core-ktx:1.7.0")
@@ -118,4 +143,8 @@ dependencies {
 
     // Google fonts
     implementation("androidx.compose.ui:ui-text-google-fonts:1.4.3")
+    testImplementation(kotlin("test"))
+
+    // Jacoco
+    testImplementation("org.jacoco:org.jacoco.agent:${jacocoVersion}")
 }
