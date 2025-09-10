@@ -43,6 +43,42 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
     }
 
     @Test
+    fun testGetMuscleSubGroupsByTrainingId() = runBlocking {
+        // Given
+        val expectedReturn = listOf(
+            MuscleSubGroupModel(name = "name1"),
+            MuscleSubGroupModel(name = "name2"),
+            MuscleSubGroupModel(name = "name3")
+        )
+
+        val trainingId = 1
+        val listOfTrainingMuscleGroupEntity = listOf(
+            TrainingMuscleGroupEntity(trainingId,2),
+            TrainingMuscleGroupEntity(trainingId,3)
+        )
+
+        val listOfMuscleGroupMuscleSubGroupEntity = listOf(
+            MuscleGroupMuscleSubGroupEntity(2,1),
+            MuscleGroupMuscleSubGroupEntity(2,2),
+            MuscleGroupMuscleSubGroupEntity(2,3)
+        )
+
+        val muscleSubGroupEntity1 = MuscleSubGroupEntity(name = "name1")
+        val muscleSubGroupEntity2 = MuscleSubGroupEntity(name = "name2")
+        val muscleSubGroupEntity3 = MuscleSubGroupEntity(name = "name3")
+
+        // When
+        every { trainingMuscleGroupDao.getMuscleGroupsForTraining(trainingId)} returns listOfTrainingMuscleGroupEntity
+        every { muscleGroupMuscleSubGroupDao.getRelationById(2)} returns listOfMuscleGroupMuscleSubGroupEntity
+        every { muscleSubGroupDao.getMuscleSubGroupById(2) } returns muscleSubGroupEntity1
+        every { muscleSubGroupDao.getMuscleSubGroupById(3) } returns muscleSubGroupEntity2
+
+        // Then
+        val result = muscleGroupRepositoryImpl.getMuscleSubGroupsByTrainingId(trainingId)
+        assertEquals(expectedReturn,result )
+    }
+
+    @Test
     fun testInsertMuscleGroupMuscleSubGroup() = runBlocking {
         // Given
         val muscleGroupMuscleSubGroup = MuscleGroupMuscleSubGroupModel(1, 1)
