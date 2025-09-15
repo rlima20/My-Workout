@@ -16,8 +16,11 @@ import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
 import com.example.myworkout.domain.room.entity.MuscleGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
+import com.example.myworkout.domain.room.entity.TrainingEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.DayOfWeek
+import com.example.myworkout.enums.Status
 import com.example.myworkout.presentation.viewmodel.BaseTest
 import io.mockk.every
 import io.mockk.mockk
@@ -53,14 +56,14 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
 
         val trainingId = 1
         val listOfTrainingMuscleGroupEntity = listOf(
-            TrainingMuscleGroupEntity(trainingId,2),
-            TrainingMuscleGroupEntity(trainingId,3)
+            TrainingMuscleGroupEntity(trainingId, 2),
+            TrainingMuscleGroupEntity(trainingId, 3)
         )
 
         val listOfMuscleGroupMuscleSubGroupEntity = listOf(
-            MuscleGroupMuscleSubGroupEntity(2,1),
-            MuscleGroupMuscleSubGroupEntity(2,2),
-            MuscleGroupMuscleSubGroupEntity(2,3)
+            MuscleGroupMuscleSubGroupEntity(2, 1),
+            MuscleGroupMuscleSubGroupEntity(2, 2),
+            MuscleGroupMuscleSubGroupEntity(2, 3)
         )
 
         val muscleSubGroupEntity1 = MuscleSubGroupEntity(name = "name1")
@@ -68,14 +71,73 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
         val muscleSubGroupEntity3 = MuscleSubGroupEntity(name = "name3")
 
         // When
-        every { trainingMuscleGroupDao.getMuscleGroupsForTraining(trainingId)} returns listOfTrainingMuscleGroupEntity
-        every { muscleGroupMuscleSubGroupDao.getRelationById(2)} returns listOfMuscleGroupMuscleSubGroupEntity
-        every { muscleSubGroupDao.getMuscleSubGroupById(2) } returns muscleSubGroupEntity1
-        every { muscleSubGroupDao.getMuscleSubGroupById(3) } returns muscleSubGroupEntity2
+        every { trainingMuscleGroupDao.getMuscleGroupsForTraining(trainingId) } returns listOfTrainingMuscleGroupEntity
+        every { muscleGroupMuscleSubGroupDao.getRelationById(2) } returns listOfMuscleGroupMuscleSubGroupEntity
+
+        every { muscleSubGroupDao.getMuscleSubGroupById(1) } returns muscleSubGroupEntity1
+        every { muscleSubGroupDao.getMuscleSubGroupById(2) } returns muscleSubGroupEntity2
+        every { muscleSubGroupDao.getMuscleSubGroupById(3) } returns muscleSubGroupEntity3
 
         // Then
         val result = muscleGroupRepositoryImpl.getMuscleSubGroupsByTrainingId(trainingId)
-        assertEquals(expectedReturn,result )
+        assertEquals(expectedReturn, result)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun testGetMuscleSubGroupsByMuscleGroups() = runTest {
+        // Given
+        val trainingEntity = TrainingEntity(
+            1,
+            Status.ACHIEVED,
+            DayOfWeek.SATURDAY,
+            "training"
+        )
+
+        val muscleGroupEntity = MuscleGroupEntity(
+            1, "muscleGroup1", BodyPart.OTHER
+        )
+
+        val trainingMuscleGroupEntity = listOf(
+            TrainingMuscleGroupEntity(
+                trainingEntity.trainingId,
+                muscleGroupEntity.muscleGroupId
+            )
+        )
+
+        val muscleSubGroupEntity = MuscleSubGroupEntity(
+            1, "subGroup", false
+        )
+
+        val muscleSubGroupModel = MuscleSubGroupModel(
+            1, "subGroup", false
+        )
+
+        val relationEntity = listOf(
+            MuscleGroupMuscleSubGroupEntity(
+                muscleGroupEntity.muscleGroupId,
+                muscleSubGroupEntity.muscleSubGroupId
+            )
+        )
+
+        val listOfGroupsModel = listOf(muscleSubGroupModel)
+
+        every { trainingMuscleGroupDao.getAllMuscleGroupRelations() } returns trainingMuscleGroupEntity
+
+
+        every {
+            muscleGroupMuscleSubGroupDao.getRelationById(muscleGroupEntity.muscleGroupId)
+        } returns relationEntity
+
+        every {
+            muscleSubGroupDao.getMuscleSubGroupById(relationEntity.first().muscleSubGroupId)
+        } returns muscleSubGroupEntity
+
+        // When
+        val result = muscleGroupRepositoryImpl.getMuscleSubGroupsByMuscleGroups(listOfGroupsModel)
+
+        // Then
+        assertEquals(listOfGroupsModel, result)
     }
 
     @Test
@@ -222,12 +284,13 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
             MuscleGroupMuscleSubGroupEntity(muscleGroupId, muscleSubGroupId),
         )
 
-        val trainingMuscleGroupEntity = TrainingMuscleGroupEntity(1,1)
+        val trainingMuscleGroupEntity = TrainingMuscleGroupEntity(1, 1)
 
         every { muscleGroupMuscleSubGroupDao.getRelationById(1) } returns returnExpected
 
         // When
-        val result = muscleGroupRepositoryImpl.getRelationByTrainingMuscleGroup(trainingMuscleGroupEntity)
+        val result =
+            muscleGroupRepositoryImpl.getRelationByTrainingMuscleGroup(trainingMuscleGroupEntity)
 
         // Then
         assertEquals(returnExpected, result)
