@@ -266,17 +266,17 @@ class MuscleGroupViewModel(
     }
 
     private fun setLoadingState() {
-        // Log.e(LOADING, LOADING)
+        Log.e(LOADING, LOADING)
         _viewState.value = MuscleGroupViewState.Loading
     }
 
     private fun setSuccessState(state: MuscleGroupViewState) {
-        // Log.e(SUCCESS, state.javaClass.name.toString())
+        Log.e(SUCCESS, state.javaClass.name.toString())
         _viewState.value = state
     }
 
     private fun setErrorState(exception: String) {
-//        Log.e(EXCEPTION, exception)
+        Log.e(EXCEPTION, exception)
         _viewState.value = MuscleGroupViewState.Error
     }
 
