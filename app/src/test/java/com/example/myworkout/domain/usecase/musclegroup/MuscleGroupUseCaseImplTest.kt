@@ -12,12 +12,12 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MuscleGroupUseCaseImplTest : BaseTest() {
 
     private lateinit var repository: MuscleGroupRepository
@@ -30,72 +30,68 @@ class MuscleGroupUseCaseImplTest : BaseTest() {
     }
 
     @Test
-    fun testGetMuscleSubGroupsByTrainingId() = runBlocking {
-        // Given
+    fun `should get MuscleSubGroups by trainingId`() = runTest {
+        // given
         val expected = listOf(
-            MuscleSubGroupModel(1, "Biceps", true),
-            MuscleSubGroupModel(2, "Triceps", false)
+            MuscleGroupTestDataFactory.muscleSubGroupModel(1, "Biceps", true),
+            MuscleGroupTestDataFactory.muscleSubGroupModel(2, "Triceps", false)
         )
-
         coEvery { repository.getMuscleSubGroupsByTrainingId(1) } returns expected
 
-        // When
+        // when
         val result = useCase.getMuscleSubGroupsByTrainingId(1)
 
-        // Then
+        // then
         assertEquals(expected, result)
     }
 
     @Test
-    fun testGetMuscleGroupsWithRelations() = runBlocking {
-        // Given
+    fun `should get MuscleGroups with relations`() = runTest {
+        // given
         val groups = listOf(
-            MuscleGroupModel(1, "Arms", BodyPart.ARM),
-            MuscleGroupModel(2, "Legs", BodyPart.LEG)
+            MuscleGroupTestDataFactory.muscleGroupModel(1, "Arms", BodyPart.ARM),
+            MuscleGroupTestDataFactory.muscleGroupModel(2, "Legs", BodyPart.LEG)
         )
-        val relations = listOf(
-            MuscleGroupMuscleSubGroupModel(1, 10)
-        )
-
+        val relations = listOf(MuscleGroupTestDataFactory.muscleGroupMuscleSubGroupModel(1, 10))
         coEvery { repository.getMuscleGroups() } returns groups
         coEvery { repository.getAllRelations() } returns relations
 
-        // When
+        // when
         val result = useCase.getMuscleGroupsWithRelations()
 
-        // Then
+        // then
         assertEquals(listOf(groups[0]), result)
     }
 
     @Test
-    fun testInsertMuscleGroup() = runBlocking {
-        // Given
-        val groups = listOf(MuscleGroupModel(1, "Arms", BodyPart.ARM))
-        coEvery { repository.getMuscleGroups() } returns groups
+    fun `should insert new MuscleGroup`() = runTest {
+        // given
+        val existingGroups =
+            listOf(MuscleGroupTestDataFactory.muscleGroupModel(1, "Arms", BodyPart.ARM))
+        coEvery { repository.getMuscleGroups() } returns existingGroups
 
-        // When
+        // when
         val result = useCase.insertMuscleGroup("Legs", BodyPart.LEG)
 
-        // Then
+        // then
         assertEquals(2, result.muscleGroupId)
         assertEquals("Legs", result.name)
         assertEquals(BodyPart.LEG, result.image)
         coVerify { repository.insertMuscleGroup(result) }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun testClearSelectedMuscleSubGroups() = runTest {
-        // Given
+    fun `should clear selected MuscleSubGroups`() = runTest {
+        // given
         val subGroups = listOf(
-            MuscleSubGroupModel(1, "Biceps", true),
-            MuscleSubGroupModel(2, "Triceps", true)
+            MuscleGroupTestDataFactory.muscleSubGroupModel(1, "Biceps", true),
+            MuscleGroupTestDataFactory.muscleSubGroupModel(2, "Triceps", true)
         )
 
-        // When
+        // when
         useCase.clearSelectedMuscleSubGroups(subGroups)
 
-        // Then
+        // then
         subGroups.forEach {
             val updated = it.copy(selected = false)
             coVerify { repository.updateSubGroup(updated) }
@@ -103,123 +99,152 @@ class MuscleGroupUseCaseImplTest : BaseTest() {
     }
 
     @Test
-    fun testGetSubGroupsGroupedByMuscleGroups() = runBlocking {
-        // Given
+    fun `should get SubGroups grouped by MuscleGroups`() = runTest {
+        // given
         val mapExpected = mapOf(
-            MuscleGroupModel(1, "Arms", BodyPart.ARM) to listOf(
-                MuscleSubGroupModel(1, "Biceps", false)
+            MuscleGroupTestDataFactory.muscleGroupModel(1, "Arms", BodyPart.ARM) to listOf(
+                MuscleGroupTestDataFactory.muscleSubGroupModel(1, "Biceps", false)
             )
         )
         coEvery { repository.getSubGroupsGroupedByMuscleGroups() } returns mapExpected
 
-        // When
+        // when
         val result = useCase.getSubGroupsGroupedByMuscleGroups()
 
-        // Then
+        // then
         assertEquals(mapExpected, result)
     }
 
     @Test
-    fun testInsertMuscleSubGroup() = runBlocking {
-        // Given
-        val subGroup = MuscleSubGroupModel(1, "Chest", false)
+    fun `should insert MuscleSubGroup`() = runTest {
+        // given
+        val subGroup = MuscleGroupTestDataFactory.muscleSubGroupModel(1, "Chest", false)
 
-        // When
+        // when
         useCase.insertMuscleSubGroup(subGroup)
 
-        // Then
+        // then
         coVerify { repository.insertMuscleSubGroup(subGroup) }
     }
 
     @Test
-    fun testInsertTrainingMuscleGroup() = runBlocking {
-        // Given
-        val trainingGroup = TrainingMuscleGroupModel(1, 1)
+    fun `should insert TrainingMuscleGroup`() = runTest {
+        // given
+        val trainingGroup = MuscleGroupTestDataFactory.trainingMuscleGroupModel(1, 1)
 
-        // When
+        // when
         useCase.insertTrainingMuscleGroup(trainingGroup)
 
-        // Then
+        // then
         coVerify { repository.insertTrainingMuscleGroup(trainingGroup) }
     }
 
     @Test
-    fun testInsertMuscleGroupMuscleSubGroup() = runBlocking {
-        // Given
-        val relation = MuscleGroupMuscleSubGroupModel(1, 2)
+    fun `should insert MuscleGroupMuscleSubGroup`() = runTest {
+        // given
+        val relation = MuscleGroupTestDataFactory.muscleGroupMuscleSubGroupModel(1, 2)
 
-        // When
+        // when
         useCase.insertMuscleGroupMuscleSubGroup(relation)
 
-        // Then
+        // then
         coVerify { repository.insertMuscleGroupMuscleSubGroup(relation) }
     }
 
     @Test
-    fun testGetMuscleGroups() = runBlocking {
-        // Given
-        val expected = listOf(
-            MuscleGroupModel(1, "Back", BodyPart.BACK)
-        )
+    fun `should get MuscleGroups`() = runTest {
+        // given
+        val expected = listOf(MuscleGroupTestDataFactory.muscleGroupModel(1, "Back", BodyPart.BACK))
         coEvery { repository.getMuscleGroups() } returns expected
 
-        // When
+        // when
         val result = useCase.getMuscleGroups()
 
-        // Then
+        // then
         assertEquals(expected, result)
     }
 
     @Test
-    fun testGetMuscleSubGroups() = runBlocking {
-        // Given
-        val expected = listOf(
-            MuscleSubGroupModel(1, "Abs", false)
-        )
+    fun `should get MuscleSubGroups`() = runTest {
+        // given
+        val expected = listOf(MuscleGroupTestDataFactory.muscleSubGroupModel(1, "Abs", false))
         coEvery { repository.getMuscleSubGroups() } returns expected
 
-        // When
+        // when
         val result = useCase.getMuscleSubGroups()
 
-        // Then
+        // then
         assertEquals(expected, result)
     }
 
     @Test
-    fun testUpdateSubGroup() = runBlocking {
-        // Given
-        val subGroup = MuscleSubGroupModel(1, "Chest", true)
+    fun `should update SubGroup`() = runTest {
+        // given
+        val subGroup = MuscleGroupTestDataFactory.muscleSubGroupModel(1, "Chest", true)
 
-        // When
+        // when
         useCase.updateSubGroup(subGroup)
 
-        // Then
+        // then
         coVerify { repository.updateSubGroup(subGroup) }
     }
 
     @Test
-    fun testGetRelationById() = runBlocking {
-        // Given
-        val expected = listOf(MuscleGroupMuscleSubGroupEntity(1, 2))
+    fun `should get Relation by id`() = runTest {
+        // given
+        val expected = listOf(MuscleGroupTestDataFactory.muscleGroupMuscleSubGroupEntity(1, 2))
         coEvery { repository.getRelationById(1) } returns expected
 
-        // When
+        // when
         val result = useCase.getRelationById(1)
 
-        // Then
+        // then
         assertEquals(expected, result)
     }
 
     @Test
-    fun testGetAllRelations() = runBlocking {
-        // Given
-        val expected = listOf(MuscleGroupMuscleSubGroupModel(1, 2))
+    fun `should get all Relations`() = runTest {
+        // given
+        val expected = listOf(MuscleGroupTestDataFactory.muscleGroupMuscleSubGroupModel(1, 2))
         coEvery { repository.getAllRelations() } returns expected
 
-        // When
+        // when
         val result = useCase.getAllRelations()
 
-        // Then
+        // then
         assertEquals(expected, result)
+    }
+
+
+    /**
+     * Fábrica de dados para reduzir repetição nos testes
+     */
+    object MuscleGroupTestDataFactory {
+        fun muscleGroupModel(
+            id: Int = 1,
+            name: String = "Arms",
+            bodyPart: BodyPart = BodyPart.ARM
+        ) = MuscleGroupModel(id, name, bodyPart)
+
+        fun muscleSubGroupModel(
+            id: Int = 1,
+            name: String = "Biceps",
+            selected: Boolean = true
+        ) = MuscleSubGroupModel(id, name, selected)
+
+        fun trainingMuscleGroupModel(
+            trainingId: Int = 1,
+            muscleGroupId: Int = 1
+        ) = TrainingMuscleGroupModel(trainingId, muscleGroupId)
+
+        fun muscleGroupMuscleSubGroupModel(
+            groupId: Int = 1,
+            subGroupId: Int = 2
+        ) = MuscleGroupMuscleSubGroupModel(groupId, subGroupId)
+
+        fun muscleGroupMuscleSubGroupEntity(
+            groupId: Int = 1,
+            subGroupId: Int = 2
+        ) = MuscleGroupMuscleSubGroupEntity(groupId, subGroupId)
     }
 }
