@@ -11,11 +11,11 @@ import com.example.myworkout.enums.Status
 class Constants {
 
     @Composable
-    fun trainingMock(status: Status) = TrainingModel(
+    fun trainingMock(status: Status, trainingName: String) = TrainingModel(
         trainingId = 0,
         status = status,
         dayOfWeek = DayOfWeek.MONDAY,
-        trainingName = "Treino A"
+        trainingName = trainingName
     )
 
     val muscleSubGroupNames = listOf(

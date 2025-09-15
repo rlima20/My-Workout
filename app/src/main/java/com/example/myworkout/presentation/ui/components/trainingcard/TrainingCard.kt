@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Card
@@ -90,7 +91,8 @@ fun TrainingCard(
                 isTrainingChecked = isTrainingChecked,
                 onChecked = {
                     isTrainingChecked = !isTrainingChecked
-                    trainingStatus = Utils().setStatus(isTrainingChecked, trainingStatus, firstStatus)
+                    trainingStatus =
+                        Utils().setStatus(isTrainingChecked, trainingStatus, firstStatus)
 
                     onTrainingChecked(
                         TrainingModel(
@@ -163,9 +165,45 @@ fun TrainingCardPreview() {
     Column {
         Status.values().forEach {
             TrainingCard(
-                modifier = Modifier.size(100.dp, 100.dp),
-                training = Constants().trainingMock(it),
-                muscleSubGroupList = listOf(),
+                modifier = Modifier
+                    .size(200.dp, 200.dp)
+                    .padding(bottom = 16.dp),
+                training = Constants().trainingMock(it, "Ombro"),
+                muscleSubGroupList = listOf(
+                    MuscleSubGroupModel(name = "Posterior"),
+                    MuscleSubGroupModel(name = "Lateral"),
+                    MuscleSubGroupModel(name = "Anterior"),
+                    MuscleSubGroupModel(name = "Trapézio"),
+                ),
+                isFilterChipListEnabled = false,
+                onMuscleGroupSelected = {},
+                onAddButtonClicked = {},
+                onTrainingChecked = {},
+                onGetMuscleSubGroupsByTrainingId = {}
+            )
+        }
+    }
+}
+
+
+@RequiresApi(35)
+@Preview
+@Composable
+fun TrainingCardPreview2() {
+    Column {
+        Status.values().forEach {
+            TrainingCard(
+                modifier = Modifier
+                    .size(200.dp, 250.dp)
+                    .padding(bottom = 16.dp),
+                training = Constants().trainingMock(it, "Peito e tríceps"),
+                muscleSubGroupList = listOf(
+                    MuscleSubGroupModel(name = "Medial"),
+                    MuscleSubGroupModel(name = "Superior"),
+                    MuscleSubGroupModel(name = "Inferior"),
+                    MuscleSubGroupModel(name = "Tríceps cabeça maior"),
+                    MuscleSubGroupModel(name = "Tríceps cabeça menor"),
+                ),
                 isFilterChipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {},
