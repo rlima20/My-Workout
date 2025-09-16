@@ -79,4 +79,83 @@ class Constants {
             selected = false
         )
     )
+
+    val shoulderSubGroups = mutableListOf(
+        MuscleSubGroupModel(
+            id = 0,
+            name = "Anterior",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 1,
+            name = "Lateral",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 2,
+            name = "Posterior",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 3,
+            name = "Trapézio",
+            selected = false
+        )
+    )
+
+    val chestAndTricepsSubGroups = mutableListOf(
+        MuscleSubGroupModel(
+            id = 4,
+            name = "Supino inclinado",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 5,
+            name = "Supino reto",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 6,
+            name = "Cross",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 7,
+            name = "Tríceps polia",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 8,
+            name = "Tríceps Francês",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 9,
+            name = "Lateral",
+            selected = false
+        )
+    )
+
+    val bicepsSubGroups = mutableListOf(
+        MuscleSubGroupModel(
+            id = 10,
+            name = "Bíceps Barra W",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 11,
+            name = "Martelo",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 12,
+            name = "Scotch",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 13,
+            name = "45 graus",
+            selected = false
+        )
+    )
 }
