@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material3.Text
@@ -221,7 +223,7 @@ private fun MuscleSubGroupSection(
         modifier = Modifier.fillMaxWidth().height(42.dp),
         colors = Utils().selectableChipColors(),
         muscleSubGroups = muscleSubGroups,
-        orientation = Orientation.HORIZONTAL,
+        orientation = Orientation.VERTICAL_GRID,
         onItemClick = { onAddMuscleSubGroup(it) }
     )
 }
@@ -286,7 +288,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         objSelected = Pair(0, false),
         onItemClick = {},
         onGroupWithRelationClicked = {},
-        muscleSubGroups = Constants().muscleSubGroups,
+        muscleSubGroups = Constants().chestAndTricepsSubGroups,
         onUpdateSubGroup = {},
         onSaveRelation = {},
     )

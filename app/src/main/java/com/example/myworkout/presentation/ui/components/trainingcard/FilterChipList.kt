@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SelectableChipColors
@@ -15,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -74,6 +78,15 @@ private fun SetFilterChipListOrientation(
                 onItemClick = onItemClick
             )
         }
+
+        Orientation.VERTICAL_GRID -> {
+            SetLazyGrid(
+                modifier = modifier,
+                colors = colors,
+                listOfMuscleSubGroup = listOfMuscleSubGroup,
+                onItemClick = onItemClick
+            )
+        }
     }
 }
 
@@ -88,6 +101,26 @@ private fun SetLazyRow(
     LazyRow(
         //modifier = modifier.background(color = colorResource(R.color.empty)),
         horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
+    ) {
+        items(listOfMuscleSubGroup) { item ->
+            FilterChip(modifier, colors, item, onItemClick)
+        }
+    }
+}
+
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+private fun SetLazyGrid(
+    modifier: Modifier,
+    colors: SelectableChipColors,
+    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    onItemClick: (item: MuscleSubGroupModel) -> Unit
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 90.dp), // largura mínima de cada chip
+        horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING),
+        verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
     ) {
         items(listOfMuscleSubGroup) { item ->
             FilterChip(modifier, colors, item, onItemClick)
@@ -122,14 +155,17 @@ private fun FilterChip(
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
 ) {
     androidx.compose.material.FilterChip(
-        modifier = modifier.height(22.dp),
+        modifier = modifier.height(16.dp),
         colors = colors,
         onClick = { onItemClick(item) },
         content = {
             Text(
                 color = colorResource(R.color.white),
-                fontSize = 16.sp,
-                text = item.name
+                fontSize = 14.sp,
+                text = item.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis, // ou Clip, se não quiser "..."
+                softWrap = false
             )
         },
         selected = item.selected
