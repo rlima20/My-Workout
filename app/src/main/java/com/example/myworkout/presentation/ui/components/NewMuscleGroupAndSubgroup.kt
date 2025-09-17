@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,6 +29,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,19 +61,25 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(top = 70.dp)) {
-        SetMuscleGroupSection { onCreateMuscleGroup(it) }
-        SetMuscleSubGroupSection(
-            muscleGroups = muscleGroups,
-            muscleSubGroups = muscleSubGroups,
-            objSelected = objSelected,
-            onItemClick = { onItemClick(it) },
-            onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
-            onSaveRelation = { createRelations(muscleSubGroups, it, onSaveRelation) }
-        )
-        SetCardSection(
-            muscleGroupsWithRelation = muscleGroupsWithRelation,
-            onGroupWithRelationClicked = { onGroupWithRelationClicked(it) })
+    LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
+        item {
+            SetMuscleGroupSection { onCreateMuscleGroup(it) }
+        }
+        item {
+            SetMuscleSubGroupSection(
+                muscleGroups = muscleGroups,
+                muscleSubGroups = muscleSubGroups,
+                objSelected = objSelected,
+                onItemClick = { onItemClick(it) },
+                onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
+                onSaveRelation = { createRelations(muscleSubGroups, it, onSaveRelation) }
+            )
+        }
+        item {
+            SetCardSection(
+                muscleGroupsWithRelation = muscleGroupsWithRelation,
+                onGroupWithRelationClicked = { onGroupWithRelationClicked(it) })
+        }
     }
 }
 
@@ -193,6 +202,7 @@ private fun MuscleGroupSection(
         text = stringResource(R.string.select_your_group),
         fontSize = 14.sp,
     )
+
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { muscleGroup ->
             FilterChip(
@@ -215,12 +225,12 @@ private fun MuscleSubGroupSection(
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
     Label(
-        modifier = Modifier.padding(top = 16.dp, bottom = 4.dp),
+        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp),
         text = stringResource(R.string.match_subgroup_with_group),
         fontSize = 14.sp,
     )
     FilterChipList(
-        modifier = Modifier.fillMaxWidth().height(42.dp),
+        modifier = Modifier.height(28.dp),
         colors = Utils().selectableChipColors(),
         muscleSubGroups = muscleSubGroups,
         orientation = Orientation.VERTICAL_GRID,
@@ -235,12 +245,12 @@ private fun SetCardSection(
 ) {
     if (muscleGroupsWithRelation.isNotEmpty()) {
         ButtonSection(
-            modifier = Modifier.height(200.dp),
+            modifier = Modifier.padding(bottom = 68.dp),
             titleSection = stringResource(R.string.create_training),
             buttonVisibility = false,
             content = {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-                    items(muscleGroupsWithRelation) { item ->
+                Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+                    muscleGroupsWithRelation.forEach { item ->
                         ItemCard(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -270,7 +280,10 @@ private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
     Text(
         color = colorResource(R.color.white),
         fontSize = 18.sp,
-        text = muscleGroup.name
+        text = muscleGroup.name,
+        maxLines = 1,
+        overflow = TextOverflow.Visible, // ou Clip, se não quiser "..."
+        softWrap = false
     )
 }
 
@@ -293,14 +306,3 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         onSaveRelation = {},
     )
 }
-
-//private fun verifySubGroupSelected(
-//    subGroupSelected: MuscleSubGroupModel,
-//    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit
-//) {
-//    if (!subGroupSelected.selected) {
-//        onUpdateSubGroup(subGroupSelected.copy(selected = true))
-//    } else {
-//        onUpdateSubGroup(subGroupSelected.copy(selected = false))
-//    }
-//}

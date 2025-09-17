@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -98,18 +100,15 @@ private fun SetLazyRow(
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
-    LazyRow(
-        //modifier = modifier.background(color = colorResource(R.color.empty)),
-        horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
-    ) {
-        items(listOfMuscleSubGroup) { item ->
+    Row(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+        listOfMuscleSubGroup.forEach { item ->
             FilterChip(modifier, colors, item, onItemClick)
         }
     }
 }
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun SetLazyGrid(
     modifier: Modifier,
@@ -117,12 +116,11 @@ private fun SetLazyGrid(
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 90.dp), // largura mínima de cada chip
+    FlowRow(
         horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING),
-        verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(listOfMuscleSubGroup) { item ->
+        listOfMuscleSubGroup.forEach { item ->
             FilterChip(modifier, colors, item, onItemClick)
         }
     }
@@ -136,11 +134,11 @@ private fun SetLazyColumn(
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
-    LazyColumn(
+    Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
     ) {
-        items(listOfMuscleSubGroup) { item ->
+        listOfMuscleSubGroup.forEach { item ->
             FilterChip(modifier, colors, item, onItemClick)
         }
     }
@@ -155,7 +153,7 @@ private fun FilterChip(
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
 ) {
     androidx.compose.material.FilterChip(
-        modifier = modifier.height(16.dp),
+        modifier = modifier,
         colors = colors,
         onClick = { onItemClick(item) },
         content = {
