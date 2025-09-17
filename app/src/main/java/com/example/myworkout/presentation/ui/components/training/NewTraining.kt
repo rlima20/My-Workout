@@ -20,7 +20,6 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.BodyPart
-import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.setImageDrawable
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Horizontal

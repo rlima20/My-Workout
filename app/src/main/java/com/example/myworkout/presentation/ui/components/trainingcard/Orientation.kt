@@ -90,7 +90,7 @@ object Grid : Orientation {
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SetColumn(
+private fun SetColumn(
     modifier: Modifier,
     colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
@@ -108,7 +108,7 @@ fun SetColumn(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SetRow(
+private fun SetRow(
     modifier: Modifier,
     colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
@@ -123,7 +123,7 @@ fun SetRow(
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
-fun SetGrid(
+private fun SetGrid(
     modifier: Modifier,
     colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
