@@ -2,31 +2,17 @@ package com.example.myworkout.presentation.ui.components.trainingcard
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.SelectableChipColors
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.enums.Orientation
+import com.example.myworkout.utils.DEFAULT_PADDING
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -37,141 +23,20 @@ internal fun FilterChipList(
     muscleSubGroups: List<MuscleSubGroupModel>,
     enabled: Boolean = true,
     colors: SelectableChipColors,
-    orientation: Orientation = Orientation.VERTICAL,
-    backGroundColor: Int = DEFAULT_COLOR,
+    orientation: Orientation,
+    backGroundColor: Int = R.color.empty_2,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
-    val modifier = modifier
-        .background(colorResource(backGroundColor))
+    val modifier = modifier.background(colorResource(backGroundColor))
 
-    SetFilterChipListOrientation(
-        orientation = orientation,
-        colors = colors,
+    orientation.Render(
         modifier = modifier,
+        colors = colors,
+        enabled = enabled,
         listOfMuscleSubGroup = muscleSubGroups,
         onItemClick = onItemClick
     )
 }
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun SetFilterChipListOrientation(
-    orientation: Orientation,
-    modifier: Modifier,
-    colors: SelectableChipColors,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit
-) {
-    when (orientation) {
-        Orientation.VERTICAL -> {
-            SetLazyColumn(
-                modifier = modifier,
-                colors = colors,
-                listOfMuscleSubGroup = listOfMuscleSubGroup,
-                onItemClick = onItemClick
-            )
-        }
-
-        Orientation.HORIZONTAL -> {
-            SetLazyRow(
-                modifier = modifier,
-                colors = colors,
-                listOfMuscleSubGroup = listOfMuscleSubGroup,
-                onItemClick = onItemClick
-            )
-        }
-
-        Orientation.VERTICAL_GRID -> {
-            SetLazyGrid(
-                modifier = modifier,
-                colors = colors,
-                listOfMuscleSubGroup = listOfMuscleSubGroup,
-                onItemClick = onItemClick
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun SetLazyRow(
-    modifier: Modifier,
-    colors: SelectableChipColors,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit
-) {
-    Row(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-        listOfMuscleSubGroup.forEach { item ->
-            FilterChip(modifier, colors, item, onItemClick)
-        }
-    }
-}
-
-
-@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
-@Composable
-private fun SetLazyGrid(
-    modifier: Modifier,
-    colors: SelectableChipColors,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit
-) {
-    FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        listOfMuscleSubGroup.forEach { item ->
-            FilterChip(modifier, colors, item, onItemClick)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-private fun SetLazyColumn(
-    modifier: Modifier,
-    colors: SelectableChipColors,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
-    ) {
-        listOfMuscleSubGroup.forEach { item ->
-            FilterChip(modifier, colors, item, onItemClick)
-        }
-    }
-}
-
-@Composable
-@OptIn(ExperimentalMaterialApi::class)
-private fun FilterChip(
-    modifier: Modifier,
-    colors: SelectableChipColors,
-    item: MuscleSubGroupModel,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit,
-) {
-    androidx.compose.material.FilterChip(
-        modifier = modifier,
-        colors = colors,
-        onClick = { onItemClick(item) },
-        content = {
-            Text(
-                color = colorResource(R.color.white),
-                fontSize = 14.sp,
-                text = item.name,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis, // ou Clip, se não quiser "..."
-                softWrap = false
-            )
-        },
-        selected = item.selected
-    )
-}
-
-const val DEFAULT_COLOR = R.color.empty_2
-val DEFAULT_PADDING = 8.dp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Preview
@@ -187,6 +52,7 @@ fun AssistChipListPreview() {
         modifier = Modifier.padding(DEFAULT_PADDING)
     ) {
         FilterChipList(
+            orientation = Vertical,
             muscleSubGroups = listOfMuscleSubGroup,
             colors = Utils().selectableChipColors(),
             enabled = false,
@@ -198,7 +64,15 @@ fun AssistChipListPreview() {
             enabled = false,
             colors = Utils().selectableChipColors(),
             onItemClick = {},
-            orientation = Orientation.HORIZONTAL
+            orientation = Horizontal
+        )
+
+        FilterChipList(
+            muscleSubGroups = listOfMuscleSubGroup,
+            enabled = false,
+            colors = Utils().selectableChipColors(),
+            onItemClick = {},
+            orientation = Grid
         )
     }
 }

@@ -23,6 +23,7 @@ import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.setImageDrawable
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
+import com.example.myworkout.presentation.ui.components.trainingcard.Horizontal
 import com.example.myworkout.utils.Utils
 
 @SuppressLint("UnrememberedMutableState")
@@ -92,7 +93,7 @@ fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
         colors = Utils().selectableChipColors(),
         onItemClick = {},
         backGroundColor = R.color.white,
-        orientation = Orientation.HORIZONTAL
+        orientation = Horizontal
     )
 }
 

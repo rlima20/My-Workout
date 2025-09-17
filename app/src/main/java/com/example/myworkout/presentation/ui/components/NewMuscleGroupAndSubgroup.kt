@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material3.Text
@@ -39,13 +35,13 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.enums.Orientation
 import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
-import com.example.myworkout.presentation.ui.components.trainingcard.DEFAULT_PADDING
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
+import com.example.myworkout.presentation.ui.components.trainingcard.Grid
+import com.example.myworkout.utils.DEFAULT_PADDING
 import com.example.myworkout.utils.Utils
 import com.example.myworkout.utils.getCardColors
 
@@ -62,7 +58,9 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
-    LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
+    LazyColumn(modifier = Modifier
+        .padding(top = 70.dp)
+        .fillMaxSize()) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }
         }
@@ -234,7 +232,7 @@ private fun MuscleSubGroupSection(
         modifier = Modifier.height(28.dp),
         colors = Utils().selectableChipColors(),
         muscleSubGroups = muscleSubGroups,
-        orientation = Orientation.VERTICAL_GRID,
+        orientation = Grid,
         onItemClick = { onAddMuscleSubGroup(it) }
     )
 }
