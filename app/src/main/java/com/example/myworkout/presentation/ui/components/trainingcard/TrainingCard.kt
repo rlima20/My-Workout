@@ -146,10 +146,11 @@ private fun MuscleSubGroupSection(
             onGetMuscleSubGroupsByTrainingId(training.trainingId)
 
             FilterChipList(
+                orientation = Vertical,
                 muscleSubGroups = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
                 colors = Utils().selectableChipColors(),
-                enabled = isFilterChipListEnabled
+                enabled = isFilterChipListEnabled,
             )
         } else IconButton(
             painter = painterResource(R.drawable.add_icon),

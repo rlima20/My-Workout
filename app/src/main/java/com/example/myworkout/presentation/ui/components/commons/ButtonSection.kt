@@ -2,6 +2,7 @@ package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -77,7 +78,7 @@ private fun NewMuscleGroupPreview() {
     var buttonEnabled by remember { mutableStateOf(false) }
 
     ButtonSection(
-        modifier = Modifier,
+        modifier = Modifier.height(300.dp),
         titleSection = stringResource(R.string.new_muscle_group),
         buttonName = stringResource(R.string.button_section_add_button),
         buttonEnabled = buttonEnabled,

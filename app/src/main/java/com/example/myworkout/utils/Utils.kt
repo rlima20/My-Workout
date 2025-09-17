@@ -7,6 +7,7 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import com.example.myworkout.R
 import com.example.myworkout.enums.Status
 
@@ -56,3 +57,5 @@ fun getScreenHeight(context: Context): Float {
     val metrics = context.resources.displayMetrics
     return metrics.heightPixels / metrics.density
 }
+
+val DEFAULT_PADDING = 8.dp
