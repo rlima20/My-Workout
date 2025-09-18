@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.extensions.emptyString
+import com.example.myworkout.utils.Utils
 
 @Composable
 fun ButtonSection(
@@ -38,6 +40,7 @@ fun ButtonSection(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp),
+        colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.cardElevation()
     ) {
@@ -63,7 +66,10 @@ fun ButtonSection(
                     .fillMaxWidth()
                     .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
                 onClick = { onButtonClick() },
-                enabled = buttonEnabled
+                enabled = buttonEnabled,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.button_color)
+                )
             ) {
                 Text(text = buttonName)
             }

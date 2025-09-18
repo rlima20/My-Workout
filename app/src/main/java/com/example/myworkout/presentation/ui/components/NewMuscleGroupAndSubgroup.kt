@@ -13,8 +13,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,7 +44,6 @@ import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipL
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.utils.DEFAULT_PADDING
 import com.example.myworkout.utils.Utils
-import com.example.myworkout.utils.getCardColors
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
@@ -138,7 +138,19 @@ private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
                     muscleGroupName = it
                     buttonEnabled = it.isNotEmpty()
                 },
-                label = { Text(stringResource(R.string.new_training_input_text_label)) }
+                label = {
+                    Text(
+                        text = stringResource(R.string.new_training_input_text_label),
+                        color = colorResource(R.color.title_color)
+                    )
+                },
+                colors = TextFieldDefaults.textFieldColors(
+                    focusedLabelColor = colorResource(R.color.text_color),
+                    cursorColor = colorResource(R.color.text_color),
+                    backgroundColor = colorResource(R.color.white),
+                    textColor = colorResource(R.color.text_color),
+                    focusedIndicatorColor = colorResource(R.color.title_color)
+                )
             )
         }
     )
@@ -233,6 +245,7 @@ private fun MuscleSubGroupSection(
         colors = Utils().selectableChipColors(),
         muscleSubGroups = muscleSubGroups,
         orientation = Grid,
+        backGroundColor = R.color.button_section_card_color,
         onItemClick = { onAddMuscleSubGroup(it) }
     )
 }
@@ -254,13 +267,14 @@ private fun SetCardSection(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(60.dp),
-                            colors = getCardColors(),
+                            colors = Utils().getCardColors(),
                             onClick = { onGroupWithRelationClicked(item) }
                         ) {
                             Label(
                                 modifier = Modifier.padding(start = 16.dp),
                                 text = item.name,
                                 fontSize = 14.sp,
+                                textColor = colorResource(R.color.white)
                             )
                         }
                     }
