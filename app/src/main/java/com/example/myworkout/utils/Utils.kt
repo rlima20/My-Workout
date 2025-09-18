@@ -1,6 +1,5 @@
 package com.example.myworkout.utils
 
-import android.content.Context
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.CardColors
@@ -37,25 +36,26 @@ class Utils {
     fun selectableChipColors() = ChipDefaults.filterChipColors(
         backgroundColor = colorResource(R.color.content),
         selectedContentColor = colorResource(R.color.button_color),
-        disabledBackgroundColor = colorResource(R.color.content),
+        disabledBackgroundColor = colorResource(R.color.button_section_card_color),
         disabledContentColor = colorResource(R.color.pending),
         selectedBackgroundColor = colorResource(R.color.button_color)
     )
-}
 
-@Composable
-fun getCardColors(): CardColors = CardDefaults.cardColors(
-    containerColor = colorResource(R.color.top_bar_color),
-    contentColor = colorResource(R.color.top_bar_color),
-    disabledContainerColor = colorResource(R.color.top_bar_color),
-    disabledContentColor = colorResource(R.color.top_bar_color)
-)
+    @Composable
+    fun getCardColors(): CardColors = CardDefaults.cardColors(
+        containerColor = colorResource(R.color.title_color),
+        contentColor = colorResource(R.color.title_color),
+        disabledContainerColor = colorResource(R.color.title_color),
+        disabledContentColor = colorResource(R.color.title_color)
+    )
 
-@Composable
-fun getScreenHeight(context: Context): Float {
-    val context = context
-    val metrics = context.resources.displayMetrics
-    return metrics.heightPixels / metrics.density
+    @Composable
+    fun buttonSectionCardsColors(): CardColors = CardDefaults.cardColors(
+        containerColor = colorResource(R.color.button_section_card_color),
+        contentColor = colorResource(R.color.button_section_card_color),
+        disabledContainerColor = colorResource(R.color.button_section_card_color),
+        disabledContentColor = colorResource(R.color.button_section_card_color)
+    )
 }
 
 val DEFAULT_PADDING = 8.dp

@@ -24,7 +24,7 @@ internal fun FilterChipList(
     enabled: Boolean = true,
     colors: SelectableChipColors,
     orientation: Orientation,
-    backGroundColor: Int = R.color.empty_2,
+    backGroundColor: Int,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
     val modifier = modifier.background(colorResource(backGroundColor))
@@ -56,6 +56,7 @@ fun AssistChipListPreview() {
             muscleSubGroups = listOfMuscleSubGroup,
             colors = Utils().selectableChipColors(),
             enabled = false,
+            backGroundColor = R.color.white,
             onItemClick = {}
         )
 
@@ -64,6 +65,7 @@ fun AssistChipListPreview() {
             enabled = false,
             colors = Utils().selectableChipColors(),
             onItemClick = {},
+            backGroundColor = R.color.white,
             orientation = Horizontal
         )
 
@@ -72,6 +74,7 @@ fun AssistChipListPreview() {
             enabled = false,
             colors = Utils().selectableChipColors(),
             onItemClick = {},
+            backGroundColor = R.color.white,
             orientation = Grid
         )
     }

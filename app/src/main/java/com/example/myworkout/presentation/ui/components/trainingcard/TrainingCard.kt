@@ -150,6 +150,7 @@ private fun MuscleSubGroupSection(
                 muscleSubGroups = listOfMuscleSubGroup,
                 onItemClick = { onItemClick(it) },
                 colors = Utils().selectableChipColors(),
+                backGroundColor = R.color.white,
                 enabled = isFilterChipListEnabled,
             )
         } else IconButton(

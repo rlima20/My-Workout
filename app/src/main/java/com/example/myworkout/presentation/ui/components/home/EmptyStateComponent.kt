@@ -1,6 +1,7 @@
 package com.example.myworkout.presentation.ui.components.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,20 +13,24 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
+import com.example.myworkout.utils.Utils
 
 @Composable
 fun EmptyStateComponent(
     modifier: Modifier = Modifier,
     text: String,
     painter: Painter,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    backgroundColor: Color = colorResource(R.color.top_bar_color)
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -33,12 +38,15 @@ fun EmptyStateComponent(
         verticalArrangement = Arrangement.Center
     ) {
         Card(
+            colors = Utils().getCardColors(),
             modifier = modifier,
             shape = CardDefaults.elevatedShape,
             elevation = CardDefaults.cardElevation()
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(backgroundColor),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -54,7 +62,8 @@ fun EmptyStateComponent(
                 }
                 Text(
                     text = text,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    color = colorResource(R.color.title_color)
                 )
             }
         }

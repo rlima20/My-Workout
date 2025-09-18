@@ -3,11 +3,8 @@ package com.example.myworkout.presentation.ui.navigation
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -18,10 +15,10 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
-import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
@@ -91,7 +88,7 @@ fun NavHost(
                 onGroupWithRelationClicked = { onGroupWithRelationClicked(it) },
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onUpdateSubGroup = { onUpdateSubGroup(it) },
-                onSaveRelation = { relationList -> onSaveRelation(relationList)}
+                onSaveRelation = { relationList -> onSaveRelation(relationList) }
             )
 
             SetupMuscleGroupStateObservers(
@@ -125,7 +122,7 @@ private fun SetupMuscleGroupStateObservers(
     onClearGroupsAndSubGroups: () -> Unit,
     onVerifyRelation: () -> Unit,
     onFetchGroupsWithRelations: () -> Unit
-    ) {
+) {
     when (muscleGroupViewState) {
         is MuscleGroupViewState.InitialState -> {
             onFetchMuscleGroups()
@@ -133,8 +130,13 @@ private fun SetupMuscleGroupStateObservers(
             onFetchGroupsWithRelations()
         }
 
-        is MuscleGroupViewState.SuccessDatabaseCreated -> { onDatabaseCreated() }
-        is MuscleGroupViewState.Loading -> { LoadingComponent() }
+        is MuscleGroupViewState.SuccessDatabaseCreated -> {
+            onDatabaseCreated()
+        }
+
+        is MuscleGroupViewState.Loading -> {
+            LoadingComponent()
+        }
 
         is MuscleGroupViewState.Error -> {
             ErrorStateComponent(onButtonClicked = {
@@ -146,6 +148,7 @@ private fun SetupMuscleGroupStateObservers(
         is MuscleGroupViewState.Empty -> {
             EmptyStateComponent(
                 modifier = Modifier.size(150.dp, 180.dp),
+                backgroundColor = colorResource(R.color.top_bar_color),
                 text = stringResource(R.string.new_training),
                 painter = painterResource(R.drawable.add_icon),
                 onClick = {
@@ -158,7 +161,7 @@ private fun SetupMuscleGroupStateObservers(
             muscleGroupViewState.result
         }
 
-        is MuscleGroupViewState.SuccessGetGroupsWithRelations ->{
+        is MuscleGroupViewState.SuccessGetGroupsWithRelations -> {
 
         }
 
@@ -189,7 +192,8 @@ private fun SetupTrainingStateObservers(
     onDatabaseCreated: @Composable () -> Unit,
 ) {
     when (trainingViewState) {
-        is TrainingViewState.Loading -> { /* Do nothing */ }
+        is TrainingViewState.Loading -> { /* Do nothing */
+        }
 
         is TrainingViewState.Empty -> {
             EmptyStateComponent(
@@ -199,7 +203,9 @@ private fun SetupTrainingStateObservers(
                 onClick = {
                     onChangeRoute(false)
                     onNavigateToNewTraining()
-                })
+                },
+                backgroundColor = colorResource(R.color.top_bar_color),
+            )
             onDatabaseCreated()
         }
 
@@ -210,7 +216,8 @@ private fun SetupTrainingStateObservers(
             })
         }
 
-        is TrainingViewState.Success -> { /* Do nothing */ }
+        is TrainingViewState.Success -> { /* Do nothing */
+        }
 
         else -> { /* Do nothing */
         }

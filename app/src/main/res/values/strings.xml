@@ -8,7 +8,7 @@
     <string name="try_again">Tente novamente</string>
     <string name="something_went_wrong">Algo deu errado</string>
     <string name="error">Erro!</string>
-    <string name="home_screen">Home Screen</string>
+    <string name="home_screen">Home</string>
     <string name="loading_database">Criando base de dados...</string>
     <string name="loading_trainings">Carregando treinamentos...</string>
     <string name="everything_ready">Tudo pronto!</string>

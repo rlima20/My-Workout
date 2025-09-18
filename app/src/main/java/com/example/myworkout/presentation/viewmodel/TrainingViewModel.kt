@@ -30,7 +30,7 @@ class TrainingViewModel(
     private val _isHomeScreen = MutableStateFlow(true)
     val isHomeScreen: StateFlow<Boolean> get() = _isHomeScreen
 
-    private val _appBarTitle = MutableStateFlow("Home Screen")
+    private val _appBarTitle = MutableStateFlow("Home")
     val appBarTitle: StateFlow<String> get() = _appBarTitle
 
     fun dispatchViewAction(trainingViewAction: TrainingViewAction) {

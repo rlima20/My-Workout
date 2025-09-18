@@ -28,7 +28,7 @@ fun BottomAppBar(
 ) {
     BottomAppBar(
         modifier = Modifier.height(70.dp),
-        containerColor = colorResource(R.color.pending),
+        containerColor = colorResource(R.color.top_bar_color),
         actions = {
             Row(horizontalArrangement = Arrangement.spacedBy(50.dp)) {
                 IconButton(
