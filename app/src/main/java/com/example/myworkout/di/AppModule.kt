@@ -13,9 +13,17 @@ import com.example.myworkout.domain.usecase.training.TrainingUseCase
 import com.example.myworkout.domain.usecase.training.TrainingUseCaseImpl
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
+import com.google.firebase.Firebase
+import com.google.firebase.remoteconfig.remoteConfig
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+
+val remoteConfigDI = module {
+    single {
+        Firebase.remoteConfig
+    }
+}
 
 val dispatcherDI = module {
     single<Dispatchers> { Dispatchers }
@@ -70,11 +78,18 @@ val trainingViewModelDI = module {
 
 @RequiresApi(Build.VERSION_CODES.O)
 val muscleGroupViewModelDI = module {
-    viewModel { MuscleGroupViewModel(get(), get()) }
+    viewModel {
+        MuscleGroupViewModel(
+            get(),
+            get(),
+            get()
+        )
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 val appModules = listOf(
+    remoteConfigDI,
     dispatcherDI,
     databaseDI,
     trainingDaoDI,

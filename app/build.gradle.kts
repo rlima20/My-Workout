@@ -3,16 +3,17 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.example.myworkout"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.myworkout"
         minSdk = 24
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -86,6 +87,13 @@ dependencies {
     val navVersion = "2.5.3"
     val roomVersion = "2.5.1"
     val jacocoVersion = "0.8.13"
+
+    // Firebase
+    implementation(platform("com.google.firebase:firebase-bom:34.2.0"))
+
+    implementation("com.google.firebase:firebase-config:23.0.0")
+    implementation("com.google.firebase:firebase-analytics:23.0.0")
+    implementation("com.google.firebase:firebase-core:21.1.1")
 
     // Main libraries
     implementation("androidx.core:core-ktx:1.7.0")

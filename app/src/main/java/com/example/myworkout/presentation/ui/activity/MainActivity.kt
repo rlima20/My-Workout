@@ -62,7 +62,8 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val prefs = TrainingPrefs()
 
-            setupDatabase(prefs)
+            getSubGroupsFromRemoteConfig(prefs)
+            // setupDatabase(prefs)
             fetchInfoIfNotFirstInstall(prefs)
 
             MyWorkoutTheme {
@@ -187,10 +188,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun setupDatabase(prefs: TrainingPrefs) {
+//    private fun setupDatabase(prefs: TrainingPrefs) {
+//        val isFirstInstall = prefs.isFirstInstall(this.baseContext)
+//        muscleGroupViewModel.dispatchViewAction(
+//            MuscleGroupViewAction.CreateInitialDatabase(isFirstInstall)
+//        )
+//    }
+
+    private fun getSubGroupsFromRemoteConfig(prefs: TrainingPrefs) {
         val isFirstInstall = prefs.isFirstInstall(this.baseContext)
         muscleGroupViewModel.dispatchViewAction(
-            MuscleGroupViewAction.CreateInitialDatabase(isFirstInstall)
+            MuscleGroupViewAction.GetSubGroupsFromRemoteConfig
         )
     }
 

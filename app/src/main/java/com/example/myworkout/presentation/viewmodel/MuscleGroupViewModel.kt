@@ -11,6 +11,7 @@ import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +19,8 @@ import kotlinx.coroutines.launch
 
 class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
-    private val dispatchers: Dispatchers
+    private val dispatchers: Dispatchers,
+    private val remoteConfig: FirebaseRemoteConfig
 ) : ViewModel() {
 
     private val _viewState: MutableStateFlow<MuscleGroupViewState> =
@@ -48,6 +50,10 @@ class MuscleGroupViewModel(
         when (viewAction) {
             is MuscleGroupViewAction.SetupInitialState -> {
                 setInitialViewState()
+            }
+
+            is MuscleGroupViewAction.GetSubGroupsFromRemoteConfig -> {
+                getRemoteConfig()
             }
 
             is MuscleGroupViewAction.CreateInitialDatabase -> {
@@ -94,6 +100,11 @@ class MuscleGroupViewModel(
                 getGroupsWithRelations()
             }
         }
+    }
+
+    private fun getRemoteConfig(){
+        val muscleSubGroups = remoteConfig.getString("muscle_subgroups")
+        Log.i("remote-config", muscleSubGroups.toString())
     }
 
     private fun getGroupsWithRelations() {
