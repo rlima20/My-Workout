@@ -18,9 +18,6 @@ internal fun CheckBox(
     if (status != Status.EMPTY) {
         Checkbox(
             enabled = status != Status.MISSED,
-            modifier = Modifier
-                .padding(end = 16.dp)
-                .offset(y = (-24).dp),
             checked = isTrainingChecked,
             onCheckedChange = { onChecked() },
         )

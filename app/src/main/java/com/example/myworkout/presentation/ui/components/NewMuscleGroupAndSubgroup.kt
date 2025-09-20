@@ -42,6 +42,7 @@ import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
+import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.utils.DEFAULT_PADDING
 import com.example.myworkout.utils.Utils
 
@@ -58,9 +59,11 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
-    LazyColumn(modifier = Modifier
-        .padding(top = 70.dp)
-        .fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(top = 70.dp)
+            .fillMaxSize()
+    ) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }
         }
@@ -240,13 +243,18 @@ private fun MuscleSubGroupSection(
         text = stringResource(R.string.match_subgroup_with_group),
         fontSize = 14.sp,
     )
+
     FilterChipList(
         modifier = Modifier.height(28.dp),
-        colors = Utils().selectableChipColors(),
-        muscleSubGroups = muscleSubGroups,
-        orientation = Grid,
         backGroundColor = R.color.button_section_card_color,
-        onItemClick = { onAddMuscleSubGroup(it) }
+        orientation = Grid,
+        orientationProps = GridProps(
+            colors = Utils().selectableChipColors(),
+            listOfMuscleSubGroup = muscleSubGroups,
+            horizontalSpacedBy = 2.dp,
+            verticalSpacedBy = 2.dp,
+            onItemClick = { onAddMuscleSubGroup(it) }
+        ),
     )
 }
 

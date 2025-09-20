@@ -6,11 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,8 +40,8 @@ import com.example.myworkout.utils.Utils
 fun TrainingCard(
     modifier: Modifier = Modifier,
     training: TrainingModel,
-    muscleSubGroupList: List<MuscleSubGroupModel>,
-    isFilterChipListEnabled: Boolean,
+    subGroups: List<MuscleSubGroupModel>,
+    chipListEnabled: Boolean,
     onAddButtonClicked: () -> Unit,
     onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroupModel>) -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
@@ -52,11 +50,11 @@ fun TrainingCard(
     var trainingStatus by remember { mutableStateOf(training.status) }
     val firstStatus by remember { mutableStateOf(training.status) }
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
-
-    var muscleSubGroupsState = muscleSubGroupList
+    var subGroupsState = subGroups
 
     Card(
         modifier = modifier,
+        colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.cardElevation(),
     ) {
@@ -67,23 +65,23 @@ fun TrainingCard(
             )
             MuscleSubGroupSection(
                 training = training,
-                listOfMuscleSubGroup = muscleSubGroupList,
+                subGroups = subGroups,
                 onItemClick = { item ->
                     // Todo - refatorar o que tem dentro do escopo do inItemClick
-                    val muscleSubGroupsSelected: MutableList<MuscleSubGroupModel> = mutableListOf()
+                    val subGroupsSelected: MutableList<MuscleSubGroupModel> = mutableListOf()
 
-                    muscleSubGroupsState = muscleSubGroupsState.map { muscleSubGroup ->
+                    subGroupsState = subGroupsState.map { muscleSubGroup ->
                         if (muscleSubGroup.id == item.id) item.copy(selected = !item.selected)
                         else muscleSubGroup
                     }.toMutableList()
 
-                    if (!item.selected) muscleSubGroupsSelected.remove(item)
-                    else muscleSubGroupsSelected.add(item.copy(selected = true))
+                    if (!item.selected) subGroupsSelected.remove(item)
+                    else subGroupsSelected.add(item.copy(selected = true))
 
-                    onMuscleGroupSelected(muscleSubGroupsSelected)
+                    onMuscleGroupSelected(subGroupsSelected)
                 },
                 onAddButtonClicked = { onAddButtonClicked() },
-                isFilterChipListEnabled = isFilterChipListEnabled,
+                chipListEnabled = chipListEnabled,
                 onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
             )
             CheckBox(
@@ -130,28 +128,34 @@ private fun SetTrainingName(
 @Composable
 private fun MuscleSubGroupSection(
     training: TrainingModel,
-    listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-    isFilterChipListEnabled: Boolean = false,
+    subGroups: List<MuscleSubGroupModel>,
+    chipListEnabled: Boolean = false,
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
     onAddButtonClicked: () -> Unit,
-    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
+    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit,
 ) {
+    val backgroundColor = R.color.button_section_card_color
+
     Row(
         modifier = Modifier
-            .background(color = colorResource(R.color.content))
-            .fillMaxSize()
-            .background(colorResource(R.color.empty))
+            .background(color = colorResource(backgroundColor))
+            .fillMaxWidth()
     ) {
         if (training.status != Status.EMPTY) {
             onGetMuscleSubGroupsByTrainingId(training.trainingId)
 
             FilterChipList(
-                orientation = Vertical,
-                muscleSubGroups = listOfMuscleSubGroup,
-                onItemClick = { onItemClick(it) },
-                colors = Utils().selectableChipColors(),
-                backGroundColor = R.color.white,
-                enabled = isFilterChipListEnabled,
+                modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                backGroundColor = backgroundColor,
+                orientation = Grid,
+                orientationProps = GridProps(
+                    colors = Utils().selectableChipColors(),
+                    listOfMuscleSubGroup = subGroups,
+                    enabled = chipListEnabled,
+                    horizontalSpacedBy = 8.dp,
+                    verticalSpacedBy = 0.dp,
+                    onItemClick = { onItemClick(it) }
+                ),
             )
         } else IconButton(
             painter = painterResource(R.drawable.add_icon),
@@ -164,20 +168,20 @@ private fun MuscleSubGroupSection(
 @Preview
 @Composable
 fun TrainingCardPreview() {
+    val subGroups = listOf(
+        MuscleSubGroupModel(name = "Posterior"),
+        MuscleSubGroupModel(name = "Lateral"),
+        MuscleSubGroupModel(name = "Anterior"),
+        MuscleSubGroupModel(name = "Trapézio"),
+    )
+
     Column {
         Status.values().forEach {
             TrainingCard(
-                modifier = Modifier
-                    .size(200.dp, 200.dp)
-                    .padding(bottom = 16.dp),
+                modifier = Modifier.padding(bottom = 4.dp),
                 training = Constants().trainingMock(it, "Ombro"),
-                muscleSubGroupList = listOf(
-                    MuscleSubGroupModel(name = "Posterior"),
-                    MuscleSubGroupModel(name = "Lateral"),
-                    MuscleSubGroupModel(name = "Anterior"),
-                    MuscleSubGroupModel(name = "Trapézio"),
-                ),
-                isFilterChipListEnabled = false,
+                subGroups = subGroups,
+                chipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {},
                 onTrainingChecked = {},
@@ -192,21 +196,21 @@ fun TrainingCardPreview() {
 @Preview
 @Composable
 fun TrainingCardPreview2() {
+    val subGroups = listOf(
+        MuscleSubGroupModel(name = "Medial"),
+        MuscleSubGroupModel(name = "Superior"),
+        MuscleSubGroupModel(name = "Inferior"),
+        MuscleSubGroupModel(name = "Tríceps cabeça maior"),
+        MuscleSubGroupModel(name = "Tríceps cabeça menor"),
+    )
+
     Column {
         Status.values().forEach {
             TrainingCard(
-                modifier = Modifier
-                    .size(200.dp, 250.dp)
-                    .padding(bottom = 16.dp),
+                modifier = Modifier.padding(bottom = 16.dp),
                 training = Constants().trainingMock(it, "Peito e tríceps"),
-                muscleSubGroupList = listOf(
-                    MuscleSubGroupModel(name = "Medial"),
-                    MuscleSubGroupModel(name = "Superior"),
-                    MuscleSubGroupModel(name = "Inferior"),
-                    MuscleSubGroupModel(name = "Tríceps cabeça maior"),
-                    MuscleSubGroupModel(name = "Tríceps cabeça menor"),
-                ),
-                isFilterChipListEnabled = false,
+                subGroups = subGroups,
+                chipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {},
                 onTrainingChecked = {},

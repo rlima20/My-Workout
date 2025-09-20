@@ -6,14 +6,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
+import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.Status
@@ -31,20 +34,20 @@ internal fun HomeScreen(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyHorizontalGrid(
+        LazyVerticalGrid(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
-            rows = GridCells.Adaptive(225.dp)
+            columns = GridCells.Fixed(2)
         ) {
             items(trainingAndSubGroups.size) { index ->
                 TrainingCard(
-                    modifier = Modifier.size(150.dp, 180.dp),
+                    modifier = Modifier.width(180.dp),
                     training = trainingAndSubGroups[index].first,
-                    muscleSubGroupList = trainingAndSubGroups[index].second,
-                    isFilterChipListEnabled = false,
+                    subGroups = trainingAndSubGroups[index].second,
+                    chipListEnabled = false,
                     onMuscleGroupSelected = {},
-                    onAddButtonClicked = {}, // Todo - Navega para a tela de novo treinamento
+                    onAddButtonClicked = {},
                     onTrainingChecked = { onTrainingChecked(it) },
                     onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
                 )

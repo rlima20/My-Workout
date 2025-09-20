@@ -158,4 +158,22 @@ class Constants {
             selected = false
         )
     )
+
+    val backSubGroups = mutableListOf(
+        MuscleSubGroupModel(
+            id = 14,
+            name = "Dorsal",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 15,
+            name = "Remada baixa",
+            selected = false
+        ),
+        MuscleSubGroupModel(
+            id = 16,
+            name = "Remada alta",
+            selected = false
+        ),
+    )
 }

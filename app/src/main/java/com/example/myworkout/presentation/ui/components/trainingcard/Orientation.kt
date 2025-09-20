@@ -13,39 +13,56 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.utils.DEFAULT_PADDING
 
 sealed interface Orientation {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    fun Render(
-        modifier: Modifier,
-        colors: SelectableChipColors,
-        listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-        onItemClick: (MuscleSubGroupModel) -> Unit,
-        enabled: Boolean
-    )
+    fun Render(modifier: Modifier, props: OrientationProps)
 }
+
+// Interface criada para respeitar os princípios do solid: Não forçar uma implementação desnecessária no Vertical e no Horizontal
+interface OrientationProps
+
+data class VerticalProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val colors: SelectableChipColors,
+    val listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    val enabled: Boolean = true,
+    val verticalSpacedBy: Dp,
+    val onItemClick: (MuscleSubGroupModel) -> Unit
+) : OrientationProps
+
+data class HorizontalProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val colors: SelectableChipColors,
+    val listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    val enabled: Boolean = true,
+    val horizontalSpacedBy: Dp,
+    val onItemClick: (MuscleSubGroupModel) -> Unit
+) : OrientationProps
+
+data class GridProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val colors: SelectableChipColors,
+    val listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    val enabled: Boolean = true,
+    val horizontalSpacedBy: Dp,
+    val verticalSpacedBy: Dp,
+    val onItemClick: (MuscleSubGroupModel) -> Unit
+) : OrientationProps
 
 object Vertical : Orientation {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    override fun Render(
-        modifier: Modifier,
-        colors: SelectableChipColors,
-        listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-        onItemClick: (MuscleSubGroupModel) -> Unit,
-        enabled: Boolean
-    ) {
+    override fun Render(modifier: Modifier, props: OrientationProps) {
+        props as VerticalProps
         SetColumn(
             modifier = modifier,
-            colors = colors,
-            listOfMuscleSubGroup = listOfMuscleSubGroup,
-            onItemClick = onItemClick
+            colors = props.colors,
+            listOfMuscleSubGroup = props.listOfMuscleSubGroup,
+            verticalSpacedBy = props.verticalSpacedBy,
+            onItemClick = props.onItemClick
         )
     }
 }
@@ -53,18 +70,14 @@ object Vertical : Orientation {
 object Horizontal : Orientation {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    override fun Render(
-        modifier: Modifier,
-        colors: SelectableChipColors,
-        listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-        onItemClick: (MuscleSubGroupModel) -> Unit,
-        enabled: Boolean
-    ) {
+    override fun Render(modifier: Modifier, props: OrientationProps) {
+        props as HorizontalProps
         SetRow(
             modifier = modifier,
-            colors = colors,
-            listOfMuscleSubGroup = listOfMuscleSubGroup,
-            onItemClick = onItemClick
+            colors = props.colors,
+            listOfMuscleSubGroup = props.listOfMuscleSubGroup,
+            horizontalSpacedBy = props.horizontalSpacedBy,
+            onItemClick = props.onItemClick
         )
     }
 }
@@ -72,18 +85,15 @@ object Horizontal : Orientation {
 object Grid : Orientation {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    override fun Render(
-        modifier: Modifier,
-        colors: SelectableChipColors,
-        listOfMuscleSubGroup: List<MuscleSubGroupModel>,
-        onItemClick: (MuscleSubGroupModel) -> Unit,
-        enabled: Boolean
-    ) {
+    override fun Render(modifier: Modifier, props: OrientationProps) {
+        props as GridProps
         SetGrid(
             modifier = modifier,
-            colors = colors,
-            listOfMuscleSubGroup = listOfMuscleSubGroup,
-            onItemClick = onItemClick
+            colors = props.colors,
+            listOfMuscleSubGroup = props.listOfMuscleSubGroup,
+            horizontalSpacedBy = props.horizontalSpacedBy,
+            verticalSpacedBy = props.verticalSpacedBy,
+            onItemClick = props.onItemClick
         )
     }
 }
@@ -94,14 +104,15 @@ private fun SetColumn(
     modifier: Modifier,
     colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    verticalSpacedBy: Dp,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)
+        verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
         listOfMuscleSubGroup.forEach { item ->
-            FilterChip(modifier, colors, item, onItemClick)
+            FilterChip(colors, item, onItemClick)
         }
     }
 }
@@ -112,11 +123,15 @@ private fun SetRow(
     modifier: Modifier,
     colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    horizontalSpacedBy: Dp,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
-    Row(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy)
+    ) {
         listOfMuscleSubGroup.forEach { item ->
-            FilterChip(modifier, colors, item, onItemClick)
+            FilterChip(colors, item, onItemClick)
         }
     }
 }
@@ -127,14 +142,17 @@ private fun SetGrid(
     modifier: Modifier,
     colors: SelectableChipColors,
     listOfMuscleSubGroup: List<MuscleSubGroupModel>,
+    horizontalSpacedBy: Dp,
+    verticalSpacedBy: Dp,
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
     FlowRow(
-        horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
         listOfMuscleSubGroup.forEach { item ->
-            FilterChip(modifier, colors, item, onItemClick)
+            FilterChip(colors, item, onItemClick)
         }
     }
 }
@@ -142,13 +160,11 @@ private fun SetGrid(
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 private fun FilterChip(
-    modifier: Modifier,
     colors: SelectableChipColors,
     item: MuscleSubGroupModel,
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
 ) {
     FilterChip(
-        modifier = modifier,
         colors = colors,
         onClick = { onItemClick(item) },
         content = {

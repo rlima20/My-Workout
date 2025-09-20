@@ -5,11 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.SelectableChipColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.utils.DEFAULT_PADDING
@@ -20,21 +20,14 @@ import com.example.myworkout.utils.Utils
 @Composable
 internal fun FilterChipList(
     modifier: Modifier = Modifier,
-    muscleSubGroups: List<MuscleSubGroupModel>,
-    enabled: Boolean = true,
-    colors: SelectableChipColors,
-    orientation: Orientation,
     backGroundColor: Int,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit
+    orientation: Orientation,
+    orientationProps: OrientationProps,
 ) {
     val modifier = modifier.background(colorResource(backGroundColor))
-
     orientation.Render(
         modifier = modifier,
-        colors = colors,
-        enabled = enabled,
-        listOfMuscleSubGroup = muscleSubGroups,
-        onItemClick = onItemClick
+        props = orientationProps
     )
 }
 
@@ -52,30 +45,40 @@ fun AssistChipListPreview() {
         modifier = Modifier.padding(DEFAULT_PADDING)
     ) {
         FilterChipList(
+            backGroundColor = R.color.white,
             orientation = Vertical,
-            muscleSubGroups = listOfMuscleSubGroup,
-            colors = Utils().selectableChipColors(),
-            enabled = false,
-            backGroundColor = R.color.white,
-            onItemClick = {}
+            orientationProps = VerticalProps(
+                colors = Utils().selectableChipColors(),
+                listOfMuscleSubGroup = listOfMuscleSubGroup,
+                enabled = false,
+                verticalSpacedBy = 0.dp,
+                onItemClick = {}
+            ),
         )
 
         FilterChipList(
-            muscleSubGroups = listOfMuscleSubGroup,
-            enabled = false,
-            colors = Utils().selectableChipColors(),
-            onItemClick = {},
             backGroundColor = R.color.white,
-            orientation = Horizontal
+            orientation = Horizontal,
+            orientationProps = HorizontalProps(
+                colors = Utils().selectableChipColors(),
+                listOfMuscleSubGroup = listOfMuscleSubGroup,
+                enabled = false,
+                horizontalSpacedBy = 4.dp,
+                onItemClick = {}
+            ),
         )
 
         FilterChipList(
-            muscleSubGroups = listOfMuscleSubGroup,
-            enabled = false,
-            colors = Utils().selectableChipColors(),
-            onItemClick = {},
             backGroundColor = R.color.white,
-            orientation = Grid
+            orientation = Grid,
+            orientationProps = GridProps(
+                colors = Utils().selectableChipColors(),
+                listOfMuscleSubGroup = listOfMuscleSubGroup,
+                enabled = false,
+                horizontalSpacedBy = 2.dp,
+                verticalSpacedBy = 2.dp,
+                onItemClick = { }
+            ),
         )
     }
 }
