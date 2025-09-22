@@ -58,6 +58,8 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
+    var isCardSectionVisible by remember { mutableStateOf(muscleGroupsWithRelation.isNotEmpty()) }
+
     LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }
@@ -68,6 +70,7 @@ fun NewMuscleGroupAndSubgroup(
                 muscleSubGroups = muscleSubGroups,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
+                isCardSectionVisible = isCardSectionVisible,
                 onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
                 onSaveRelation = { createRelations(muscleSubGroups, it, onSaveRelation) }
             )
@@ -75,7 +78,9 @@ fun NewMuscleGroupAndSubgroup(
         item {
             SetCardSection(
                 muscleGroupsWithRelation = muscleGroupsWithRelation,
+                isCardSectionVisible = isCardSectionVisible,
                 onGroupWithRelationClicked = { onGroupWithRelationClicked(it) })
+
         }
     }
 }
@@ -156,6 +161,7 @@ private fun SetMuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
+    isCardSectionVisible: Boolean,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
@@ -167,7 +173,7 @@ private fun SetMuscleSubGroupSection(
         val selected = objSelected.second
 
         ButtonSection(
-            modifier = Modifier,
+            modifier = setModifier(isCardSectionVisible),
             titleSection = stringResource(R.string.new_sub_group),
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = buttonEnabled,
@@ -195,6 +201,10 @@ private fun SetMuscleSubGroupSection(
         )
     }
 }
+
+@Composable
+private fun setModifier(isCardSectionVisible: Boolean): Modifier =
+    if (isCardSectionVisible) Modifier else Modifier.padding(bottom = 76.dp)
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -252,9 +262,10 @@ private fun MuscleSubGroupSection(
 @Composable
 private fun SetCardSection(
     muscleGroupsWithRelation: List<MuscleGroupModel>,
+    isCardSectionVisible: Boolean = false,
     onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit
 ) {
-    if (muscleGroupsWithRelation.isNotEmpty()) {
+    if (isCardSectionVisible) {
         ButtonSection(
             modifier = Modifier.padding(bottom = 68.dp),
             titleSection = stringResource(R.string.create_training),
@@ -313,7 +324,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         objSelected = Pair(0, false),
         onItemClick = {},
         onGroupWithRelationClicked = {},
-        muscleSubGroups = Constants().chestAndTricepsSubGroupsMock,
+        muscleSubGroups = Constants().getAllSubGroupsMock(),
         onUpdateSubGroup = {},
         onSaveRelation = {},
     )
