@@ -212,6 +212,21 @@ class Constants {
         )
     )
 
+    fun getAllSubGroupsMock(): List<MuscleSubGroupModel> {
+        val subGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
+        MUSCLE_SUB_GROUP_NAMES.forEachIndexed { index, subGroupName ->
+            subGroups.add(
+                MuscleSubGroupModel(
+                    id = index,
+                    name = subGroupName,
+                    selected = false
+                )
+            )
+        }
+        return subGroups
+    }
+
+
     fun emptyString(): String = ""
 
     companion object {
