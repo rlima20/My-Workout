@@ -16,7 +16,6 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
-import com.example.myworkout.enums.Status
 import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
@@ -200,30 +199,13 @@ private fun SetupTrainingStateObservers(
         }
 
         is TrainingViewState.Empty -> {
-            val listOfTrainingAndSubGroups = listOf(
-                Pair(
-                    Constants().trainingMock(Status.ACHIEVED, "Peito e Tríceps"),
-                    Constants().chestAndTricepsSubGroups
-                ),
-                Pair(
-                    Constants().trainingMock(Status.PENDING, "Ombro"),
-                    Constants().shoulderSubGroups
-                ),
-                Pair(
-                    Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
-                    Constants().bicepsSubGroups
-                ),
-                Pair(
-                    Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
-                    Constants().backSubGroups
-                )
-            )
-
             HomeScreen(
-                trainingAndSubGroups = listOfTrainingAndSubGroups,
+                trainingAndSubGroups = Constants().getListOfTrainingAndSubGroups(),
+                filterChipListModifier = Modifier,
                 onTrainingChecked = {},
                 onGetMuscleSubGroupsByTrainingId = {}
             )
+
 //            EmptyStateComponent(
 //                modifier = Modifier.size(150.dp, 180.dp),
 //                text = stringResource(R.string.new_training),
@@ -244,7 +226,13 @@ private fun SetupTrainingStateObservers(
             })
         }
 
-        is TrainingViewState.Success -> { /* Do nothing */
+        is TrainingViewState.Success -> {
+            HomeScreen(
+                trainingAndSubGroups = Constants().getListOfTrainingAndSubGroups(),
+                filterChipListModifier = Modifier,
+                onTrainingChecked = {},
+                onGetMuscleSubGroupsByTrainingId = {}
+            )
         }
 
         else -> { /* Do nothing */

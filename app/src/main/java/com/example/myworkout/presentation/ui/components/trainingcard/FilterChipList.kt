@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -69,6 +70,7 @@ fun AssistChipListPreview() {
         )
 
         FilterChipList(
+            modifier = Modifier.width(150.dp),
             backGroundColor = R.color.white,
             orientation = Grid,
             orientationProps = GridProps(
@@ -76,7 +78,7 @@ fun AssistChipListPreview() {
                 listOfMuscleSubGroup = listOfMuscleSubGroup,
                 enabled = false,
                 horizontalSpacedBy = 2.dp,
-                verticalSpacedBy = 2.dp,
+                verticalSpacedBy = 0.dp,
                 onItemClick = { }
             ),
         )

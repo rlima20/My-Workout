@@ -34,6 +34,13 @@ class Constants {
         "Panturrilhas"
     )
 
+    val subGroups = listOf(
+        MuscleSubGroupModel(name = "Posterior"),
+        MuscleSubGroupModel(name = "Lateral"),
+        MuscleSubGroupModel(name = "Anterior"),
+        MuscleSubGroupModel(name = "Trapézio"),
+    )
+
     val muscleGroups = mutableListOf(
         MuscleGroupModel(
             muscleGroupId = 1,
@@ -176,4 +183,45 @@ class Constants {
             selected = false
         ),
     )
+
+    @Composable
+    fun getListOfTrainingAndSubGroups() = listOf(
+        Pair(
+            Constants().trainingMock(Status.ACHIEVED, "Peito e Tríceps"),
+            Constants().chestAndTricepsSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.PENDING, "Ombro"),
+            Constants().shoulderSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
+            Constants().bicepsSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
+            Constants().backSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
+            Constants().bicepsSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
+            Constants().backSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
+            Constants().backSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
+            Constants().bicepsSubGroups
+        ),
+        Pair(
+            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
+            Constants().backSubGroups
+        )
+    )
 }
+
