@@ -59,11 +59,7 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .padding(top = 70.dp)
-            .fillMaxSize()
-    ) {
+    LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }
         }
@@ -91,7 +87,6 @@ private fun createRelations(
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
 ) {
     val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
-
     val subGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
 
     subGroupsSelected.forEach { subGroup ->
@@ -132,9 +127,7 @@ private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
         },
         content = {
             TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 value = muscleGroupName,
                 singleLine = true,
                 onValueChange = {
@@ -245,14 +238,13 @@ private fun MuscleSubGroupSection(
     )
 
     FilterChipList(
-        modifier = Modifier.height(28.dp),
         backGroundColor = R.color.button_section_card_color,
         orientation = Grid,
         orientationProps = GridProps(
             colors = Utils().selectableChipColors(),
             listOfMuscleSubGroup = muscleSubGroups,
-            horizontalSpacedBy = 2.dp,
-            verticalSpacedBy = 2.dp,
+            horizontalSpacedBy = 8.dp,
+            verticalSpacedBy = 1.dp,
             onItemClick = { onAddMuscleSubGroup(it) }
         ),
     )
@@ -303,7 +295,7 @@ private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
         fontSize = 18.sp,
         text = muscleGroup.name,
         maxLines = 1,
-        overflow = TextOverflow.Visible, // ou Clip, se não quiser "..."
+        overflow = TextOverflow.Visible,
         softWrap = false
     )
 }
