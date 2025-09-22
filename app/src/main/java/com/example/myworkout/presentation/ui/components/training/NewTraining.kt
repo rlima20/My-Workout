@@ -23,6 +23,7 @@ import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.extensions.setImageDrawable
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Horizontal
+import com.example.myworkout.presentation.ui.components.trainingcard.HorizontalProps
 import com.example.myworkout.utils.Utils
 
 @SuppressLint("UnrememberedMutableState")
@@ -87,12 +88,18 @@ fun ImageSection(bodyPartImage: BodyPart) {
 @Composable
 fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
     FilterChipList(
-        modifier = Modifier.padding(start = 4.dp, end = 4.dp).height(50.dp),
-        muscleSubGroups = listOfMuscleGroup,
-        colors = Utils().selectableChipColors(),
-        onItemClick = {},
+        modifier = Modifier
+            .padding(start = 4.dp, end = 4.dp)
+            .height(50.dp),
         backGroundColor = R.color.white,
-        orientation = Horizontal
+        orientation = Horizontal,
+        orientationProps = HorizontalProps(
+            colors = Utils().selectableChipColors(),
+            listOfMuscleSubGroup = listOfMuscleGroup,
+            enabled = false,
+            horizontalSpacedBy = 4.dp,
+            onItemClick = {}
+        ),
     )
 }
 

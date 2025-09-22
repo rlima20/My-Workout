@@ -6,7 +6,6 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import com.example.myworkout.R
 import com.example.myworkout.enums.Status
 
@@ -18,17 +17,9 @@ class Utils {
     ) = if (isTrainingChecked) Status.ACHIEVED
     else
         when (trainingStatus) {
-            Status.MISSED -> {
-                firstStatus
-            }
-
-            Status.EMPTY -> {
-                Status.EMPTY
-            }
-
-            else -> {
-                Status.PENDING
-            }
+            Status.MISSED -> { firstStatus }
+            Status.EMPTY -> { Status.EMPTY }
+            else -> { Status.PENDING }
         }
 
     @Composable
@@ -57,5 +48,3 @@ class Utils {
         disabledContentColor = colorResource(R.color.button_section_card_color)
     )
 }
-
-val DEFAULT_PADDING = 8.dp

@@ -22,15 +22,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkout.Constants
 import com.example.myworkout.R
-import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.utils.Utils
 
 @Composable
 fun ButtonSection(
     modifier: Modifier,
     titleSection: String,
-    buttonName: String = String().emptyString(),
+    buttonName: String = Constants().emptyString(),
     buttonVisibility: Boolean = true,
     buttonEnabled: Boolean = false,
     onButtonClick: () -> Unit = {},
@@ -80,7 +80,7 @@ fun ButtonSection(
 @Composable
 @Preview
 private fun NewMuscleGroupPreview() {
-    var text by remember { mutableStateOf(String().emptyString()) }
+    var text by remember { mutableStateOf(Constants().emptyString()) }
     var buttonEnabled by remember { mutableStateOf(false) }
 
     ButtonSection(

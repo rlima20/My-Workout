@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkout.Constants
+import com.example.myworkout.Constants.Companion.MUSCLE_SUB_GROUP_NAMES
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -187,7 +188,7 @@ class MuscleGroupViewModel(
     }
 
     private fun insertMuscleSubGroups() {
-        Constants().muscleSubGroupNames.forEachIndexed { index, name ->
+        MUSCLE_SUB_GROUP_NAMES.forEachIndexed { index, name ->
             insertMuscleSubGroup(
                 MuscleSubGroupModel(
                     id = index + 1,

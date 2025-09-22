@@ -32,17 +32,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
+import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
-import com.example.myworkout.utils.DEFAULT_PADDING
+import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.utils.Utils
 
 @SuppressLint("MutableCollectionMutableState")
@@ -58,9 +58,7 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
-    LazyColumn(modifier = Modifier
-        .padding(top = 70.dp)
-        .fillMaxSize()) {
+    LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }
         }
@@ -88,7 +86,6 @@ private fun createRelations(
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
 ) {
     val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
-
     val subGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
 
     subGroupsSelected.forEach { subGroup ->
@@ -124,14 +121,12 @@ private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
         onButtonClick = {
             buttonEnabled = false
             onAddButtonClicked(muscleGroupName)
-            muscleGroupName = String().emptyString()
+            muscleGroupName = Constants().emptyString()
             focusManager.clearFocus()
         },
         content = {
             TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 value = muscleGroupName,
                 singleLine = true,
                 onValueChange = {
@@ -240,13 +235,17 @@ private fun MuscleSubGroupSection(
         text = stringResource(R.string.match_subgroup_with_group),
         fontSize = 14.sp,
     )
+
     FilterChipList(
-        modifier = Modifier.height(28.dp),
-        colors = Utils().selectableChipColors(),
-        muscleSubGroups = muscleSubGroups,
-        orientation = Grid,
         backGroundColor = R.color.button_section_card_color,
-        onItemClick = { onAddMuscleSubGroup(it) }
+        orientation = Grid,
+        orientationProps = GridProps(
+            colors = Utils().selectableChipColors(),
+            listOfMuscleSubGroup = muscleSubGroups,
+            horizontalSpacedBy = 8.dp,
+            verticalSpacedBy = 1.dp,
+            onItemClick = { onAddMuscleSubGroup(it) }
+        ),
     )
 }
 
@@ -295,7 +294,7 @@ private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
         fontSize = 18.sp,
         text = muscleGroup.name,
         maxLines = 1,
-        overflow = TextOverflow.Visible, // ou Clip, se não quiser "..."
+        overflow = TextOverflow.Visible,
         softWrap = false
     )
 }
@@ -308,13 +307,13 @@ private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: Muscle
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
-        muscleGroups = Constants().muscleGroups,
+        muscleGroups = Constants().groupsMock,
         muscleGroupsWithRelation = listOf(),
         onCreateMuscleGroup = {},
         objSelected = Pair(0, false),
         onItemClick = {},
         onGroupWithRelationClicked = {},
-        muscleSubGroups = Constants().chestAndTricepsSubGroups,
+        muscleSubGroups = Constants().chestAndTricepsSubGroupsMock,
         onUpdateSubGroup = {},
         onSaveRelation = {},
     )

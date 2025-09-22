@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
@@ -18,6 +19,7 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
+import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
@@ -182,6 +184,7 @@ private fun SetupMuscleGroupStateObservers(
     }
 }
 
+@RequiresApi(35)
 @Composable
 private fun SetupTrainingStateObservers(
     trainingList: List<TrainingModel>,
@@ -196,16 +199,23 @@ private fun SetupTrainingStateObservers(
         }
 
         is TrainingViewState.Empty -> {
-            EmptyStateComponent(
-                modifier = Modifier.size(150.dp, 180.dp),
-                text = stringResource(R.string.new_training),
-                painter = painterResource(R.drawable.add_icon),
-                onClick = {
-                    onChangeRoute(false)
-                    onNavigateToNewTraining()
-                },
-                backgroundColor = colorResource(R.color.top_bar_color),
+            HomeScreen(
+                trainingAndSubGroups = Constants().getTrainingAndSubGroupsMock(),
+                filterChipListModifier = Modifier,
+                onTrainingChecked = {},
+                onGetMuscleSubGroupsByTrainingId = {}
             )
+
+//            EmptyStateComponent(
+//                modifier = Modifier.size(150.dp, 180.dp),
+//                text = stringResource(R.string.new_training),
+//                painter = painterResource(R.drawable.add_icon),
+//                onClick = {
+//                    onChangeRoute(false)
+//                    onNavigateToNewTraining()
+//                },
+//                backgroundColor = colorResource(R.color.top_bar_color),
+//            )
             onDatabaseCreated()
         }
 
@@ -216,7 +226,13 @@ private fun SetupTrainingStateObservers(
             })
         }
 
-        is TrainingViewState.Success -> { /* Do nothing */
+        is TrainingViewState.Success -> {
+            HomeScreen(
+                trainingAndSubGroups = Constants().getTrainingAndSubGroupsMock(),
+                filterChipListModifier = Modifier,
+                onTrainingChecked = {},
+                onGetMuscleSubGroupsByTrainingId = {}
+            )
         }
 
         else -> { /* Do nothing */
