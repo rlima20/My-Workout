@@ -9,10 +9,10 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.Status
-import com.example.myworkout.utils.DEFAULT_PADDING
 
 @Composable
 fun Status.setBackGroundColor(): Int =
@@ -66,8 +66,6 @@ fun BodyPart.setImageDrawable(): Int =
             R.drawable.ombro
         }
     }
-
-fun String.emptyString(): String = ""
 
 @SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.homeScreenCardPaddings(): Modifier = composed {

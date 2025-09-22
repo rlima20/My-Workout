@@ -11,9 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.utils.DEFAULT_PADDING
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalMaterialApi::class)

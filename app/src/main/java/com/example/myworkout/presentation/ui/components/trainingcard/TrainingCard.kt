@@ -26,17 +26,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
+import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
+import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
+import com.example.myworkout.Constants.Companion.SUB_GROUP_SECTION_BACKGROUND
+import com.example.myworkout.Constants.Companion.TRAINING_CARD_PADDING_BOTTOM
+import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.extensions.trainingCardFilterChipListModifier
+import com.example.myworkout.presentation.ui.components.commons.CheckBox
 import com.example.myworkout.presentation.ui.components.commons.IconButton
-import com.example.myworkout.utils.DEFAULT_PADDING
-import com.example.myworkout.utils.SUB_GROUP_SECTION_BACKGROUND
-import com.example.myworkout.utils.TRAINING_CARD_PADDING_BOTTOM
-import com.example.myworkout.utils.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.utils.Utils
 
 @RequiresApi(35)
@@ -90,6 +92,22 @@ fun TrainingCard(
                 onAddButtonClicked = { onAddButtonClicked() },
                 chipListEnabled = chipListEnabled,
                 onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
+            )
+            CheckBox(
+                status = trainingStatus,
+                isTrainingChecked = isTrainingChecked,
+                onChecked = {
+                    isTrainingChecked = !isTrainingChecked
+                    trainingStatus = Utils().setStatus(isTrainingChecked, trainingStatus, firstStatus)
+                    onTrainingChecked(
+                        TrainingModel(
+                            trainingId = training.trainingId,
+                            status = trainingStatus,
+                            trainingName = training.trainingName,
+                            dayOfWeek = training.dayOfWeek
+                        )
+                    )
+                },
             )
         }
     }
@@ -155,12 +173,14 @@ private fun SetSubGroupSection(
 @Preview
 @Composable
 fun TrainingCardPreview() {
+    val constants = Constants()
+    val shoulder = TRAINING_NAME_SHOULDER
     Column {
         Status.values().forEach {
             TrainingCard(
                 modifier = Modifier.padding(bottom = 4.dp),
-                training = Constants().trainingMock(it, "Ombro"),
-                subGroups = Constants().subGroups,
+                training = constants.getTrainingMock(it, shoulder),
+                subGroups = constants.subGroupsMock,
                 chipListEnabled = false,
                 onMuscleGroupSelected = {},
                 onAddButtonClicked = {},

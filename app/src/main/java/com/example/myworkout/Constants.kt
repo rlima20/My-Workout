@@ -1,6 +1,7 @@
 package com.example.myworkout
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.dp
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
@@ -10,218 +11,292 @@ import com.example.myworkout.enums.Status
 
 class Constants {
 
+
     @Composable
-    fun trainingMock(status: Status, trainingName: String) = TrainingModel(
+    fun getTrainingMock(status: Status, trainingName: String) = TrainingModel(
         trainingId = 0,
         status = status,
         dayOfWeek = DayOfWeek.MONDAY,
         trainingName = trainingName
     )
 
-    val muscleSubGroupNames = listOf(
-        "Superior",
-        "Dorsal",
-        "Inferior",
-        "Posterior",
-        "Anterior",
-        "Bíceps",
-        "Antebraço",
-        "Tríceps",
-        "Lateral",
-        "Reto",
-        "Medial",
-        "Quadríceps",
-        "Panturrilhas"
-    )
-
-    val subGroups = listOf(
+    val subGroupsMock = listOf(
         MuscleSubGroupModel(name = "Posterior"),
         MuscleSubGroupModel(name = "Lateral"),
         MuscleSubGroupModel(name = "Anterior"),
         MuscleSubGroupModel(name = "Trapézio"),
     )
 
-    val muscleGroups = mutableListOf(
+    val groupsMock = mutableListOf(
         MuscleGroupModel(
             muscleGroupId = 1,
-            name = "Peito e Ombro",
+            name = GROUP_NAME_CHEST,
             image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 2,
-            name = "Ombro",
+            name = TRAINING_NAME_SHOULDER,
             image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 3,
-            name = "Braço",
+            name = GROUP_NAME_ARM,
             image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 4,
-            name = "Pernas",
+            name = GROUP_NAME_LEGS,
             image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 5,
-            name = "Abdômen",
+            name = GROUP_NAME_ABDOMEN,
             image = BodyPart.OTHER
         ),
     )
 
-    val muscleSubGroups = mutableListOf(
+    val shoulderSubGroupsMock = mutableListOf(
         MuscleSubGroupModel(
             id = 0,
-            name = "Superior",
+            name = SUB_GROUP_NAME_SHOULDER_ANTERIOR,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 1,
-            name = "Lateral",
+            name = SUB_GROUP_NAME_SHOULDER_LATERAL,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 2,
-            name = "Posterior",
-            selected = false
-        )
-    )
-
-    val shoulderSubGroups = mutableListOf(
-        MuscleSubGroupModel(
-            id = 0,
-            name = "Anterior",
-            selected = false
-        ),
-        MuscleSubGroupModel(
-            id = 1,
-            name = "Lateral",
-            selected = false
-        ),
-        MuscleSubGroupModel(
-            id = 2,
-            name = "Posterior",
+            name = SUB_GROUP_NAME_SHOULDER_POSTERIOR,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 3,
-            name = "Trapézio",
+            name = SUB_GROUP_NAME_SHOULDER_TRAPZ,
             selected = false
         )
     )
 
-    val chestAndTricepsSubGroups = mutableListOf(
+    val chestAndTricepsSubGroupsMock = mutableListOf(
         MuscleSubGroupModel(
             id = 4,
-            name = "Supino inclinado",
+            name = SUB_GROUP_NAME_UPPER_CHEST,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 5,
-            name = "Supino reto",
+            name = SUB_GROUP_NAME_MEDIAL_CHEST,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 6,
-            name = "Cross",
+            name = SUB_GROUP_NAME_CROSS,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 7,
-            name = "Tríceps polia",
+            name = SUB_GROUP_NAME_TRICEPS_POLIA,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 8,
-            name = "Tríceps Francês",
+            name = SUB_GROUP_NAME_TRICEPS_FRANCH,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 9,
-            name = "Lateral",
+            name = SUB_GROUP_NAME_SHOULDER_LATERAL,
             selected = false
         )
     )
 
-    val bicepsSubGroups = mutableListOf(
+    val bicepsSubGroupsMock = mutableListOf(
         MuscleSubGroupModel(
             id = 10,
-            name = "Bíceps Barra W",
+            name = SUB_GROUP_NAME_BICEPS_W,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 11,
-            name = "Martelo",
+            name = SUB_GROUP_NAME_BICEPS_HAMMER,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 12,
-            name = "Scotch",
+            name = SUB_GROUP_NAME_BICEPS_SCOTCH,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 13,
-            name = "45 graus",
+            name = SUB_GROUP_NAME_BICEPS_45,
             selected = false
         )
     )
 
-    val backSubGroups = mutableListOf(
+    val backSubGroupsMock = mutableListOf(
         MuscleSubGroupModel(
             id = 14,
-            name = "Dorsal",
+            name = SUB_GROUP_NAME_PULLEY,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 15,
-            name = "Remada baixa",
+            name = SUB_GROUP_NAME_LOWER_BACK,
             selected = false
         ),
         MuscleSubGroupModel(
             id = 16,
-            name = "Remada alta",
+            name = SUB_GROUP_NAME_UPPER_BACK,
             selected = false
         ),
     )
 
     @Composable
-    fun getListOfTrainingAndSubGroups() = listOf(
+    fun getTrainingAndSubGroupsMock() = listOf(
         Pair(
-            Constants().trainingMock(Status.ACHIEVED, "Peito e Tríceps"),
-            Constants().chestAndTricepsSubGroups
+            Constants().getTrainingMock(Status.ACHIEVED, TRAINING_NAME_CHEST_TRICEPS),
+            Constants().chestAndTricepsSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.PENDING, "Ombro"),
-            Constants().shoulderSubGroups
+            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_SHOULDER),
+            Constants().shoulderSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
-            Constants().bicepsSubGroups
+            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
+            Constants().bicepsSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
-            Constants().backSubGroups
+            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
+            Constants().backSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
-            Constants().bicepsSubGroups
+            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
+            Constants().bicepsSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
-            Constants().backSubGroups
+            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
+            Constants().backSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
-            Constants().backSubGroups
+            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
+            Constants().backSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.MISSED, "Bíceps e Antebraço"),
-            Constants().bicepsSubGroups
+            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
+            Constants().bicepsSubGroupsMock
         ),
         Pair(
-            Constants().trainingMock(Status.PENDING, "Costas e trapézio"),
-            Constants().backSubGroups
+            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
+            Constants().backSubGroupsMock
         )
     )
+
+    @Composable
+    fun getTrainingAndSubGroupsHomeScreenMock() = listOf(
+        Pair(
+            Constants().getTrainingMock(Status.ACHIEVED, TRAINING_NAME_CHEST_TRICEPS),
+            Constants().chestAndTricepsSubGroupsMock
+        ),
+        Pair(
+            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_SHOULDER),
+            Constants().shoulderSubGroupsMock
+        ),
+        Pair(
+            Constants().getTrainingMock(Status.EMPTY, TRAINING_NAME_ARMS),
+            Constants().bicepsSubGroupsMock
+        ),
+        Pair(
+            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
+            Constants().bicepsSubGroupsMock
+        )
+    )
+
+    fun emptyString(): String = ""
+
+    companion object {
+        // Training
+        const val TRAINING_NAME_SHOULDER = "Ombro"
+        const val TRAINING_NAME_CHEST_TRICEPS = "Peito e Tríceps"
+        const val TRAINING_NAME_ARMS = "Bíceps e antebraço"
+        const val TRAINING_NAME_BACK_TRAPS = "Costas e trapézio"
+
+        // MuscleGroups
+        const val GROUP_NAME_CHEST = "Peito e Ombro"
+        const val GROUP_NAME_ARM = "Braço"
+        const val GROUP_NAME_LEGS = "Pernas"
+        const val GROUP_NAME_ABDOMEN = "Abdômen"
+
+        // MuscleSubGroups
+        const val SUB_GROUP_NAME_PULLEY = "Puxada na polia"
+        const val SUB_GROUP_NAME_DORSAL_45 = "Dorsal na polia 45C"
+        const val SUB_GROUP_NAME_LOWER_BACK = "Remada baixa"
+        const val SUB_GROUP_NAME_UPPER_BACK = "Remada alta"
+        const val SUB_GROUP_NAME_BICEPS_W = "Bíceps Barra W"
+        const val SUB_GROUP_NAME_BICEPS_HAMMER = "Martelo"
+        const val SUB_GROUP_NAME_BICEPS_SCOTCH = "Scotch"
+        const val SUB_GROUP_NAME_BICEPS_45 = "45 graus"
+        const val SUB_GROUP_NAME_UPPER_CHEST = "Supino inclinado"
+        const val SUB_GROUP_NAME_MEDIAL_CHEST = "Supino reto"
+        const val SUB_GROUP_NAME_CROSS = "Cross"
+        const val SUB_GROUP_NAME_TRICEPS_POLIA = "Tríceps polia"
+        const val SUB_GROUP_NAME_TRICEPS_FRANCH = "Tríceps Francês"
+        const val SUB_GROUP_NAME_TRICEPS_FOREHEAD = "Tríceps Testa"
+        const val SUB_GROUP_NAME_SHOULDER_LATERAL = "Ombro lateral"
+        const val SUB_GROUP_NAME_SHOULDER_ANTERIOR = "Anterior"
+        const val SUB_GROUP_NAME_SHOULDER_POSTERIOR = "Posterior"
+        const val SUB_GROUP_NAME_SHOULDER_TRAPZ = "Trapézio"
+        const val SUB_GROUP_NAME_FOREARM = "Antebraço"
+        const val SUB_GROUP_NAME_FRONT_LEG = "Quadríceps"
+        const val SUB_GROUP_NAME_LEG_PRESS = "Leg press"
+        const val SUB_GROUP_NAME_STIFF = "Stiff"
+        const val SUB_GROUP_NAME_BACK_LEG = "Posterior de perna"
+        const val SUB_GROUP_NAME_CALF = "Panturrilha"
+
+        val MUSCLE_SUB_GROUP_NAMES = listOf(
+            // Chest
+            SUB_GROUP_NAME_UPPER_CHEST,
+            SUB_GROUP_NAME_MEDIAL_CHEST,
+            SUB_GROUP_NAME_CROSS,
+
+            // Back
+            SUB_GROUP_NAME_LOWER_BACK,
+            SUB_GROUP_NAME_DORSAL_45,
+            SUB_GROUP_NAME_PULLEY,
+
+            // Shoulder
+            SUB_GROUP_NAME_SHOULDER_POSTERIOR,
+            SUB_GROUP_NAME_SHOULDER_ANTERIOR,
+            SUB_GROUP_NAME_SHOULDER_LATERAL,
+
+            // Briceps
+            SUB_GROUP_NAME_BICEPS_45,
+            SUB_GROUP_NAME_BICEPS_W,
+            SUB_GROUP_NAME_BICEPS_SCOTCH,
+            SUB_GROUP_NAME_BICEPS_HAMMER,
+            SUB_GROUP_NAME_FOREARM,
+
+            // Tríceps
+            SUB_GROUP_NAME_TRICEPS_FRANCH,
+            SUB_GROUP_NAME_TRICEPS_POLIA,
+            SUB_GROUP_NAME_TRICEPS_FOREHEAD,
+
+            // Legs
+            SUB_GROUP_NAME_FRONT_LEG,
+            SUB_GROUP_NAME_LEG_PRESS,
+            SUB_GROUP_NAME_STIFF,
+            SUB_GROUP_NAME_BACK_LEG,
+            SUB_GROUP_NAME_CALF
+        )
+
+        // Layout values
+        val DEFAULT_PADDING = 8.dp
+        val LAZY_VERTICAL_GRID_SPACING = 16.dp
+        val LAZY_VERTICAL_GRID_MIN_SIZE = 140.dp
+        val FILTER_CHIP_LIST_PADDING_BOTTOM = 8.dp
+        val TRAINING_CARD_PADDING_BOTTOM = 16.dp
+        val TRAINING_NAME_MAX_HEIGHT = 30.dp
+        val SUB_GROUP_SECTION_BACKGROUND = R.color.button_section_card_color
+    }
 }
 

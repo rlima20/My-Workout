@@ -1,7 +1,5 @@
 package com.example.myworkout.presentation.ui.components.commons
 
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,7 +8,7 @@ import com.example.myworkout.enums.Status
 
 @Composable
 internal fun CheckBox(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     status: Status,
     isTrainingChecked: Boolean,
     onChecked: () -> Unit,

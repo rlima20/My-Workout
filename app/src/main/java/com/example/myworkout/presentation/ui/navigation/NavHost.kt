@@ -200,7 +200,7 @@ private fun SetupTrainingStateObservers(
 
         is TrainingViewState.Empty -> {
             HomeScreen(
-                trainingAndSubGroups = Constants().getListOfTrainingAndSubGroups(),
+                trainingAndSubGroups = Constants().getTrainingAndSubGroupsMock(),
                 filterChipListModifier = Modifier,
                 onTrainingChecked = {},
                 onGetMuscleSubGroupsByTrainingId = {}
@@ -228,7 +228,7 @@ private fun SetupTrainingStateObservers(
 
         is TrainingViewState.Success -> {
             HomeScreen(
-                trainingAndSubGroups = Constants().getListOfTrainingAndSubGroups(),
+                trainingAndSubGroups = Constants().getTrainingAndSubGroupsMock(),
                 filterChipListModifier = Modifier,
                 onTrainingChecked = {},
                 onGetMuscleSubGroupsByTrainingId = {}

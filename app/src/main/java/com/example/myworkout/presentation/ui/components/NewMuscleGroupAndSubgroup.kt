@@ -32,18 +32,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
+import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.extensions.emptyString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
-import com.example.myworkout.utils.DEFAULT_PADDING
 import com.example.myworkout.utils.Utils
 
 @SuppressLint("MutableCollectionMutableState")
@@ -122,7 +121,7 @@ private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
         onButtonClick = {
             buttonEnabled = false
             onAddButtonClicked(muscleGroupName)
-            muscleGroupName = String().emptyString()
+            muscleGroupName = Constants().emptyString()
             focusManager.clearFocus()
         },
         content = {
@@ -308,13 +307,13 @@ private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: Muscle
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
-        muscleGroups = Constants().muscleGroups,
+        muscleGroups = Constants().groupsMock,
         muscleGroupsWithRelation = listOf(),
         onCreateMuscleGroup = {},
         objSelected = Pair(0, false),
         onItemClick = {},
         onGroupWithRelationClicked = {},
-        muscleSubGroups = Constants().chestAndTricepsSubGroups,
+        muscleSubGroups = Constants().chestAndTricepsSubGroupsMock,
         onUpdateSubGroup = {},
         onSaveRelation = {},
     )
