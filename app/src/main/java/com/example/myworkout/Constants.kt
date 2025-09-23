@@ -349,6 +349,15 @@ class Constants {
         val TRAINING_CARD_PADDING_BOTTOM = 16.dp
         val TRAINING_NAME_MAX_HEIGHT = 30.dp
         val SUB_GROUP_SECTION_BACKGROUND = R.color.button_section_card_color
+
+        // String values
+        const val SUNDAY = "DOMINGO"
+        const val MONDAY = "SEGUNDA"
+        const val TUESDAY = "TERÇA"
+        const val WEDNESDAY = "QUARTA"
+        const val THURSDAY = "QUINTA"
+        const val FRIDAY = "SEXTA"
+        const val SATURDAY = "SÁBADO"
     }
 }
 

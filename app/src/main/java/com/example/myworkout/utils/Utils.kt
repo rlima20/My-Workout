@@ -6,6 +6,14 @@ import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
+import com.example.myworkout.Constants
+import com.example.myworkout.Constants.Companion.FRIDAY
+import com.example.myworkout.Constants.Companion.MONDAY
+import com.example.myworkout.Constants.Companion.SATURDAY
+import com.example.myworkout.Constants.Companion.SUNDAY
+import com.example.myworkout.Constants.Companion.THURSDAY
+import com.example.myworkout.Constants.Companion.TUESDAY
+import com.example.myworkout.Constants.Companion.WEDNESDAY
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
@@ -23,6 +31,17 @@ class Utils {
             DayOfWeek.FRIDAY -> 5
             DayOfWeek.SATURDAY -> 6
             DayOfWeek.SUNDAY -> 7
+        }
+
+    fun mapDayOfWeekToString(dayOfWeek: DayOfWeek): String =
+        when (dayOfWeek) {
+            DayOfWeek.MONDAY -> MONDAY
+            DayOfWeek.TUESDAY -> TUESDAY
+            DayOfWeek.WEDNESDAY -> WEDNESDAY
+            DayOfWeek.THURSDAY -> THURSDAY
+            DayOfWeek.FRIDAY -> FRIDAY
+            DayOfWeek.SATURDAY -> SATURDAY
+            DayOfWeek.SUNDAY -> SUNDAY
         }
 
     fun sortTrainingsByDayOfWeek(
