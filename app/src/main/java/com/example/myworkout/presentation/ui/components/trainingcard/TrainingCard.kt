@@ -34,6 +34,7 @@ import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.extensions.trainingCardFilterChipListModifier
@@ -47,7 +48,6 @@ import com.example.myworkout.utils.Utils
 fun TrainingCard(
     modifier: Modifier = Modifier,
     filterChipListModifier: Modifier = Modifier,
-    checkBoxModifier: Modifier = Modifier,
     training: TrainingModel,
     subGroups: List<MuscleSubGroupModel>,
     chipListEnabled: Boolean,
@@ -179,7 +179,7 @@ fun TrainingCardPreview() {
         Status.values().forEach {
             TrainingCard(
                 modifier = Modifier.padding(bottom = 4.dp),
-                training = constants.getTrainingMock(it, shoulder),
+                training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
                 subGroups = constants.subGroupsMock,
                 chipListEnabled = false,
                 onMuscleGroupSelected = {},
