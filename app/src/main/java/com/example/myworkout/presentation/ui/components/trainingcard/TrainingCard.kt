@@ -27,10 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
-import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
 import com.example.myworkout.Constants.Companion.SUB_GROUP_SECTION_BACKGROUND
 import com.example.myworkout.Constants.Companion.TRAINING_CARD_PADDING_BOTTOM
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
+import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
@@ -96,9 +96,14 @@ fun TrainingCard(
             CheckBox(
                 status = trainingStatus,
                 isTrainingChecked = isTrainingChecked,
+                enabled = trainingStatus != Status.MISSED && trainingStatus != Status.ACHIEVED,
                 onChecked = {
                     isTrainingChecked = !isTrainingChecked
-                    trainingStatus = Utils().setStatus(isTrainingChecked, trainingStatus, firstStatus)
+                    trainingStatus = Utils().setStatus(
+                        isTrainingChecked,
+                        trainingStatus,
+                        firstStatus
+                    )
                     onTrainingChecked(
                         TrainingModel(
                             trainingId = training.trainingId,

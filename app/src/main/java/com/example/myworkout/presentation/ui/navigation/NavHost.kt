@@ -208,7 +208,7 @@ private fun SetupTrainingStateObservers(
                         trainings = constants.getTrainingAndSubGroupsMock()
                     ),
                 filterChipListModifier = Modifier,
-                onTrainingChecked = {},
+                onTrainingChecked = { onTrainingChecked(it) },
                 onGetMuscleSubGroupsByTrainingId = {}
             )
 
