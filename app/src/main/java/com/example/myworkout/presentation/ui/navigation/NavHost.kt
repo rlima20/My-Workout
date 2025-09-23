@@ -23,6 +23,7 @@ import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
+import com.example.myworkout.utils.Utils
 import androidx.navigation.compose.NavHost as NavHostCompose
 
 @RequiresApi(35)
@@ -194,13 +195,18 @@ private fun SetupTrainingStateObservers(
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
 ) {
+    val constants = Constants()
+
     when (trainingViewState) {
         is TrainingViewState.Loading -> { /* Do nothing */
         }
 
         is TrainingViewState.Empty -> {
             HomeScreen(
-                trainingAndSubGroups = Constants().getTrainingAndSubGroupsMock(),
+                trainingAndSubGroups = Utils()
+                    .sortTrainingsByDayOfWeek(
+                        trainings = constants.getTrainingAndSubGroupsMock()
+                    ),
                 filterChipListModifier = Modifier,
                 onTrainingChecked = {},
                 onGetMuscleSubGroupsByTrainingId = {}
@@ -228,8 +234,10 @@ private fun SetupTrainingStateObservers(
 
         is TrainingViewState.Success -> {
             HomeScreen(
-                trainingAndSubGroups = Constants().getTrainingAndSubGroupsMock(),
-                filterChipListModifier = Modifier,
+                trainingAndSubGroups = Utils()
+                    .sortTrainingsByDayOfWeek(
+                        trainings = constants.getTrainingAndSubGroupsMock()
+                    ),                filterChipListModifier = Modifier,
                 onTrainingChecked = {},
                 onGetMuscleSubGroupsByTrainingId = {}
             )
@@ -239,3 +247,4 @@ private fun SetupTrainingStateObservers(
         }
     }
 }
+

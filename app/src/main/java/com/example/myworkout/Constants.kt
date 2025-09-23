@@ -11,12 +11,15 @@ import com.example.myworkout.enums.Status
 
 class Constants {
 
-
     @Composable
-    fun getTrainingMock(status: Status, trainingName: String) = TrainingModel(
+    fun getTrainingMock(
+        status: Status,
+        trainingName: String,
+        dayOfWeek: DayOfWeek
+    ) = TrainingModel(
         trainingId = 0,
         status = status,
-        dayOfWeek = DayOfWeek.MONDAY,
+        dayOfWeek = dayOfWeek,
         trainingName = trainingName
     )
 
@@ -155,60 +158,94 @@ class Constants {
     @Composable
     fun getTrainingAndSubGroupsMock() = listOf(
         Pair(
-            Constants().getTrainingMock(Status.ACHIEVED, TRAINING_NAME_CHEST_TRICEPS),
-            Constants().chestAndTricepsSubGroupsMock
+            this.getTrainingMock(
+                Status.PENDING,
+                TRAINING_NAME_BACK_TRAPS,
+                dayOfWeek = DayOfWeek.SUNDAY
+            ),
+            this.backSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_SHOULDER),
-            Constants().shoulderSubGroupsMock
+            this.getTrainingMock(
+                Status.ACHIEVED,
+                TRAINING_NAME_CHEST_TRICEPS,
+                dayOfWeek = DayOfWeek.MONDAY
+            ),
+            this.chestAndTricepsSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
-            Constants().bicepsSubGroupsMock
+            this.getTrainingMock(
+                Status.MISSED,
+                TRAINING_NAME_ARMS,
+                dayOfWeek = DayOfWeek.WEDNESDAY
+            ),
+            this.bicepsSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
-            Constants().backSubGroupsMock
+            this.getTrainingMock(
+                Status.PENDING,
+                TRAINING_NAME_BACK_TRAPS,
+                dayOfWeek = DayOfWeek.THURSDAY
+            ),
+            this.backSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
-            Constants().bicepsSubGroupsMock
+            this.getTrainingMock(
+                Status.PENDING,
+                TRAINING_NAME_SHOULDER,
+                dayOfWeek = DayOfWeek.TUESDAY
+            ),
+            this.shoulderSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
-            Constants().backSubGroupsMock
+            this.getTrainingMock(
+                Status.MISSED,
+                TRAINING_NAME_ARMS,
+                dayOfWeek = DayOfWeek.FRIDAY
+            ),
+            this.bicepsSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
-            Constants().backSubGroupsMock
+            this.getTrainingMock(
+                Status.PENDING,
+                TRAINING_NAME_BACK_TRAPS,
+                dayOfWeek = DayOfWeek.SATURDAY
+            ),
+            this.backSubGroupsMock
         ),
-        Pair(
-            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
-            Constants().bicepsSubGroupsMock
-        ),
-        Pair(
-            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_BACK_TRAPS),
-            Constants().backSubGroupsMock
-        )
     )
 
     @Composable
     fun getTrainingAndSubGroupsHomeScreenMock() = listOf(
         Pair(
-            Constants().getTrainingMock(Status.ACHIEVED, TRAINING_NAME_CHEST_TRICEPS),
-            Constants().chestAndTricepsSubGroupsMock
+            this.getTrainingMock(
+                Status.ACHIEVED,
+                TRAINING_NAME_CHEST_TRICEPS,
+                dayOfWeek = DayOfWeek.SUNDAY
+            ),
+            this.chestAndTricepsSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.PENDING, TRAINING_NAME_SHOULDER),
-            Constants().shoulderSubGroupsMock
+            this.getTrainingMock(
+                Status.PENDING,
+                TRAINING_NAME_SHOULDER,
+                dayOfWeek = DayOfWeek.MONDAY
+            ),
+            this.shoulderSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.EMPTY, TRAINING_NAME_ARMS),
-            Constants().bicepsSubGroupsMock
+            this.getTrainingMock(
+                Status.EMPTY, TRAINING_NAME_ARMS,
+                dayOfWeek = DayOfWeek.TUESDAY
+            ),
+            this.bicepsSubGroupsMock
         ),
         Pair(
-            Constants().getTrainingMock(Status.MISSED, TRAINING_NAME_ARMS),
-            Constants().bicepsSubGroupsMock
+            this.getTrainingMock(
+                Status.MISSED, TRAINING_NAME_ARMS,
+                dayOfWeek = DayOfWeek.WEDNESDAY
+            ),
+            this.bicepsSubGroupsMock
         )
     )
 

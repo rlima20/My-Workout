@@ -7,9 +7,32 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 
 class Utils {
+
+    fun mapDayOfWeekToNumber(dayOfWeek: DayOfWeek): Int =
+        when (dayOfWeek) {
+            DayOfWeek.MONDAY -> 1
+            DayOfWeek.TUESDAY -> 2
+            DayOfWeek.WEDNESDAY -> 3
+            DayOfWeek.THURSDAY -> 4
+            DayOfWeek.FRIDAY -> 5
+            DayOfWeek.SATURDAY -> 6
+            DayOfWeek.SUNDAY -> 7
+        }
+
+    fun sortTrainingsByDayOfWeek(
+        trainings: List<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>
+    ): List<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>> {
+        return trainings.sortedBy { (training, _) ->
+            Utils().mapDayOfWeekToNumber(training.dayOfWeek)
+        } as MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>
+    }
+
     fun setStatus(
         isTrainingChecked: Boolean,
         trainingStatus: Status,
@@ -17,9 +40,17 @@ class Utils {
     ) = if (isTrainingChecked) Status.ACHIEVED
     else
         when (trainingStatus) {
-            Status.MISSED -> { firstStatus }
-            Status.EMPTY -> { Status.EMPTY }
-            else -> { Status.PENDING }
+            Status.MISSED -> {
+                firstStatus
+            }
+
+            Status.EMPTY -> {
+                Status.EMPTY
+            }
+
+            else -> {
+                Status.PENDING
+            }
         }
 
     @Composable
