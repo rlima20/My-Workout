@@ -25,4 +25,8 @@
     <string name="create_training">Criar novo treino de: </string>
     <string name="select_your_group">Selecione o grupo que vai treinar</string>
     <string name="match_subgroup_with_group">Selecione os subgrupos</string>
+    <string name="dialog_confirm_text">Confirmar</string>
+    <string name="dialog_cancel_text">Cancelar</string>
+    <string name="dialog_title">Finalizar treino?</string>
+    <string name="dialog_text">Depois de confirmar não será mais possível realizar alterações nesse treino.</string>
 </resources>
