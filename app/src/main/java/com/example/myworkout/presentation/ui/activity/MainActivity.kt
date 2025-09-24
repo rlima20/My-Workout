@@ -129,7 +129,7 @@ class MainActivity : ComponentActivity() {
                             snackBarHostState,
                         )
                     },
-                    onTrainingChecked = { },
+                    onTrainingChecked = { updateTraining(it) },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     onCreateMuscleGroup = { createMuscleGroup(it) },
@@ -138,10 +138,10 @@ class MainActivity : ComponentActivity() {
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
                     onUpdateSubGroup = { updateSubGroup(it) },
                     onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() },
-                    onGetRelationById = {},
-                    onVerifyRelation = {fetchRelations()},
+                    onVerifyRelation = { fetchRelations() },
                     onFetchGroupsWithRelations = { fetchRelations() },
-                    onGroupWithRelationClicked = { /* Todo */ }
+                    onGroupWithRelationClicked = { /* Todo */ },
+                    onGetSubgroupsByTraining = { }
                 )
             },
             bottomBar = {
@@ -251,15 +251,21 @@ class MainActivity : ComponentActivity() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateObjSelected(objSelected))
     }
 
-    private fun getRelationById(muscleGroupId: Int){
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.GetRelationById(muscleGroupId))
+    private fun getSubGroupsByTraining(training: TrainingModel) {
+        muscleGroupViewModel.dispatchViewAction(
+            MuscleGroupViewAction.GetSubGroupsByTraining(training)
+        )
     }
 
-    private fun fetchRelations(){
-       muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchRelations)
+    private fun fetchRelations() {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchRelations)
     }
 
     private fun createTrainings() {
         trainingViewModel.dispatchViewAction(TrainingViewAction.NewTraining)
+    }
+
+    private fun updateTraining(trainingModel: TrainingModel) {
+        trainingViewModel.dispatchViewAction(TrainingViewAction.UpdateTraining(trainingModel))
     }
 }

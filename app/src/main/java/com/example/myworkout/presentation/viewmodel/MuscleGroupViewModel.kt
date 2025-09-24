@@ -3,11 +3,11 @@ package com.example.myworkout.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.MUSCLE_SUB_GROUP_NAMES
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
@@ -37,13 +37,25 @@ class MuscleGroupViewModel(
         MutableStateFlow(listOf())
     val muscleSubGroups: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroups
 
+    private val _muscleSubGroupsByTraining: MutableStateFlow<List<MuscleSubGroupModel>> =
+        MutableStateFlow(listOf())
+    val muscleSubGroupsByTraining: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroupsByTraining
+
     private val _relations: MutableStateFlow<List<MuscleGroupMuscleSubGroupModel>> =
         MutableStateFlow(listOf())
     val relations: StateFlow<List<MuscleGroupMuscleSubGroupModel>> get() = _relations
 
     private val _objSelected: MutableStateFlow<Pair<Int, Boolean>> =
         MutableStateFlow(Pair(0, false))
-    val objSelected: MutableStateFlow<Pair<Int, Boolean>> get() = _objSelected
+    val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
+
+
+    private val _workouts: MutableStateFlow<MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>> =
+        MutableStateFlow(
+            mutableListOf()
+        )
+
+    val workouts: StateFlow<MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>> = _workouts
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
@@ -87,8 +99,8 @@ class MuscleGroupViewModel(
                 setMuscleGroupSelected(viewAction.objSelected)
             }
 
-            is MuscleGroupViewAction.GetRelationById -> {
-                getRelationById(viewAction.muscleGroupId)
+            is MuscleGroupViewAction.GetSubGroupsByTraining -> {
+                getSubgroupsByTraining(viewAction.training)
             }
 
             is MuscleGroupViewAction.FetchRelations -> {
@@ -140,16 +152,25 @@ class MuscleGroupViewModel(
         }
     }
 
-    private fun getRelationById(muscleGroupId: Int) {
+    private fun getSubgroupsByTraining(training: TrainingModel) {
         viewModelScope.launch(dispatchers.IO) {
             setLoadingState()
             try {
-                setSuccessState(
-                    MuscleGroupViewState
-                        .SuccessGetRelation(
-                            muscleGroupUseCase.getRelationById(muscleGroupId).isNotEmpty()
-                        )
-                )
+                val subGroups = muscleGroupUseCase
+                    .getMuscleSubGroupsByTrainingId(
+                        training.trainingId
+                    )
+
+                _muscleSubGroupsByTraining.value = subGroups
+
+
+
+
+
+
+
+
+                setSuccessState(MuscleGroupViewState.SuccessGetSubGroupsByTraining)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }

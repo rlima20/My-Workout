@@ -21,7 +21,8 @@ class TrainingViewModel(
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
-    private val _viewState: MutableStateFlow<TrainingViewState> = MutableStateFlow(TrainingViewState.Empty)
+    private val _viewState: MutableStateFlow<TrainingViewState> =
+        MutableStateFlow(TrainingViewState.Empty)
     val viewState: StateFlow<TrainingViewState> get() = _viewState
 
     private val _trainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
@@ -35,13 +36,34 @@ class TrainingViewModel(
 
     fun dispatchViewAction(trainingViewAction: TrainingViewAction) {
         when (trainingViewAction) {
-            is TrainingViewAction.FetchTrainings -> { fetchTrainings() }
-            is TrainingViewAction.NewTraining -> { }
-            is TrainingViewAction.SetEmptyState -> { setEmptyState() }
+            is TrainingViewAction.UpdateTraining -> {
+                updateTraining(trainingViewAction.training)
+            }
+
+            is TrainingViewAction.FetchTrainings -> {
+                fetchTrainings()
+            }
+
+            is TrainingViewAction.NewTraining -> {}
+            is TrainingViewAction.SetEmptyState -> {
+                setEmptyState()
+            }
         }
     }
 
-    private fun setEmptyState(){
+    private fun updateTraining(trainingModel: TrainingModel) {
+        setLoadingState()
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                trainingUseCase.updateTraining(trainingModel)
+                fetchTrainings()
+            }catch (_: Exception){
+                setErrorState()
+            }
+        }
+    }
+
+    private fun setEmptyState() {
         _viewState.value = TrainingViewState.Empty
     }
 
@@ -62,10 +84,9 @@ class TrainingViewModel(
     }
 
     private fun verifyEmptyList(data: List<TrainingModel>) {
-        if (data.isEmpty()){
+        if (data.isEmpty()) {
             _viewState.value = TrainingViewState.Empty
-        }
-        else{
+        } else {
             _viewState.value = TrainingViewState.Success
             _trainings.value = data
         }
@@ -74,24 +95,34 @@ class TrainingViewModel(
     private fun insertTraining(training: TrainingModel) {
         viewModelScope.launch {
             setLoadingState()
-            try{
+            try {
                 trainingUseCase.insertTraining(training)
                 setSuccessState()
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 setErrorState()
             }
         }
     }
 
-    private fun setSuccessState() { _viewState.value = TrainingViewState.Success }
+    private fun setSuccessState() {
+        _viewState.value = TrainingViewState.Success
+    }
 
-    private fun setErrorState() { _viewState.value = TrainingViewState.Error }
+    private fun setErrorState() {
+        _viewState.value = TrainingViewState.Error
+    }
 
-    private fun setLoadingState() { _viewState.value = TrainingViewState.Loading }
+    private fun setLoadingState() {
+        _viewState.value = TrainingViewState.Loading
+    }
 
-    fun setIsHomeScreen(value: Boolean) { _isHomeScreen.value = value }
+    fun setIsHomeScreen(value: Boolean) {
+        _isHomeScreen.value = value
+    }
 
-    fun setAppBarTitle(value: String) { _appBarTitle.value = value }
+    fun setAppBarTitle(value: String) {
+        _appBarTitle.value = value
+    }
 
     private fun clearStatus(trainingId: Int, status: Status) {
         viewModelScope.launch {

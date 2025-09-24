@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
@@ -23,7 +22,6 @@ import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
-import com.example.myworkout.utils.Utils
 import androidx.navigation.compose.NavHost as NavHostCompose
 
 @RequiresApi(35)
@@ -51,13 +49,31 @@ fun NavHost(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
     onClearGroupsAndSubGroups: () -> Unit,
-    onGetRelationById: (muscleGroupId: Int) -> Unit,
     onVerifyRelation: () -> Unit,
     onFetchGroupsWithRelations: () -> Unit,
-    onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit
+    onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit,
+    onGetSubgroupsByTraining: (training: TrainingModel) -> Unit,
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
-    val createNewTraining: String = stringResource(R.string.new_training)
+    val newTrainingScreen: String = stringResource(R.string.new_training)
+
+
+    // Levar isso para a viewModel
+    val workouts: MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>> =
+        mutableListOf()
+
+    trainings.forEach { training ->
+        val training = training
+        val subGroups: MutableList<MuscleSubGroupModel> =
+            muscleSubGroups as MutableList<MuscleSubGroupModel>
+
+        workouts.add(
+            Pair(
+                training,
+                subGroups
+            )
+        )
+    }
 
     NavHostCompose(
         navController = navController,
@@ -70,6 +86,7 @@ fun NavHost(
 
             SetupTrainingStateObservers(
                 trainingList = trainings,
+                workouts = workouts,
                 trainingViewState = trainingViewState,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRoute,
@@ -80,7 +97,7 @@ fun NavHost(
 
         composable(route = NewTraining.route) {
             onChangeRoute(false)
-            onChangeTopBarTitle(createNewTraining)
+            onChangeTopBarTitle(newTrainingScreen)
 
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
@@ -110,7 +127,6 @@ fun NavHost(
         }
     }
 }
-
 
 @Composable
 private fun SetupMuscleGroupStateObservers(
@@ -160,8 +176,7 @@ private fun SetupMuscleGroupStateObservers(
                 })
         }
 
-        is MuscleGroupViewState.SuccessGetRelation -> {
-            muscleGroupViewState.result
+        is MuscleGroupViewState.SuccessGetSubGroupsByTraining -> {
         }
 
         is MuscleGroupViewState.SuccessGetGroupsWithRelations -> {
@@ -189,39 +204,29 @@ private fun SetupMuscleGroupStateObservers(
 @Composable
 private fun SetupTrainingStateObservers(
     trainingList: List<TrainingModel>,
+    workouts: MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
 ) {
-    val constants = Constants()
-
     when (trainingViewState) {
-        is TrainingViewState.Loading -> { /* Do nothing */
+        is TrainingViewState.Loading -> {
+            LoadingComponent()
         }
 
         is TrainingViewState.Empty -> {
-            HomeScreen(
-                trainingAndSubGroups = Utils()
-                    .sortTrainingsByDayOfWeek(
-                        trainings = constants.getTrainingAndSubGroupsMock()
-                    ),
-                filterChipListModifier = Modifier,
-                onTrainingChecked = { onTrainingChecked(it) },
-                onGetMuscleSubGroupsByTrainingId = {}
+            EmptyStateComponent(
+                modifier = Modifier.size(150.dp, 180.dp),
+                text = stringResource(R.string.new_training),
+                painter = painterResource(R.drawable.add_icon),
+                onClick = {
+                    onChangeRoute(false)
+                    onNavigateToNewTraining()
+                },
+                backgroundColor = colorResource(R.color.top_bar_color),
             )
-
-//            EmptyStateComponent(
-//                modifier = Modifier.size(150.dp, 180.dp),
-//                text = stringResource(R.string.new_training),
-//                painter = painterResource(R.drawable.add_icon),
-//                onClick = {
-//                    onChangeRoute(false)
-//                    onNavigateToNewTraining()
-//                },
-//                backgroundColor = colorResource(R.color.top_bar_color),
-//            )
             onDatabaseCreated()
         }
 
@@ -234,17 +239,22 @@ private fun SetupTrainingStateObservers(
 
         is TrainingViewState.Success -> {
             HomeScreen(
-                trainingAndSubGroups = Utils()
-                    .sortTrainingsByDayOfWeek(
-                        trainings = constants.getTrainingAndSubGroupsMock()
-                    ),                filterChipListModifier = Modifier,
-                onTrainingChecked = {},
+                trainingAndSubGroups = workouts,
+                filterChipListModifier = Modifier,
+                onTrainingChecked = { onTrainingChecked(it) },
                 onGetMuscleSubGroupsByTrainingId = {}
             )
+//            HomeScreen(
+//                trainingAndSubGroups = Utils()
+//                    .sortTrainingsByDayOfWeek(
+//                        trainings = constants.getTrainingAndSubGroupsMock()
+//                    ),                filterChipListModifier = Modifier,
+//                onTrainingChecked = {},
+//                onGetMuscleSubGroupsByTrainingId = {}
+//            )
         }
 
         else -> { /* Do nothing */
         }
     }
 }
-

@@ -8,7 +8,7 @@ sealed class MuscleGroupViewState {
     object SuccessInsertMuscleGroup : MuscleGroupViewState()
     object SuccessInsertMuscleSubGroup : MuscleGroupViewState()
     object SuccessFetchMuscleGroups : MuscleGroupViewState()
-    data class SuccessGetRelation(val result: Boolean) : MuscleGroupViewState()
+    object SuccessGetSubGroupsByTraining : MuscleGroupViewState()
     data class SuccessGetGroupsWithRelations(val groups: List<MuscleGroupModel>) : MuscleGroupViewState()
     object SuccessFetchMuscleSubGroups : MuscleGroupViewState()
     object SuccessInsertMuscleGroupMuscleSubGroup : MuscleGroupViewState()

@@ -12,6 +12,10 @@ class TrainingUseCaseImpl(private val repository: TrainingRepository) :
         repository.insertTraining(training)
     }
 
+    override suspend fun updateTraining(training: TrainingModel) {
+        repository.updateTraining(training)
+    }
+
     override suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         repository.insertTrainingMuscleGroup(trainingMuscleGroup)
     }
