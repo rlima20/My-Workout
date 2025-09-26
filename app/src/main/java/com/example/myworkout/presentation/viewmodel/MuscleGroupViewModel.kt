@@ -49,13 +49,13 @@ class MuscleGroupViewModel(
         MutableStateFlow(Pair(0, false))
     val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
 
-
-    private val _workouts: MutableStateFlow<MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>> =
+    private val _workouts: MutableStateFlow<MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>> =
         MutableStateFlow(
-            mutableListOf()
+            mutableListOf(
+            )
         )
-
-    val workouts: StateFlow<MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>> = _workouts
+    val workouts: StateFlow<MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>> =
+        _workouts
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
@@ -99,8 +99,8 @@ class MuscleGroupViewModel(
                 setMuscleGroupSelected(viewAction.objSelected)
             }
 
-            is MuscleGroupViewAction.GetSubGroupsByTraining -> {
-                getSubgroupsByTraining(viewAction.training)
+            is MuscleGroupViewAction.FetchWorkouts -> {
+                fetchWorkouts(viewAction.trainings)
             }
 
             is MuscleGroupViewAction.FetchRelations -> {
@@ -152,25 +152,19 @@ class MuscleGroupViewModel(
         }
     }
 
-    private fun getSubgroupsByTraining(training: TrainingModel) {
+    private fun fetchWorkouts(trainings: List<TrainingModel>) {
+        val workouts: MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>> = mutableListOf()
+        setLoadingState()
+
         viewModelScope.launch(dispatchers.IO) {
-            setLoadingState()
             try {
-                val subGroups = muscleGroupUseCase
-                    .getMuscleSubGroupsByTrainingId(
-                        training.trainingId
-                    )
-
-                _muscleSubGroupsByTraining.value = subGroups
-
-
-
-
-
-
-
-
-                setSuccessState(MuscleGroupViewState.SuccessGetSubGroupsByTraining)
+                trainings.forEach { training ->
+                    val subGroups =
+                        muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
+                    workouts.add(Pair(training, subGroups))
+                }
+                _workouts.value = workouts
+                setSuccessState(MuscleGroupViewState.SuccessFetchWorkouts)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }

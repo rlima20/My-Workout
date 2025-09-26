@@ -9,9 +9,12 @@ sealed class MuscleGroupViewState {
     object SuccessInsertMuscleSubGroup : MuscleGroupViewState()
     object SuccessFetchMuscleGroups : MuscleGroupViewState()
     object SuccessGetSubGroupsByTraining : MuscleGroupViewState()
-    data class SuccessGetGroupsWithRelations(val groups: List<MuscleGroupModel>) : MuscleGroupViewState()
+    data class SuccessGetGroupsWithRelations(val groups: List<MuscleGroupModel>) :
+        MuscleGroupViewState()
+
     object SuccessFetchMuscleSubGroups : MuscleGroupViewState()
     object SuccessInsertMuscleGroupMuscleSubGroup : MuscleGroupViewState()
+    object SuccessFetchWorkouts : MuscleGroupViewState()
     object Error : MuscleGroupViewState()
     object Loading : MuscleGroupViewState()
     object Empty : MuscleGroupViewState()

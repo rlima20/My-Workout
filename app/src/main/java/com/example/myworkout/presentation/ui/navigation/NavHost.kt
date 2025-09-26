@@ -28,10 +28,10 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 @Composable
 fun NavHost(
     navController: NavHostController,
-    trainings: List<TrainingModel>,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
     objSelected: Pair<Int, Boolean>,
@@ -52,28 +52,10 @@ fun NavHost(
     onVerifyRelation: () -> Unit,
     onFetchGroupsWithRelations: () -> Unit,
     onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit,
-    onGetSubgroupsByTraining: (training: TrainingModel) -> Unit,
+    onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
-
-
-    // Levar isso para a viewModel
-    val workouts: MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>> =
-        mutableListOf()
-
-    trainings.forEach { training ->
-        val training = training
-        val subGroups: MutableList<MuscleSubGroupModel> =
-            muscleSubGroups as MutableList<MuscleSubGroupModel>
-
-        workouts.add(
-            Pair(
-                training,
-                subGroups
-            )
-        )
-    }
 
     NavHostCompose(
         navController = navController,
@@ -85,13 +67,13 @@ fun NavHost(
             onChangeTopBarTitle(homeScreen)
 
             SetupTrainingStateObservers(
-                trainingList = trainings,
                 workouts = workouts,
                 trainingViewState = trainingViewState,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
                 onDatabaseCreated = onDatabaseCreated,
+                onFetchSubgroupsByTrainings = { onFetchSubgroupsByTrainings(it) }
             )
         }
 
@@ -101,7 +83,7 @@ fun NavHost(
 
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
-                muscleSubGroups = muscleSubGroups,
+                muscleSubGroups = muscleSubGroups ,
                 muscleGroupsWithRelation = muscleGroupsWithRelation,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
@@ -183,19 +165,23 @@ private fun SetupMuscleGroupStateObservers(
 
         }
 
-        MuscleGroupViewState.SuccessInsertMuscleGroup -> {
+        is MuscleGroupViewState.SuccessInsertMuscleGroup -> {
             onShowToast(stringResource(R.string.success_operation))
             onSetInitialState()
         }
 
-        MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {}
-        MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
-        MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
+        is MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {}
+        is MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
+        is MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
 
-        MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
+        is MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
             onShowToast(stringResource(R.string.success_operation))
             onVerifyRelation()
             onClearGroupsAndSubGroups()
+        }
+
+        is MuscleGroupViewState.SuccessFetchWorkouts -> {
+
         }
     }
 }
@@ -203,13 +189,13 @@ private fun SetupMuscleGroupStateObservers(
 @RequiresApi(35)
 @Composable
 private fun SetupTrainingStateObservers(
-    trainingList: List<TrainingModel>,
-    workouts: MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>,
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
+    onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -238,6 +224,11 @@ private fun SetupTrainingStateObservers(
         }
 
         is TrainingViewState.Success -> {
+            // Tenho todos os treinamentos atualizados
+            // Devo pegar esses treinamentos e atualizar o workouts
+            onFetchSubgroupsByTrainings(trainingViewState.trainings)
+
+
             HomeScreen(
                 trainingAndSubGroups = workouts,
                 filterChipListModifier = Modifier,

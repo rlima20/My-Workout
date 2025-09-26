@@ -12,6 +12,7 @@ import com.example.myworkout.enums.Status
 import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -69,6 +70,7 @@ class TrainingViewModel(
 
     private fun fetchTrainings() {
         viewModelScope.launch(Dispatchers.IO) {
+            delay(1000)
             try {
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
@@ -87,8 +89,8 @@ class TrainingViewModel(
         if (data.isEmpty()) {
             _viewState.value = TrainingViewState.Empty
         } else {
-            _viewState.value = TrainingViewState.Success
             _trainings.value = data
+            setSuccessState(data)
         }
     }
 
@@ -97,15 +99,15 @@ class TrainingViewModel(
             setLoadingState()
             try {
                 trainingUseCase.insertTraining(training)
-                setSuccessState()
+                fetchTrainings()
             } catch (e: Exception) {
                 setErrorState()
             }
         }
     }
 
-    private fun setSuccessState() {
-        _viewState.value = TrainingViewState.Success
+    private fun setSuccessState(trainings: List<TrainingModel>) {
+        _viewState.value = TrainingViewState.Success(trainings)
     }
 
     private fun setErrorState() {
@@ -113,6 +115,7 @@ class TrainingViewModel(
     }
 
     private fun setLoadingState() {
+        _viewState.value = TrainingViewState.Loading
         _viewState.value = TrainingViewState.Loading
     }
 

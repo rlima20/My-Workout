@@ -167,8 +167,6 @@ private fun SetSubGroupSection(
             .fillMaxWidth()
     ) {
         if (training.status != Status.EMPTY) {
-            onGetMuscleSubGroupsByTrainingId(training.trainingId)
-
             FilterChipList(
                 modifier = filterChipListModifier.trainingCardFilterChipListModifier(),
                 backGroundColor = SUB_GROUP_SECTION_BACKGROUND,
