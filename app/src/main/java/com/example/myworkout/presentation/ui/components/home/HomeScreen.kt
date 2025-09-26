@@ -27,10 +27,11 @@ import com.example.myworkout.utils.Utils
 @Composable
 internal fun HomeScreen(
     filterChipListModifier: Modifier,
-    trainingAndSubGroups: List<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>,
+    trainingAndSubGroups: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onGetMuscleSubGroupsByTrainingId: (training: Int) -> Unit
 ) {
+
     LazyVerticalGrid(
         modifier = Modifier.homeScreenCardPaddings(),
         verticalArrangement = Arrangement.Center,

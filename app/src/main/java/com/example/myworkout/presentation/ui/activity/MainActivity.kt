@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val trainings by trainingViewModel.trainings.collectAsState(listOf())
+            val workouts by muscleGroupViewModel.workouts.collectAsState()
             val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
             val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
@@ -63,10 +64,11 @@ class MainActivity : ComponentActivity() {
             val prefs = TrainingPrefs()
 
             setupDatabase(prefs)
-            fetchInfoIfNotFirstInstall(prefs)
+            fetchInfoIfNotFirstInstall(prefs, trainings)
 
             MyWorkoutTheme {
                 ScaffoldComponent(
+                    workouts = workouts,
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
                     navController = navController,
@@ -86,6 +88,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(35)
     @Composable
     private fun ScaffoldComponent(
+        workouts:  MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
         appBarTitle: String,
         isHomeScreen: Boolean,
         navController: NavHostController,
@@ -111,10 +114,10 @@ class MainActivity : ComponentActivity() {
             content = {
                 NavHost(
                     navController = navController,
-                    trainings = trainings,
                     muscleGroups = muscleGroups,
-                    muscleGroupsWithRelation = muscleGroupsWithRelation,
                     muscleSubGroups = muscleSubGroups,
+                    muscleGroupsWithRelation = muscleGroupsWithRelation,
+                    workouts = workouts,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
                     onItemClick = { setNewObjSelected(it) },
@@ -129,7 +132,7 @@ class MainActivity : ComponentActivity() {
                             snackBarHostState,
                         )
                     },
-                    onTrainingChecked = { },
+                    onTrainingChecked = { updateTraining(it) },
                     onFetchMuscleGroups = { fetchMuscleGroups() },
                     onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     onCreateMuscleGroup = { createMuscleGroup(it) },
@@ -138,10 +141,10 @@ class MainActivity : ComponentActivity() {
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
                     onUpdateSubGroup = { updateSubGroup(it) },
                     onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() },
-                    onGetRelationById = {},
-                    onVerifyRelation = {fetchRelations()},
+                    onVerifyRelation = { fetchRelations() },
                     onFetchGroupsWithRelations = { fetchRelations() },
-                    onGroupWithRelationClicked = { /* Todo */ }
+                    onGroupWithRelationClicked = { /* Todo */ },
+                    onFetchSubgroupsByTrainings = { fetchWorkouts(it) }
                 )
             },
             bottomBar = {
@@ -178,12 +181,13 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun fetchInfoIfNotFirstInstall(prefs: TrainingPrefs) {
+    private fun fetchInfoIfNotFirstInstall(prefs: TrainingPrefs, trainings: List<TrainingModel>) {
         if (!prefs.isFirstInstall(this.baseContext)) {
             fetchTrainings()
             fetchMuscleGroups()
             fetchMuscleSubGroups()
             fetchRelations()
+            fetchWorkouts(trainings)
         }
     }
 
@@ -251,15 +255,21 @@ class MainActivity : ComponentActivity() {
         muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateObjSelected(objSelected))
     }
 
-    private fun getRelationById(muscleGroupId: Int){
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.GetRelationById(muscleGroupId))
+    private fun fetchWorkouts(trainings: List<TrainingModel>) {
+        muscleGroupViewModel.dispatchViewAction(
+            MuscleGroupViewAction.FetchWorkouts(trainings)
+        )
     }
 
-    private fun fetchRelations(){
-       muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchRelations)
+    private fun fetchRelations() {
+        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchRelations)
     }
 
     private fun createTrainings() {
         trainingViewModel.dispatchViewAction(TrainingViewAction.NewTraining)
+    }
+
+    private fun updateTraining(trainingModel: TrainingModel) {
+        trainingViewModel.dispatchViewAction(TrainingViewAction.UpdateTraining(trainingModel))
     }
 }

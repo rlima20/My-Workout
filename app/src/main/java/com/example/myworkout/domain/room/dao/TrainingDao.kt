@@ -4,8 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.myworkout.enums.Status
+import androidx.room.Update
 import com.example.myworkout.domain.room.entity.TrainingEntity
+import com.example.myworkout.enums.Status
 
 @Dao
 interface TrainingDao {
@@ -23,4 +24,7 @@ interface TrainingDao {
 
     @Query("UPDATE training SET status = :status WHERE trainingId = :trainingId")
     fun updateTrainingStatus(trainingId: Int, status: Status)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateTraining(training: TrainingEntity)
 }

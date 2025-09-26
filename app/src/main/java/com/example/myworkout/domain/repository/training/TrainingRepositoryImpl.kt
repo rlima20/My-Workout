@@ -25,6 +25,10 @@ class TrainingRepositoryImpl(
         trainingMuscleGroupDao.insert(trainingMuscleGroup.toEntity())
     }
 
+    override suspend fun updateTraining(training: TrainingModel) {
+        trainingDao.updateTraining(training.toEntity())
+    }
+
     override suspend fun clearTrainingStatus(trainingId: Int, status: Status) {
         TODO("Not yet implemented")
     }

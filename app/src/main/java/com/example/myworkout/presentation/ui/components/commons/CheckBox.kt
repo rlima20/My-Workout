@@ -10,13 +10,14 @@ import com.example.myworkout.enums.Status
 internal fun CheckBox(
     modifier: Modifier = Modifier,
     status: Status,
+    enabled: Boolean,
     isTrainingChecked: Boolean,
     onChecked: () -> Unit,
 ) {
     if (status != Status.EMPTY) {
         Checkbox(
             modifier = modifier,
-            enabled = status != Status.MISSED,
+            enabled = enabled,
             checked = isTrainingChecked,
             onCheckedChange = { onChecked() },
         )
@@ -29,6 +30,7 @@ fun CheckBoxPreview() {
     CheckBox(
         modifier = Modifier,
         status = Status.MISSED,
+        enabled = false,
         isTrainingChecked = false,
         onChecked = {}
     )

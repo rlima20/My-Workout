@@ -10,4 +10,5 @@ interface TrainingRepository {
     suspend fun getTrainings(): List<TrainingModel>
     suspend fun clearTrainingStatus(trainingId: Int, status: Status)
     suspend fun updateTrainingStatus(trainingId: Int, status: Status)
+    suspend fun updateTraining(training: TrainingModel)
 }

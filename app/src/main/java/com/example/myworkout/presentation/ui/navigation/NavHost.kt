@@ -10,7 +10,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
@@ -23,17 +22,16 @@ import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
-import com.example.myworkout.utils.Utils
 import androidx.navigation.compose.NavHost as NavHostCompose
 
 @RequiresApi(35)
 @Composable
 fun NavHost(
     navController: NavHostController,
-    trainings: List<TrainingModel>,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
     objSelected: Pair<Int, Boolean>,
@@ -51,13 +49,13 @@ fun NavHost(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
     onClearGroupsAndSubGroups: () -> Unit,
-    onGetRelationById: (muscleGroupId: Int) -> Unit,
     onVerifyRelation: () -> Unit,
     onFetchGroupsWithRelations: () -> Unit,
-    onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit
+    onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit,
+    onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
-    val createNewTraining: String = stringResource(R.string.new_training)
+    val newTrainingScreen: String = stringResource(R.string.new_training)
 
     NavHostCompose(
         navController = navController,
@@ -69,22 +67,23 @@ fun NavHost(
             onChangeTopBarTitle(homeScreen)
 
             SetupTrainingStateObservers(
-                trainingList = trainings,
+                workouts = workouts,
                 trainingViewState = trainingViewState,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
                 onDatabaseCreated = onDatabaseCreated,
+                onFetchSubgroupsByTrainings = { onFetchSubgroupsByTrainings(it) }
             )
         }
 
         composable(route = NewTraining.route) {
             onChangeRoute(false)
-            onChangeTopBarTitle(createNewTraining)
+            onChangeTopBarTitle(newTrainingScreen)
 
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
-                muscleSubGroups = muscleSubGroups,
+                muscleSubGroups = muscleSubGroups ,
                 muscleGroupsWithRelation = muscleGroupsWithRelation,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
@@ -110,7 +109,6 @@ fun NavHost(
         }
     }
 }
-
 
 @Composable
 private fun SetupMuscleGroupStateObservers(
@@ -160,27 +158,30 @@ private fun SetupMuscleGroupStateObservers(
                 })
         }
 
-        is MuscleGroupViewState.SuccessGetRelation -> {
-            muscleGroupViewState.result
+        is MuscleGroupViewState.SuccessGetSubGroupsByTraining -> {
         }
 
         is MuscleGroupViewState.SuccessGetGroupsWithRelations -> {
 
         }
 
-        MuscleGroupViewState.SuccessInsertMuscleGroup -> {
+        is MuscleGroupViewState.SuccessInsertMuscleGroup -> {
             onShowToast(stringResource(R.string.success_operation))
             onSetInitialState()
         }
 
-        MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {}
-        MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
-        MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
+        is MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {}
+        is MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
+        is MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
 
-        MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
+        is MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
             onShowToast(stringResource(R.string.success_operation))
             onVerifyRelation()
             onClearGroupsAndSubGroups()
+        }
+
+        is MuscleGroupViewState.SuccessFetchWorkouts -> {
+
         }
     }
 }
@@ -188,40 +189,30 @@ private fun SetupMuscleGroupStateObservers(
 @RequiresApi(35)
 @Composable
 private fun SetupTrainingStateObservers(
-    trainingList: List<TrainingModel>,
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
+    onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
 ) {
-    val constants = Constants()
-
     when (trainingViewState) {
-        is TrainingViewState.Loading -> { /* Do nothing */
+        is TrainingViewState.Loading -> {
+            LoadingComponent()
         }
 
         is TrainingViewState.Empty -> {
-            HomeScreen(
-                trainingAndSubGroups = Utils()
-                    .sortTrainingsByDayOfWeek(
-                        trainings = constants.getTrainingAndSubGroupsMock()
-                    ),
-                filterChipListModifier = Modifier,
-                onTrainingChecked = {},
-                onGetMuscleSubGroupsByTrainingId = {}
+            EmptyStateComponent(
+                modifier = Modifier.size(150.dp, 180.dp),
+                text = stringResource(R.string.new_training),
+                painter = painterResource(R.drawable.add_icon),
+                onClick = {
+                    onChangeRoute(false)
+                    onNavigateToNewTraining()
+                },
+                backgroundColor = colorResource(R.color.top_bar_color),
             )
-
-//            EmptyStateComponent(
-//                modifier = Modifier.size(150.dp, 180.dp),
-//                text = stringResource(R.string.new_training),
-//                painter = painterResource(R.drawable.add_icon),
-//                onClick = {
-//                    onChangeRoute(false)
-//                    onNavigateToNewTraining()
-//                },
-//                backgroundColor = colorResource(R.color.top_bar_color),
-//            )
             onDatabaseCreated()
         }
 
@@ -233,18 +224,28 @@ private fun SetupTrainingStateObservers(
         }
 
         is TrainingViewState.Success -> {
+            // Tenho todos os treinamentos atualizados
+            // Devo pegar esses treinamentos e atualizar o workouts
+            onFetchSubgroupsByTrainings(trainingViewState.trainings)
+
+
             HomeScreen(
-                trainingAndSubGroups = Utils()
-                    .sortTrainingsByDayOfWeek(
-                        trainings = constants.getTrainingAndSubGroupsMock()
-                    ),                filterChipListModifier = Modifier,
-                onTrainingChecked = {},
+                trainingAndSubGroups = workouts,
+                filterChipListModifier = Modifier,
+                onTrainingChecked = { onTrainingChecked(it) },
                 onGetMuscleSubGroupsByTrainingId = {}
             )
+//            HomeScreen(
+//                trainingAndSubGroups = Utils()
+//                    .sortTrainingsByDayOfWeek(
+//                        trainings = constants.getTrainingAndSubGroupsMock()
+//                    ),                filterChipListModifier = Modifier,
+//                onTrainingChecked = {},
+//                onGetMuscleSubGroupsByTrainingId = {}
+//            )
         }
 
         else -> { /* Do nothing */
         }
     }
 }
-

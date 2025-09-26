@@ -23,14 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
-import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
 import com.example.myworkout.Constants.Companion.SUB_GROUP_SECTION_BACKGROUND
 import com.example.myworkout.Constants.Companion.TRAINING_CARD_PADDING_BOTTOM
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
+import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
@@ -38,6 +39,7 @@ import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.extensions.trainingCardFilterChipListModifier
+import com.example.myworkout.presentation.ui.components.commons.AlertDialog
 import com.example.myworkout.presentation.ui.components.commons.CheckBox
 import com.example.myworkout.presentation.ui.components.commons.IconButton
 import com.example.myworkout.utils.Utils
@@ -59,7 +61,35 @@ fun TrainingCard(
     var trainingStatus by remember { mutableStateOf(training.status) }
     val firstStatus by remember { mutableStateOf(training.status) }
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
+    var showDialog by remember { mutableStateOf(false) }
     var subGroupsState = subGroups
+
+    if (showDialog) {
+        AlertDialog(
+            confirmButtonText = stringResource(R.string.dialog_confirm_text),
+            cancelButtonText = stringResource(R.string.dialog_cancel_text),
+            onDismissRequest = { showDialog = false },
+            onConfirmation = {
+                isTrainingChecked = !isTrainingChecked
+                trainingStatus = Utils().setStatus(
+                    isTrainingChecked,
+                    trainingStatus,
+                    firstStatus
+                )
+                onTrainingChecked(
+                    TrainingModel(
+                        trainingId = training.trainingId,
+                        status = trainingStatus,
+                        trainingName = training.trainingName,
+                        dayOfWeek = training.dayOfWeek
+                    )
+                )
+                showDialog = false
+            },
+            dialogTitle = stringResource(R.string.dialog_title),
+            dialogText = stringResource(R.string.dialog_text),
+        )
+    }
 
     Card(
         modifier = modifier.padding(bottom = TRAINING_CARD_PADDING_BOTTOM),
@@ -96,18 +126,8 @@ fun TrainingCard(
             CheckBox(
                 status = trainingStatus,
                 isTrainingChecked = isTrainingChecked,
-                onChecked = {
-                    isTrainingChecked = !isTrainingChecked
-                    trainingStatus = Utils().setStatus(isTrainingChecked, trainingStatus, firstStatus)
-                    onTrainingChecked(
-                        TrainingModel(
-                            trainingId = training.trainingId,
-                            status = trainingStatus,
-                            trainingName = training.trainingName,
-                            dayOfWeek = training.dayOfWeek
-                        )
-                    )
-                },
+                enabled = trainingStatus != Status.MISSED && trainingStatus != Status.ACHIEVED,
+                onChecked = { showDialog = true },
             )
         }
     }
@@ -147,8 +167,6 @@ private fun SetSubGroupSection(
             .fillMaxWidth()
     ) {
         if (training.status != Status.EMPTY) {
-            onGetMuscleSubGroupsByTrainingId(training.trainingId)
-
             FilterChipList(
                 modifier = filterChipListModifier.trainingCardFilterChipListModifier(),
                 backGroundColor = SUB_GROUP_SECTION_BACKGROUND,
