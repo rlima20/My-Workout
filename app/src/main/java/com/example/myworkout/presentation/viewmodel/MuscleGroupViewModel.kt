@@ -13,6 +13,7 @@ import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -49,13 +50,9 @@ class MuscleGroupViewModel(
         MutableStateFlow(Pair(0, false))
     val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
 
-    private val _workouts: MutableStateFlow<MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>> =
-        MutableStateFlow(
-            mutableListOf(
-            )
-        )
-    val workouts: StateFlow<MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>> =
-        _workouts
+    private val _workouts: MutableStateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>> =
+        MutableStateFlow(emptyList())
+    val workouts: StateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>> = _workouts
 
     fun dispatchViewAction(viewAction: MuscleGroupViewAction) {
         when (viewAction) {
@@ -152,24 +149,42 @@ class MuscleGroupViewModel(
         }
     }
 
-    private fun fetchWorkouts(trainings: List<TrainingModel>) {
-        val workouts: MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>> = mutableListOf()
-        setLoadingState()
+//    private fun fetchWorkouts(trainings: List<TrainingModel>) {
+//        val workouts: MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>> = mutableListOf()
+//        setLoadingState()
+//
+//        viewModelScope.launch(dispatchers.IO) {
+//            try {
+//                trainings.forEach { training ->
+//                    val subGroups =
+//                        muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
+//                    workouts.add(Pair(training, subGroups))
+//                }
+//                _workouts.value = workouts
+//                delay(6000)
+//                setSuccessState(MuscleGroupViewState.SuccessFetchWorkouts)
+//            } catch (exception: Exception) {
+//                setErrorState(exception.message.toString())
+//            }
+//        }
+//    }
 
+    private fun fetchWorkouts(trainings: List<TrainingModel>) {
         viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
             try {
-                trainings.forEach { training ->
-                    val subGroups =
-                        muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
-                    workouts.add(Pair(training, subGroups))
+                val workouts = trainings.map { training ->
+                    val subGroups = muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
+                    training to subGroups
                 }
-                _workouts.value = workouts
+                _workouts.value = workouts // ✅ cria uma nova lista (reativa)
                 setSuccessState(MuscleGroupViewState.SuccessFetchWorkouts)
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
         }
     }
+
 
     private fun insertMuscleGroupMuscleSubGroup(
         muscleGroupMuscleSubGroups: MutableList<MuscleGroupMuscleSubGroupModel>
@@ -183,6 +198,7 @@ class MuscleGroupViewModel(
                 setMuscleGroupSelected(Pair(0, false))
                 setSuccessState(MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup)
             } catch (exception: Exception) {
+
                 setErrorState(exception.message.toString())
             }
         }

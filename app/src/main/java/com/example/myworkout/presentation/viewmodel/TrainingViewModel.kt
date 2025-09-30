@@ -70,7 +70,6 @@ class TrainingViewModel(
 
     private fun fetchTrainings() {
         viewModelScope.launch(Dispatchers.IO) {
-            delay(1000)
             try {
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
@@ -108,6 +107,7 @@ class TrainingViewModel(
 
     private fun setSuccessState(trainings: List<TrainingModel>) {
         _viewState.value = TrainingViewState.Success(trainings)
+        // _trainings.value = trainings
     }
 
     private fun setErrorState() {

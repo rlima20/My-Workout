@@ -88,7 +88,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(35)
     @Composable
     private fun ScaffoldComponent(
-        workouts:  MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+        workouts:  List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
         appBarTitle: String,
         isHomeScreen: Boolean,
         navController: NavHostController,
