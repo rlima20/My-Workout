@@ -22,6 +22,7 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.extensions.navigateSingleTopTo
 import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.components.home.TopBar
@@ -31,8 +32,6 @@ import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
-import com.example.myworkout.presentation.viewmodel.viewaction.MuscleGroupViewAction
-import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -63,7 +62,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val prefs = TrainingPrefs()
 
-            setupDatabase(prefs)
+            setupInitialDatabase(prefs)
             fetchInfoIfNotFirstInstall(prefs, trainings)
 
             MyWorkoutTheme {
@@ -72,7 +71,6 @@ class MainActivity : ComponentActivity() {
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
                     navController = navController,
-                    trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
                     muscleGroupsWithRelation = muscleGroupsWithRelation,
@@ -88,11 +86,10 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(35)
     @Composable
     private fun ScaffoldComponent(
-        workouts:  MutableList<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+        workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
         appBarTitle: String,
         isHomeScreen: Boolean,
         navController: NavHostController,
-        trainings: List<TrainingModel>,
         muscleGroups: List<MuscleGroupModel>,
         muscleSubGroups: List<MuscleSubGroupModel>,
         muscleGroupsWithRelation: List<MuscleGroupModel>,
@@ -133,18 +130,11 @@ class MainActivity : ComponentActivity() {
                         )
                     },
                     onTrainingChecked = { updateTraining(it) },
-                    onFetchMuscleGroups = { fetchMuscleGroups() },
-                    onFetchMuscleSubGroups = { fetchMuscleSubGroups() },
                     onCreateMuscleGroup = { createMuscleGroup(it) },
-                    onShowSnackBar = { showToast(message = it) },
-                    onSetInitialState = { setInitialState() },
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
                     onUpdateSubGroup = { updateSubGroup(it) },
-                    onClearGroupsAndSubGroups = { clearGroupsAndSubGroupsSelected() },
-                    onVerifyRelation = { fetchRelations() },
-                    onFetchGroupsWithRelations = { fetchRelations() },
                     onGroupWithRelationClicked = { /* Todo */ },
-                    onFetchSubgroupsByTrainings = { fetchWorkouts(it) }
+                    onFetchWorkouts = { fetchWorkouts(it) }
                 )
             },
             bottomBar = {
@@ -174,7 +164,7 @@ class MainActivity : ComponentActivity() {
     ) {
         if (prefs.isFirstInstall(this.baseContext) && isHomeScreen) {
             LaunchedEffect(key1 = "") {
-                trainingViewModel.dispatchViewAction(TrainingViewAction.SetEmptyState)
+                trainingViewModel.setEmptyState()
                 showSnackBar(snackBarHostState)
                 setInstallValue(prefs)
             }
@@ -191,11 +181,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun setupDatabase(prefs: TrainingPrefs) {
+    private fun setupInitialDatabase(prefs: TrainingPrefs) {
         val isFirstInstall = prefs.isFirstInstall(this.baseContext)
-        muscleGroupViewModel.dispatchViewAction(
-            MuscleGroupViewAction.CreateInitialDatabase(isFirstInstall)
-        )
+        muscleGroupViewModel.createInitialDatabase(isFirstInstall)
     }
 
     private fun navigateToNewTrainingScreen(navController: NavHostController) {
@@ -211,23 +199,19 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun fetchTrainings() {
-        trainingViewModel.dispatchViewAction(TrainingViewAction.FetchTrainings)
-    }
-
-    private fun setInitialState() {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SetupInitialState)
+        trainingViewModel.fetchTrainings()
     }
 
     private fun createMuscleGroup(it: String) {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.CreateMuscleGroup(it))
+        muscleGroupViewModel.insertMuscleGroup(it, BodyPart.OTHER)
     }
 
     private fun fetchMuscleGroups() {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleGroups)
+        muscleGroupViewModel.fetchMuscleGroups()
     }
 
     private fun fetchMuscleSubGroups() {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchMuscleSubGroups)
+        muscleGroupViewModel.fetchMuscleSubGroups()
     }
 
     private fun setInstallValue(prefs: TrainingPrefs) {
@@ -235,7 +219,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun saveGroupSubGroupRelation(list: MutableList<MuscleGroupMuscleSubGroupModel>) {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.SaveGroupSubGroupRelation(list))
+        muscleGroupViewModel.insertMuscleGroupMuscleSubGroup(list)
     }
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
@@ -243,33 +227,26 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun clearGroupsAndSubGroupsSelected() {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.ClearGroupsAndSubGroupsSelected)
+        muscleGroupViewModel.clearSubGroups()
     }
 
     private fun updateSubGroup(subGroup: MuscleSubGroupModel) {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateSubGroup(subGroup))
-
+        muscleGroupViewModel.updateSubGroup(subGroup)
     }
 
     private fun setNewObjSelected(objSelected: Pair<Int, Boolean>) {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.UpdateObjSelected(objSelected))
+        muscleGroupViewModel.setMuscleGroupSelected(objSelected)
     }
 
     private fun fetchWorkouts(trainings: List<TrainingModel>) {
-        muscleGroupViewModel.dispatchViewAction(
-            MuscleGroupViewAction.FetchWorkouts(trainings)
-        )
+        muscleGroupViewModel.fetchWorkouts(trainings)
     }
 
     private fun fetchRelations() {
-        muscleGroupViewModel.dispatchViewAction(MuscleGroupViewAction.FetchRelations)
-    }
-
-    private fun createTrainings() {
-        trainingViewModel.dispatchViewAction(TrainingViewAction.NewTraining)
+        muscleGroupViewModel.getGroupsWithRelations()
     }
 
     private fun updateTraining(trainingModel: TrainingModel) {
-        trainingViewModel.dispatchViewAction(TrainingViewAction.UpdateTraining(trainingModel))
+        trainingViewModel.updateTraining(trainingModel)
     }
 }
