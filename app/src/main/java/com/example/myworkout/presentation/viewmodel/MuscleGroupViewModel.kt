@@ -109,7 +109,7 @@ class MuscleGroupViewModel(
                         muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
                     training to subGroups
                 }
-                _workouts.value = workouts // ✅ cria uma nova lista (reativa)
+                _workouts.value = workouts
                 setSuccessState()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())

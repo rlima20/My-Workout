@@ -26,8 +26,8 @@ import com.example.myworkout.utils.Utils
 @RequiresApi(35)
 @Composable
 internal fun HomeScreen(
-    filterChipListModifier: Modifier,
-    trainingAndSubGroups: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+    modifier: Modifier,
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onGetMuscleSubGroupsByTrainingId: (training: Int) -> Unit
 ) {
@@ -39,11 +39,11 @@ internal fun HomeScreen(
         columns = GridCells.Adaptive(LAZY_VERTICAL_GRID_MIN_SIZE)
     ) {
         val utils = Utils()
-        items(trainingAndSubGroups.size) { index ->
+        items(workouts.size) { index ->
             Column {
                 LabelTrainingCard(
                     text = utils.mapDayOfWeekToString(
-                        trainingAndSubGroups[index]
+                        workouts[index]
                             .first
                             .dayOfWeek
                     ),
@@ -52,9 +52,9 @@ internal fun HomeScreen(
                     fontSize = 20.sp
                 )
                 TrainingCard(
-                    filterChipListModifier = filterChipListModifier,
-                    training = trainingAndSubGroups[index].first,
-                    subGroups = trainingAndSubGroups[index].second,
+                    filterChipListModifier = modifier,
+                    training = workouts[index].first,
+                    subGroups = workouts[index].second,
                     chipListEnabled = false,
                     onMuscleGroupSelected = {},
                     onAddButtonClicked = {},
@@ -71,8 +71,8 @@ internal fun HomeScreen(
 @Preview
 fun HomeScreenPreview() {
     HomeScreen(
-        trainingAndSubGroups = Constants().getTrainingAndSubGroupsHomeScreenMock(),
-        filterChipListModifier = Modifier,
+        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
+        modifier = Modifier,
         onTrainingChecked = {},
         onGetMuscleSubGroupsByTrainingId = {}
     )

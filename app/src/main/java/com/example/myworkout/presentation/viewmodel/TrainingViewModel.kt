@@ -9,9 +9,9 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
 import com.example.myworkout.enums.Status
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -40,8 +40,8 @@ class TrainingViewModel(
             try {
                 trainingUseCase.updateTraining(trainingModel)
                 fetchTrainings()
-            }catch (_: Exception){
-                setErrorState()
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
             }
         }
     }
@@ -67,12 +67,8 @@ class TrainingViewModel(
     }
 
     fun verifyEmptyList(data: List<TrainingModel>) {
-        if (data.isEmpty()) {
-            _viewState.value = TrainingViewState.Empty
-        } else {
-            _trainings.value = data
-            setSuccessState(data)
-        }
+        if (data.isEmpty()) setEmptyState()
+        else setSuccessState(data)
     }
 
     fun insertTraining(training: TrainingModel) {
@@ -81,18 +77,19 @@ class TrainingViewModel(
             try {
                 trainingUseCase.insertTraining(training)
                 fetchTrainings()
-            } catch (e: Exception) {
-                setErrorState()
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
             }
         }
     }
 
     fun setSuccessState(trainings: List<TrainingModel>) {
+        _trainings.value = trainings
         _viewState.value = TrainingViewState.Success(trainings)
-        // _trainings.value = trainings
     }
 
-    fun setErrorState() {
+    fun setErrorState(exception: String) {
+        Log.e(EXCEPTION, exception)
         _viewState.value = TrainingViewState.Error
     }
 

@@ -58,9 +58,10 @@ fun TrainingCard(
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
-    var trainingStatus by remember { mutableStateOf(training.status) }
-    val firstStatus by remember { mutableStateOf(training.status) }
-    var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
+   //Todo - o problema do estado da tela pode estar aqui nesses rmembers
+    var trainingStatus = training.status
+    val firstStatus = training.status
+    var isTrainingChecked = training.status == Status.ACHIEVED
     var showDialog by remember { mutableStateOf(false) }
     var subGroupsState = subGroups
 

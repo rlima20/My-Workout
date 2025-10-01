@@ -58,8 +58,7 @@ fun NewMuscleGroupAndSubgroup(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
-    var isCardSectionVisible by remember { mutableStateOf(muscleGroupsWithRelation.isNotEmpty()) }
-
+    val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
     LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }

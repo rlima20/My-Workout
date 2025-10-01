@@ -71,7 +71,6 @@ class MainActivity : ComponentActivity() {
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
                     navController = navController,
-                    trainings = trainings,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
                     muscleGroupsWithRelation = muscleGroupsWithRelation,
@@ -91,7 +90,6 @@ class MainActivity : ComponentActivity() {
         appBarTitle: String,
         isHomeScreen: Boolean,
         navController: NavHostController,
-        trainings: List<TrainingModel>,
         muscleGroups: List<MuscleGroupModel>,
         muscleSubGroups: List<MuscleSubGroupModel>,
         muscleGroupsWithRelation: List<MuscleGroupModel>,
@@ -136,7 +134,7 @@ class MainActivity : ComponentActivity() {
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
                     onUpdateSubGroup = { updateSubGroup(it) },
                     onGroupWithRelationClicked = { /* Todo */ },
-                    onFetchSubgroupsByTrainings = { fetchWorkouts(it) }
+                    onFetchWorkouts = { fetchWorkouts(it) }
                 )
             },
             bottomBar = {

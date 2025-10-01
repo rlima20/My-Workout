@@ -45,7 +45,7 @@ fun NavHost(
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
     onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit,
-    onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
+    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -66,7 +66,7 @@ fun NavHost(
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
                 onDatabaseCreated = onDatabaseCreated,
-                onFetchSubgroupsByTrainings = { onFetchSubgroupsByTrainings(it) }
+                onFetchWorkouts = { onFetchWorkouts(it) }
             )
         }
 
@@ -120,7 +120,7 @@ private fun SetupMuscleGroupStateObservers(
         }
 
         MuscleGroupViewState.Success -> {
-            // Todo - Mensagem Sucesso
+            // Todo - Futuramente, levar todos os estados para esse State
         }
     }
 }
@@ -134,7 +134,7 @@ private fun SetupTrainingStateObservers(
     onNavigateToNewTraining: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
+    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -163,27 +163,13 @@ private fun SetupTrainingStateObservers(
         }
 
         is TrainingViewState.Success -> {
-            // Tenho todos os treinamentos atualizados
-            // Devo pegar esses treinamentos e atualizar o workouts
-            onFetchSubgroupsByTrainings(trainingViewState.trainings)
-
+            onFetchWorkouts(trainingViewState.trainings)
             HomeScreen(
-                trainingAndSubGroups = workouts,
-                filterChipListModifier = Modifier,
+                workouts = workouts,
+                modifier = Modifier,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onGetMuscleSubGroupsByTrainingId = {}
             )
-//            HomeScreen(
-//                trainingAndSubGroups = Utils()
-//                    .sortTrainingsByDayOfWeek(
-//                        trainings = constants.getTrainingAndSubGroupsMock()
-//                    ),                filterChipListModifier = Modifier,
-//                onTrainingChecked = {},
-//                onGetMuscleSubGroupsByTrainingId = {}
-//            )
-        }
-
-        else -> { /* Do nothing */
         }
     }
 }
