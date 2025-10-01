@@ -20,7 +20,7 @@ import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
-import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
 
@@ -40,17 +40,10 @@ fun NavHost(
     onChangeTopBarTitle: (title: String) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onFetchMuscleGroups: () -> Unit,
-    onFetchMuscleSubGroups: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onCreateMuscleGroup: (name: String) -> Unit,
-    onShowSnackBar: (message: String) -> Unit,
-    onSetInitialState: () -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
-    onClearGroupsAndSubGroups: () -> Unit,
-    onVerifyRelation: () -> Unit,
-    onFetchGroupsWithRelations: () -> Unit,
     onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit,
     onFetchSubgroupsByTrainings: (trainings: List<TrainingModel>) -> Unit,
 ) {
@@ -83,7 +76,7 @@ fun NavHost(
 
             NewMuscleGroupAndSubgroup(
                 muscleGroups = muscleGroups,
-                muscleSubGroups = muscleSubGroups ,
+                muscleSubGroups = muscleSubGroups,
                 muscleGroupsWithRelation = muscleGroupsWithRelation,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
@@ -98,13 +91,6 @@ fun NavHost(
                 onDatabaseCreated = onDatabaseCreated,
                 onChangeRoute = onChangeRoute,
                 onNavigateToNewTraining = onNavigateToNewTraining,
-                onFetchMuscleGroups = onFetchMuscleGroups,
-                onFetchMuscleSubGroups = onFetchMuscleSubGroups,
-                onShowToast = { onShowSnackBar(it) },
-                onSetInitialState = { onSetInitialState() },
-                onClearGroupsAndSubGroups = { onClearGroupsAndSubGroups() },
-                onVerifyRelation = { onVerifyRelation() },
-                onFetchGroupsWithRelations = { onFetchGroupsWithRelations() }
             )
         }
     }
@@ -115,26 +101,9 @@ private fun SetupMuscleGroupStateObservers(
     muscleGroupViewState: MuscleGroupViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
-    onFetchMuscleGroups: () -> Unit,
-    onFetchMuscleSubGroups: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onShowToast: (message: String) -> Unit,
-    onSetInitialState: () -> Unit,
-    onClearGroupsAndSubGroups: () -> Unit,
-    onVerifyRelation: () -> Unit,
-    onFetchGroupsWithRelations: () -> Unit
 ) {
     when (muscleGroupViewState) {
-        is MuscleGroupViewState.InitialState -> {
-            onFetchMuscleGroups()
-            onFetchMuscleSubGroups()
-            onFetchGroupsWithRelations()
-        }
-
-        is MuscleGroupViewState.SuccessDatabaseCreated -> {
-            onDatabaseCreated()
-        }
-
         is MuscleGroupViewState.Loading -> {
             LoadingComponent()
         }
@@ -146,42 +115,12 @@ private fun SetupMuscleGroupStateObservers(
             })
         }
 
-        is MuscleGroupViewState.Empty -> {
-            EmptyStateComponent(
-                modifier = Modifier.size(150.dp, 180.dp),
-                backgroundColor = colorResource(R.color.top_bar_color),
-                text = stringResource(R.string.new_training),
-                painter = painterResource(R.drawable.add_icon),
-                onClick = {
-                    onChangeRoute(false)
-                    onNavigateToNewTraining()
-                })
+        is MuscleGroupViewState.DatabaseCreated -> {
+            onDatabaseCreated()
         }
 
-        is MuscleGroupViewState.SuccessGetSubGroupsByTraining -> {
-        }
-
-        is MuscleGroupViewState.SuccessGetGroupsWithRelations -> {
-
-        }
-
-        is MuscleGroupViewState.SuccessInsertMuscleGroup -> {
-            onShowToast(stringResource(R.string.success_operation))
-            onSetInitialState()
-        }
-
-        is MuscleGroupViewState.SuccessInsertMuscleSubGroup -> {}
-        is MuscleGroupViewState.SuccessFetchMuscleGroups -> {}
-        is MuscleGroupViewState.SuccessFetchMuscleSubGroups -> {}
-
-        is MuscleGroupViewState.SuccessInsertMuscleGroupMuscleSubGroup -> {
-            onShowToast(stringResource(R.string.success_operation))
-            onVerifyRelation()
-            onClearGroupsAndSubGroups()
-        }
-
-        is MuscleGroupViewState.SuccessFetchWorkouts -> {
-
+        MuscleGroupViewState.Success -> {
+            // Todo - Mensagem Sucesso
         }
     }
 }
@@ -227,7 +166,6 @@ private fun SetupTrainingStateObservers(
             // Tenho todos os treinamentos atualizados
             // Devo pegar esses treinamentos e atualizar o workouts
             onFetchSubgroupsByTrainings(trainingViewState.trainings)
-
 
             HomeScreen(
                 trainingAndSubGroups = workouts,

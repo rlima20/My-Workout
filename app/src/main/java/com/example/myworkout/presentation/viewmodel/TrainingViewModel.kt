@@ -9,7 +9,6 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
 import com.example.myworkout.enums.Status
-import com.example.myworkout.presentation.viewmodel.viewaction.TrainingViewAction
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -27,7 +26,7 @@ class TrainingViewModel(
     val viewState: StateFlow<TrainingViewState> get() = _viewState
 
     private val _trainings: MutableStateFlow<List<TrainingModel>> = MutableStateFlow(listOf())
-    val trainings: MutableStateFlow<List<TrainingModel>> get() = _trainings
+    val trainings: StateFlow<List<TrainingModel>> get() = _trainings
 
     private val _isHomeScreen = MutableStateFlow(true)
     val isHomeScreen: StateFlow<Boolean> get() = _isHomeScreen
@@ -35,24 +34,7 @@ class TrainingViewModel(
     private val _appBarTitle = MutableStateFlow("Home")
     val appBarTitle: StateFlow<String> get() = _appBarTitle
 
-    fun dispatchViewAction(trainingViewAction: TrainingViewAction) {
-        when (trainingViewAction) {
-            is TrainingViewAction.UpdateTraining -> {
-                updateTraining(trainingViewAction.training)
-            }
-
-            is TrainingViewAction.FetchTrainings -> {
-                fetchTrainings()
-            }
-
-            is TrainingViewAction.NewTraining -> {}
-            is TrainingViewAction.SetEmptyState -> {
-                setEmptyState()
-            }
-        }
-    }
-
-    private fun updateTraining(trainingModel: TrainingModel) {
+    fun updateTraining(trainingModel: TrainingModel) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -64,11 +46,11 @@ class TrainingViewModel(
         }
     }
 
-    private fun setEmptyState() {
+    fun setEmptyState() {
         _viewState.value = TrainingViewState.Empty
     }
 
-    private fun fetchTrainings() {
+    fun fetchTrainings() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val trainings = trainingUseCase.getTrainings()
@@ -80,11 +62,11 @@ class TrainingViewModel(
         }
     }
 
-    private fun setListOfTrainings(data: List<TrainingModel>) {
+    fun setListOfTrainings(data: List<TrainingModel>) {
         verifyEmptyList(data)
     }
 
-    private fun verifyEmptyList(data: List<TrainingModel>) {
+    fun verifyEmptyList(data: List<TrainingModel>) {
         if (data.isEmpty()) {
             _viewState.value = TrainingViewState.Empty
         } else {
@@ -93,7 +75,7 @@ class TrainingViewModel(
         }
     }
 
-    private fun insertTraining(training: TrainingModel) {
+    fun insertTraining(training: TrainingModel) {
         viewModelScope.launch {
             setLoadingState()
             try {
@@ -105,16 +87,16 @@ class TrainingViewModel(
         }
     }
 
-    private fun setSuccessState(trainings: List<TrainingModel>) {
+    fun setSuccessState(trainings: List<TrainingModel>) {
         _viewState.value = TrainingViewState.Success(trainings)
         // _trainings.value = trainings
     }
 
-    private fun setErrorState() {
+    fun setErrorState() {
         _viewState.value = TrainingViewState.Error
     }
 
-    private fun setLoadingState() {
+    fun setLoadingState() {
         _viewState.value = TrainingViewState.Loading
         _viewState.value = TrainingViewState.Loading
     }
@@ -127,14 +109,14 @@ class TrainingViewModel(
         _appBarTitle.value = value
     }
 
-    private fun clearStatus(trainingId: Int, status: Status) {
+    fun clearStatus(trainingId: Int, status: Status) {
         viewModelScope.launch {
             trainingUseCase.clearStatus(trainingId, status)
             fetchTrainings()
         }
     }
 
-    private fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
+    fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         viewModelScope.launch(Dispatchers.IO) {
             trainingUseCase.insertTrainingMuscleGroup(trainingMuscleGroup)
         }
