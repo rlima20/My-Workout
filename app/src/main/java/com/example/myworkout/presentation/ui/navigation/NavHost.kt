@@ -20,7 +20,7 @@ import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
-import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
+import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
 

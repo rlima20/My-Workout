@@ -31,8 +31,8 @@ import com.example.myworkout.presentation.ui.navigation.NavHost
 import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
-import com.example.myworkout.presentation.viewmodel.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
+import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar

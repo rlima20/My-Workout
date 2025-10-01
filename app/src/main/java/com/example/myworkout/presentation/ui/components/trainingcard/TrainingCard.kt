@@ -58,7 +58,6 @@ fun TrainingCard(
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
-   //Todo - o problema do estado da tela pode estar aqui nesses rmembers
     var trainingStatus = training.status
     val firstStatus = training.status
     var isTrainingChecked = training.status == Status.ACHIEVED

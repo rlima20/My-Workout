@@ -10,19 +10,12 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
 import com.example.myworkout.enums.BodyPart
-import com.example.myworkout.preferences.TrainingPrefs
+import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
-sealed class MuscleGroupViewState {
-    object Loading : MuscleGroupViewState()
-    object Error : MuscleGroupViewState()
-    object Success : MuscleGroupViewState()
-    object DatabaseCreated : MuscleGroupViewState()
-}
 
 class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
