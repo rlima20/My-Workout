@@ -2,6 +2,7 @@
 <resources>
     <!-- Theme System colors-->
     <color name="main_background_color">#E2E2E2</color>
+    <color name="splash_background_color">#000000</color>
     <color name="top_bar_color">#DDDEE0</color>
     <color name="bottom_bar_color">#9B9C9E</color>
     <color name="empty_state_color">#E9E8E8</color>
