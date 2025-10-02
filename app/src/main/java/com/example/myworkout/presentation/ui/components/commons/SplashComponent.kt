@@ -19,8 +19,8 @@ fun SplashComponent() {
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = colorResource(id = R.color.main_background_color)),
-        color = colorResource(id = R.color.main_background_color),
+            .background(color = colorResource(id = R.color.splash_background_color)),
+        color = colorResource(id = R.color.splash_background_color),
     ) {
         Box(
             contentAlignment = androidx.compose.ui.Alignment.Center,
@@ -30,7 +30,7 @@ fun SplashComponent() {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(344.dp)
-                    .background(color = colorResource(id = R.color.main_background_color)),
+                    .background(color = colorResource(id = R.color.splash_background_color)),
                 painter = painterResource(id = R.drawable.logo),
                 contentDescription = null,
             )

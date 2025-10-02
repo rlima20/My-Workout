@@ -15,7 +15,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myworkout.Constants
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
@@ -116,3 +118,10 @@ fun TabContent(
     onCreateImageSection(muscleGroupItem.image)
 }
 
+@Preview
+@Composable
+private fun TabRowComponentPreview(){
+    TabRowComponent(
+        Constants().groupsMock
+    ) {  }
+}
