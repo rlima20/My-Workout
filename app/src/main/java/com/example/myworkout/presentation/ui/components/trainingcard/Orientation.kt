@@ -171,7 +171,7 @@ private fun FilterChip(
         onClick = { onItemClick(item) },
         content = {
             Text(
-                color = colorResource(R.color.white),
+                color = colorResource(if (item.selected) R.color.white else R.color.text_color),
                 fontSize = 14.sp,
                 text = item.name,
                 maxLines = 1,

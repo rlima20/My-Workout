@@ -1,5 +1,6 @@
 package com.example.myworkout.presentation.ui.components.commons
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -39,9 +40,10 @@ fun ButtonSection(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
+        border = BorderStroke(1.dp, colorResource(R.color.border_color)),
         elevation = CardDefaults.cardElevation()
     ) {
         Text(

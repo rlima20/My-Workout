@@ -1,6 +1,7 @@
 package com.example.myworkout.presentation.ui.navigation
 
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -53,7 +54,7 @@ fun NavHost(
     NavHostCompose(
         navController = navController,
         startDestination = HomeScreen.route,
-        modifier = Modifier
+        modifier = Modifier.background(colorResource(R.color.global_background_color))
     ) {
         composable(route = HomeScreen.route) {
             onChangeRoute(true)
@@ -150,7 +151,7 @@ private fun SetupTrainingStateObservers(
                     onChangeRoute(false)
                     onNavigateToNewTraining()
                 },
-                backgroundColor = colorResource(R.color.top_bar_color),
+                backgroundColor = colorResource(R.color.empty_state_color),
             )
             onDatabaseCreated()
         }
