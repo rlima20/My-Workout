@@ -30,7 +30,7 @@ fun EmptyStateComponent(
     text: String,
     painter: Painter,
     onClick: () -> Unit,
-    backgroundColor: Color = colorResource(R.color.top_bar_color)
+    backgroundColor: Color = colorResource(R.color.empty_state_color)
 ) {
     Column(
         modifier = Modifier.fillMaxSize(),

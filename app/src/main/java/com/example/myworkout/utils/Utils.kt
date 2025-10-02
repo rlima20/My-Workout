@@ -75,26 +75,26 @@ class Utils {
     @Composable
     @OptIn(ExperimentalMaterialApi::class)
     fun selectableChipColors() = ChipDefaults.filterChipColors(
-        backgroundColor = colorResource(R.color.content),
+        backgroundColor = colorResource(R.color.filter_chip_disabled_color),
         selectedContentColor = colorResource(R.color.button_color),
-        disabledBackgroundColor = colorResource(R.color.button_section_card_color),
-        disabledContentColor = colorResource(R.color.pending),
+        disabledBackgroundColor = colorResource(R.color.filter_chip_disabled_color),
+        disabledContentColor = colorResource(R.color.filter_chip_disabled_color),
         selectedBackgroundColor = colorResource(R.color.button_color)
     )
 
     @Composable
     fun getCardColors(): CardColors = CardDefaults.cardColors(
-        containerColor = colorResource(R.color.title_color),
-        contentColor = colorResource(R.color.title_color),
-        disabledContainerColor = colorResource(R.color.title_color),
-        disabledContentColor = colorResource(R.color.title_color)
+        containerColor = colorResource(R.color.training_section_card_color),
+        contentColor = colorResource(R.color.training_section_card_color),
+        disabledContainerColor = colorResource(R.color.training_section_card_color),
+        disabledContentColor = colorResource(R.color.training_section_card_color)
     )
 
     @Composable
     fun buttonSectionCardsColors(): CardColors = CardDefaults.cardColors(
-        containerColor = colorResource(R.color.button_section_card_color),
-        contentColor = colorResource(R.color.button_section_card_color),
-        disabledContainerColor = colorResource(R.color.button_section_card_color),
-        disabledContentColor = colorResource(R.color.button_section_card_color)
+        containerColor = colorResource(R.color.white),
+        contentColor = colorResource(R.color.white),
+        disabledContainerColor = colorResource(R.color.white),
+        disabledContentColor = colorResource(R.color.white)
     )
 }

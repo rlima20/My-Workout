@@ -1,7 +1,7 @@
 package com.example.myworkout.presentation.ui.components
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,7 +59,12 @@ fun NewMuscleGroupAndSubgroup(
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
 ) {
     val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
-    LazyColumn(modifier = Modifier.padding(top = 70.dp).fillMaxSize()) {
+    LazyColumn(
+        modifier = Modifier
+            .padding(top = 70.dp)
+            .fillMaxSize()
+            .background(colorResource(R.color.global_background_color))
+    ) {
         item {
             SetMuscleGroupSection { onCreateMuscleGroup(it) }
         }
@@ -130,7 +135,9 @@ private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
         },
         content = {
             TextField(
-                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequester),
                 value = muscleGroupName,
                 singleLine = true,
                 onValueChange = {
@@ -146,7 +153,7 @@ private fun SetMuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
                 colors = TextFieldDefaults.textFieldColors(
                     focusedLabelColor = colorResource(R.color.text_color),
                     cursorColor = colorResource(R.color.text_color),
-                    backgroundColor = colorResource(R.color.white),
+                    backgroundColor = colorResource(R.color.text_field_background_color),
                     textColor = colorResource(R.color.text_color),
                     focusedIndicatorColor = colorResource(R.color.title_color)
                 )
@@ -220,13 +227,13 @@ private fun MuscleGroupSection(
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { muscleGroup ->
+            val selected = setSelectedItem(objSelected, muscleGroup)
             FilterChip(
-                border = BorderStroke(0.5.dp, color = colorResource(R.color.pending)),
                 enabled = muscleGroup.enabled,
                 modifier = Modifier.height(42.dp),
                 colors = Utils().selectableChipColors(),
-                selected = setSelectedItem(objSelected, muscleGroup),
-                content = { MuscleGroupName(muscleGroup) },
+                selected = selected,
+                content = { MuscleGroupName(muscleGroup, selected) },
                 onClick = { onItemClick(muscleGroup) },
             )
         }
@@ -246,7 +253,7 @@ private fun MuscleSubGroupSection(
     )
 
     FilterChipList(
-        backGroundColor = R.color.button_section_card_color,
+        backGroundColor = R.color.white,
         orientation = Grid,
         orientationProps = GridProps(
             colors = Utils().selectableChipColors(),
@@ -266,7 +273,7 @@ private fun SetCardSection(
 ) {
     if (isCardSectionVisible) {
         ButtonSection(
-            modifier = Modifier.padding(bottom = 68.dp),
+            modifier = Modifier.padding(bottom = 78.dp),
             titleSection = stringResource(R.string.create_training),
             buttonVisibility = false,
             content = {
@@ -298,9 +305,9 @@ private fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupMode
 }
 
 @Composable
-private fun MuscleGroupName(muscleGroup: MuscleGroupModel) {
+private fun MuscleGroupName(muscleGroup: MuscleGroupModel, selected: Boolean) {
     Text(
-        color = colorResource(R.color.white),
+        color = colorResource(if (selected) R.color.white else R.color.text_color),
         fontSize = 18.sp,
         text = muscleGroup.name,
         maxLines = 1,
