@@ -4,7 +4,7 @@
     <string name="training_icon">Training Icon</string>
     <string name="home_icon">Home Icon</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
-    <string name="new_training">Criar novo treino</string>
+    <string name="new_training">Novo treino</string>
     <string name="try_again">Tente novamente</string>
     <string name="something_went_wrong">Algo deu errado</string>
     <string name="error">Erro!</string>
@@ -17,16 +17,20 @@
     <string name="creating_trainings">Criando treinamentos</string>
     <string name="button_section_add_button">Adicionar</string>
     <string name="button_section_save_button">Salvar</string>
-    <string name="new_training_input_text_label">Grupo muscular</string>
+    <string name="new_training_input_text_label">Ex: Peito e Ombro</string>
+    <string name="new_training_input_text_placeholder">Grupo(s) muscular(es)</string>
     <string name="home_screen_name">Home</string>
     <string name="success_operation">Operação bem sucedida</string>
     <string name="new_muscle_group">Novo grupo</string>
     <string name="new_sub_group">Sub grupos</string>
+    <string name="training">Treino</string>
     <string name="create_training">Criar novo treino de: </string>
-    <string name="select_your_group">Selecione o grupo que vai treinar</string>
-    <string name="match_subgroup_with_group">Selecione os subgrupos</string>
+    <string name="select_your_training">Selecione o treino</string>
+    <string name="match_subgroup_with_group">Marque os subgrupos</string>
     <string name="dialog_confirm_text">Confirmar</string>
     <string name="dialog_cancel_text">Cancelar</string>
     <string name="dialog_title">Finalizar treino?</string>
     <string name="dialog_text">Depois de confirmar não será mais possível realizar alterações nesse treino.</string>
+    <string name="extended_floating_action_button">Extended floating action button.</string>
+    <string name="next">Próximo</string>
 </resources>
