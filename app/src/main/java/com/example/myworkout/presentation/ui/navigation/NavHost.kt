@@ -81,10 +81,10 @@ fun NavHost(
                 muscleGroupsWithRelation = muscleGroupsWithRelation,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
-                onGroupWithRelationClicked = { onGroupWithRelationClicked(it) },
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onUpdateSubGroup = { onUpdateSubGroup(it) },
-                onSaveRelation = { relationList -> onSaveRelation(relationList) }
+                onSaveRelation = { relationList -> onSaveRelation(relationList) },
+                onNavigateToAddTraining = { /* Todo */ }
             )
 
             SetupMuscleGroupStateObservers(
