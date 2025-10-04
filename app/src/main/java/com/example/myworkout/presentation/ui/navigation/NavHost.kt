@@ -45,7 +45,7 @@ fun NavHost(
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onCreateMuscleGroup: (name: String) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
-    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit,
     onNavigateToGroupSubgroup: () -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
@@ -85,8 +85,8 @@ fun NavHost(
                 onItemClick = { onItemClick(it) },
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onUpdateSubGroup = { onUpdateSubGroup(it) },
-                onSaveRelation = { relationList -> onSaveRelation(relationList) },
-                onNavigateToNewTraining = { onNavigateToNewTraining()}
+                onSaveRelation = { subGroups, group -> onSaveRelation(subGroups, group) },
+                onNavigateToNewTraining = { onNavigateToNewTraining() }
             )
 
             SetupMuscleGroupStateObservers(

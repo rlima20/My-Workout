@@ -59,7 +59,10 @@ fun NewMuscleGroupAndSubgroup(
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
-    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
+    onSaveRelation: (
+        subGroups: MutableList<MuscleGroupMuscleSubGroupModel>,
+        group: MuscleGroupModel?
+    ) -> Unit,
     onNavigateToNewTraining: () -> Unit
 ) {
     val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
@@ -80,7 +83,16 @@ fun NewMuscleGroupAndSubgroup(
                 onItemClick = { onItemClick(it) },
                 isCardSectionVisible = isCardSectionVisible,
                 onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
-                onSaveRelation = { createRelations(muscleSubGroups, it, onSaveRelation) }
+                onSaveRelation = {
+                    createRelations(
+                        muscleSubGroups = muscleSubGroups,
+                        muscleGroupId = it,
+                        groups = muscleGroups,
+                        onSaveRelation = { subGroups, group ->
+                            onSaveRelation(subGroups, group)
+                        },
+                    )
+                }
             )
         }
         item {
@@ -95,12 +107,14 @@ fun NewMuscleGroupAndSubgroup(
 }
 
 private fun createRelations(
+    groups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleGroupId: Int,
-    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit
 ) {
     val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
     val subGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
+    val group: MuscleGroupModel? = groups.find { it.muscleGroupId == muscleGroupId }
 
     subGroupsSelected.forEach { subGroup ->
         muscleGroupSubGroups.add(
@@ -110,7 +124,7 @@ private fun createRelations(
             )
         )
     }
-    onSaveRelation(muscleGroupSubGroups)
+    onSaveRelation(muscleGroupSubGroups, group)
 }
 
 private fun verifySubGroupSelected(
@@ -353,7 +367,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         onItemClick = {},
         muscleSubGroups = Constants().getAllSubGroupsMock(),
         onUpdateSubGroup = {},
-        onSaveRelation = {},
+        onSaveRelation = { } as (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit,
         onNavigateToNewTraining = {}
     )
 }
