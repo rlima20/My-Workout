@@ -132,7 +132,15 @@ class MainActivity : ComponentActivity() {
                     },
                     onTrainingChecked = { updateTraining(it) },
                     onCreateMuscleGroup = { createMuscleGroup(it) },
-                    onSaveRelation = { saveGroupSubGroupRelation(it) },
+                    onSaveRelation = { subGroups, group ->
+                        saveGroupSubGroupRelation(subGroups)
+                        showToast(
+                            this@MainActivity.getString(
+                                R.string.create_training_message,
+                                group?.name
+                            )
+                        )
+                    },
                     onUpdateSubGroup = { updateSubGroup(it) },
                     onFetchWorkouts = { fetchWorkouts(it) },
                     onNavigateToNewTraining = { navigateToNewTraining(navController) }
