@@ -16,43 +16,36 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.extensions.setImageDrawable
+import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
-import com.example.myworkout.presentation.ui.components.trainingcard.Horizontal
-import com.example.myworkout.presentation.ui.components.trainingcard.HorizontalProps
+import com.example.myworkout.presentation.ui.components.trainingcard.Grid
+import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.utils.Utils
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun NewTraining(
-    mapOfMuscleGroupMuscleSubGroup: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>
-) {
+fun NewTraining(muscleGroups: List<MuscleGroupModel>) {
     val image = remember { mutableStateOf(BodyPart.LEG) }
-
-
-    // Todo - estados by rememmber
-//    val listOfMuscleGroup: MutableList<MuscleGroupModel> = mutableListOf()
-//    val listOfMuscleSubGroup: MutableList<MuscleSubGroupModel> = mutableListOf()
-//
-//    mapOfMuscleGroupMuscleSubGroup.forEach { map ->
-//        listOfMuscleGroup.add(map.key)
-//        map.value.forEach {
-//            listOfMuscleSubGroup.add(it)
-//        }
-//    }
-
 
     Column(Modifier.fillMaxSize()) {
         TabRowSection(
-            muscleGroups = mapOfMuscleGroupMuscleSubGroup.flatMap { it.keys },
+            muscleGroups = muscleGroups,
             onCreateImageSection = { image.value = it }
         )
-        ImageSection(image.value)
-        ChipsSection(listOfMuscleGroup = mapOfMuscleGroupMuscleSubGroup.flatMap { it.values.flatMap { it } })
+        ButtonSection(
+            modifier = Modifier.padding(top = 8.dp),
+            titleSection = "Subgrupos",
+            buttonName = "Salvar",
+            buttonEnabled = true,
+            onButtonClick = {},
+            content = { ChipsSection(subGroups = Constants().shoulderSubGroupsMock)}
+        )
     }
 }
 
@@ -65,6 +58,32 @@ fun TabRowSection(
         muscleGroups = muscleGroups,
         onCreateImageSection = { onCreateImageSection(it) }
     )
+}
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ChipsSection(
+    modifier: Modifier = Modifier,
+    subGroups: List<MuscleSubGroupModel>
+) {
+    FilterChipList(
+        modifier = modifier,
+        backGroundColor = R.color.white,
+        orientation = Grid,
+        orientationProps = GridProps(
+            colors = Utils().selectableChipColors(),
+            listOfMuscleSubGroup = subGroups,
+            enabled = false,
+            onItemClick = {},
+            horizontalSpacedBy = 8.dp,
+            verticalSpacedBy = 1.dp,
+        ),
+    )
+}
+
+@Preview
+@Composable
+fun NewTrainingPreview() {
+    NewTraining(muscleGroups = Constants().groupsMock)
 }
 
 @Composable
@@ -84,29 +103,4 @@ fun ImageSection(bodyPartImage: BodyPart) {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun ChipsSection(listOfMuscleGroup: List<MuscleSubGroupModel>) {
-    FilterChipList(
-        modifier = Modifier
-            .padding(start = 4.dp, end = 4.dp)
-            .height(50.dp),
-        backGroundColor = R.color.white,
-        orientation = Horizontal,
-        orientationProps = HorizontalProps(
-            colors = Utils().selectableChipColors(),
-            listOfMuscleSubGroup = listOfMuscleGroup,
-            enabled = false,
-            horizontalSpacedBy = 4.dp,
-            onItemClick = {}
-        ),
-    )
-}
-
-
-@Preview
-@Composable
-fun NewTrainingPreview() {
-    // NewTraining(Constants().muscleGroups())
-}
 

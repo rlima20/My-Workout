@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
@@ -21,6 +22,7 @@ import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
+import com.example.myworkout.presentation.ui.components.training.NewTraining
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
@@ -37,15 +39,15 @@ fun NavHost(
     muscleGroupViewState: MuscleGroupViewState,
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
-    onChangeRoute: (value: Boolean) -> Unit,
+    onChangeRouteToHomeScreen: (value: Boolean) -> Unit,
     onChangeTopBarTitle: (title: String) -> Unit,
-    onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onCreateMuscleGroup: (name: String) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
-    onGroupWithRelationClicked: (groupWithRelation: MuscleGroupModel) -> Unit,
+    onNavigateToGroupSubgroup: () -> Unit,
+    onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
@@ -57,22 +59,22 @@ fun NavHost(
         modifier = Modifier.background(colorResource(R.color.global_background_color))
     ) {
         composable(route = HomeScreen.route) {
-            onChangeRoute(true)
+            onChangeRouteToHomeScreen(true)
             onChangeTopBarTitle(homeScreen)
 
             SetupTrainingStateObservers(
                 workouts = workouts,
                 trainingViewState = trainingViewState,
                 onTrainingChecked = { onTrainingChecked(it) },
-                onChangeRoute = onChangeRoute,
-                onNavigateToNewTraining = onNavigateToNewTraining,
+                onChangeRoute = onChangeRouteToHomeScreen,
+                onNavigateToNewTraining = onNavigateToGroupSubgroup,
                 onDatabaseCreated = onDatabaseCreated,
                 onFetchWorkouts = { onFetchWorkouts(it) }
             )
         }
 
         composable(route = NewTraining.route) {
-            onChangeRoute(false)
+            onChangeRouteToHomeScreen(false)
             onChangeTopBarTitle(newTrainingScreen)
 
             NewMuscleGroupAndSubgroup(
@@ -84,15 +86,21 @@ fun NavHost(
                 onCreateMuscleGroup = { onCreateMuscleGroup(it) },
                 onUpdateSubGroup = { onUpdateSubGroup(it) },
                 onSaveRelation = { relationList -> onSaveRelation(relationList) },
-                onNavigateToAddTraining = { /* Todo */ }
+                onNavigateToNewTraining = { onNavigateToNewTraining()}
             )
 
             SetupMuscleGroupStateObservers(
                 muscleGroupViewState = muscleGroupViewState,
                 onDatabaseCreated = onDatabaseCreated,
-                onChangeRoute = onChangeRoute,
-                onNavigateToNewTraining = onNavigateToNewTraining,
+                onChangeRoute = onChangeRouteToHomeScreen,
+                onNavigateToNewTraining = onNavigateToGroupSubgroup,
             )
+        }
+
+        composable(route = New.route) {
+            onChangeRouteToHomeScreen(false)
+            onChangeTopBarTitle(newTrainingScreen)
+            NewTraining(Constants().groupsMock)
         }
     }
 }

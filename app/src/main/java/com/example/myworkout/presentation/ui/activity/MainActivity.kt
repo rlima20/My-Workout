@@ -28,6 +28,7 @@ import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
+import com.example.myworkout.presentation.ui.navigation.New
 import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
@@ -106,7 +107,7 @@ class MainActivity : ComponentActivity() {
                 TopBar(
                     title = appBarTitle,
                     isHomeScreen = isHomeScreen,
-                    onNavigateToHomeScreen = { navController.navigateSingleTopTo(HomeScreen.route) })
+                    onPopBackStack = { navController.navigateSingleTopTo(HomeScreen.route) })
             },
             content = {
                 NavHost(
@@ -119,9 +120,9 @@ class MainActivity : ComponentActivity() {
                     trainingViewState = trainingViewState,
                     onItemClick = { setNewObjSelected(it) },
                     objSelected = objSelected,
-                    onChangeRoute = { setIsHomeScreen(it) },
+                    onChangeRouteToHomeScreen = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
-                    onNavigateToNewTraining = { navigateToNewTrainingScreen(navController) },
+                    onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(navController) },
                     onDatabaseCreated = {
                         DatabaseCreationDone(
                             prefs,
@@ -133,15 +134,15 @@ class MainActivity : ComponentActivity() {
                     onCreateMuscleGroup = { createMuscleGroup(it) },
                     onSaveRelation = { saveGroupSubGroupRelation(it) },
                     onUpdateSubGroup = { updateSubGroup(it) },
-                    onGroupWithRelationClicked = { /* Todo */ },
-                    onFetchWorkouts = { fetchWorkouts(it) }
+                    onFetchWorkouts = { fetchWorkouts(it) },
+                    onNavigateToNewTraining = { navigateToNewTraining(navController) }
                 )
             },
             bottomBar = {
                 BottomBar(
                     onNavigateToHomeScreen = {
                         clearGroupsAndSubGroupsSelected()
-                        navController.navigateSingleTopTo(HomeScreen.route)
+                        navigateToHomeScreen(navController)
                     },
                     onNavigateToAddTrainingScreen = {
                         clearGroupsAndSubGroupsSelected()
@@ -150,6 +151,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    private fun navigateToHomeScreen(navController: NavHostController) {
+        navController.navigateSingleTopTo(HomeScreen.route)
+    }
+
+    private fun navigateToNewTraining(navController: NavHostController) {
+        navController.navigateSingleTopTo(New.route)
     }
 
     private fun showToast(message: String) {
