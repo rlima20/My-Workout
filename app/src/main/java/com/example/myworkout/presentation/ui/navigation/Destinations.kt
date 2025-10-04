@@ -13,3 +13,8 @@ object NewTraining : DestinationInterface {
     override val icon = Icons.Filled.Add
     override val route = "new_training"
 }
+
+object New : DestinationInterface {
+    override val icon = Icons.Filled.Add
+    override val route = "new"
+}

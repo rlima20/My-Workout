@@ -3,8 +3,8 @@ package com.example.myworkout.presentation.ui.components.home
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,14 +28,17 @@ fun BottomAppBar(
     onNavigateToAddTrainingScreen: () -> Unit,
 ) {
     BottomAppBar(
-        modifier = Modifier.height(70.dp),
+        modifier = Modifier
+            .height(70.dp)
+            .fillMaxWidth(),
         containerColor = colorResource(R.color.bottom_bar_color),
         actions = {
-            Row(horizontalArrangement = Arrangement.spacedBy(50.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 IconButton(
-                    modifier = Modifier
-                        .padding(start = 80.dp)
-                        .size(100.dp, 100.dp),
+                    modifier = Modifier.size(100.dp, 100.dp),
                     content = {
                         Column(
                             verticalArrangement = Arrangement.Center,
@@ -45,15 +49,14 @@ fun BottomAppBar(
                                 imageVector = Icons.Filled.Home,
                                 contentDescription = "",
                             )
-                            androidx.compose.material3.Text(text = "Home")
+                            Text(text = stringResource(R.string.home))
                         }
 
                     },
                     onClick = { onNavigateToHomeScreen() }
                 )
                 IconButton(
-                    modifier = Modifier
-                        .size(100.dp, 100.dp),
+                    modifier = Modifier.size(100.dp, 100.dp),
                     content = {
                         Column(
                             verticalArrangement = Arrangement.Center,
@@ -64,10 +67,11 @@ fun BottomAppBar(
                                 imageVector = Icons.Filled.AddCircle,
                                 contentDescription = "",
                             )
-                            androidx.compose.material3.Text(text = "Novo treino")
+                            Text(text = stringResource(R.string.new_training))
                         }
                     },
-                    onClick = { onNavigateToAddTrainingScreen() })
+                    onClick = { onNavigateToAddTrainingScreen() }
+                )
             }
         }
     )
@@ -76,5 +80,5 @@ fun BottomAppBar(
 @Composable
 @Preview
 private fun BottomBarPreview() {
-    BottomAppBar({}, {})
+    BottomAppBar({})
 }

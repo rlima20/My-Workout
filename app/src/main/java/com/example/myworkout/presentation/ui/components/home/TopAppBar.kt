@@ -23,12 +23,17 @@ import com.example.myworkout.R
 internal fun TopBar(
     title: String,
     isHomeScreen: Boolean = true,
-    onNavigateToHomeScreen: () -> Unit
+    onPopBackStack: () -> Unit
 ) {
     TopAppBar(
         modifier = Modifier.height(60.dp),
         backgroundColor = colorResource(R.color.top_bar_color),
-        navigationIcon = { ShowBackIcon(isHomeScreen) { onNavigateToHomeScreen() } },
+        navigationIcon = {
+            ShowBackIcon(
+                isHomeScreen = isHomeScreen,
+                onClick = { onPopBackStack() }
+            )
+        },
         title = { TopAppBarText(isHomeScreen, title) },
     )
 }
@@ -53,14 +58,14 @@ private fun setHorizontalPosition(isHomeScreen: Boolean): Dp =
 @Composable
 private fun ShowBackIcon(
     isHomeScreen: Boolean,
-    onNavigateToHomeScreen: () -> Unit
+    onClick: () -> Unit
 ) {
     if (!isHomeScreen) {
         IconButton(
             modifier = Modifier
                 .padding(start = 16.dp)
                 .size(20.dp),
-            onClick = { onNavigateToHomeScreen() }
+            onClick = { onClick() }
         ) {
             Image(
                 modifier = Modifier.size(20.dp),
@@ -77,6 +82,6 @@ private fun TopAppBarPreview() {
     TopBar(
         title = "Home Screen",
         isHomeScreen = true,
-        onNavigateToHomeScreen = {}
+        onPopBackStack = {}
     )
 }

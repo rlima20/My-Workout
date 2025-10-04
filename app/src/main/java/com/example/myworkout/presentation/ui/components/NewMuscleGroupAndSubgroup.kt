@@ -60,7 +60,7 @@ fun NewMuscleGroupAndSubgroup(
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>) -> Unit,
-    onNavigateToAddTraining: () -> Unit
+    onNavigateToNewTraining: () -> Unit
 ) {
     val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
     LazyColumn(
@@ -84,9 +84,11 @@ fun NewMuscleGroupAndSubgroup(
             )
         }
         item {
-            FabSection(
+            CardSection(
+                groupsWithRelation = muscleGroupsWithRelation,
                 isCardSectionVisible = isCardSectionVisible,
-                onClick = { onNavigateToAddTraining() }
+                onFabClick = { onNavigateToNewTraining() },
+                onGroupWithRelationClicked = { onNavigateToNewTraining() }
             )
         }
     }
@@ -269,24 +271,54 @@ private fun MuscleSubGroupSection(
 }
 
 @Composable
-private fun FabSection(
+private fun CardSection(
+    groupsWithRelation: List<MuscleGroupModel>,
     isCardSectionVisible: Boolean = false,
-    onClick: () -> Unit
+    onFabClick: () -> Unit,
+    onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit,
 ) {
     if (isCardSectionVisible) {
-        Row(
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 88.dp)
-        ) {
-            ExtendedFab(
-                modifier = Modifier.fillMaxWidth(),
-                icon = Icons.Default.ArrowForward,
-                text = stringResource(R.string.next),
-                onClick = { onClick() }
-            )
-        }
+        ButtonSection(
+            modifier = Modifier.padding(bottom = 78.dp),
+            titleSection = stringResource(R.string.create_training),
+            buttonVisibility = false,
+            content = {
+                Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+                    groupsWithRelation.forEach { item ->
+                        ItemCard(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(30.dp),
+                            colors = Utils().getCardColors(),
+                            onClick = { onGroupWithRelationClicked(item) }
+                        ) {
+                            Label(
+                                modifier = Modifier.padding(start = 16.dp),
+                                text = item.name,
+                                fontSize = 14.sp,
+                                textColor = colorResource(R.color.text_color)
+                            )
+                        }
+                    }
+                    FabSection(onClick = { onFabClick() })
+                }
+            }
+        )
+    }
+}
+
+@Composable
+private fun FabSection(onClick: () -> Unit) {
+    Row(
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        ExtendedFab(
+            modifier = Modifier.fillMaxWidth(),
+            icon = Icons.Default.ArrowForward,
+            text = stringResource(R.string.next),
+            onClick = { onClick() }
+        )
     }
 }
 
@@ -322,6 +354,6 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         muscleSubGroups = Constants().getAllSubGroupsMock(),
         onUpdateSubGroup = {},
         onSaveRelation = {},
-        onNavigateToAddTraining = {}
+        onNavigateToNewTraining = {}
     )
 }
