@@ -12,7 +12,9 @@ import androidx.navigation.NavHostController
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
+import com.example.myworkout.utils.Utils
 
 @Composable
 fun Status.setBackGroundColor(): Int =
@@ -82,4 +84,16 @@ fun Modifier.trainingCardFilterChipListModifier(): Modifier = composed {
     this
         .fillMaxWidth()
         .padding(start = DEFAULT_PADDING, end = DEFAULT_PADDING)
+}
+
+fun Array<DayOfWeek>.toListOfDays(): List<String> {
+    val utils = Utils()
+    val daysOfWeek: MutableList<String> = mutableListOf()
+
+    this.forEach {
+        daysOfWeek.add(
+            utils.mapDayOfWeekToString(it)
+        )
+    }
+    return daysOfWeek.toList()
 }

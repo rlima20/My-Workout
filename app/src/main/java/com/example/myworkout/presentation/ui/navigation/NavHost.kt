@@ -100,7 +100,7 @@ fun NavHost(
         composable(route = New.route) {
             onChangeRouteToHomeScreen(false)
             onChangeTopBarTitle(newTrainingScreen)
-            NewTraining(Constants().groupsMock)
+            NewTraining(muscleGroupsWithRelation)
         }
     }
 }

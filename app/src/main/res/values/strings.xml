@@ -27,6 +27,7 @@
     <string name="create_training">Criar treino</string>
     <string name="select_your_training">Selecione o treino</string>
     <string name="match_subgroup_with_group">Marque os subgrupos</string>
+    <string name="subgroups">Subgrupos</string>
     <string name="dialog_confirm_text">Confirmar</string>
     <string name="dialog_cancel_text">Cancelar</string>
     <string name="dialog_title">Finalizar treino?</string>
