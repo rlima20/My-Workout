@@ -266,6 +266,26 @@ class Constants {
 
     fun emptyString(): String = ""
 
+    fun getGroupsAndSubgroupsWithRelations(): List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
+        listOf(
+            mapOf(
+                Constants().groupsMock[0] to Constants().chestAndTricepsSubGroupsMock // Peito e Ombro
+            ),
+            mapOf(
+                Constants().groupsMock[1] to Constants().shoulderSubGroupsMock // Ombro
+            ),
+            mapOf(
+                Constants().groupsMock[2] to Constants().bicepsSubGroupsMock // Braço
+            ),
+            mapOf(
+                Constants().groupsMock[3] to Constants().backSubGroupsMock // Costas e trapézio
+            ),
+            mapOf(
+                Constants().groupsMock[4] to Constants().subGroupsMock // Abdômen (mock genérico)
+            )
+        )
+
+
     companion object {
         // Training
         const val TRAINING_NAME_SHOULDER = "Ombro"

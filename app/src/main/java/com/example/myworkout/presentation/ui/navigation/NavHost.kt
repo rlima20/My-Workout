@@ -11,7 +11,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
@@ -49,6 +48,8 @@ fun NavHost(
     onNavigateToGroupSubgroup: () -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
+    groupsAndSubgroupsWithRelations: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+    onFetchRelations: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -100,7 +101,9 @@ fun NavHost(
         composable(route = New.route) {
             onChangeRouteToHomeScreen(false)
             onChangeTopBarTitle(newTrainingScreen)
-            NewTraining(muscleGroupsWithRelation)
+            NewTraining(
+                groupsAndSubgroupsWithRelations = groupsAndSubgroupsWithRelations,
+                onFetchRelations = {onFetchRelations()})
         }
     }
 }

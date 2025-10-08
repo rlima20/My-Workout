@@ -34,7 +34,7 @@ class Utils {
             DayOfWeek.SUNDAY -> 7
         }
 
-    fun mapDayOfWeekToString(dayOfWeek: DayOfWeek): String =
+    fun weekToString(dayOfWeek: DayOfWeek): String =
         when (dayOfWeek) {
             DayOfWeek.MONDAY -> MONDAY
             DayOfWeek.TUESDAY -> TUESDAY

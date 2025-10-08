@@ -10,6 +10,9 @@ import com.example.myworkout.enums.BodyPart
 interface MuscleGroupUseCase {
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
+    suspend fun getSubgroupsById(id: Int): List<MuscleSubGroupModel>
+    suspend fun getSubgroupById(id: Int): MuscleSubGroupModel
+    suspend fun getSubGroupIdFromRelation(id: Int): List<Int>
     suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel)
     suspend fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)

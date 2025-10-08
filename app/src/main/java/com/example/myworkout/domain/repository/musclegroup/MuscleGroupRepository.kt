@@ -14,9 +14,12 @@ interface MuscleGroupRepository {
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
+    suspend fun getSubGroupsById(id: Int): List<MuscleSubGroupModel>
+    suspend fun getSubGroupById(id: Int): MuscleSubGroupModel
+    suspend fun getSubGroupIdFromRelation(id: Int): List<Int>
     suspend fun getMuscleSubGroupsByMuscleGroups(listOfMuscleGroups: List<MuscleSubGroupModel>): List<MuscleSubGroupModel>
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
-    suspend fun getMuscleSubGroup(groupRelation: MuscleGroupMuscleSubGroupEntity): MuscleSubGroupEntity?
+    suspend fun getSubgroupById(groupRelation: MuscleGroupMuscleSubGroupEntity): MuscleSubGroupEntity?
     suspend fun getRelationByTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity>
     suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
     fun insertMuscleGroup(muscleGroup: MuscleGroupModel)

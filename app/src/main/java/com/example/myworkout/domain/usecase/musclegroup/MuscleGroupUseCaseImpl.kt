@@ -8,7 +8,10 @@ import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.enums.BodyPart
 
-class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
+class MuscleGroupUseCaseImpl(
+    private val repository: MuscleGroupRepository
+
+) :
     MuscleGroupUseCase {
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
         return repository.getMuscleSubGroupsByTrainingId(trainingId)
@@ -37,6 +40,18 @@ class MuscleGroupUseCaseImpl(private val repository: MuscleGroupRepository) :
 
     override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
         return repository.getSubGroupsGroupedByMuscleGroups()
+    }
+
+    override suspend fun getSubgroupsById(id: Int): List<MuscleSubGroupModel> {
+        return repository.getSubGroupsById(id)
+    }
+
+    override suspend fun getSubgroupById(id: Int): MuscleSubGroupModel {
+        return repository.getSubGroupById(id)
+    }
+
+    override suspend fun getSubGroupIdFromRelation(id: Int): List<Int> {
+        return repository.getSubGroupIdFromRelation(id)
     }
 
     override suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {

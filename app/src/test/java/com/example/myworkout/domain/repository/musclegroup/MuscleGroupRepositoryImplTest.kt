@@ -74,9 +74,9 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
         every { trainingMuscleGroupDao.getMuscleGroupsForTraining(trainingId) } returns listOfTrainingMuscleGroupEntity
         every { muscleGroupMuscleSubGroupDao.getRelationById(2) } returns listOfMuscleGroupMuscleSubGroupEntity
 
-        every { muscleSubGroupDao.getMuscleSubGroupById(1) } returns muscleSubGroupEntity1
-        every { muscleSubGroupDao.getMuscleSubGroupById(2) } returns muscleSubGroupEntity2
-        every { muscleSubGroupDao.getMuscleSubGroupById(3) } returns muscleSubGroupEntity3
+        every { muscleSubGroupDao.getSubgroupById(1) } returns muscleSubGroupEntity1
+        every { muscleSubGroupDao.getSubgroupById(2) } returns muscleSubGroupEntity2
+        every { muscleSubGroupDao.getSubgroupById(3) } returns muscleSubGroupEntity3
 
         // Then
         val result = muscleGroupRepositoryImpl.getMuscleSubGroupsByTrainingId(trainingId)
@@ -130,7 +130,7 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
         } returns relationEntity
 
         every {
-            muscleSubGroupDao.getMuscleSubGroupById(relationEntity.first().muscleSubGroupId)
+            muscleSubGroupDao.getSubgroupById(relationEntity.first().muscleSubGroupId)
         } returns muscleSubGroupEntity
 
         // When
@@ -245,10 +245,10 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
         // Given
         val returnExpected = MuscleSubGroupEntity(name = "name")
 
-        every { muscleSubGroupDao.getMuscleSubGroupById(1) } returns returnExpected
+        every { muscleSubGroupDao.getSubgroupById(1) } returns returnExpected
 
         // When
-        val result = muscleGroupRepositoryImpl.getMuscleSubGroup(
+        val result = muscleGroupRepositoryImpl.getSubgroupById(
             MuscleGroupMuscleSubGroupEntity(
                 1, 1, false
 
@@ -264,10 +264,10 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
         // Given
         val returnExpected = MuscleSubGroupEntity(name = "name")
 
-        every { muscleSubGroupDao.getMuscleSubGroupById(1) } returns returnExpected
+        every { muscleSubGroupDao.getSubgroupById(1) } returns returnExpected
 
         // When
-        val result = muscleSubGroupDao.getMuscleSubGroupById(1)
+        val result = muscleSubGroupDao.getSubgroupById(1)
 
         // Then
         assertEquals(returnExpected, result)
