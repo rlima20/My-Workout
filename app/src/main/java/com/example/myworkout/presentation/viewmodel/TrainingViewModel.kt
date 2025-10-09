@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkout.di.dispatcherDI
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
@@ -72,7 +73,7 @@ class TrainingViewModel(
     }
 
     fun insertTraining(training: TrainingModel) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             setLoadingState()
             try {
                 trainingUseCase.insertTraining(training)

@@ -16,8 +16,6 @@ import com.example.myworkout.Constants.Companion.THURSDAY
 import com.example.myworkout.Constants.Companion.TUESDAY
 import com.example.myworkout.Constants.Companion.WEDNESDAY
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 
@@ -45,13 +43,17 @@ class Utils {
             DayOfWeek.SUNDAY -> SUNDAY
         }
 
-    fun sortTrainingsByDayOfWeek(
-        trainings: List<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>
-    ): List<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>> {
-        return trainings.sortedBy { (training, _) ->
-            Utils().mapDayOfWeekToNumber(training.dayOfWeek)
-        } as MutableList<Pair<TrainingModel, MutableList<MuscleSubGroupModel>>>
-    }
+    fun stringToWeek(dayOfWeek: String): DayOfWeek =
+        when (dayOfWeek) {
+            MONDAY -> DayOfWeek.MONDAY
+            TUESDAY -> DayOfWeek.TUESDAY
+            WEDNESDAY -> DayOfWeek.WEDNESDAY
+            THURSDAY -> DayOfWeek.THURSDAY
+            FRIDAY -> DayOfWeek.FRIDAY
+            SATURDAY -> DayOfWeek.SATURDAY
+            SUNDAY -> DayOfWeek.SUNDAY
+            else -> {}
+        } as DayOfWeek
 
     fun setStatus(
         isTrainingChecked: Boolean,
