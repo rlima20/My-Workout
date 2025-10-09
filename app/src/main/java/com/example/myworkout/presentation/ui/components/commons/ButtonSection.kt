@@ -1,7 +1,10 @@
 package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,41 +42,50 @@ fun ButtonSection(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
         colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         border = BorderStroke(1.dp, colorResource(R.color.border_color)),
         elevation = CardDefaults.cardElevation()
     ) {
-        Text(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = colorResource(R.color.title_color),
-            maxLines = 1,
-            text = titleSection
-        )
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
-        ) {
-            content()
-        }
-        if (buttonVisibility) {
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
-                onClick = { onButtonClick() },
-                enabled = buttonEnabled,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(R.color.button_color)
-                )
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
             ) {
-                Text(text = buttonName)
+            Text(
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colorResource(R.color.title_color),
+                maxLines = 1,
+                text = titleSection
+            )
+
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column{ content() }
+
+            if (buttonVisibility) {
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp),
+                    onClick = { onButtonClick() },
+                    enabled = buttonEnabled,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.button_color)
+                    )
+                ) {
+                    Text(text = buttonName)
+                }
             }
         }
     }

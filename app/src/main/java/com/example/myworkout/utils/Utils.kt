@@ -1,12 +1,13 @@
 package com.example.myworkout.utils
 
+import androidx.compose.material.ButtonColors
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
-import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.FRIDAY
 import com.example.myworkout.Constants.Companion.MONDAY
 import com.example.myworkout.Constants.Companion.SATURDAY
@@ -33,7 +34,7 @@ class Utils {
             DayOfWeek.SUNDAY -> 7
         }
 
-    fun mapDayOfWeekToString(dayOfWeek: DayOfWeek): String =
+    fun weekToString(dayOfWeek: DayOfWeek): String =
         when (dayOfWeek) {
             DayOfWeek.MONDAY -> MONDAY
             DayOfWeek.TUESDAY -> TUESDAY
@@ -96,5 +97,14 @@ class Utils {
         contentColor = colorResource(R.color.white),
         disabledContainerColor = colorResource(R.color.white),
         disabledContentColor = colorResource(R.color.white)
+    )
+
+    @Composable
+    fun buttonColors(): ButtonColors = ButtonDefaults.buttonColors(
+        backgroundColor = colorResource(R.color.white),
+        contentColor = colorResource(R.color.white),
+        disabledBackgroundColor = colorResource(R.color.white),
+        disabledContentColor = colorResource(R.color.white)
+
     )
 }

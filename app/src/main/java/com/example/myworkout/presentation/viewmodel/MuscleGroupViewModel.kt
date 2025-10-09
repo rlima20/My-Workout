@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 
 class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
+    private val muscleSubGroupUseCase: MuscleGroupUseCase,
     private val dispatchers: Dispatchers
 ) : ViewModel() {
 
@@ -40,6 +41,10 @@ class MuscleGroupViewModel(
     private val _muscleSubGroupsByTraining: MutableStateFlow<List<MuscleSubGroupModel>> =
         MutableStateFlow(listOf())
     val muscleSubGroupsByTraining: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroupsByTraining
+
+    private val _groupsAndSubgroupsWithRelations: MutableStateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>> =
+        MutableStateFlow(mutableListOf(mutableMapOf<MuscleGroupModel, MutableList<MuscleSubGroupModel>>()))
+    val groupsAndSubgroupsWithRelations: StateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>> get() = _groupsAndSubgroupsWithRelations
 
     private val _relations: MutableStateFlow<List<MuscleGroupMuscleSubGroupModel>> =
         MutableStateFlow(listOf())
@@ -65,6 +70,55 @@ class MuscleGroupViewModel(
                 setErrorState(exception.message.toString())
             }
         }
+    }
+
+    fun getGroupsAndSubGroups() {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
+            try {
+                val result: MutableList<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
+                    mutableListOf()
+
+                muscleGroups.value.forEach { muscleGroup ->
+                    val group = muscleGroup
+                    val subgroups = getSubgroupsByGroupId(muscleGroup.muscleGroupId)
+
+                    result.add(
+                        mutableMapOf(
+                            Pair(
+                                first = group,
+                                second = subgroups
+                            )
+                        )
+                    )
+                }
+
+                _groupsAndSubgroupsWithRelations.value = result
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
+        }
+    }
+
+    fun getSubgroupsByGroupId(id: Int): List<MuscleSubGroupModel> {
+        var ids: List<Int>
+        val subgroups: MutableList<MuscleSubGroupModel> = mutableListOf()
+
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
+            try {
+                ids = muscleSubGroupUseCase.getSubGroupIdFromRelation(id)
+
+                ids.forEach { id ->
+                    subgroups.add(muscleSubGroupUseCase.getSubgroupById(id))
+                }
+
+                setSuccessState()
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
+        }
+        return subgroups
     }
 
     fun fetchMuscleGroups() {
@@ -124,6 +178,7 @@ class MuscleGroupViewModel(
                 _objSelected.value = Pair(0, false)
                 setSuccessState()
                 getGroupsWithRelations()
+                getGroupsAndSubGroups()
                 clearSubGroups()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())

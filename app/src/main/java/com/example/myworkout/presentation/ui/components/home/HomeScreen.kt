@@ -42,7 +42,7 @@ internal fun HomeScreen(
         items(workouts.size) { index ->
             Column {
                 LabelTrainingCard(
-                    text = utils.mapDayOfWeekToString(
+                    text = utils.weekToString(
                         workouts[index]
                             .first
                             .dayOfWeek

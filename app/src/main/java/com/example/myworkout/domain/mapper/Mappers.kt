@@ -45,6 +45,16 @@ fun MuscleSubGroupEntity.toModel(): MuscleSubGroupModel {
     )
 }
 
+fun List<MuscleSubGroupEntity?>.toListModel(): List<MuscleSubGroupModel> {
+    return this.map {
+        MuscleSubGroupModel(
+            id = it?.muscleSubGroupId ?: 0,
+            name = it?.name ?: "",
+            selected = it?.selected ?: false
+        )
+    }
+}
+
 fun MuscleSubGroupModel.toEntity(): MuscleSubGroupEntity {
     return MuscleSubGroupEntity(
         muscleSubGroupId = this.id,
@@ -115,7 +125,7 @@ fun List<MuscleSubGroupEntity>.toModelMuscleSubGroupList(): List<MuscleSubGroupM
     }
 }
 
-fun List<MuscleGroupMuscleSubGroupEntity>.toMuscleGroupMuscleSubGroupModel(): List<MuscleGroupMuscleSubGroupModel>{
+fun List<MuscleGroupMuscleSubGroupEntity>.toMuscleGroupMuscleSubGroupModel(): List<MuscleGroupMuscleSubGroupModel> {
     return this.map { muscleGroupMuscleSubGroup ->
         MuscleGroupMuscleSubGroupModel(
             muscleGroupId = muscleGroupMuscleSubGroup.muscleGroupId,

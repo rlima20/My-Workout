@@ -16,7 +16,10 @@ interface MuscleSubGroupDao {
     fun getAllMuscleSubGroups(): List<MuscleSubGroupEntity>
 
     @Query("SELECT * FROM muscle_sub_group WHERE muscleSubGroupId = :id")
-    fun getMuscleSubGroupById(id: Int): MuscleSubGroupEntity?
+    fun getSubgroupById(id: Int): MuscleSubGroupEntity?
+
+    @Query("SELECT * FROM muscle_sub_group WHERE muscleSubGroupId = :id")
+    fun getSubgroupsById(id: Int): List<MuscleSubGroupEntity>?
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateSubGroup(subGroup: MuscleSubGroupEntity)

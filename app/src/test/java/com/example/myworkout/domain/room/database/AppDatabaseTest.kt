@@ -93,7 +93,7 @@ class AppDatabaseTest {
         val subGroup = MuscleSubGroupEntity(muscleSubGroupId = 20, name = "Triceps")
         muscleSubGroupDao.insert(subGroup)
 
-        val result = muscleSubGroupDao.getMuscleSubGroupById(20)
+        val result = muscleSubGroupDao.getSubgroupById(20)
         assertNotNull(result)
         assertEquals("Triceps", result?.name)
     }

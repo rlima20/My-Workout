@@ -8,20 +8,30 @@ import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
 
-// Todo - Substituir os Entity por models
 interface MuscleGroupRepository {
+
+    //Muscle Group
     suspend fun getMuscleGroups(): List<MuscleGroupModel>
+    fun insertMuscleGroup(muscleGroup: MuscleGroupModel)
+
+    // SubGroups
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
+    suspend fun getSubGroupsById(id: Int): List<MuscleSubGroupModel>
+    suspend fun getSubGroupById(id: Int): MuscleSubGroupModel
+    suspend fun getSubGroupIdFromRelation(id: Int): List<Int>
     suspend fun getMuscleSubGroupsByMuscleGroups(listOfMuscleGroups: List<MuscleSubGroupModel>): List<MuscleSubGroupModel>
+    fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
+    fun updateSubGroup(subGroup: MuscleSubGroupModel)
+
+    // Group and Subgroup relation
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
-    suspend fun getMuscleSubGroup(groupRelation: MuscleGroupMuscleSubGroupEntity): MuscleSubGroupEntity?
+    suspend fun getSubgroupById(groupRelation: MuscleGroupMuscleSubGroupEntity): MuscleSubGroupEntity?
+    fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)
+
+    // Training group relation
     suspend fun getRelationByTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity>
     suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
-    fun insertMuscleGroup(muscleGroup: MuscleGroupModel)
-    fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
-    fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)
     fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel)
-    fun updateSubGroup(subGroup: MuscleSubGroupModel)
 }
