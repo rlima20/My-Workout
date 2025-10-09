@@ -148,7 +148,8 @@ class MainActivity : ComponentActivity() {
                     onUpdateSubGroup = { updateSubGroup(it) },
                     onFetchWorkouts = { fetchWorkouts(it) },
                     onNavigateToNewTraining = { navigateToNewTraining(navController) },
-                    onFetchRelations = { fetchGroupsAndSubGroupsWithRelations() }
+                    onFetchRelations = { fetchGroupsAndSubGroupsWithRelations() },
+                    onSaveTraining = { saveTraining(it) }
                 )
             },
             bottomBar = {
@@ -275,5 +276,9 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchGroupsAndSubGroupsWithRelations() {
         muscleGroupViewModel.getGroupsAndSubGroups()
+    }
+
+    private fun saveTraining(training: TrainingModel){
+        trainingViewModel.insertTraining(training)
     }
 }
