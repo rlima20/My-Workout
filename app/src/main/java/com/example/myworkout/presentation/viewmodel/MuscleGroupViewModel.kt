@@ -58,34 +58,13 @@ class MuscleGroupViewModel(
         MutableStateFlow(listOf())
     val subgroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _subgroupsSelected
 
-
-    private val _selectedGroup = MutableStateFlow(getDefaultGroup())
-    val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
-
-    fun List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>.extractSubGroupsByGroup(
-        targetGroup: MuscleGroupModel
-    ): List<MuscleSubGroupModel> {
-        return firstOrNull { map -> map.containsKey(targetGroup) }
-            ?.get(targetGroup)
-            .orEmpty()
-    }
-
-
-    fun List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>.extractGroups(): List<MuscleGroupModel> {
-        return flatMap { it.keys }
-    }
-
     fun setSelectedGroup(group: MuscleGroupModel) {
-        val list: List<MuscleSubGroupModel> = _groupsAndSubgroupsWithRelations.value.firstOrNull{
-            map -> map.containsKey(group)
-        }?.get(group).orEmpty()
-        _selectedGroup.value = group
+        val list: List<MuscleSubGroupModel> =
+            _groupsAndSubgroupsWithRelations.value.firstOrNull { map ->
+                map.containsKey(group)
+            }?.get(group).orEmpty()
         _subgroupsSelected.value = list
     }
-
-
-
-
 
     fun getGroupsWithRelations() {
         viewModelScope.launch(dispatchers.IO) {
@@ -105,7 +84,8 @@ class MuscleGroupViewModel(
         viewModelScope.launch(dispatchers.IO) {
             setLoadingState()
             try {
-                val result: MutableList<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> = mutableListOf()
+                val result: MutableList<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
+                    mutableListOf()
 
                 muscleGroups.value.forEach { muscleGroup ->
                     val subgroups = getSubgroupsByGroupId(muscleGroup.muscleGroupId)
