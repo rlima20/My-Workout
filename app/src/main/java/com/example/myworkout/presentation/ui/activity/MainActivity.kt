@@ -54,9 +54,9 @@ class MainActivity : ComponentActivity() {
             val workouts by muscleGroupViewModel.workouts.collectAsState()
             val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
             val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
+            val subgroupsSelected by muscleGroupViewModel.subgroupsSelected.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
             val muscleGroupsWithRelation by muscleGroupViewModel.muscleGroupsWithRelation.collectAsState()
-            val groupsAndSubgroupsWithRelations by muscleGroupViewModel.groupsAndSubgroupsWithRelations.collectAsState()
             val objSelected by muscleGroupViewModel.objSelected.collectAsState()
             val trainingViewState by trainingViewModel.viewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
@@ -76,11 +76,12 @@ class MainActivity : ComponentActivity() {
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
                     muscleGroupsWithRelation = muscleGroupsWithRelation,
-                    groupsAndSubgroupsWithRelations = groupsAndSubgroupsWithRelations,
                     muscleGroupViewState = muscleGroupViewState,
                     objSelected = objSelected,
                     trainingViewState = trainingViewState,
                     prefs = prefs,
+                    subgroupsSelected = subgroupsSelected,
+                    groupsWithRelations = muscleGroupsWithRelation
                 )
             }
         }
@@ -100,7 +101,8 @@ class MainActivity : ComponentActivity() {
         objSelected: Pair<Int, Boolean>,
         trainingViewState: TrainingViewState,
         prefs: TrainingPrefs,
-        groupsAndSubgroupsWithRelations: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+        subgroupsSelected: List<MuscleSubGroupModel>,
+        groupsWithRelations: List<MuscleGroupModel>
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -118,7 +120,6 @@ class MainActivity : ComponentActivity() {
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
                     muscleGroupsWithRelation = muscleGroupsWithRelation,
-                    groupsAndSubgroupsWithRelations = groupsAndSubgroupsWithRelations,
                     workouts = workouts,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
@@ -149,7 +150,10 @@ class MainActivity : ComponentActivity() {
                     onFetchWorkouts = { fetchWorkouts(it) },
                     onNavigateToNewTraining = { navigateToNewTraining(navController) },
                     onFetchRelations = { fetchGroupsAndSubGroupsWithRelations() },
-                    onSaveTraining = { saveTraining(it) }
+                    onSaveTraining = { saveTraining(it) },
+                    setSelectedGroup = { muscleGroupViewModel.setSelectedGroup(it) },
+                    subgroupsSelected = subgroupsSelected,
+                    groupsWithRelations = groupsWithRelations
                 )
             },
             bottomBar = {

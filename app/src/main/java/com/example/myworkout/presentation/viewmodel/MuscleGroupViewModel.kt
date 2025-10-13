@@ -46,10 +46,6 @@ class MuscleGroupViewModel(
         MutableStateFlow(mutableListOf(mutableMapOf<MuscleGroupModel, MutableList<MuscleSubGroupModel>>()))
     val groupsAndSubgroupsWithRelations: StateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>> get() = _groupsAndSubgroupsWithRelations
 
-    private val _relations: MutableStateFlow<List<MuscleGroupMuscleSubGroupModel>> =
-        MutableStateFlow(listOf())
-    val relations: StateFlow<List<MuscleGroupMuscleSubGroupModel>> get() = _relations
-
     private val _objSelected: MutableStateFlow<Pair<Int, Boolean>> =
         MutableStateFlow(Pair(0, false))
     val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
@@ -57,6 +53,18 @@ class MuscleGroupViewModel(
     private val _workouts: MutableStateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>> =
         MutableStateFlow(emptyList())
     val workouts: StateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>> = _workouts
+
+    private val _subgroupsSelected: MutableStateFlow<List<MuscleSubGroupModel>> =
+        MutableStateFlow(listOf())
+    val subgroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _subgroupsSelected
+
+    fun setSelectedGroup(group: MuscleGroupModel) {
+        val list: List<MuscleSubGroupModel> =
+            _groupsAndSubgroupsWithRelations.value.firstOrNull { map ->
+                map.containsKey(group)
+            }?.get(group).orEmpty()
+        _subgroupsSelected.value = list
+    }
 
     fun getGroupsWithRelations() {
         viewModelScope.launch(dispatchers.IO) {
@@ -80,13 +88,11 @@ class MuscleGroupViewModel(
                     mutableListOf()
 
                 muscleGroups.value.forEach { muscleGroup ->
-                    val group = muscleGroup
                     val subgroups = getSubgroupsByGroupId(muscleGroup.muscleGroupId)
-
                     result.add(
                         mutableMapOf(
                             Pair(
-                                first = group,
+                                first = muscleGroup,
                                 second = subgroups
                             )
                         )
@@ -94,32 +100,25 @@ class MuscleGroupViewModel(
                 }
 
                 _groupsAndSubgroupsWithRelations.value = result
-            } catch (exception: Exception) {
-                setErrorState(exception.message.toString())
-            }
-        }
-    }
-
-    fun getSubgroupsByGroupId(id: Int): List<MuscleSubGroupModel> {
-        var ids: List<Int>
-        val subgroups: MutableList<MuscleSubGroupModel> = mutableListOf()
-
-        viewModelScope.launch(dispatchers.IO) {
-            setLoadingState()
-            try {
-                ids = muscleSubGroupUseCase.getSubGroupIdFromRelation(id)
-
-                ids.forEach { id ->
-                    subgroups.add(muscleSubGroupUseCase.getSubgroupById(id))
-                }
-
                 setSuccessState()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
         }
-        return subgroups
     }
+
+    suspend fun getSubgroupsByGroupId(id: Int): List<MuscleSubGroupModel> {
+        return try {
+            val ids = muscleSubGroupUseCase.getSubGroupIdFromRelation(id)
+            ids.map { subGroupId ->
+                muscleSubGroupUseCase.getSubgroupById(subGroupId)
+            }
+        } catch (exception: Exception) {
+            setErrorState(exception.message.toString())
+            emptyList()
+        }
+    }
+
 
     fun fetchMuscleGroups() {
         viewModelScope.launch(dispatchers.IO) {
@@ -284,10 +283,17 @@ class MuscleGroupViewModel(
         _viewState.value = MuscleGroupViewState.Loading
     }
 
-    fun setErrorState(exception: String) {
+    private fun setErrorState(exception: String) {
         Log.e(EXCEPTION, exception)
         _viewState.value = MuscleGroupViewState.Error
     }
+
+    private fun getDefaultGroup(): MuscleGroupModel =
+        MuscleGroupModel(
+            muscleGroupId = 0,
+            name = "",
+            BodyPart.LEG
+        )
 
     companion object {
         const val EXCEPTION = "Exception"
@@ -295,3 +301,5 @@ class MuscleGroupViewModel(
         const val LOADING = "Loading"
     }
 }
+
+
