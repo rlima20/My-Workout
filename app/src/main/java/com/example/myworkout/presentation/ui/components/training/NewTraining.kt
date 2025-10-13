@@ -52,11 +52,16 @@ fun NewTraining(
     var buttonEnabled by remember { mutableStateOf(false) }
     var trainingName by remember { mutableStateOf(String()) }
     val focusRequester = remember { FocusRequester() }
+    var firstTimeScreenOpenedListener by remember { mutableStateOf(true) }
+    if (firstTimeScreenOpenedListener) onSetSelectedGroup(groupsWithRelations.first())
 
     Column(Modifier.fillMaxSize()) {
         TabRowComponent(
             muscleGroups = groupsWithRelations,
-            onItemSelected = { onSetSelectedGroup(it) },
+            onItemSelected = {
+                firstTimeScreenOpenedListener = false
+                onSetSelectedGroup(it)
+            },
         )
         ButtonSection(
             modifier = Modifier
