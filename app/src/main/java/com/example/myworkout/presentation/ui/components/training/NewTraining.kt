@@ -1,6 +1,5 @@
 package com.example.myworkout.presentation.ui.components.training
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,11 +27,8 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
-import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
-import com.example.myworkout.extensions.extractGroups
-import com.example.myworkout.extensions.extractSubGroupsByGroup
 import com.example.myworkout.extensions.toListOfDays
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
@@ -42,28 +38,25 @@ import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalMaterialApi::class)
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun NewTraining(
-    groupsAndSubgroupsWithRelations: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+    subgroupsSelected: List<MuscleSubGroupModel>,
+    groupsWithRelations: List<MuscleGroupModel>,
     onFetchRelations: () -> Unit,
+    onSetSelectedGroup: (item: MuscleGroupModel) -> Unit,
     onSaveTraining: (training: TrainingModel) -> Unit
 ) {
-     onFetchRelations()
+    onFetchRelations()
     val utils = Utils()
     var text by remember { mutableStateOf(utils.weekToString(DayOfWeek.values().first())) }
-    var firstGroup by remember { mutableStateOf(getDefaultGroup()) }
     var buttonEnabled by remember { mutableStateOf(false) }
     var trainingName by remember { mutableStateOf(String()) }
     val focusRequester = remember { FocusRequester() }
 
     Column(Modifier.fillMaxSize()) {
         TabRowComponent(
-            muscleGroups = groupsAndSubgroupsWithRelations.extractGroups(),
-            onItemSelected = {
-                groupsAndSubgroupsWithRelations.extractSubGroupsByGroup(it)
-                firstGroup = it
-            },
+            muscleGroups = groupsWithRelations,
+            onItemSelected = { onSetSelectedGroup(it) },
         )
         ButtonSection(
             modifier = Modifier
@@ -97,10 +90,7 @@ fun NewTraining(
                     orientation = Grid,
                     orientationProps = GridProps(
                         colors = Utils().selectableChipColors(),
-                        listOfMuscleSubGroup = groupsAndSubgroupsWithRelations
-                            .extractSubGroupsByGroup(
-                                firstGroup
-                            ),
+                        listOfMuscleSubGroup = subgroupsSelected,
                         enabled = false,
                         onItemClick = {},
                         horizontalSpacedBy = 8.dp,
@@ -154,16 +144,12 @@ private fun TextFieldSection(
 @Preview
 @Composable
 private fun NewTrainingPreview() {
+    val constants = Constants()
     NewTraining(
-        groupsAndSubgroupsWithRelations = Constants().getGroupsAndSubgroupsWithRelations(),
+        subgroupsSelected = constants.subGroupsMock,
+        groupsWithRelations = constants.groupsMock,
         onFetchRelations = {},
-        onSaveTraining = {}
+        onSaveTraining = {},
+        onSetSelectedGroup = {}
     )
 }
-
-private fun getDefaultGroup(): MuscleGroupModel =
-    MuscleGroupModel(
-        muscleGroupId = 0,
-        name = "",
-        BodyPart.LEG
-    )

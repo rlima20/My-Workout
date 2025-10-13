@@ -24,7 +24,7 @@ fun TabRowComponent(
     onItemSelected: (item: MuscleGroupModel) -> Unit,
 ) {
     if (muscleGroups.isNotEmpty()) {
-        onItemSelected(muscleGroups[0])
+        // onItemSelected(muscleGroups[0])
         val selectedTabIndex = remember { mutableIntStateOf(0) }
         val muscleGroupItem = remember { mutableStateOf(muscleGroups[0]) }
 

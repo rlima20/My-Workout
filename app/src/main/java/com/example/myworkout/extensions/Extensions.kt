@@ -99,15 +99,3 @@ fun Array<DayOfWeek>.toListOfDays(): List<String> {
     }
     return daysOfWeek.toList()
 }
-
-fun List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>.extractGroups(): List<MuscleGroupModel> {
-    return flatMap { it.keys }
-}
-
-fun List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>.extractSubGroupsByGroup(
-    targetGroup: MuscleGroupModel
-): List<MuscleSubGroupModel> {
-    return firstOrNull { map -> map.containsKey(targetGroup) }
-        ?.get(targetGroup)
-        .orEmpty()
-}
