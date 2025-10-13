@@ -55,6 +55,7 @@ class MainActivity : ComponentActivity() {
             val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
             val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
             val subgroupsSelected by muscleGroupViewModel.subgroupsSelected.collectAsState()
+            val selectedGroup by muscleGroupViewModel.selectedGroup.collectAsState()
             val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
             val muscleGroupsWithRelation by muscleGroupViewModel.muscleGroupsWithRelation.collectAsState()
             val objSelected by muscleGroupViewModel.objSelected.collectAsState()
@@ -81,7 +82,8 @@ class MainActivity : ComponentActivity() {
                     trainingViewState = trainingViewState,
                     prefs = prefs,
                     subgroupsSelected = subgroupsSelected,
-                    groupsWithRelations = muscleGroupsWithRelation
+                    groupsWithRelations = muscleGroupsWithRelation,
+                    selectedGroup = selectedGroup
                 )
             }
         }
@@ -102,7 +104,8 @@ class MainActivity : ComponentActivity() {
         trainingViewState: TrainingViewState,
         prefs: TrainingPrefs,
         subgroupsSelected: List<MuscleSubGroupModel>,
-        groupsWithRelations: List<MuscleGroupModel>
+        groupsWithRelations: List<MuscleGroupModel>,
+        selectedGroup: MuscleGroupModel
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -150,10 +153,17 @@ class MainActivity : ComponentActivity() {
                     onFetchWorkouts = { fetchWorkouts(it) },
                     onNavigateToNewTraining = { navigateToNewTraining(navController) },
                     onFetchRelations = { fetchGroupsAndSubGroupsWithRelations() },
-                    onSaveTraining = { saveTraining(it) },
+                    onSaveTraining = { training, selectedGroup ->
+                        saveTrainingAndRelationWithGroup(
+                            training,
+                            selectedGroup.muscleGroupId
+                        )
+                    },
                     setSelectedGroup = { muscleGroupViewModel.setSelectedGroup(it) },
+                    selectedGroup = selectedGroup,
                     subgroupsSelected = subgroupsSelected,
-                    groupsWithRelations = groupsWithRelations
+                    groupsWithRelations = groupsWithRelations,
+                    onNavigateToHomeScreen = { navigateToHomeScreen(navController) }
                 )
             },
             bottomBar = {
@@ -282,7 +292,10 @@ class MainActivity : ComponentActivity() {
         muscleGroupViewModel.getGroupsAndSubGroups()
     }
 
-    private fun saveTraining(training: TrainingModel){
-        trainingViewModel.insertTraining(training)
+    private fun saveTrainingAndRelationWithGroup(
+        training: TrainingModel,
+        groupId: Int
+    ) {
+        trainingViewModel.insertTraining(training, groupId)
     }
 }

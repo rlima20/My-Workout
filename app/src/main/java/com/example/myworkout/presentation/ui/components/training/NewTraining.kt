@@ -42,9 +42,13 @@ import com.example.myworkout.utils.Utils
 fun NewTraining(
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
+    selectedGroup: MuscleGroupModel,
     onFetchRelations: () -> Unit,
     onSetSelectedGroup: (item: MuscleGroupModel) -> Unit,
-    onSaveTraining: (training: TrainingModel) -> Unit
+    onSaveTraining: (
+        training: TrainingModel,
+        selectedGroup: MuscleGroupModel
+    ) -> Unit
 ) {
     onFetchRelations()
     val utils = Utils()
@@ -76,7 +80,8 @@ fun NewTraining(
                         status = Status.PENDING,
                         dayOfWeek = utils.stringToWeek(text),
                         trainingName = trainingName
-                    )
+                    ),
+                    selectedGroup
                 )
             },
             content = {
@@ -153,8 +158,9 @@ private fun NewTrainingPreview() {
     NewTraining(
         subgroupsSelected = constants.subGroupsMock,
         groupsWithRelations = constants.groupsMock,
+        selectedGroup = constants.groupsMock.first(),
         onFetchRelations = {},
-        onSaveTraining = {},
+        onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
         onSetSelectedGroup = {}
     )
 }

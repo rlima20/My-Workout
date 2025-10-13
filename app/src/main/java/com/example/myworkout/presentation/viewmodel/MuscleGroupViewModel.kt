@@ -58,11 +58,15 @@ class MuscleGroupViewModel(
         MutableStateFlow(listOf())
     val subgroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _subgroupsSelected
 
+    private val _selectedGroup = MutableStateFlow(getDefaultGroup())
+    val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
+
     fun setSelectedGroup(group: MuscleGroupModel) {
         val list: List<MuscleSubGroupModel> =
             _groupsAndSubgroupsWithRelations.value.firstOrNull { map ->
                 map.containsKey(group)
             }?.get(group).orEmpty()
+        _selectedGroup.value = group
         _subgroupsSelected.value = list
     }
 

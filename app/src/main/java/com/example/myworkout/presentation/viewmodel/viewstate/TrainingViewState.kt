@@ -7,4 +7,5 @@ sealed class TrainingViewState {
     object Error : TrainingViewState()
     object Loading : TrainingViewState()
     data class Success(val trainings: List<TrainingModel>) : TrainingViewState()
+    object SuccessCreatingRelation: TrainingViewState()
 }

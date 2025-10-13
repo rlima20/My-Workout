@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkout.di.dispatcherDI
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
@@ -72,11 +71,22 @@ class TrainingViewModel(
         else setSuccessState(data)
     }
 
-    fun insertTraining(training: TrainingModel) {
+    fun insertTraining(
+        training: TrainingModel,
+        groupId: Int
+    ) {
         viewModelScope.launch(Dispatchers.IO) {
             setLoadingState()
             try {
                 trainingUseCase.insertTraining(training)
+                val trainingId = _trainings.value.size+1
+
+                insertTrainingMuscleGroup(
+                    TrainingMuscleGroupModel(
+                        trainingId = trainingId,
+                        muscleGroupId = groupId
+                    )
+                )
                 fetchTrainings()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
@@ -96,7 +106,6 @@ class TrainingViewModel(
 
     fun setLoadingState() {
         _viewState.value = TrainingViewState.Loading
-        _viewState.value = TrainingViewState.Loading
     }
 
     fun setIsHomeScreen(value: Boolean) {
@@ -115,8 +124,14 @@ class TrainingViewModel(
     }
 
     fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
+        setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
-            trainingUseCase.insertTrainingMuscleGroup(trainingMuscleGroup)
+            try {
+                trainingUseCase.insertTrainingMuscleGroup(trainingMuscleGroup)
+                _viewState.value = TrainingViewState.SuccessCreatingRelation
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
         }
     }
 }
