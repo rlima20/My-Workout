@@ -9,6 +9,7 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
 import com.example.myworkout.enums.Status
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -77,7 +78,7 @@ class TrainingViewModel(
     }
 
     fun setErrorState(exception: String) {
-//        Log.e(EXCEPTION, exception)
+        Log.e(EXCEPTION, exception)
         _viewState.value = TrainingViewState.Error
     }
 
@@ -106,7 +107,6 @@ class TrainingViewModel(
     ) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
-            delay(3000)
             try {
                 val insertedTrainingId = performInsertTrainingAndGetId(training)
                 performInsertTrainingMuscleGroup(insertedTrainingId, groupId)
