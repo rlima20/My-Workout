@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myworkout.di.dispatcherDI
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
@@ -13,6 +12,7 @@ import com.example.myworkout.enums.Status
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -72,18 +72,6 @@ class TrainingViewModel(
         else setSuccessState(data)
     }
 
-    fun insertTraining(training: TrainingModel) {
-        viewModelScope.launch(Dispatchers.IO) {
-            setLoadingState()
-            try {
-                trainingUseCase.insertTraining(training)
-                fetchTrainings()
-            } catch (exception: Exception) {
-                setErrorState(exception.message.toString())
-            }
-        }
-    }
-
     fun setSuccessState(trainings: List<TrainingModel>) {
         _trainings.value = trainings
         _viewState.value = TrainingViewState.Success(trainings)
@@ -95,7 +83,6 @@ class TrainingViewModel(
     }
 
     fun setLoadingState() {
-        _viewState.value = TrainingViewState.Loading
         _viewState.value = TrainingViewState.Loading
     }
 
@@ -114,9 +101,57 @@ class TrainingViewModel(
         }
     }
 
-    fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
+    fun insertTraining(
+        training: TrainingModel,
+        groupId: Int
+    ) {
+        setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
-            trainingUseCase.insertTrainingMuscleGroup(trainingMuscleGroup)
+            try {
+                val insertedTrainingId = performInsertTrainingAndGetId(training)
+                performInsertTrainingMuscleGroup(insertedTrainingId, groupId)
+                setSuccessState(_trainings.value)
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
         }
+    }
+
+    /**
+     * Responsável apenas por inserir o treino e retornar seu ID.
+     */
+    private suspend fun performInsertTrainingAndGetId(training: TrainingModel): Int {
+        trainingUseCase.insertTraining(training)
+        val updatedTrainings = fetchAndReturnTrainings()
+        return getLastInsertedTrainingId(updatedTrainings)
+    }
+
+    /**
+     * Busca e atualiza a lista de treinos no estado atual.
+     */
+    private suspend fun fetchAndReturnTrainings(): List<TrainingModel> {
+        val trainings = trainingUseCase.getTrainings()
+        setListOfTrainings(trainings)
+        return trainings
+    }
+
+    /**
+     * Obtém o ID do último treino inserido com segurança.
+     */
+    private fun getLastInsertedTrainingId(trainings: List<TrainingModel>): Int {
+        return trainings.maxByOrNull { it.trainingId }?.trainingId
+            ?: throw IllegalStateException("Falha ao obter o ID do treinamento recém inserido")
+    }
+
+    /**
+     * Responsável apenas por criar a relação entre treino e grupo muscular.
+     */
+    private suspend fun performInsertTrainingMuscleGroup(trainingId: Int, groupId: Int) {
+        trainingUseCase.insertTrainingMuscleGroup(
+            TrainingMuscleGroupModel(
+                trainingId = trainingId,
+                muscleGroupId = groupId
+            )
+        )
     }
 }

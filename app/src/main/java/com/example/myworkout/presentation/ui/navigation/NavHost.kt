@@ -49,10 +49,11 @@ fun NavHost(
     onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
     onFetchRelations: () -> Unit,
-    onSaveTraining: (training: TrainingModel) -> Unit,
+    onSaveTraining: (training: TrainingModel, selectedGroup: MuscleGroupModel) -> Unit,
     setSelectedGroup: (item: MuscleGroupModel) -> Unit,
+    selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
-    groupsWithRelations: List<MuscleGroupModel>
+    groupsWithRelations: List<MuscleGroupModel>,
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -73,7 +74,7 @@ fun NavHost(
                 onChangeRoute = onChangeRouteToHomeScreen,
                 onNavigateToNewTraining = onNavigateToGroupSubgroup,
                 onDatabaseCreated = onDatabaseCreated,
-                onFetchWorkouts = { onFetchWorkouts(it) }
+                onFetchWorkouts = { onFetchWorkouts(it) },
             )
         }
 
@@ -107,9 +108,12 @@ fun NavHost(
             NewTraining(
                 groupsWithRelations = groupsWithRelations,
                 subgroupsSelected = subgroupsSelected,
+                selectedGroup = selectedGroup,
                 onSetSelectedGroup = { setSelectedGroup(it) },
                 onFetchRelations = { onFetchRelations() },
-                onSaveTraining = { onSaveTraining(it) },
+                onSaveTraining = { training, selectedGroup ->
+                    onSaveTraining(training, selectedGroup)
+                },
             )
         }
     }
