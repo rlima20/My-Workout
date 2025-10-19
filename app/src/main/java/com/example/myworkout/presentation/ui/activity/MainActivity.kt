@@ -158,12 +158,12 @@ class MainActivity : ComponentActivity() {
                             training,
                             selectedGroup.muscleGroupId
                         )
+                        navigateToHomeScreen(navController)
                     },
                     setSelectedGroup = { muscleGroupViewModel.setSelectedGroup(it) },
                     selectedGroup = selectedGroup,
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
-                    onNavigateToHomeScreen = { navigateToHomeScreen(navController) }
                 )
             },
             bottomBar = {

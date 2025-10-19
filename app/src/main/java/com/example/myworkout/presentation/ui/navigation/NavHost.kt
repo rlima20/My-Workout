@@ -54,7 +54,6 @@ fun NavHost(
     selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
-    onNavigateToHomeScreen: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -76,7 +75,6 @@ fun NavHost(
                 onNavigateToNewTraining = onNavigateToGroupSubgroup,
                 onDatabaseCreated = onDatabaseCreated,
                 onFetchWorkouts = { onFetchWorkouts(it) },
-                onNavigateToHomeScreen = { onNavigateToHomeScreen() }
             )
         }
 
@@ -160,7 +158,6 @@ private fun SetupTrainingStateObservers(
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
-    onNavigateToHomeScreen: () -> Unit
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -196,10 +193,6 @@ private fun SetupTrainingStateObservers(
                 onTrainingChecked = { onTrainingChecked(it) },
                 onGetMuscleSubGroupsByTrainingId = {}
             )
-        }
-
-        is TrainingViewState.SuccessCreatingRelation -> {
-            onNavigateToHomeScreen()
         }
     }
 }
