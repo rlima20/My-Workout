@@ -8,11 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -35,12 +35,29 @@ class TrainingViewModel(
     private val _appBarTitle = MutableStateFlow("Home")
     val appBarTitle: StateFlow<String> get() = _appBarTitle
 
+    private val _listOfDays = MutableStateFlow(
+        listOf(
+            Pair(DayOfWeek.SATURDAY, true)
+        )
+    )
+
+    val listOfDays: StateFlow<List<Pair<DayOfWeek, Boolean>>> = _listOfDays
+
+    private fun updateListOfDays() {
+        val trainingDays = trainings.value.map { it.dayOfWeek } // Domingo, Segunda
+
+        _listOfDays.value = DayOfWeek.values().map { day ->
+            Pair(day, trainingDays.contains(day))
+        }
+    }
+
     fun updateTraining(trainingModel: TrainingModel) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 trainingUseCase.updateTraining(trainingModel)
                 fetchTrainings()
+                updateListOfDays()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
@@ -75,6 +92,7 @@ class TrainingViewModel(
     fun setSuccessState(trainings: List<TrainingModel>) {
         _trainings.value = trainings
         _viewState.value = TrainingViewState.Success(trainings)
+        updateListOfDays()
     }
 
     fun setErrorState(exception: String) {

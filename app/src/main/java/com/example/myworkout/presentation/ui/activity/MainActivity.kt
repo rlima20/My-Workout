@@ -23,6 +23,7 @@ import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.navigateSingleTopTo
 import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.components.home.TopBar
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
             val trainingViewState by trainingViewModel.viewState.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
             val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
+            val listOfDays by trainingViewModel.listOfDays.collectAsState()
             val navController = rememberNavController()
             val prefs = TrainingPrefs()
 
@@ -83,7 +85,8 @@ class MainActivity : ComponentActivity() {
                     prefs = prefs,
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = muscleGroupsWithRelation,
-                    selectedGroup = selectedGroup
+                    selectedGroup = selectedGroup,
+                    listOfDays = listOfDays
                 )
             }
         }
@@ -105,7 +108,8 @@ class MainActivity : ComponentActivity() {
         prefs: TrainingPrefs,
         subgroupsSelected: List<MuscleSubGroupModel>,
         groupsWithRelations: List<MuscleGroupModel>,
-        selectedGroup: MuscleGroupModel
+        selectedGroup: MuscleGroupModel,
+        listOfDays: List<Pair<DayOfWeek, Boolean>>
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -126,6 +130,7 @@ class MainActivity : ComponentActivity() {
                     workouts = workouts,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
+                    listOfDays = listOfDays,
                     onItemClick = { setNewObjSelected(it) },
                     objSelected = objSelected,
                     onChangeRouteToHomeScreen = { setIsHomeScreen(it) },

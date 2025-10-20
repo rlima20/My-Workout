@@ -29,7 +29,6 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
-import com.example.myworkout.extensions.toListOfDays
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
@@ -43,12 +42,10 @@ fun NewTraining(
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
     selectedGroup: MuscleGroupModel,
+    listOfDays: List<Pair<DayOfWeek, Boolean>>,
     onFetchRelations: () -> Unit,
-    onSetSelectedGroup: (item: MuscleGroupModel) -> Unit,
-    onSaveTraining: (
-        training: TrainingModel,
-        selectedGroup: MuscleGroupModel
-    ) -> Unit
+    onSetSelectedGroup: (MuscleGroupModel) -> Unit,
+    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit
 ) {
     onFetchRelations()
     val utils = Utils()
@@ -108,7 +105,7 @@ fun NewTraining(
                     ),
                 )
                 DropdownItem(
-                    items = DayOfWeek.values().toListOfDays(),
+                    items = listOfDays,
                     text = text,
                     onItemClick = { text = it }
                 )
@@ -161,6 +158,7 @@ private fun NewTrainingPreview() {
         selectedGroup = constants.groupsMock.first(),
         onFetchRelations = {},
         onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
-        onSetSelectedGroup = {}
+        onSetSelectedGroup = {},
+        listOfDays = emptyList()
     )
 }
