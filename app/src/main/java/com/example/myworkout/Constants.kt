@@ -23,6 +23,14 @@ class Constants {
         trainingName = trainingName
     )
 
+    val daysOfWeek = listOf(
+        Pair(DayOfWeek.SATURDAY, true),
+        Pair(DayOfWeek.FRIDAY, false),
+        Pair(DayOfWeek.TUESDAY, true),
+        Pair(DayOfWeek.THURSDAY, false),
+        Pair(DayOfWeek.SUNDAY, true)
+    )
+
     val subGroupsMock = listOf(
         MuscleSubGroupModel(name = "Posterior"),
         MuscleSubGroupModel(name = "Lateral"),
@@ -368,7 +376,7 @@ class Constants {
         val FILTER_CHIP_LIST_PADDING_BOTTOM = 8.dp
         val TRAINING_CARD_PADDING_BOTTOM = 16.dp
         val TRAINING_NAME_MAX_HEIGHT = 30.dp
-        val SUB_GROUP_SECTION_BACKGROUND = R.color.button_section_card_color
+        val SUB_GROUP_SECTION_BACKGROUND = R.color.white
 
         // String values
         const val SUNDAY = "DOMINGO"

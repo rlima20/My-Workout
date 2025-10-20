@@ -2,6 +2,7 @@ package com.example.myworkout.presentation.ui.navigation
 
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
@@ -36,21 +38,22 @@ fun NavHost(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
+    listOfDays: List<Pair<DayOfWeek, Boolean>>,
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
-    onChangeRouteToHomeScreen: (value: Boolean) -> Unit,
-    onChangeTopBarTitle: (title: String) -> Unit,
-    onDatabaseCreated: @Composable () -> Unit,
-    onTrainingChecked: (training: TrainingModel) -> Unit,
-    onCreateMuscleGroup: (name: String) -> Unit,
-    onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
+    onChangeRouteToHomeScreen: (Boolean) -> Unit,
+    onChangeTopBarTitle: (String) -> Unit,
+    onDatabaseCreated: @Composable (() -> Unit),
+    onTrainingChecked: (TrainingModel) -> Unit,
+    onCreateMuscleGroup: (String) -> Unit,
+    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit,
     onNavigateToGroupSubgroup: () -> Unit,
     onNavigateToNewTraining: () -> Unit,
-    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
+    onFetchWorkouts: (List<TrainingModel>) -> Unit,
     onFetchRelations: () -> Unit,
-    onSaveTraining: (training: TrainingModel, selectedGroup: MuscleGroupModel) -> Unit,
-    setSelectedGroup: (item: MuscleGroupModel) -> Unit,
+    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
+    setSelectedGroup: (MuscleGroupModel) -> Unit,
     selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
@@ -61,7 +64,9 @@ fun NavHost(
     NavHostCompose(
         navController = navController,
         startDestination = HomeScreen.route,
-        modifier = Modifier.background(colorResource(R.color.global_background_color))
+        modifier = Modifier
+            .fillMaxHeight()
+            .background(colorResource(R.color.global_background_color))
     ) {
         composable(route = HomeScreen.route) {
             onChangeRouteToHomeScreen(true)
@@ -109,6 +114,7 @@ fun NavHost(
                 groupsWithRelations = groupsWithRelations,
                 subgroupsSelected = subgroupsSelected,
                 selectedGroup = selectedGroup,
+                listOfDays = listOfDays,
                 onSetSelectedGroup = { setSelectedGroup(it) },
                 onFetchRelations = { onFetchRelations() },
                 onSaveTraining = { training, selectedGroup ->

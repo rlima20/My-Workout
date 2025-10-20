@@ -4,8 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -24,31 +22,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myworkout.Constants
 import com.example.myworkout.R
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.utils.Utils
 
 @Composable
 fun DropdownItem(
-    items: List<String>,
+    modifier: Modifier = Modifier,
+    items: List<Pair<DayOfWeek, Boolean>>,
     text: String,
-    onItemClick: (item: String) -> Unit
+    onItemClick: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
+        modifier = modifier.height(50.dp),
         colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         border = BorderStroke(1.dp, colorResource(R.color.border_color)),
         elevation = CardDefaults.cardElevation()
     ) {
         Row(
-            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -78,15 +78,17 @@ fun DropdownItem(
             items.forEach {
                 val item = it
                 DropdownMenuItem(
+                    enabled = !item.second,
                     text = {
                         Text(
                             modifier = Modifier.padding(start = 32.dp, end = 32.dp),
-                            text = item,
+                            text = item.first.name,
+                            textDecoration = if (item.second) TextDecoration.LineThrough else null,
                             color = colorResource(R.color.text_color)
                         )
                     },
                     onClick = {
-                        onItemClick(item)
+                        onItemClick(item.first.name)
                         expanded = !expanded
                     }
                 )
@@ -98,8 +100,9 @@ fun DropdownItem(
 @Composable
 @Preview
 fun DropdownItemPreview() {
+    val constants = Constants()
     DropdownItem(
-        items = listOf("item1", "item2"),
+        items = constants.daysOfWeek,
         text = "",
         onItemClick = {}
     )
