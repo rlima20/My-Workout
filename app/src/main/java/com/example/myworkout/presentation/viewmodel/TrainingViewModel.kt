@@ -3,6 +3,8 @@ package com.example.myworkout.presentation.viewmodel
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkout.domain.model.TrainingModel
@@ -13,6 +15,7 @@ import com.example.myworkout.enums.Status
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -59,7 +62,7 @@ class TrainingViewModel(
                 fetchTrainings()
                 updateListOfDays()
             } catch (exception: Exception) {
-                setErrorState(exception.message.toString())
+                setErrorState(exception.message.toString(), null)
             }
         }
     }
@@ -73,9 +76,8 @@ class TrainingViewModel(
             try {
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
-            } catch (e: Exception) {
-                _viewState.value = TrainingViewState.Error
-                Log.e("RAPHAEL", "Erro: $e")
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString(), null)
             }
         }
     }
@@ -95,9 +97,9 @@ class TrainingViewModel(
         updateListOfDays()
     }
 
-    fun setErrorState(exception: String) {
+    fun setErrorState(exception: String, trainingName: String?) {
         Log.e(EXCEPTION, exception)
-        _viewState.value = TrainingViewState.Error
+        _viewState.value = TrainingViewState.Error(trainingName)
     }
 
     fun setLoadingState() {
@@ -125,12 +127,14 @@ class TrainingViewModel(
     ) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
+            delay(2000)
             try {
-                val insertedTrainingId = performInsertTrainingAndGetId(training)
-                performInsertTrainingMuscleGroup(insertedTrainingId, groupId)
-                setSuccessState(_trainings.value)
+                performInsertTrainingAndGetId(training)?.let { insertedTrainingId ->
+                    performInsertTrainingMuscleGroup(insertedTrainingId, groupId)
+                    setSuccessState(_trainings.value)
+                }
             } catch (exception: Exception) {
-                setErrorState(exception.message.toString())
+                setErrorState(exception.message.toString(), null)
             }
         }
     }
@@ -138,7 +142,21 @@ class TrainingViewModel(
     /**
      * Responsável apenas por inserir o treino e retornar seu ID.
      */
-    private suspend fun performInsertTrainingAndGetId(training: TrainingModel): Int {
+    private suspend fun performInsertTrainingAndGetId(training: TrainingModel): Int? {
+        // Verifica se já existe um treinamento com o mesmo nome
+        val alreadyExists = _trainings.value.any {
+            it.trainingName.toLowerCase(locale = Locale.current).equals(
+                training.trainingName.toLowerCase(locale = Locale.current),
+                ignoreCase = true
+            )
+        }
+
+        if (alreadyExists) {
+            setErrorState(EXCEPTION, training.trainingName)
+            return null
+        }
+
+        // Continua o fluxo normalmente se não houver duplicidade
         trainingUseCase.insertTraining(training)
         val updatedTrainings = fetchAndReturnTrainings()
         return getLastInsertedTrainingId(updatedTrainings)

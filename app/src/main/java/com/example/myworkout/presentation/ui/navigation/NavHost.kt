@@ -57,6 +57,7 @@ fun NavHost(
     selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
+    onFetchTrainings: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -77,8 +78,11 @@ fun NavHost(
                 trainingViewState = trainingViewState,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRouteToHomeScreen,
-                onNavigateToNewTraining = onNavigateToGroupSubgroup,
-                onDatabaseCreated = onDatabaseCreated,
+                onNavigateToNewTraining = {
+                    onNavigateToGroupSubgroup()
+                    onFetchTrainings()
+                },
+                onDatabaseCreated = { onDatabaseCreated() },
                 onFetchWorkouts = { onFetchWorkouts(it) },
             )
         }
@@ -185,10 +189,12 @@ private fun SetupTrainingStateObservers(
         }
 
         is TrainingViewState.Error -> {
-            ErrorStateComponent(onButtonClicked = {
-                onChangeRoute(true)
-                onNavigateToNewTraining()
-            })
+            ErrorStateComponent(
+                message = trainingViewState.trainingName,
+                onButtonClicked = {
+                    onChangeRoute(true)
+                    onNavigateToNewTraining()
+                })
         }
 
         is TrainingViewState.Success -> {

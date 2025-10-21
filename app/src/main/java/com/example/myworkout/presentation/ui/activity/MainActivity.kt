@@ -169,6 +169,7 @@ class MainActivity : ComponentActivity() {
                     selectedGroup = selectedGroup,
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
+                    onFetchTrainings = { fetchTrainings() }
                 )
             },
             bottomBar = {
