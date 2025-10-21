@@ -21,6 +21,7 @@ import com.example.myworkout.R
 
 @Composable
 fun ErrorStateComponent(
+    message: String? = stringResource(R.string.something_went_wrong),
     onButtonClicked: () -> Unit = {},
 ) {
     Column(
@@ -41,7 +42,7 @@ fun ErrorStateComponent(
         )
 
         Text(
-            text = stringResource(R.string.something_went_wrong),
+            text = "$message já existe",
             color = colorResource(id = R.color.black),
             fontSize = 18.sp,
             modifier = Modifier.padding(bottom = 8.dp),
