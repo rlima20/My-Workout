@@ -76,6 +76,7 @@ class TrainingViewModel(
             try {
                 val trainings = trainingUseCase.getTrainings()
                 setListOfTrainings(trainings)
+                updateListOfDays()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString(), null)
             }
@@ -161,6 +162,7 @@ class TrainingViewModel(
         val updatedTrainings = fetchAndReturnTrainings()
         return getLastInsertedTrainingId(updatedTrainings)
     }
+
 
     /**
      * Busca e atualiza a lista de treinos no estado atual.

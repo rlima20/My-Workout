@@ -119,6 +119,7 @@ fun NavHost(
                 subgroupsSelected = subgroupsSelected,
                 selectedGroup = selectedGroup,
                 listOfDays = listOfDays,
+                trainingsQuantity = workouts.size,
                 onSetSelectedGroup = { setSelectedGroup(it) },
                 onFetchRelations = { onFetchRelations() },
                 onSaveTraining = { training, selectedGroup ->

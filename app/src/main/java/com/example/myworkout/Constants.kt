@@ -309,6 +309,7 @@ class Constants {
 
         // MuscleSubGroups
         const val SUB_GROUP_NAME_PULLEY = "Puxada na polia"
+        const val SUB_GROUP_NAME_REMADA_SERROTE = "Remada serrote"
         const val SUB_GROUP_NAME_DORSAL_45 = "Dorsal na polia 45C"
         const val SUB_GROUP_NAME_LOWER_BACK = "Remada baixa"
         const val SUB_GROUP_NAME_UPPER_BACK = "Remada alta"
@@ -319,10 +320,12 @@ class Constants {
         const val SUB_GROUP_NAME_UPPER_CHEST = "Supino inclinado"
         const val SUB_GROUP_NAME_MEDIAL_CHEST = "Supino reto"
         const val SUB_GROUP_NAME_CROSS = "Cross"
+        const val SUB_GROUP_NAME_PULLEY_CROSS = "Cross no pulley"
         const val SUB_GROUP_NAME_TRICEPS_POLIA = "Tríceps polia"
         const val SUB_GROUP_NAME_TRICEPS_FRANCH = "Tríceps Francês"
         const val SUB_GROUP_NAME_TRICEPS_FOREHEAD = "Tríceps Testa"
         const val SUB_GROUP_NAME_SHOULDER_LATERAL = "Ombro lateral"
+        const val SUB_GROUP_NAME_TRAPEZIUS = "Trapézio"
         const val SUB_GROUP_NAME_SHOULDER_ANTERIOR = "Anterior"
         const val SUB_GROUP_NAME_SHOULDER_POSTERIOR = "Posterior"
         const val SUB_GROUP_NAME_SHOULDER_TRAPZ = "Trapézio"
@@ -338,16 +341,20 @@ class Constants {
             SUB_GROUP_NAME_UPPER_CHEST,
             SUB_GROUP_NAME_MEDIAL_CHEST,
             SUB_GROUP_NAME_CROSS,
+            SUB_GROUP_NAME_PULLEY_CROSS,
 
             // Back
             SUB_GROUP_NAME_LOWER_BACK,
             SUB_GROUP_NAME_DORSAL_45,
             SUB_GROUP_NAME_PULLEY,
+            SUB_GROUP_NAME_REMADA_SERROTE,
+            SUB_GROUP_NAME_UPPER_BACK,
 
             // Shoulder
             SUB_GROUP_NAME_SHOULDER_POSTERIOR,
             SUB_GROUP_NAME_SHOULDER_ANTERIOR,
             SUB_GROUP_NAME_SHOULDER_LATERAL,
+            SUB_GROUP_NAME_TRAPEZIUS,
 
             // Briceps
             SUB_GROUP_NAME_BICEPS_45,
@@ -386,6 +393,14 @@ class Constants {
         const val THURSDAY = "QUINTA"
         const val FRIDAY = "SEXTA"
         const val SATURDAY = "SÁBADO"
+
+        const val SUNDAY_EN = "SUNDAY"
+        const val MONDAY_EN = "MONDAY"
+        const val TUESDAY_EN = "TUESDAY"
+        const val WEDNESDAY_EN = "WEDNESDAY"
+        const val THURSDAY_EN = "THURSDAY"
+        const val FRIDAY_EN = "FRIDAY"
+        const val SATURDAY_EN = "SATURDAY"
     }
 }
 

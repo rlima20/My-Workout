@@ -10,13 +10,38 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
+import com.example.myworkout.Constants.Companion.FRIDAY
+import com.example.myworkout.Constants.Companion.MONDAY
+import com.example.myworkout.Constants.Companion.SATURDAY
+import com.example.myworkout.Constants.Companion.SUNDAY
+import com.example.myworkout.Constants.Companion.THURSDAY
+import com.example.myworkout.Constants.Companion.TUESDAY
+import com.example.myworkout.Constants.Companion.WEDNESDAY
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleGroupModel
-import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
-import com.example.myworkout.utils.Utils
+
+fun DayOfWeek.toPortugueseString(): String =
+    when (this) {
+        DayOfWeek.MONDAY -> MONDAY
+        DayOfWeek.TUESDAY -> TUESDAY
+        DayOfWeek.WEDNESDAY -> WEDNESDAY
+        DayOfWeek.THURSDAY -> THURSDAY
+        DayOfWeek.FRIDAY -> FRIDAY
+        DayOfWeek.SATURDAY -> SATURDAY
+        DayOfWeek.SUNDAY -> SUNDAY
+    }
+
+fun String.toDayOfWeekOrNull(): DayOfWeek? = when (this) {
+    MONDAY -> DayOfWeek.MONDAY
+    TUESDAY -> DayOfWeek.TUESDAY
+    WEDNESDAY -> DayOfWeek.WEDNESDAY
+    THURSDAY -> DayOfWeek.THURSDAY
+    FRIDAY -> DayOfWeek.FRIDAY
+    SATURDAY -> DayOfWeek.SATURDAY
+    SUNDAY -> DayOfWeek.SUNDAY
+    else -> null
+}
 
 @Composable
 fun Status.setBackGroundColor(): Int =
@@ -36,41 +61,6 @@ fun NavHostController.navigateSingleTopTo(route: String) =
         restoreState = true
     }
 
-fun BodyPart.setImageDrawable(): Int =
-    when (this) {
-        BodyPart.LEG -> {
-            R.drawable.pernas
-        }
-
-        BodyPart.BACK -> {
-            R.drawable.costas
-        }
-
-        BodyPart.ARM -> {
-            R.drawable.braco
-        }
-
-        BodyPart.CHEST -> {
-            R.drawable.peito
-        }
-
-        BodyPart.ABDOMEN -> {
-            R.drawable.abdomem
-        }
-
-        BodyPart.SHOULDER -> {
-            R.drawable.ombro
-        }
-
-        BodyPart.TRAPEZIUS -> {
-            R.drawable.trapezio
-        }
-
-        BodyPart.OTHER -> {
-            R.drawable.ombro
-        }
-    }
-
 @SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.homeScreenCardPaddings(): Modifier = composed {
     this.padding(
@@ -86,16 +76,4 @@ fun Modifier.trainingCardFilterChipListModifier(): Modifier = composed {
     this
         .fillMaxWidth()
         .padding(start = DEFAULT_PADDING, end = DEFAULT_PADDING)
-}
-
-fun Array<DayOfWeek>.toListOfDays(): List<String> {
-    val utils = Utils()
-    val daysOfWeek: MutableList<String> = mutableListOf()
-
-    this.forEach {
-        daysOfWeek.add(
-            utils.weekToString(it)
-        )
-    }
-    return daysOfWeek.toList()
 }
