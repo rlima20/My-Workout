@@ -37,11 +37,12 @@ fun DropdownItem(
     modifier: Modifier = Modifier,
     items: List<Pair<DayOfWeek, Boolean>>,
     text: String?,
+    enabled: Boolean,
     onItemClick: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    text?.let {
+    if(enabled) {
         Card(
             modifier = modifier.height(50.dp),
             colors = Utils().buttonSectionCardsColors(),
@@ -55,7 +56,7 @@ fun DropdownItem(
             ) {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = text,
+                    text = text ?: "",
                     color = colorResource(R.color.text_color),
                     fontSize = 14.sp
                 )
@@ -64,7 +65,7 @@ fun DropdownItem(
                         .size(60.dp)
                         .padding(end = 16.dp),
                     onClick = {
-                        if (text.isNotBlank()) {
+                        if (enabled) {
                             expanded = !expanded
                         }
                     }
@@ -110,6 +111,7 @@ fun DropdownItemPreview() {
     DropdownItem(
         items = constants.daysOfWeek,
         text = "",
+        enabled = true,
         onItemClick = {}
     )
 }

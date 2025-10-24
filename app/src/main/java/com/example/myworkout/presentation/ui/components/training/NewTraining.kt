@@ -52,16 +52,16 @@ fun NewTraining(
     groupsWithRelations: List<MuscleGroupModel>,
     selectedGroup: MuscleGroupModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
+    trainingsQuantity: Int,
     onFetchRelations: () -> Unit,
     onSetSelectedGroup: (MuscleGroupModel) -> Unit,
-    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit
+    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
 ) {
     onFetchRelations()
-    val firstAvailableDay = listOfDays.firstOrNull {
-        !it.second
-    }?.first ?: DayOfWeek.values().first()
-    var text by remember { mutableStateOf(firstAvailableDay.toPortugueseString()) }
-    var buttonEnabled by remember { mutableStateOf(false) }
+    val maxDaysQuantity = 6
+    val firstAvailableDay = listOfDays.firstOrNull { !it.second }?.first ?: DayOfWeek.values().first()
+    var dayOfWeek by remember { mutableStateOf(firstAvailableDay.toPortugueseString()) }
+    var enabled by remember { mutableStateOf(true) }
     var trainingName by remember { mutableStateOf(String()) }
     val focusRequester = remember { FocusRequester() }
     var firstTimeScreenOpenedListener by remember { mutableStateOf(true) }
@@ -76,17 +76,15 @@ fun NewTraining(
             },
         )
         ButtonSection(
-            modifier = Modifier
-                .padding(top = 8.dp, bottom = 78.dp)
-                .fillMaxHeight(),
+            modifier = Modifier.padding(top = 8.dp, bottom = 78.dp).fillMaxHeight(),
             titleSection = stringResource(R.string.subgroups),
             buttonName = stringResource(R.string.button_section_save_button),
-            buttonEnabled = buttonEnabled,
+            buttonEnabled = trainingName.isNotEmpty(),
             onButtonClick = {
                 onSaveTraining(
                     TrainingModel(
                         status = Status.PENDING,
-                        dayOfWeek = text.toDayOfWeekOrNull()!!,
+                        dayOfWeek = dayOfWeek.toDayOfWeekOrNull()!!,
                         trainingName = trainingName
                     ),
                     selectedGroup
@@ -97,10 +95,10 @@ fun NewTraining(
                     modifier = Modifier.padding(bottom = 8.dp),
                     focusRequester = focusRequester,
                     trainingName = trainingName,
-                    enabled = text.isNotBlank(),
+                    enabled = enabled && trainingsQuantity <= maxDaysQuantity,
                     onValueChanged = {
                         trainingName = it
-                        buttonEnabled = it.isNotEmpty()
+                        enabled = it.isNotEmpty()
                     }
                 )
                 FilterChipList(
@@ -117,12 +115,13 @@ fun NewTraining(
                 )
                 DropdownItem(
                     items = listOfDays,
-                    text = text,
-                    onItemClick = { text = it }
+                    text = dayOfWeek,
+                    enabled = enabled && trainingsQuantity <= maxDaysQuantity,
+                    onItemClick = { dayOfWeek = it }
                 )
                 Tooltip(
                     text = stringResource(R.string.all_days_used),
-                    enabled = true
+                    enabled = trainingsQuantity > maxDaysQuantity
                 )
             }
         )
