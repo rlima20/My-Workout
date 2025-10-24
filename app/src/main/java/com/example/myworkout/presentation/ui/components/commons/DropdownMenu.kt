@@ -36,7 +36,7 @@ import com.example.myworkout.utils.Utils
 fun DropdownItem(
     modifier: Modifier = Modifier,
     items: List<Pair<DayOfWeek, Boolean>>,
-    text: String?,
+    text: String,
     enabled: Boolean,
     onItemClick: (String) -> Unit
 ) {
@@ -56,7 +56,7 @@ fun DropdownItem(
             ) {
                 Text(
                     modifier = Modifier.padding(start = 16.dp),
-                    text = text ?: "",
+                    text = text,
                     color = colorResource(R.color.text_color),
                     fontSize = 14.sp
                 )

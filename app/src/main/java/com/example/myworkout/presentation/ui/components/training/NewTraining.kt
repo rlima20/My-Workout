@@ -1,15 +1,11 @@
 package com.example.myworkout.presentation.ui.components.training
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
@@ -18,13 +14,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,6 +33,7 @@ import com.example.myworkout.extensions.toDayOfWeekOrNull
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
+import com.example.myworkout.presentation.ui.components.commons.Tooltip
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
@@ -128,42 +122,6 @@ fun NewTraining(
     }
 }
 
-// Todo - passar para outro arquivo
-@Composable
-fun Tooltip(
-    text: String,
-    enabled: Boolean = true,
-    icon: Painter? = painterResource(R.drawable.baseline_warning_24),
-    modifier: Modifier = Modifier
-) {
-    if (enabled) {
-        Box(
-            modifier = modifier
-                .padding(top = 16.dp, bottom = 16.dp)
-                .fillMaxWidth()
-                .background(colorResource(R.color.warning))
-        ) {
-            Row(
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                icon?.let {
-                    Icon(
-                        contentDescription = "",
-                        painter = icon
-                    )
-                }
-
-                Text(
-                    modifier = Modifier.padding(start = 16.dp),
-                    text = text,
-                    color = colorResource(R.color.text_color)
-                )
-            }
-        }
-    }
-}
-
 @Composable
 private fun TextFieldSection(
     modifier: Modifier = Modifier,
@@ -199,27 +157,19 @@ private fun TextFieldSection(
         )
     )
 }
-//
-//@Preview
-//@Composable
-//private fun NewTrainingPreview() {
-//    val constants = Constants()
-//    NewTraining(
-//        workouts = constants,
-//        subgroupsSelected = constants.subGroupsMock,
-//        groupsWithRelations = constants.groupsMock,
-//        selectedGroup = constants.groupsMock.first(),
-//        listOfDays = emptyList(),
-//        onFetchRelations = {},
-//        onSetSelectedGroup = {},
-//        onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
-//    )
-//}
 
 @Preview
 @Composable
-private fun ToolTipPreview() {
-    Tooltip(
-        text = "Você já possui treinamentos em todos os dias da semana. Exclua algum treino para continuar."
+private fun NewTrainingPreview() {
+    val constants = Constants()
+    NewTraining(
+        trainingsQuantity = 1,
+        subgroupsSelected = constants.subGroupsMock,
+        groupsWithRelations = constants.groupsMock,
+        selectedGroup = constants.groupsMock.first(),
+        listOfDays = emptyList(),
+        onFetchRelations = {},
+        onSetSelectedGroup = {},
+        onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
     )
 }
