@@ -19,6 +19,7 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.extensions.homeScreenCardPaddings
+import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
 import com.example.myworkout.utils.Utils
@@ -42,11 +43,7 @@ internal fun HomeScreen(
         items(workouts.size) { index ->
             Column {
                 LabelTrainingCard(
-                    text = utils.weekToString(
-                        workouts[index]
-                            .first
-                            .dayOfWeek
-                    ),
+                    text = workouts[index].first.dayOfWeek.toPortugueseString(),
                     modifier = Modifier.padding(bottom = 8.dp),
                     color = colorResource(R.color.title_color),
                     fontSize = 20.sp

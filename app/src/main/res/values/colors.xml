@@ -18,6 +18,7 @@
     <color name="button_color">#3D4362</color>
     <color name="content">#B1B1B1</color>
     <color name="empty">#D7D5D7</color>
+    <color name="warning">#F4DBBA</color>
 
     <!-- Training status colors-->
     <color name="pending">#9B9B9B</color>

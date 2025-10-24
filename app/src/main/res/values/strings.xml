@@ -36,4 +36,5 @@
     <string name="next">Próximo</string>
     <string name="home">Home</string>
     <string name="create_training_message">Você já pode criar o treino de %1$s.</string>
+    <string name="all_days_used">Você já possui treinamentos em todos os dias da semana. Exclua algum treino para continuar.</string>
 </resources>

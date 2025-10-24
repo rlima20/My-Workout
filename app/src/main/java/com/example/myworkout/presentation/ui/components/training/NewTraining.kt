@@ -1,11 +1,15 @@
 package com.example.myworkout.presentation.ui.components.training
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
@@ -14,10 +18,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,6 +36,8 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
+import com.example.myworkout.extensions.toDayOfWeekOrNull
+import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
@@ -48,8 +57,10 @@ fun NewTraining(
     onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit
 ) {
     onFetchRelations()
-    val utils = Utils()
-    var text by remember { mutableStateOf(utils.weekToString(DayOfWeek.values().first())) }
+    val firstAvailableDay = listOfDays.firstOrNull {
+        !it.second
+    }?.first ?: DayOfWeek.values().first()
+    var text by remember { mutableStateOf(firstAvailableDay.toPortugueseString()) }
     var buttonEnabled by remember { mutableStateOf(false) }
     var trainingName by remember { mutableStateOf(String()) }
     val focusRequester = remember { FocusRequester() }
@@ -75,7 +86,7 @@ fun NewTraining(
                 onSaveTraining(
                     TrainingModel(
                         status = Status.PENDING,
-                        dayOfWeek = utils.stringToWeek(text),
+                        dayOfWeek = text.toDayOfWeekOrNull()!!,
                         trainingName = trainingName
                     ),
                     selectedGroup
@@ -86,13 +97,13 @@ fun NewTraining(
                     modifier = Modifier.padding(bottom = 8.dp),
                     focusRequester = focusRequester,
                     trainingName = trainingName,
+                    enabled = text.isNotBlank(),
                     onValueChanged = {
                         trainingName = it
                         buttonEnabled = it.isNotEmpty()
                     }
                 )
                 FilterChipList(
-                    modifier = Modifier.padding(bottom = 8.dp),
                     backGroundColor = R.color.white,
                     orientation = Grid,
                     orientationProps = GridProps(
@@ -109,8 +120,48 @@ fun NewTraining(
                     text = text,
                     onItemClick = { text = it }
                 )
+                Tooltip(
+                    text = stringResource(R.string.all_days_used),
+                    enabled = true
+                )
             }
         )
+    }
+}
+
+// Todo - passar para outro arquivo
+@Composable
+fun Tooltip(
+    text: String,
+    enabled: Boolean = true,
+    icon: Painter? = painterResource(R.drawable.baseline_warning_24),
+    modifier: Modifier = Modifier
+) {
+    if (enabled) {
+        Box(
+            modifier = modifier
+                .padding(top = 16.dp, bottom = 16.dp)
+                .fillMaxWidth()
+                .background(colorResource(R.color.warning))
+        ) {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp, end = 8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                icon?.let {
+                    Icon(
+                        contentDescription = "",
+                        painter = icon
+                    )
+                }
+
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = text,
+                    color = colorResource(R.color.text_color)
+                )
+            }
+        }
     }
 }
 
@@ -118,6 +169,7 @@ fun NewTraining(
 private fun TextFieldSection(
     modifier: Modifier = Modifier,
     focusRequester: FocusRequester,
+    enabled: Boolean,
     trainingName: String,
     onValueChanged: (trainingName: String) -> Unit
 ) {
@@ -128,6 +180,7 @@ private fun TextFieldSection(
         value = trainingName,
         singleLine = true,
         onValueChange = { onValueChanged(it) },
+        enabled = enabled,
         label = {
             val label =
                 if (trainingName.isEmpty()) stringResource(R.string.new_training_input_text_label)
@@ -147,18 +200,27 @@ private fun TextFieldSection(
         )
     )
 }
+//
+//@Preview
+//@Composable
+//private fun NewTrainingPreview() {
+//    val constants = Constants()
+//    NewTraining(
+//        workouts = constants,
+//        subgroupsSelected = constants.subGroupsMock,
+//        groupsWithRelations = constants.groupsMock,
+//        selectedGroup = constants.groupsMock.first(),
+//        listOfDays = emptyList(),
+//        onFetchRelations = {},
+//        onSetSelectedGroup = {},
+//        onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
+//    )
+//}
 
 @Preview
 @Composable
-private fun NewTrainingPreview() {
-    val constants = Constants()
-    NewTraining(
-        subgroupsSelected = constants.subGroupsMock,
-        groupsWithRelations = constants.groupsMock,
-        selectedGroup = constants.groupsMock.first(),
-        onFetchRelations = {},
-        onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
-        onSetSelectedGroup = {},
-        listOfDays = emptyList()
+private fun ToolTipPreview() {
+    Tooltip(
+        text = "Você já possui treinamentos em todos os dias da semana. Exclua algum treino para continuar."
     )
 }
