@@ -335,6 +335,7 @@ class Constants {
         const val SUB_GROUP_NAME_STIFF = "Stiff"
         const val SUB_GROUP_NAME_BACK_LEG = "Posterior de perna"
         const val SUB_GROUP_NAME_CALF = "Panturrilha"
+        const val SUB_GROUP_NAME_REST = "Descanso"
 
         val MUSCLE_SUB_GROUP_NAMES = listOf(
             // Chest
@@ -373,7 +374,10 @@ class Constants {
             SUB_GROUP_NAME_LEG_PRESS,
             SUB_GROUP_NAME_STIFF,
             SUB_GROUP_NAME_BACK_LEG,
-            SUB_GROUP_NAME_CALF
+            SUB_GROUP_NAME_CALF,
+
+            // Rest
+            SUB_GROUP_NAME_REST
         )
 
         // Layout values
@@ -393,14 +397,6 @@ class Constants {
         const val THURSDAY = "QUINTA"
         const val FRIDAY = "SEXTA"
         const val SATURDAY = "SÁBADO"
-
-        const val SUNDAY_EN = "SUNDAY"
-        const val MONDAY_EN = "MONDAY"
-        const val TUESDAY_EN = "TUESDAY"
-        const val WEDNESDAY_EN = "WEDNESDAY"
-        const val THURSDAY_EN = "THURSDAY"
-        const val FRIDAY_EN = "FRIDAY"
-        const val SATURDAY_EN = "SATURDAY"
     }
 }
 
