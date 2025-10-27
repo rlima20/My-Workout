@@ -86,8 +86,8 @@ fun TrainingCard(
                 )
                 showDialog = false
             },
-            dialogTitle = stringResource(R.string.dialog_title),
-            dialogText = stringResource(R.string.dialog_text),
+            dialogTitle = stringResource(setDialogTitle(isTrainingChecked)),
+            dialogText = stringResource(setDialogText(isTrainingChecked)),
         )
     }
 
@@ -126,12 +126,19 @@ fun TrainingCard(
             CheckBox(
                 status = trainingStatus,
                 isTrainingChecked = isTrainingChecked,
-                enabled = trainingStatus != Status.MISSED && trainingStatus != Status.ACHIEVED,
+                enabled = true,
                 onChecked = { showDialog = true },
             )
         }
     }
 }
+
+fun setDialogTitle(isTrainingChecked: Boolean): Int =
+    if (isTrainingChecked) R.string.dialog_title_restore else R.string.dialog_title
+
+fun setDialogText(isTrainingChecked: Boolean): Int =
+    if (isTrainingChecked) R.string.dialog_text_restore else R.string.dialog_text
+
 
 @Composable
 private fun SetTrainingName(
