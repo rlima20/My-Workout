@@ -169,20 +169,31 @@ class MuscleGroupViewModel(
 
 
     fun insertMuscleGroupMuscleSubGroup(
-        muscleGroupMuscleSubGroups: MutableList<MuscleGroupMuscleSubGroupModel>
+        muscleGroupMuscleSubGroups: List<MuscleGroupMuscleSubGroupModel>
     ) {
         viewModelScope.launch(dispatchers.IO) {
             setLoadingState()
+
             try {
-                muscleGroupMuscleSubGroups.forEach {
-                    muscleGroupUseCase.insertMuscleGroupMuscleSubGroup(it)
+                if (muscleGroupMuscleSubGroups.isEmpty()) {
+                    setErrorState("Nenhum relacionamento informado.")
+                    return@launch
                 }
-                // Configuro o valor inicial
+
+                val muscleGroupId = muscleGroupMuscleSubGroups.first().muscleGroupId
+
+                // Transação única (delete + insert)
+                muscleGroupUseCase.replaceRelationsForGroup(
+                    muscleGroupId,
+                    muscleGroupMuscleSubGroups
+                )
+
                 _objSelected.value = Pair(0, false)
                 setSuccessState()
                 getGroupsWithRelations()
                 getGroupsAndSubGroups()
                 clearSubGroups()
+
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
