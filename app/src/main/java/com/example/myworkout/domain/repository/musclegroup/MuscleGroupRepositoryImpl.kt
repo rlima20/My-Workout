@@ -133,6 +133,14 @@ class MuscleGroupRepositoryImpl(
         muscleGroupMuscleSubGroupDao.insert(muscleGroupMuscleSubGroup.toEntity())
     }
 
+    override suspend fun replaceRelationsForGroup(
+        muscleGroupId: Int,
+        newRelations: List<MuscleGroupMuscleSubGroupModel>
+    ) {
+        val entities = newRelations.map { it.toEntity() }
+        muscleGroupMuscleSubGroupDao.replaceRelationsForGroup(muscleGroupId, entities)
+    }
+
     override fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         trainingMuscleGroupDao.insert(trainingMuscleGroup.toEntity())
     }
