@@ -22,7 +22,6 @@ import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
-import com.example.myworkout.utils.Utils
 
 @RequiresApi(35)
 @Composable
@@ -39,7 +38,6 @@ internal fun HomeScreen(
         horizontalArrangement = Arrangement.spacedBy(LAZY_VERTICAL_GRID_SPACING),
         columns = GridCells.Adaptive(LAZY_VERTICAL_GRID_MIN_SIZE)
     ) {
-        val utils = Utils()
         items(workouts.size) { index ->
             Column {
                 LabelTrainingCard(
