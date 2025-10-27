@@ -10,6 +10,7 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.extensions.sortedByDayOfWeek
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -154,11 +155,13 @@ class MuscleGroupViewModel(
         viewModelScope.launch(dispatchers.IO) {
             setLoadingState()
             try {
-                val workouts = trainings.map { training ->
-                    val subGroups =
-                        muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
-                    training to subGroups
-                }
+                val workouts = trainings
+                    .sortedByDayOfWeek()
+                    .map { training ->
+                        val subGroups =
+                            muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
+                        training to subGroups
+                    }
                 _workouts.value = workouts
                 setSuccessState()
             } catch (exception: Exception) {
@@ -166,7 +169,6 @@ class MuscleGroupViewModel(
             }
         }
     }
-
 
     fun insertMuscleGroupMuscleSubGroup(
         muscleGroupMuscleSubGroups: List<MuscleGroupMuscleSubGroupModel>

@@ -17,7 +17,9 @@ import com.example.myworkout.Constants.Companion.SUNDAY
 import com.example.myworkout.Constants.Companion.THURSDAY
 import com.example.myworkout.Constants.Companion.TUESDAY
 import com.example.myworkout.Constants.Companion.WEDNESDAY
+import com.example.myworkout.Constants.Companion.dayOrder
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 
@@ -77,3 +79,6 @@ fun Modifier.trainingCardFilterChipListModifier(): Modifier = composed {
         .fillMaxWidth()
         .padding(start = DEFAULT_PADDING, end = DEFAULT_PADDING)
 }
+
+fun List<TrainingModel>.sortedByDayOfWeek(): List<TrainingModel> =
+    this.sortedBy { dayOrder.indexOf(it.dayOfWeek) }

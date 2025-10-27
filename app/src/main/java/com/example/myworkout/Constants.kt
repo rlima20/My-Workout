@@ -295,6 +295,16 @@ class Constants {
 
 
     companion object {
+        val dayOrder = listOf(
+            DayOfWeek.SUNDAY,
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY,
+            DayOfWeek.SATURDAY
+        )
+
         // Training
         const val TRAINING_NAME_SHOULDER = "Ombro"
         const val TRAINING_NAME_CHEST_TRICEPS = "Peito e Tríceps"
