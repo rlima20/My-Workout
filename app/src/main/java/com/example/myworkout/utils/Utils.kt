@@ -2,6 +2,8 @@ package com.example.myworkout.utils
 
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.TextFieldColors
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
@@ -33,5 +35,15 @@ class Utils {
         contentColor = colorResource(R.color.white),
         disabledContainerColor = colorResource(R.color.white),
         disabledContentColor = colorResource(R.color.white)
+    )
+
+    @Composable
+    fun getTextFieldColors(): TextFieldColors =
+        TextFieldDefaults.textFieldColors(
+    focusedLabelColor = colorResource(R.color.text_color),
+    cursorColor = colorResource(R.color.text_color),
+    backgroundColor = colorResource(R.color.text_field_background_color),
+    textColor = colorResource(R.color.text_color),
+    focusedIndicatorColor = colorResource(R.color.title_color)
     )
 }

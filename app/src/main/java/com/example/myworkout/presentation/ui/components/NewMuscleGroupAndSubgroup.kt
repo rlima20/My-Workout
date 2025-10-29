@@ -14,8 +14,6 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Text
@@ -26,7 +24,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -43,6 +40,7 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.ExtendedFab
 import com.example.myworkout.presentation.ui.components.commons.Label
+import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
 import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
@@ -153,12 +151,9 @@ private fun MuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
             focusManager.clearFocus()
         },
         content = {
-            TextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequester),
-                value = muscleGroupName,
-                singleLine = true,
+            TextFieldComponent(
+                text = muscleGroupName,
+                isSingleLine = true,
                 onValueChange = {
                     muscleGroupName = it
                     buttonEnabled = it.isNotEmpty()
@@ -169,13 +164,7 @@ private fun MuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
                         color = colorResource(R.color.title_color)
                     )
                 },
-                colors = TextFieldDefaults.textFieldColors(
-                    focusedLabelColor = colorResource(R.color.text_color),
-                    cursorColor = colorResource(R.color.text_color),
-                    backgroundColor = colorResource(R.color.text_field_background_color),
-                    textColor = colorResource(R.color.text_color),
-                    focusedIndicatorColor = colorResource(R.color.title_color)
-                )
+                focusRequester = focusRequester
             )
         }
     )

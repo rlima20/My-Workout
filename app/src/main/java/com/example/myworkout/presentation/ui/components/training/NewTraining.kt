@@ -3,11 +3,8 @@ package com.example.myworkout.presentation.ui.components.training
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,7 +13,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +29,7 @@ import com.example.myworkout.extensions.toDayOfWeekOrNull
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
+import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
 import com.example.myworkout.presentation.ui.components.commons.Tooltip
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
@@ -70,7 +67,9 @@ fun NewTraining(
             },
         )
         ButtonSection(
-            modifier = Modifier.padding(top = 8.dp, bottom = 78.dp).fillMaxHeight(),
+            modifier = Modifier
+                .padding(top = 8.dp, bottom = 78.dp)
+                .fillMaxHeight(),
             titleSection = stringResource(R.string.subgroups),
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = trainingName.isNotEmpty(),
@@ -86,13 +85,12 @@ fun NewTraining(
             },
             content = {
                 TextFieldSection(
-                    modifier = Modifier.padding(bottom = 8.dp),
                     focusRequester = focusRequester,
                     trainingName = trainingName,
                     enabled = enabled && trainingsQuantity <= maxDaysQuantity,
                     onValueChanged = {
                         trainingName = it
-                        enabled = it.isNotEmpty()
+                        enabled = setEnabled(trainingsQuantity, maxDaysQuantity, it)
                     }
                 )
                 FilterChipList(
@@ -122,41 +120,41 @@ fun NewTraining(
     }
 }
 
+private fun setEnabled(
+    trainingsQuantity: Int,
+    maxDaysQuantity: Int,
+    string: String
+): Boolean = if (trainingsQuantity <= maxDaysQuantity) true else string.isNotEmpty()
+
 @Composable
 private fun TextFieldSection(
-    modifier: Modifier = Modifier,
     focusRequester: FocusRequester,
     enabled: Boolean,
     trainingName: String,
     onValueChanged: (trainingName: String) -> Unit
 ) {
-    TextField(
-        modifier = modifier
-            .fillMaxWidth()
-            .focusRequester(focusRequester),
-        value = trainingName,
-        singleLine = true,
+    TextFieldComponent(
+        modifier = Modifier.padding(bottom = 8.dp),
+        text = trainingName,
+        isSingleLine = true,
+        focusRequester = focusRequester,
         onValueChange = { onValueChanged(it) },
         enabled = enabled,
         label = {
-            val label =
-                if (trainingName.isEmpty()) stringResource(R.string.new_training_input_text_label)
-                else Constants().emptyString()
             Text(
-                text = label,
+                text = getLabel(trainingName),
                 color = colorResource(R.color.title_color),
                 fontSize = 16.sp
             )
-        },
-        colors = TextFieldDefaults.textFieldColors(
-            focusedLabelColor = colorResource(R.color.text_color),
-            cursorColor = colorResource(R.color.text_color),
-            backgroundColor = colorResource(R.color.text_field_background_color),
-            textColor = colorResource(R.color.text_color),
-            focusedIndicatorColor = colorResource(R.color.title_color)
-        )
+        }
     )
 }
+
+@Composable
+private fun getLabel(trainingName: String): String =
+    if (trainingName.isEmpty()) stringResource(R.string.new_training_input_text_label)
+    else Constants().emptyString()
+
 
 @Preview
 @Composable
