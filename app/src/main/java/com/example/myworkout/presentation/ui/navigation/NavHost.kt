@@ -204,7 +204,6 @@ private fun SetupTrainingStateObservers(
                 workouts = workouts,
                 modifier = Modifier,
                 onTrainingChecked = { onTrainingChecked(it) },
-                onGetMuscleSubGroupsByTrainingId = {}
             )
         }
     }

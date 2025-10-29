@@ -16,7 +16,8 @@ fun TrainingModel.toEntity(): TrainingEntity {
         trainingId = this.trainingId,
         status = this.status,
         dayOfWeek = this.dayOfWeek,
-        trainingName = this.trainingName
+        trainingName = this.trainingName,
+        isChecked = this.isChecked
     )
 }
 
@@ -25,7 +26,8 @@ fun TrainingEntity.toModel(): TrainingModel {
         trainingId = this.trainingId,
         status = this.status,
         dayOfWeek = this.dayOfWeek,
-        trainingName = this.trainingName
+        trainingName = this.trainingName,
+        isChecked = this.isChecked
     )
 }
 
@@ -100,7 +102,8 @@ fun List<TrainingEntity>.toModelTrainingList(): List<TrainingModel> {
             trainingId = trainingEntity.trainingId,
             status = trainingEntity.status,
             dayOfWeek = trainingEntity.dayOfWeek,
-            trainingName = trainingEntity.trainingName
+            trainingName = trainingEntity.trainingName,
+            isChecked = trainingEntity.isChecked
         )
     }
 }

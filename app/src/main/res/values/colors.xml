@@ -23,6 +23,7 @@
     <!-- Training status colors-->
     <color name="pending">#9B9B9B</color>
     <color name="missed">#B34444</color>
+    <color name="button_skip_training">#C77272</color>
     <color name="achieved">#61AB64</color>
 
     <!-- Default colors -->

@@ -7,30 +7,8 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.example.myworkout.R
-import com.example.myworkout.enums.Status
 
 class Utils {
-
-    fun setStatus(
-        isTrainingChecked: Boolean,
-        trainingStatus: Status,
-        firstStatus: Status
-    ) = if (isTrainingChecked) Status.ACHIEVED
-    else
-        when (trainingStatus) {
-            Status.MISSED -> {
-                firstStatus
-            }
-
-            Status.EMPTY -> {
-                Status.EMPTY
-            }
-
-            else -> {
-                Status.PENDING
-            }
-        }
-
     @Composable
     @OptIn(ExperimentalMaterialApi::class)
     fun selectableChipColors() = ChipDefaults.filterChipColors(

@@ -11,5 +11,6 @@ data class TrainingEntity(
     val trainingId: Int = 0,
     var status: Status,
     val dayOfWeek: DayOfWeek,
-    val trainingName: String = ""
+    val trainingName: String = "",
+    val isChecked: Boolean = false
 )

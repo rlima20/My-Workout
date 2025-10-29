@@ -31,10 +31,15 @@
     <string name="dialog_confirm_text">Confirmar</string>
     <string name="dialog_cancel_text">Cancelar</string>
     <string name="dialog_title">Finalizar treino?</string>
-    <string name="dialog_text">Depois de confirmar não será mais possível realizar alterações nesse treino.</string>
+    <string name="dialog_title_restore">Restaurar treino?</string>
+    <string name="dialog_title_skip">Pular treino?</string>
+    <string name="dialog_text">É possível restaurar o treino no futuro, caso queira..</string>
+    <string name="dialog_text_restore">Seu treino será restaurado ao status pendente novamente.</string>
     <string name="extended_floating_action_button">Extended floating action button.</string>
     <string name="next">Próximo</string>
     <string name="home">Home</string>
     <string name="create_training_message">Você já pode criar o treino de %1$s.</string>
     <string name="all_days_used">Você já possui treinamentos em todos os dias da semana. Exclua algum treino para continuar.</string>
+    <string name="skip_training">Pular treino</string>
+    <string name="restore_training">Restaurar treino</string>
 </resources>
