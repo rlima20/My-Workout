@@ -51,7 +51,7 @@ data class GridProps @OptIn(ExperimentalMaterialApi::class) constructor(
     val enabled: Boolean = true,
     val horizontalSpacedBy: Dp,
     val verticalSpacedBy: Dp,
-    val onItemClick: (MuscleSubGroupModel) -> Unit
+    val onItemClick: (MuscleSubGroupModel) -> Unit = {}
 ) : OrientationProps
 
 object Vertical : Orientation {

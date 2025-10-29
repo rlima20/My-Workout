@@ -19,7 +19,7 @@ import com.example.myworkout.R
 @Composable
 internal fun IconButton(
     painter: Painter,
-    onClick: () -> Unit
+    onClick: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier

@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.Constants.Companion.SUB_GROUP_SECTION_BACKGROUND
@@ -52,44 +55,41 @@ fun TrainingCard(
     filterChipListModifier: Modifier = Modifier,
     training: TrainingModel,
     subGroups: List<MuscleSubGroupModel>,
-    chipListEnabled: Boolean,
-    onAddButtonClicked: () -> Unit,
-    onMuscleGroupSelected: (itemsSelected: MutableList<MuscleSubGroupModel>) -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
-    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit
 ) {
-    var trainingStatus = training.status
-    val firstStatus = training.status
-    var isTrainingChecked = training.status == Status.ACHIEVED
-    var showDialog by remember { mutableStateOf(false) }
-    var subGroupsState = subGroups
+    // Training
+    var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
+    var status by remember { mutableStateOf(training.status) }
 
-    if (showDialog) {
-        AlertDialog(
-            confirmButtonText = stringResource(R.string.dialog_confirm_text),
-            cancelButtonText = stringResource(R.string.dialog_cancel_text),
-            onDismissRequest = { showDialog = false },
-            onConfirmation = {
-                isTrainingChecked = !isTrainingChecked
-                trainingStatus = Utils().setStatus(
-                    isTrainingChecked,
-                    trainingStatus,
-                    firstStatus
-                )
-                onTrainingChecked(
-                    TrainingModel(
-                        trainingId = training.trainingId,
-                        status = trainingStatus,
-                        trainingName = training.trainingName,
-                        dayOfWeek = training.dayOfWeek
-                    )
-                )
-                showDialog = false
-            },
-            dialogTitle = stringResource(setDialogTitle(isTrainingChecked)),
-            dialogText = stringResource(setDialogText(isTrainingChecked)),
-        )
+    // Dialog
+    var showDialog by remember { mutableStateOf(false) }
+    var dialogTitle by remember { mutableStateOf(R.string.dialog_title) }
+    var dialogText by remember { mutableStateOf(R.string.dialog_text) }
+
+    fun setInitialStates() {
+        showDialog = false
+        status = training.status
+        isTrainingChecked = training.isChecked
     }
+
+    AlertDialogSection(
+        dialogTitle = dialogTitle,
+        dialogText = dialogText,
+        showDialog = showDialog,
+        onDismiss = { setInitialStates() },
+        onConfirmation = {
+            onTrainingChecked(
+                TrainingModel(
+                    trainingId = training.trainingId,
+                    status = status,
+                    trainingName = training.trainingName,
+                    dayOfWeek = training.dayOfWeek,
+                    isChecked = isTrainingChecked
+                )
+            )
+            setInitialStates()
+        }
+    )
 
     Card(
         modifier = modifier.padding(bottom = TRAINING_CARD_PADDING_BOTTOM),
@@ -100,45 +100,139 @@ fun TrainingCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             SetTrainingName(
                 trainingName = training.trainingName,
-                status = trainingStatus
+                status = training.status
             )
             SetSubGroupSection(
                 filterChipListModifier = filterChipListModifier,
                 training = training,
-                subGroups = subGroups,
-                onItemClick = { item ->
-                    val subGroupsSelected: MutableList<MuscleSubGroupModel> = mutableListOf()
-
-                    subGroupsState = subGroupsState.map { muscleSubGroup ->
-                        if (muscleSubGroup.id == item.id) item.copy(selected = !item.selected)
-                        else muscleSubGroup
-                    }.toMutableList()
-
-                    if (!item.selected) subGroupsSelected.remove(item)
-                    else subGroupsSelected.add(item.copy(selected = true))
-
-                    onMuscleGroupSelected(subGroupsSelected)
-                },
-                onAddButtonClicked = { onAddButtonClicked() },
-                chipListEnabled = chipListEnabled,
-                onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
+                subGroups = subGroups
             )
-            CheckBox(
-                status = trainingStatus,
-                isTrainingChecked = isTrainingChecked,
-                enabled = true,
-                onChecked = { showDialog = true },
+            SetCheckboxSection(
+                training = training,
+                onCheckTraining = { isTrainingChecked = it },
+                onChangeStatus = { status = it },
+                onChangeDialogText = { dialogText = it },
+                onChangeDialogTitle = { dialogTitle = it },
+                onShowDialog = { showDialog = it }
             )
         }
     }
 }
 
-fun setDialogTitle(isTrainingChecked: Boolean): Int =
-    if (isTrainingChecked) R.string.dialog_title_restore else R.string.dialog_title
+@Composable
+private fun SetCheckboxSection(
+    training: TrainingModel,
+    onCheckTraining: (value: Boolean) -> Unit,
+    onChangeStatus: (status: Status) -> Unit,
+    onChangeDialogTitle: (value: Int) -> Unit,
+    onChangeDialogText: (value: Int) -> Unit,
+    onShowDialog: (value: Boolean) -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Absolute.SpaceBetween
+    ) {
+        CheckboxSection(
+            training = training,
+            onCheckTraining = { onCheckTraining(it) },
+            onChangeStatus = { onChangeStatus(it) },
+            onChangeDialogTitle = { onChangeDialogTitle(it) },
+            onChangeDialogText = { onChangeDialogText(it) },
+            onShowDialog = { onShowDialog(it) },
+        )
+        SkipButtonSection(
+            training = training,
+            onChangeDialogTitle = { onChangeDialogTitle(it) },
+            onChangeDialogText = { onChangeDialogText(it) },
+            onChangeStatus = { onChangeStatus(it) },
+            onShowDialog = { onShowDialog(it) }
+        )
+    }
+}
 
-fun setDialogText(isTrainingChecked: Boolean): Int =
-    if (isTrainingChecked) R.string.dialog_text_restore else R.string.dialog_text
+@Composable
+private fun SkipButtonSection(
+    training: TrainingModel,
+    onChangeDialogTitle: (Int) -> Unit,
+    onChangeDialogText: (Int) -> Unit,
+    onChangeStatus: (Status) -> Unit,
+    onShowDialog: (Boolean) -> Unit
+) {
+    if (training.status == Status.PENDING || training.status == Status.MISSED)
+        Button(
+            modifier = Modifier
+                .padding(start = 8.dp, bottom = 8.dp)
+                .height(30.dp),
+            onClick = {
+                onChangeDialogTitle(if (training.status == Status.PENDING) R.string.dialog_title_skip else R.string.dialog_title_restore)
+                onChangeDialogText(R.string.dialog_text)
+                onChangeStatus(if (training.status != Status.MISSED) Status.MISSED else Status.PENDING)
+                onShowDialog(true)
+            },
+            enabled = true,
+            colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.button_skip_training))
+        ) {
+            Text(
+                fontSize = 10.sp,
+                text = stringResource(
+                    if (training.status == Status.PENDING) R.string.skip_training
+                    else R.string.restore_training
+                )
+            )
+        }
+}
 
+@Composable
+private fun CheckboxSection(
+    training: TrainingModel,
+    onCheckTraining: (Boolean) -> Unit,
+    onChangeStatus: (Status) -> Unit,
+    onChangeDialogTitle: (Int) -> Unit,
+    onChangeDialogText: (Int) -> Unit,
+    onShowDialog: (Boolean) -> Unit
+) {
+    if (training.status != Status.MISSED) {
+        CheckBox(
+            status = training.status,
+            isTrainingChecked = training.isChecked,
+            enabled = true,
+            onChecked = {
+                if (training.isChecked) {
+                    onCheckTraining(false)
+                    onChangeStatus(Status.PENDING)
+                    onChangeDialogTitle(R.string.dialog_title_restore)
+                    onChangeDialogText(R.string.dialog_text_restore)
+                } else {
+                    onCheckTraining(true)
+                    onChangeStatus(Status.ACHIEVED)
+                    onChangeDialogTitle(R.string.dialog_title)
+                    onChangeDialogText(R.string.dialog_text)
+                }
+                onShowDialog(true)
+            },
+        )
+    }
+}
+
+@Composable
+private fun AlertDialogSection(
+    dialogTitle: Int,
+    dialogText: Int,
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirmation: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            confirmButtonText = stringResource(R.string.dialog_confirm_text),
+            cancelButtonText = stringResource(R.string.dialog_cancel_text),
+            onDismissRequest = { onDismiss() },
+            onConfirmation = { onConfirmation() },
+            dialogTitle = stringResource(dialogTitle),
+            dialogText = stringResource(dialogText),
+        )
+    }
+}
 
 @Composable
 private fun SetTrainingName(
@@ -163,10 +257,6 @@ private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
     training: TrainingModel,
     subGroups: List<MuscleSubGroupModel>,
-    chipListEnabled: Boolean = false,
-    onItemClick: (item: MuscleSubGroupModel) -> Unit,
-    onAddButtonClicked: () -> Unit,
-    onGetMuscleSubGroupsByTrainingId: (trainingId: Int) -> Unit,
 ) {
     Box(
         modifier = Modifier
@@ -181,16 +271,12 @@ private fun SetSubGroupSection(
                 orientationProps = GridProps(
                     colors = Utils().selectableChipColors(),
                     listOfMuscleSubGroup = subGroups,
-                    enabled = chipListEnabled,
+                    enabled = false,
                     horizontalSpacedBy = DEFAULT_PADDING,
                     verticalSpacedBy = DEFAULT_PADDING,
-                    onItemClick = { onItemClick(it) }
                 ),
             )
-        } else IconButton(
-            painter = painterResource(R.drawable.add_icon),
-            onClick = { onAddButtonClicked() }
-        )
+        } else IconButton(painter = painterResource(R.drawable.add_icon))
     }
 }
 
@@ -206,11 +292,8 @@ fun TrainingCardPreview() {
                 modifier = Modifier.padding(bottom = 4.dp),
                 training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
                 subGroups = constants.subGroupsMock,
-                chipListEnabled = false,
-                onMuscleGroupSelected = {},
-                onAddButtonClicked = {},
-                onTrainingChecked = {},
-                onGetMuscleSubGroupsByTrainingId = {}
+                filterChipListModifier = Modifier,
+                onTrainingChecked = {}
             )
         }
     }

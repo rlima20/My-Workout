@@ -3,6 +3,7 @@ package com.example.myworkout.presentation.ui.components.home
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -29,11 +30,9 @@ internal fun HomeScreen(
     modifier: Modifier,
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
-    onGetMuscleSubGroupsByTrainingId: (training: Int) -> Unit
 ) {
-
     LazyVerticalGrid(
-        modifier = Modifier.homeScreenCardPaddings(),
+        modifier = Modifier.homeScreenCardPaddings().fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalArrangement = Arrangement.spacedBy(LAZY_VERTICAL_GRID_SPACING),
         columns = GridCells.Adaptive(LAZY_VERTICAL_GRID_MIN_SIZE)
@@ -50,11 +49,7 @@ internal fun HomeScreen(
                     filterChipListModifier = modifier,
                     training = workouts[index].first,
                     subGroups = workouts[index].second,
-                    chipListEnabled = false,
-                    onMuscleGroupSelected = {},
-                    onAddButtonClicked = {},
                     onTrainingChecked = { onTrainingChecked(it) },
-                    onGetMuscleSubGroupsByTrainingId = { onGetMuscleSubGroupsByTrainingId(it) }
                 )
             }
         }
@@ -69,6 +64,5 @@ fun HomeScreenPreview() {
         workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
         modifier = Modifier,
         onTrainingChecked = {},
-        onGetMuscleSubGroupsByTrainingId = {}
     )
 }

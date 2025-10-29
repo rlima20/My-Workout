@@ -7,5 +7,6 @@ data class TrainingModel(
     val trainingId: Int = 0,
     val status: Status,
     val dayOfWeek: DayOfWeek,
-    val trainingName: String
+    val trainingName: String,
+    val isChecked: Boolean = false
 )
