@@ -90,8 +90,7 @@ fun NewTraining(
                     enabled = enabled && trainingsQuantity <= maxDaysQuantity,
                     onValueChanged = {
                         trainingName = it
-                        enabled =
-                            if (trainingsQuantity <= maxDaysQuantity) true else it.isNotEmpty()
+                        enabled = setEnabled(trainingsQuantity, maxDaysQuantity, it)
                     }
                 )
                 FilterChipList(
@@ -120,6 +119,12 @@ fun NewTraining(
         )
     }
 }
+
+private fun setEnabled(
+    trainingsQuantity: Int,
+    maxDaysQuantity: Int,
+    string: String
+): Boolean = if (trainingsQuantity <= maxDaysQuantity) true else string.isNotEmpty()
 
 @Composable
 private fun TextFieldSection(
