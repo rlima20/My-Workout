@@ -2,7 +2,9 @@ package com.example.myworkout.presentation.ui.components.trainingcard
 
 import android.annotation.SuppressLint
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,12 +44,17 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
+import com.example.myworkout.extensions.toDayOfWeek
 import com.example.myworkout.extensions.trainingCardFilterChipListModifier
 import com.example.myworkout.presentation.ui.components.commons.AlertDialog
 import com.example.myworkout.presentation.ui.components.commons.CheckBox
+import com.example.myworkout.presentation.ui.components.commons.CustomDialog
+import com.example.myworkout.presentation.ui.components.commons.DropdownItem
 import com.example.myworkout.presentation.ui.components.commons.IconButton
+import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
 import com.example.myworkout.utils.Utils
 
+@OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(35)
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @Composable
@@ -54,8 +62,11 @@ fun TrainingCard(
     modifier: Modifier = Modifier,
     filterChipListModifier: Modifier = Modifier,
     training: TrainingModel,
+    dayOfWeek: String,
     subGroups: List<MuscleSubGroupModel>,
-    onTrainingChecked: (training: TrainingModel) -> Unit,
+    listOfDays: List<Pair<DayOfWeek, Boolean>>,
+    onUpdateTraining: (training: TrainingModel) -> Unit,
+    onUpdateDayOfWeek: (value: String) -> Unit
 ) {
     // Training
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
@@ -63,8 +74,13 @@ fun TrainingCard(
 
     // Dialog
     var showDialog by remember { mutableStateOf(false) }
+    var showCustomDialog by remember { mutableStateOf(false) }
     var dialogTitle by remember { mutableStateOf(R.string.dialog_title) }
     var dialogText by remember { mutableStateOf(R.string.dialog_text) }
+
+    // Custom Dialog
+    val focusRequester = remember { FocusRequester() }
+    var trainingName by remember { mutableStateOf(training.trainingName) }
 
     fun setInitialStates() {
         showDialog = false
@@ -78,7 +94,7 @@ fun TrainingCard(
         showDialog = showDialog,
         onDismiss = { setInitialStates() },
         onConfirmation = {
-            onTrainingChecked(
+            onUpdateTraining(
                 TrainingModel(
                     trainingId = training.trainingId,
                     status = status,
@@ -91,8 +107,41 @@ fun TrainingCard(
         }
     )
 
+    CustomDialogSection(
+        showCustomDialog = showCustomDialog,
+        trainingName = trainingName,
+        trainingStatus = training.status,
+        focusRequester = focusRequester,
+        listOfDays = listOfDays,
+        dayOfWeek = dayOfWeek,
+        onShowDialog = { showCustomDialog = it },
+        onChangeTrainingName = { trainingName = it },
+        onChangeDayOfWeek = { onUpdateDayOfWeek(it) },
+        onConfirmation = {
+            showCustomDialog = false
+            onUpdateTraining(
+                TrainingModel(
+                    trainingId = training.trainingId,
+                    status = training.status,
+                    trainingName = trainingName,
+                    dayOfWeek = dayOfWeek.toDayOfWeek(),
+                    isChecked = training.isChecked
+                )
+            )
+        }
+    )
+
     Card(
-        modifier = modifier.padding(bottom = TRAINING_CARD_PADDING_BOTTOM),
+        modifier = modifier
+            .padding(bottom = TRAINING_CARD_PADDING_BOTTOM)
+            .combinedClickable(
+                onClick = {
+                    showCustomDialog = false
+                },
+                onLongClick = {
+                    showCustomDialog = true
+                }
+            ),
         colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         elevation = CardDefaults.cardElevation(),
@@ -109,13 +158,74 @@ fun TrainingCard(
             )
             SetCheckboxSection(
                 training = training,
-                onCheckTraining = { isTrainingChecked = it },
+                onCheckTraining = {
+                    showCustomDialog = false
+                    isTrainingChecked = it
+                },
                 onChangeStatus = { status = it },
                 onChangeDialogText = { dialogText = it },
                 onChangeDialogTitle = { dialogTitle = it },
-                onShowDialog = { showDialog = it }
+                onShowDialog = {
+                    showCustomDialog = false
+                    showDialog = it
+                }
             )
         }
+    }
+}
+
+@Composable
+private fun CustomDialogSection(
+    trainingName: String,
+    trainingStatus: Status,
+    showCustomDialog: Boolean,
+    focusRequester: FocusRequester,
+    listOfDays: List<Pair<DayOfWeek, Boolean>>,
+    dayOfWeek: String,
+    onShowDialog: (value: Boolean) -> Unit,
+    onChangeTrainingName: (name: String) -> Unit,
+    onChangeDayOfWeek: (dayOfWeek: String) -> Unit,
+    onConfirmation: () -> Unit
+) {
+    if (showCustomDialog && trainingStatus == Status.PENDING) {
+        CustomDialog(
+            modifier = Modifier.padding(16.dp),
+            title = R.string.dialog_title,
+            message = null,
+            onConfirmation = {
+                onConfirmation()
+            },
+            onDismissRequest = { onShowDialog(false) },
+            content = {
+                TextFieldComponent(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    text = trainingName,
+                    isSingleLine = true,
+                    focusRequester = focusRequester,
+                    onValueChange = { onChangeTrainingName(it) },
+                    enabled = true,
+                    label = {
+                        Text(
+                            text = stringResource(R.string.training_name_string),
+                            color = colorResource(R.color.title_color),
+                            fontSize = 16.sp
+                        )
+                    }
+                )
+
+                DropdownItem(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    items = listOfDays,
+                    text = dayOfWeek,
+                    enabled = true,
+                    onItemClick = {
+                        onChangeDayOfWeek(it)
+                    }
+                )
+            }
+        )
     }
 }
 
@@ -290,10 +400,13 @@ fun TrainingCardPreview() {
         Status.values().forEach {
             TrainingCard(
                 modifier = Modifier.padding(bottom = 4.dp),
+                dayOfWeek = "DOMINGO",
                 training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
                 subGroups = constants.subGroupsMock,
                 filterChipListModifier = Modifier,
-                onTrainingChecked = {}
+                listOfDays = Constants().getListOfDays(),
+                onUpdateTraining = {},
+                onUpdateDayOfWeek = {}
             )
         }
     }

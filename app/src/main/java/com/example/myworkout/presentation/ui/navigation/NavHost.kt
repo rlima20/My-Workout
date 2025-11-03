@@ -57,7 +57,9 @@ fun NavHost(
     selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
-    onFetchTrainings: () -> Unit
+    onFetchTrainings: () -> Unit,
+    dayOfWeek: String,
+    onUpdateDayOfWeek: (value: String) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -75,7 +77,9 @@ fun NavHost(
 
             SetupTrainingStateObservers(
                 workouts = workouts,
+                listOfDays = listOfDays,
                 trainingViewState = trainingViewState,
+                dayOfWeek = dayOfWeek,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRouteToHomeScreen,
                 onNavigateToNewTraining = {
@@ -84,6 +88,7 @@ fun NavHost(
                 },
                 onDatabaseCreated = { onDatabaseCreated() },
                 onFetchWorkouts = { onFetchWorkouts(it) },
+                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) }
             )
         }
 
@@ -163,12 +168,15 @@ private fun SetupMuscleGroupStateObservers(
 @Composable
 private fun SetupTrainingStateObservers(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+    listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
+    dayOfWeek: String,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
+    onUpdateDayOfWeek: (value: String) -> Unit,
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -202,8 +210,11 @@ private fun SetupTrainingStateObservers(
             onFetchWorkouts(trainingViewState.trainings)
             HomeScreen(
                 workouts = workouts,
+                dayOfWeek = dayOfWeek,
+                listOfDays = listOfDays,
                 modifier = Modifier,
                 onTrainingChecked = { onTrainingChecked(it) },
+                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) }
             )
         }
     }

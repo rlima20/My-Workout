@@ -42,4 +42,9 @@
     <string name="all_days_used">Você já possui treinamentos em todos os dias da semana. Exclua algum treino para continuar.</string>
     <string name="skip_training">Pular treino</string>
     <string name="restore_training">Restaurar treino</string>
+    <string name="edit_training">Editar treinamento</string>
+    <string name="confirm_edit_training">Confirmar alteração?</string>
+    <string name="confirm">Confirmar</string>
+    <string name="cancell">Cancelar</string>
+    <string name="training_name_string">Nome do treino</string>
 </resources>

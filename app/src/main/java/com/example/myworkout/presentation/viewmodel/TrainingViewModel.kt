@@ -12,6 +12,7 @@ import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.usecase.training.TrainingUseCase
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
+import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +53,18 @@ class TrainingViewModel(
         _listOfDays.value = DayOfWeek.values().map { day ->
             Pair(day, trainingDays.contains(day))
         }
+    }
+
+    private fun getFirstAvailableDay(): String{
+        val firstAvailableDay = _listOfDays.value.firstOrNull { !it.second }?.first ?: DayOfWeek.values().first()
+        return firstAvailableDay.toPortugueseString()
+    }
+
+    private val _dayOfWeek: MutableStateFlow<String> = MutableStateFlow(getFirstAvailableDay())
+    val dayOfWeek: StateFlow<String> = _dayOfWeek
+
+    fun updateDayOfWeek(value: String){
+        _dayOfWeek.value = value
     }
 
     fun updateTraining(trainingModel: TrainingModel) {

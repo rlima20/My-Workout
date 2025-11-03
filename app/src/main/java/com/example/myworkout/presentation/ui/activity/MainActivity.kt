@@ -61,6 +61,7 @@ class MainActivity : ComponentActivity() {
             val muscleGroupsWithRelation by muscleGroupViewModel.muscleGroupsWithRelation.collectAsState()
             val objSelected by muscleGroupViewModel.objSelected.collectAsState()
             val trainingViewState by trainingViewModel.viewState.collectAsState()
+            val dayOfWeek by trainingViewModel.dayOfWeek.collectAsState()
             val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
             val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
             val listOfDays by trainingViewModel.listOfDays.collectAsState()
@@ -86,7 +87,8 @@ class MainActivity : ComponentActivity() {
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = muscleGroupsWithRelation,
                     selectedGroup = selectedGroup,
-                    listOfDays = listOfDays
+                    listOfDays = listOfDays,
+                    dayOfWeek = dayOfWeek
                 )
             }
         }
@@ -109,7 +111,8 @@ class MainActivity : ComponentActivity() {
         subgroupsSelected: List<MuscleSubGroupModel>,
         groupsWithRelations: List<MuscleGroupModel>,
         selectedGroup: MuscleGroupModel,
-        listOfDays: List<Pair<DayOfWeek, Boolean>>
+        listOfDays: List<Pair<DayOfWeek, Boolean>>,
+        dayOfWeek: String
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -128,6 +131,7 @@ class MainActivity : ComponentActivity() {
                     muscleSubGroups = muscleSubGroups,
                     muscleGroupsWithRelation = muscleGroupsWithRelation,
                     workouts = workouts,
+                    dayOfWeek = dayOfWeek,
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
                     listOfDays = listOfDays,
@@ -169,7 +173,8 @@ class MainActivity : ComponentActivity() {
                     selectedGroup = selectedGroup,
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
-                    onFetchTrainings = { fetchTrainings() }
+                    onFetchTrainings = { fetchTrainings() },
+                    onUpdateDayOfWeek = { updateDayOfWeek(it) }
                 )
             },
             bottomBar = {
@@ -185,6 +190,10 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    private fun updateDayOfWeek(value: String){
+        trainingViewModel.updateDayOfWeek(value)
     }
 
     private fun navigateToHomeScreen(navController: NavHostController) {

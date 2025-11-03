@@ -19,6 +19,7 @@ import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_SPACING
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
@@ -28,11 +29,16 @@ import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCar
 @Composable
 internal fun HomeScreen(
     modifier: Modifier,
+    dayOfWeek: String,
+    listOfDays: List<Pair<DayOfWeek, Boolean>>,
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
+    onUpdateDayOfWeek: (value: String) -> Unit
 ) {
     LazyVerticalGrid(
-        modifier = Modifier.homeScreenCardPaddings().fillMaxWidth(),
+        modifier = Modifier
+            .homeScreenCardPaddings()
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalArrangement = Arrangement.spacedBy(LAZY_VERTICAL_GRID_SPACING),
         columns = GridCells.Adaptive(LAZY_VERTICAL_GRID_MIN_SIZE)
@@ -49,7 +55,10 @@ internal fun HomeScreen(
                     filterChipListModifier = modifier,
                     training = workouts[index].first,
                     subGroups = workouts[index].second,
-                    onTrainingChecked = { onTrainingChecked(it) },
+                    dayOfWeek = dayOfWeek,
+                    listOfDays = listOfDays,
+                    onUpdateTraining = { onTrainingChecked(it) },
+                    onUpdateDayOfWeek = { onUpdateDayOfWeek(it) }
                 )
             }
         }
@@ -63,6 +72,9 @@ fun HomeScreenPreview() {
     HomeScreen(
         workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
         modifier = Modifier,
+        dayOfWeek = "DOMINGO",
+        listOfDays = Constants().getListOfDays(),
         onTrainingChecked = {},
+        onUpdateDayOfWeek = {}
     )
 }
