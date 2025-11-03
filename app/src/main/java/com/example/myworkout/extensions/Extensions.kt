@@ -45,6 +45,18 @@ fun String.toDayOfWeekOrNull(): DayOfWeek? = when (this) {
     else -> null
 }
 
+fun String.toDayOfWeek(): DayOfWeek = when (this) {
+    MONDAY -> DayOfWeek.MONDAY
+    TUESDAY -> DayOfWeek.TUESDAY
+    WEDNESDAY -> DayOfWeek.WEDNESDAY
+    THURSDAY -> DayOfWeek.THURSDAY
+    FRIDAY -> DayOfWeek.FRIDAY
+    SATURDAY -> DayOfWeek.SATURDAY
+    SUNDAY -> DayOfWeek.SUNDAY
+    else -> {}
+} as DayOfWeek
+
+
 @Composable
 fun Status.setBackGroundColor(): Int =
     when (this) {

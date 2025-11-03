@@ -8,8 +8,16 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
+import kotlinx.coroutines.flow.StateFlow
 
 class Constants {
+
+    fun getListOfDays(): List<Pair<DayOfWeek, Boolean>> =
+        listOf(
+            Pair(DayOfWeek.SATURDAY, false),
+            Pair(DayOfWeek.SUNDAY, false),
+            Pair(DayOfWeek.THURSDAY, false),
+        )
 
     @Composable
     fun getTrainingMock(
