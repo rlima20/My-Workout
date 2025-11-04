@@ -1,5 +1,6 @@
 package com.example.myworkout.utils
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.TextFieldColors
@@ -7,8 +8,12 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.MuscleGroupModel
+import com.example.myworkout.domain.model.MuscleSubGroupModel
 
 class Utils {
     @Composable
@@ -46,4 +51,17 @@ class Utils {
     textColor = colorResource(R.color.text_color),
     focusedIndicatorColor = colorResource(R.color.title_color)
     )
+
+    @Composable
+    fun setModifier(isCardSectionVisible: Boolean): Modifier =
+        if (isCardSectionVisible) Modifier
+        else Modifier.padding(bottom = 76.dp)
+
+    @Composable
+    fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: MuscleGroupModel) =
+        if (objSelected.first == muscleGroup.muscleGroupId) objSelected.second else muscleGroup.selected
+
+    fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupModel>): Boolean {
+        return muscleSubGroupsSelected.any { it.selected }
+    }
 }

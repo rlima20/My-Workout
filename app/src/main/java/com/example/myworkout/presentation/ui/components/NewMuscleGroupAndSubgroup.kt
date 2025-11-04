@@ -1,10 +1,11 @@
 package com.example.myworkout.presentation.ui.components
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,9 +14,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.FilterChip
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,7 +25,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,8 +34,11 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.presentation.ui.components.commons.Action
+import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
-import com.example.myworkout.presentation.ui.components.commons.ExtendedFab
+import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
+import com.example.myworkout.presentation.ui.components.commons.FabSection
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
 import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
@@ -47,6 +47,7 @@ import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.utils.Utils
 
+@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun NewMuscleGroupAndSubgroup(
@@ -57,13 +58,21 @@ fun NewMuscleGroupAndSubgroup(
     objSelected: Pair<Int, Boolean>,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
-    onSaveRelation: (
-        subGroups: MutableList<MuscleGroupMuscleSubGroupModel>,
-        group: MuscleGroupModel?
-    ) -> Unit,
+    onSaveRelation: (subGroups: MutableList<MuscleGroupMuscleSubGroupModel>, group: MuscleGroupModel?) -> Unit,
     onNavigateToNewTraining: () -> Unit
 ) {
     val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
+    var showDialog by remember { mutableStateOf(false) }
+    var currentAction: Action? by remember { mutableStateOf(null) }
+    val utils = Utils()
+
+    if (showDialog) {
+        ActionDialog(
+            action = currentAction,
+            onDismiss = { showDialog = false }
+        )
+    }
+
     LazyColumn(
         modifier = Modifier
             .padding(top = 70.dp)
@@ -79,7 +88,12 @@ fun NewMuscleGroupAndSubgroup(
                 muscleSubGroups = muscleSubGroups,
                 objSelected = objSelected,
                 onItemClick = { onItemClick(it) },
+                utils = utils,
                 isCardSectionVisible = isCardSectionVisible,
+                onShowDialog = { value, action ->
+                    showDialog = value
+                    currentAction = action
+                },
                 onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
                 onSaveRelation = {
                     createRelations(
@@ -176,6 +190,8 @@ private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
     isCardSectionVisible: Boolean,
+    utils: Utils,
+    onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
@@ -187,7 +203,7 @@ private fun MuscleSubGroupSection(
         val selected = objSelected.second
 
         ButtonSection(
-            modifier = setModifier(isCardSectionVisible),
+            modifier = utils.setModifier(isCardSectionVisible),
             titleSection = stringResource(R.string.training),
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = buttonEnabled,
@@ -195,14 +211,15 @@ private fun MuscleSubGroupSection(
             content = {
                 val objSelected = Pair(muscleGroupId, selected)
                 Column {
-                    val isMuscleGroupSelected =
-                        (objSelected.second) || (muscleGroups.any { it.selected })
-                    val shouldEnableSaveButton = verifyEnabledButton(muscleSubGroups)
+                    val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any { it.selected })
+                    val shouldEnableSaveButton = utils.verifyEnabledButton(muscleSubGroups)
                     buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
 
                     MuscleGroupSection(
                         muscleGroups = muscleGroups,
+                        utils = utils,
                         objSelected = Pair(muscleGroupId, selected),
+                        onShowDialog = { value, action -> onShowDialog(value, action) },
                         onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) }
                     )
 
@@ -216,15 +233,13 @@ private fun MuscleSubGroupSection(
     }
 }
 
-@Composable
-private fun setModifier(isCardSectionVisible: Boolean): Modifier =
-    if (isCardSectionVisible) Modifier else Modifier.padding(bottom = 76.dp)
-
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MuscleGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     objSelected: Pair<Int, Boolean>,
+    utils: Utils,
+    onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (item: MuscleGroupModel) -> Unit,
 ) {
     Label(
@@ -235,14 +250,22 @@ private fun MuscleGroupSection(
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { muscleGroup ->
-            val selected = setSelectedItem(objSelected, muscleGroup)
-            FilterChip(
-                enabled = muscleGroup.enabled,
-                modifier = Modifier.height(42.dp),
-                colors = Utils().selectableChipColors(),
+            val selected = utils.setSelectedItem(objSelected, muscleGroup)
+            val interactionSource = remember { MutableInteractionSource() }
+
+            CustomSelectableChip(
+                modifier = Modifier,
+                text = muscleGroup.name,
                 selected = selected,
-                content = { MuscleGroupName(muscleGroup, selected) },
+                enabled = muscleGroup.enabled,
+                interactionSource = interactionSource,
                 onClick = { onItemClick(muscleGroup) },
+                onLongClick = {
+                    onShowDialog(true, Action.Edit(onConfirm = { /* lógica editar */ }))
+                },
+                onDoubledClick = {
+                    onShowDialog(true, Action.Delete(onConfirm = { /* lógica excluir */ }))
+                }
             )
         }
     }
@@ -311,41 +334,6 @@ private fun CardSection(
 }
 
 @Composable
-private fun FabSection(onClick: () -> Unit) {
-    Row(
-        horizontalArrangement = Arrangement.End,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        ExtendedFab(
-            modifier = Modifier.fillMaxWidth(),
-            icon = Icons.Default.ArrowForward,
-            text = stringResource(R.string.next),
-            onClick = { onClick() }
-        )
-    }
-}
-
-private fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupModel>): Boolean {
-    return muscleSubGroupsSelected.any { it.selected }
-}
-
-@Composable
-private fun MuscleGroupName(muscleGroup: MuscleGroupModel, selected: Boolean) {
-    Text(
-        color = colorResource(if (selected) R.color.white else R.color.text_color),
-        fontSize = 18.sp,
-        text = muscleGroup.name,
-        maxLines = 1,
-        overflow = TextOverflow.Visible,
-        softWrap = false
-    )
-}
-
-@Composable
-private fun setSelectedItem(objSelected: Pair<Int, Boolean>, muscleGroup: MuscleGroupModel) =
-    if (objSelected.first == muscleGroup.muscleGroupId) objSelected.second else muscleGroup.selected
-
-@Composable
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {
     NewMuscleGroupAndSubgroup(
@@ -356,7 +344,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         onItemClick = {},
         muscleSubGroups = Constants().getAllSubGroupsMock(),
         onUpdateSubGroup = {},
-        onSaveRelation = { } as (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit,
+        onSaveRelation = { _, _ -> },
         onNavigateToNewTraining = {}
     )
 }
