@@ -10,7 +10,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -64,4 +66,15 @@ class Utils {
     fun verifyEnabledButton(muscleSubGroupsSelected: List<MuscleSubGroupModel>): Boolean {
         return muscleSubGroupsSelected.any { it.selected }
     }
+
+    @Composable
+    fun getLabel(trainingName: String): String =
+        if (trainingName.isEmpty()) stringResource(R.string.new_training_input_text_label)
+        else Constants().emptyString()
+
+    fun setEnabled(
+        trainingsQuantity: Int,
+        maxDaysQuantity: Int,
+        string: String
+    ): Boolean = if (trainingsQuantity <= maxDaysQuantity) true else string.isNotEmpty()
 }

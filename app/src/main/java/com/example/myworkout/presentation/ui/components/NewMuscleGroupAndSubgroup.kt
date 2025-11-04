@@ -261,7 +261,10 @@ private fun MuscleGroupSection(
                 interactionSource = interactionSource,
                 onClick = { onItemClick(muscleGroup) },
                 onLongClick = {
-                    onShowDialog(true, Action.Edit(onConfirm = { /* lógica editar */ }))
+                    onShowDialog(true, Action.Edit(onConfirm = {
+                    /* lógica editar */
+
+                    }))
                 },
                 onDoubledClick = {
                     onShowDialog(true, Action.Delete(onConfirm = { /* lógica excluir */ }))
