@@ -262,16 +262,11 @@ class MuscleGroupViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             setLoadingState()
             try {
-                // todo - deletar relacionamento
-                // todo - deletar grupo
-                // todo - se tiver trainingMuscleGroup (relacionamento), deletar os relacionamentos com esse id
-                // Todo - deletar o treinamento
-                // muscleGroupUseCase.deleteGroup(group)
-
-//                fetchMuscleGroups()
-//                fetchMuscleSubGroups()
-//                clearSubGroups()
-//                setSuccessState()
+                muscleGroupUseCase.deleteGroupCascade(group)
+                fetchMuscleGroups()
+                getGroupsWithRelations()
+                clearSubGroups()
+                setSuccessDeleteGroup()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())
             }
@@ -327,6 +322,11 @@ class MuscleGroupViewModel(
     private fun setSuccessState() {
         Log.e(SUCCESS, SUCCESS)
         _viewState.value = MuscleGroupViewState.Success
+    }
+
+    private fun setSuccessDeleteGroup(){
+        Log.e(SUCCESS, SUCCESS)
+        _viewState.value = MuscleGroupViewState.SuccessDeleteGroup
     }
 
     private fun setLoadingState() {

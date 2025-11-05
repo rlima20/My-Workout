@@ -73,6 +73,7 @@ class MainActivity : ComponentActivity() {
 
             MyWorkoutTheme {
                 ScaffoldComponent(
+                    trainings = trainings,
                     workouts = workouts,
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
@@ -112,7 +113,8 @@ class MainActivity : ComponentActivity() {
         groupsWithRelations: List<MuscleGroupModel>,
         selectedGroup: MuscleGroupModel,
         listOfDays: List<Pair<DayOfWeek, Boolean>>,
-        dayOfWeek: String
+        dayOfWeek: String,
+        trainings: List<TrainingModel>
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -176,7 +178,13 @@ class MainActivity : ComponentActivity() {
                     onFetchTrainings = { fetchTrainings() },
                     onUpdateDayOfWeek = { updateDayOfWeek(it) },
                     onEditGroup = { editGroup(it) },
-                    onDeleteGroup = { /* deleteGroup(it) */ }
+                    onDeleteGroup = {
+                        deleteGroup(it)
+                    },
+                    onUpdateScreen = {
+                        fetchTrainings()
+                        fetchWorkouts(trainings)
+                    }
                 )
             },
             bottomBar = {

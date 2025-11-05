@@ -61,7 +61,8 @@ fun NavHost(
     onFetchTrainings: () -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
     onEditGroup: (group: MuscleGroupModel) -> Unit,
-    onDeleteGroup: (group: MuscleGroupModel) -> Unit
+    onDeleteGroup: (group: MuscleGroupModel) -> Unit,
+    onUpdateScreen: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -116,6 +117,7 @@ fun NavHost(
                 muscleGroupViewState = muscleGroupViewState,
                 onDatabaseCreated = onDatabaseCreated,
                 onChangeRoute = onChangeRouteToHomeScreen,
+                onUpdateScreen = { onUpdateScreen() },
                 onNavigateToNewTraining = onNavigateToGroupSubgroup,
             )
         }
@@ -144,6 +146,7 @@ private fun SetupMuscleGroupStateObservers(
     muscleGroupViewState: MuscleGroupViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
+    onUpdateScreen: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
 ) {
     when (muscleGroupViewState) {
@@ -164,6 +167,10 @@ private fun SetupMuscleGroupStateObservers(
 
         MuscleGroupViewState.Success -> {
             // Todo - Futuramente, levar todos os estados para esse State
+        }
+
+        MuscleGroupViewState.SuccessDeleteGroup -> {
+            onUpdateScreen()
         }
     }
 }

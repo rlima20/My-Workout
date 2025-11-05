@@ -96,7 +96,10 @@ fun NewMuscleGroupAndSubgroup(
                     onEditGroup(it)
                     showDialog = false
                 },
-                onDeleteGroup = { onDeleteGroup(it) },
+                onDeleteGroup = {
+                    onDeleteGroup(it)
+                    showDialog = false
+                },
                 onShowDialog = { value, action ->
                     showDialog = value
                     currentAction = action
