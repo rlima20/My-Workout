@@ -59,7 +59,9 @@ fun NewMuscleGroupAndSubgroup(
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (subGroups: MutableList<MuscleGroupMuscleSubGroupModel>, group: MuscleGroupModel?) -> Unit,
-    onNavigateToNewTraining: () -> Unit
+    onNavigateToNewTraining: () -> Unit,
+    onEditGroup: (group: MuscleGroupModel) -> Unit,
+    onDeleteGroup: (group: MuscleGroupModel) -> Unit
 ) {
     val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
     var showDialog by remember { mutableStateOf(false) }
@@ -90,6 +92,11 @@ fun NewMuscleGroupAndSubgroup(
                 onItemClick = { onItemClick(it) },
                 utils = utils,
                 isCardSectionVisible = isCardSectionVisible,
+                onConfirm = {
+                    onEditGroup(it)
+                    showDialog = false
+                },
+                onDeleteGroup = { onDeleteGroup(it) },
                 onShowDialog = { value, action ->
                     showDialog = value
                     currentAction = action
@@ -100,9 +107,7 @@ fun NewMuscleGroupAndSubgroup(
                         muscleSubGroups = muscleSubGroups,
                         muscleGroupId = it,
                         groups = muscleGroups,
-                        onSaveRelation = { subGroups, group ->
-                            onSaveRelation(subGroups, group)
-                        },
+                        onSaveRelation = { subGroups, group -> onSaveRelation(subGroups, group) },
                     )
                 }
             )
@@ -191,6 +196,8 @@ private fun MuscleSubGroupSection(
     objSelected: Pair<Int, Boolean>,
     isCardSectionVisible: Boolean,
     utils: Utils,
+    onConfirm: (group: MuscleGroupModel) -> Unit,
+    onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
@@ -211,7 +218,8 @@ private fun MuscleSubGroupSection(
             content = {
                 val objSelected = Pair(muscleGroupId, selected)
                 Column {
-                    val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any { it.selected })
+                    val isMuscleGroupSelected =
+                        (objSelected.second) || (muscleGroups.any { it.selected })
                     val shouldEnableSaveButton = utils.verifyEnabledButton(muscleSubGroups)
                     buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
 
@@ -219,6 +227,8 @@ private fun MuscleSubGroupSection(
                         muscleGroups = muscleGroups,
                         utils = utils,
                         objSelected = Pair(muscleGroupId, selected),
+                        onConfirm = { onConfirm(it) },
+                        onDeleteGroup = { onDeleteGroup(it) },
                         onShowDialog = { value, action -> onShowDialog(value, action) },
                         onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) }
                     )
@@ -239,9 +249,13 @@ private fun MuscleGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     objSelected: Pair<Int, Boolean>,
     utils: Utils,
+    onConfirm: (group: MuscleGroupModel) -> Unit,
+    onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (item: MuscleGroupModel) -> Unit,
 ) {
+    val focusRequester = remember { FocusRequester() }
+
     Label(
         modifier = Modifier.padding(bottom = 4.dp),
         text = stringResource(R.string.select_your_training),
@@ -252,6 +266,7 @@ private fun MuscleGroupSection(
         items(muscleGroups) { muscleGroup ->
             val selected = utils.setSelectedItem(objSelected, muscleGroup)
             val interactionSource = remember { MutableInteractionSource() }
+            var name by remember { mutableStateOf(muscleGroup.name) }
 
             CustomSelectableChip(
                 modifier = Modifier,
@@ -261,13 +276,48 @@ private fun MuscleGroupSection(
                 interactionSource = interactionSource,
                 onClick = { onItemClick(muscleGroup) },
                 onLongClick = {
-                    onShowDialog(true, Action.Edit(onConfirm = {
-                    /* lógica editar */
-
-                    }))
+                    onShowDialog(
+                        true,
+                        Action.Edit(
+                            title = R.string.edit_group,
+                            onConfirm = {
+                                onConfirm(
+                                    MuscleGroupModel(
+                                        muscleGroupId = muscleGroup.muscleGroupId,
+                                        name = name,
+                                        image = muscleGroup.image,
+                                        selected = muscleGroup.selected,
+                                        enabled = muscleGroup.enabled
+                                    )
+                                )
+                            },
+                            content = {
+                                TextFieldComponent(
+                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    text = name,
+                                    isSingleLine = true,
+                                    focusRequester = focusRequester,
+                                    onValueChange = { name = it },
+                                    enabled = true,
+                                    label = {
+                                        Text(
+                                            text = stringResource(R.string.training_name_string),
+                                            color = colorResource(R.color.title_color),
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                )
+                            })
+                    )
                 },
                 onDoubledClick = {
-                    onShowDialog(true, Action.Delete(onConfirm = { /* lógica excluir */ }))
+                    onShowDialog(
+                        true, Action.Delete(
+                            title = R.string.delete_group,
+                            onConfirm = { onDeleteGroup(muscleGroup) },
+                            content = { Text(text = "Deseja deletar esse grupo?") }
+                        )
+                    )
                 }
             )
         }
@@ -348,6 +398,8 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         muscleSubGroups = Constants().getAllSubGroupsMock(),
         onUpdateSubGroup = {},
         onSaveRelation = { _, _ -> },
-        onNavigateToNewTraining = {}
+        onNavigateToNewTraining = {},
+        onEditGroup = {},
+        onDeleteGroup = {}
     )
 }

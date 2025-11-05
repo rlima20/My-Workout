@@ -258,6 +258,26 @@ class MuscleGroupViewModel(
         }
     }
 
+    fun deleteGroup(group: MuscleGroupModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            setLoadingState()
+            try {
+                // todo - deletar relacionamento
+                // todo - deletar grupo
+                // todo - se tiver trainingMuscleGroup (relacionamento), deletar os relacionamentos com esse id
+                // Todo - deletar o treinamento
+                // muscleGroupUseCase.deleteGroup(group)
+
+//                fetchMuscleGroups()
+//                fetchMuscleSubGroups()
+//                clearSubGroups()
+//                setSuccessState()
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
+        }
+    }
+
     fun clearSubGroups() {
         val subGroupsSelected: List<MuscleSubGroupModel> =
             _muscleSubGroups.value.filter { it.selected }
@@ -279,6 +299,20 @@ class MuscleGroupViewModel(
             try {
                 muscleGroupUseCase.updateSubGroup(subGroup)
                 fetchMuscleSubGroups()
+                setSuccessState()
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString())
+            }
+        }
+    }
+
+    fun updateGroup(group: MuscleGroupModel) {
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
+            try {
+                muscleGroupUseCase.updateGroup(group)
+                getGroupsWithRelations()
+                fetchMuscleGroups()
                 setSuccessState()
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString())

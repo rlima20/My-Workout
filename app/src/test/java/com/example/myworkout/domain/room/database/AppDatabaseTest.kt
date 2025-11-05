@@ -81,7 +81,7 @@ class AppDatabaseTest {
                 name = "Upper Body",
                 image = BodyPart.OTHER
             )
-        muscleGroupDao.insert(muscleGroup)
+        muscleGroupDao.insertGroup(muscleGroup)
 
         val result = muscleGroupDao.getMuscleGroupById(10)
         assertNotNull(result)

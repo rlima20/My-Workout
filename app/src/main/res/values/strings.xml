@@ -43,6 +43,7 @@
     <string name="skip_training">Pular treino</string>
     <string name="restore_training">Restaurar treino</string>
     <string name="edit_training">Editar treinamento</string>
+    <string name="edit_group">Editar grupo</string>
     <string name="delete_group">Deletar grupo</string>
     <string name="confirm_edit_training">Confirmar alteração?</string>
     <string name="confirm">Confirmar</string>

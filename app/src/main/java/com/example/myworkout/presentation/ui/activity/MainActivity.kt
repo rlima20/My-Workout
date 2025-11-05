@@ -174,7 +174,9 @@ class MainActivity : ComponentActivity() {
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
                     onFetchTrainings = { fetchTrainings() },
-                    onUpdateDayOfWeek = { updateDayOfWeek(it) }
+                    onUpdateDayOfWeek = { updateDayOfWeek(it) },
+                    onEditGroup = { editGroup(it) },
+                    onDeleteGroup = { /* deleteGroup(it) */ }
                 )
             },
             bottomBar = {
@@ -190,6 +192,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    private fun deleteGroup(group: MuscleGroupModel){
+        muscleGroupViewModel.deleteGroup(group)
+    }
+
+    private fun editGroup(group: MuscleGroupModel){
+        muscleGroupViewModel.updateGroup(group)
     }
 
     private fun updateDayOfWeek(value: String){

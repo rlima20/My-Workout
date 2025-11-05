@@ -10,17 +10,15 @@ sealed class Action {
 
     data class Edit(
         override val onConfirm: () -> Unit,
-        override val content: @Composable () -> Unit = {}
-    ) : Action() {
-        override val title: Int = R.string.edit_training
-    }
+        override val content: @Composable () -> Unit = {},
+        override val title: Int = R.string.delete_group
+    ) : Action()
 
     data class Delete(
         override val onConfirm: () -> Unit,
-        override val content: @Composable () -> Unit = {}
-    ) : Action() {
+        override val content: @Composable () -> Unit = {},
         override val title: Int = R.string.delete_group
-    }
+    ) : Action()
 }
 
 @Composable

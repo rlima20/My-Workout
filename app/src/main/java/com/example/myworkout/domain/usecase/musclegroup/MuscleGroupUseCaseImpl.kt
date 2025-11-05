@@ -33,6 +33,10 @@ class MuscleGroupUseCaseImpl(
         return newGroup
     }
 
+    override suspend fun deleteGroup(group: MuscleGroupModel) {
+        repository.deleteGroup(group)
+    }
+
     override suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>) {
         val updatedSubGroups = subGroups.map { it.copy(selected = false) }
         updatedSubGroups.forEach { updateSubGroup(it) }
@@ -83,6 +87,10 @@ class MuscleGroupUseCaseImpl(
 
     override suspend fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         repository.updateSubGroup(subGroup)
+    }
+
+    override suspend fun updateGroup(group: MuscleGroupModel) {
+        repository.updateGroup(group)
     }
 
     override suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity> {

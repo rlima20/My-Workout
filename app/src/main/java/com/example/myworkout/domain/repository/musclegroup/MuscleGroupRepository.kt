@@ -24,6 +24,8 @@ interface MuscleGroupRepository {
     suspend fun getMuscleSubGroupsByMuscleGroups(listOfMuscleGroups: List<MuscleSubGroupModel>): List<MuscleSubGroupModel>
     fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     fun updateSubGroup(subGroup: MuscleSubGroupModel)
+    fun updateGroup(group: MuscleGroupModel)
+    fun deleteGroup(group: MuscleGroupModel)
 
     // Group and Subgroup relation
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>

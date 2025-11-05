@@ -19,10 +19,12 @@ interface MuscleGroupUseCase {
     suspend fun getMuscleGroups(): List<MuscleGroupModel>
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
     suspend fun updateSubGroup(subGroup: MuscleSubGroupModel)
+    suspend fun updateGroup(group: MuscleGroupModel)
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
     suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
     suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel>
     suspend fun insertMuscleGroup(name: String, image: BodyPart): MuscleGroupModel
+    suspend fun deleteGroup(group: MuscleGroupModel)
     suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>)
     suspend fun replaceRelationsForGroup(
         muscleGroupId: Int,

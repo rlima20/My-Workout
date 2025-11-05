@@ -118,7 +118,7 @@ class MuscleGroupRepositoryImpl(
         muscleGroupMuscleSubGroupDao.getRelationById(trainingMuscleGroup.muscleGroupId)
 
     override fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
-        muscleGroupDao.insert(muscleGroup.toEntity())
+        muscleGroupDao.insertGroup(muscleGroup.toEntity())
     }
 
     override suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel> {
@@ -155,5 +155,13 @@ class MuscleGroupRepositoryImpl(
 
     override fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         muscleSubGroupDao.updateSubGroup(subGroup.toEntity())
+    }
+
+    override fun updateGroup(group: MuscleGroupModel) {
+        muscleGroupDao.updateGroup(group.toEntity())
+    }
+
+    override fun deleteGroup(group: MuscleGroupModel) {
+        muscleGroupDao.deleteGroup(group.toEntity())
     }
 }
