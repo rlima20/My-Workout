@@ -59,14 +59,11 @@ class MuscleGroupViewModel(
     val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
 
     // ===============================================================
-    // PUBLIC FUNCTIONS (API MANTIDA PARA COMPATIBILIDADE)
+    // PUBLIC FUNCTIONS (API KEPT TO COMPATIBILITY)
     // ===============================================================
 
     fun setSelectedGroup(group: MuscleGroupModel) {
-        val list = _groupsAndSubgroupsWithRelations.value
-            .firstOrNull { it.containsKey(group) }
-            ?.get(group)
-            .orEmpty()
+        val list = _groupsAndSubgroupsWithRelations.value.firstOrNull { it.containsKey(group) }?.get(group).orEmpty()
         _selectedGroup.value = group
         _subgroupsSelected.value = list
     }
@@ -126,7 +123,7 @@ class MuscleGroupViewModel(
         setLoadingState()
         try {
             if (muscleGroupMuscleSubGroups.isEmpty()) {
-                setErrorState("Nenhum relacionamento informado.")
+                setErrorState(NO_RELATION_ERROR)
                 return@launch
             }
 
@@ -321,5 +318,6 @@ class MuscleGroupViewModel(
         const val EXCEPTION = "Exception"
         const val SUCCESS = "Success"
         const val LOADING = "Loading"
+        const val NO_RELATION_ERROR = "Nenhum relacionamento informado."
     }
 }
