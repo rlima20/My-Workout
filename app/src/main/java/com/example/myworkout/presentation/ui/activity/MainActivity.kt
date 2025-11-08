@@ -73,6 +73,7 @@ class MainActivity : ComponentActivity() {
 
             MyWorkoutTheme {
                 ScaffoldComponent(
+                    trainings = trainings,
                     workouts = workouts,
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
@@ -112,7 +113,8 @@ class MainActivity : ComponentActivity() {
         groupsWithRelations: List<MuscleGroupModel>,
         selectedGroup: MuscleGroupModel,
         listOfDays: List<Pair<DayOfWeek, Boolean>>,
-        dayOfWeek: String
+        dayOfWeek: String,
+        trainings: List<TrainingModel>
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -174,7 +176,10 @@ class MainActivity : ComponentActivity() {
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
                     onFetchTrainings = { fetchTrainings() },
-                    onUpdateDayOfWeek = { updateDayOfWeek(it) }
+                    onUpdateDayOfWeek = { updateDayOfWeek(it) },
+                    onEditGroup = { editGroup(it) },
+                    onDeleteGroup = { deleteGroup(it) },
+                    onUpdateScreen = { fetchTrainings() },
                 )
             },
             bottomBar = {
@@ -190,6 +195,14 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    private fun deleteGroup(group: MuscleGroupModel){
+        muscleGroupViewModel.deleteGroup(group)
+    }
+
+    private fun editGroup(group: MuscleGroupModel){
+        muscleGroupViewModel.updateGroup(group)
     }
 
     private fun updateDayOfWeek(value: String){

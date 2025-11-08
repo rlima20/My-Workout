@@ -57,6 +57,7 @@ fun NewTraining(
     val focusRequester = remember { FocusRequester() }
     var firstTimeScreenOpenedListener by remember { mutableStateOf(true) }
     if (firstTimeScreenOpenedListener) onSetSelectedGroup(groupsWithRelations.first())
+    val utils = Utils()
 
     Column(Modifier.fillMaxSize()) {
         TabRowComponent(
@@ -90,8 +91,9 @@ fun NewTraining(
                     enabled = enabled && trainingsQuantity <= maxDaysQuantity,
                     onValueChanged = {
                         trainingName = it
-                        enabled = setEnabled(trainingsQuantity, maxDaysQuantity, it)
-                    }
+                        enabled = utils.setEnabled(trainingsQuantity, maxDaysQuantity, it)
+                    },
+                    utils = utils
                 )
                 FilterChipList(
                     backGroundColor = R.color.white,
@@ -120,17 +122,12 @@ fun NewTraining(
     }
 }
 
-private fun setEnabled(
-    trainingsQuantity: Int,
-    maxDaysQuantity: Int,
-    string: String
-): Boolean = if (trainingsQuantity <= maxDaysQuantity) true else string.isNotEmpty()
-
 @Composable
 private fun TextFieldSection(
     focusRequester: FocusRequester,
     enabled: Boolean,
     trainingName: String,
+    utils: Utils,
     onValueChanged: (trainingName: String) -> Unit
 ) {
     TextFieldComponent(
@@ -142,19 +139,13 @@ private fun TextFieldSection(
         enabled = enabled,
         label = {
             Text(
-                text = getLabel(trainingName),
+                text = utils.getLabel(trainingName),
                 color = colorResource(R.color.title_color),
                 fontSize = 16.sp
             )
         }
     )
 }
-
-@Composable
-private fun getLabel(trainingName: String): String =
-    if (trainingName.isEmpty()) stringResource(R.string.new_training_input_text_label)
-    else Constants().emptyString()
-
 
 @Preview
 @Composable

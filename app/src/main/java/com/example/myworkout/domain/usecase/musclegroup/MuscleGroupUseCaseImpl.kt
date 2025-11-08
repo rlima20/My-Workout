@@ -11,8 +11,11 @@ import com.example.myworkout.enums.BodyPart
 class MuscleGroupUseCaseImpl(
     private val repository: MuscleGroupRepository
 
-) :
-    MuscleGroupUseCase {
+) : MuscleGroupUseCase {
+    override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
+        repository.deleteGroupCascade(group)
+    }
+
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
         return repository.getMuscleSubGroupsByTrainingId(trainingId)
     }
@@ -31,6 +34,10 @@ class MuscleGroupUseCaseImpl(
         )
         repository.insertMuscleGroup(newGroup)
         return newGroup
+    }
+
+    override suspend fun deleteGroup(group: MuscleGroupModel) {
+        repository.deleteGroup(group)
     }
 
     override suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>) {
@@ -83,6 +90,10 @@ class MuscleGroupUseCaseImpl(
 
     override suspend fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         repository.updateSubGroup(subGroup)
+    }
+
+    override suspend fun updateGroup(group: MuscleGroupModel) {
+        repository.updateGroup(group)
     }
 
     override suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity> {

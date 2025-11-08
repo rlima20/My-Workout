@@ -33,7 +33,7 @@ internal fun HomeScreen(
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
-    onUpdateDayOfWeek: (value: String) -> Unit
+    onUpdateDayOfWeek: (value: String) -> Unit,
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -75,6 +75,6 @@ fun HomeScreenPreview() {
         dayOfWeek = "DOMINGO",
         listOfDays = Constants().getListOfDays(),
         onTrainingChecked = {},
-        onUpdateDayOfWeek = {}
+        onUpdateDayOfWeek = {},
     )
 }

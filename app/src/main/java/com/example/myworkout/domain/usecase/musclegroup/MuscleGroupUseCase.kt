@@ -8,6 +8,7 @@ import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.enums.BodyPart
 
 interface MuscleGroupUseCase {
+    suspend fun deleteGroupCascade(group: MuscleGroupModel)
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
     suspend fun getSubgroupsById(id: Int): List<MuscleSubGroupModel>
@@ -19,10 +20,12 @@ interface MuscleGroupUseCase {
     suspend fun getMuscleGroups(): List<MuscleGroupModel>
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
     suspend fun updateSubGroup(subGroup: MuscleSubGroupModel)
+    suspend fun updateGroup(group: MuscleGroupModel)
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
     suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
     suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel>
     suspend fun insertMuscleGroup(name: String, image: BodyPart): MuscleGroupModel
+    suspend fun deleteGroup(group: MuscleGroupModel)
     suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>)
     suspend fun replaceRelationsForGroup(
         muscleGroupId: Int,

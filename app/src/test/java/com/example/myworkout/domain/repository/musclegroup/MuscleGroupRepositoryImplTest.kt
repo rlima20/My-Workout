@@ -177,7 +177,7 @@ class MuscleGroupRepositoryImplTest : BaseTest() {
         muscleGroupRepositoryImpl.insertMuscleGroup(muscleGroup)
 
         // Then
-        verify { muscleGroupDao.insert(muscleGroup.toEntity()) }
+        verify { muscleGroupDao.insertGroup(muscleGroup.toEntity()) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

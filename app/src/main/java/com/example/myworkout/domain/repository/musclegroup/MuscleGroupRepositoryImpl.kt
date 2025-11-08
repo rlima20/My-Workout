@@ -24,6 +24,10 @@ class MuscleGroupRepositoryImpl(
     private val muscleSubGroupDao: MuscleSubGroupDao
 ) : MuscleGroupRepository {
 
+    override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
+        muscleGroupDao.deleteMuscleGroupCascade(group.muscleGroupId)
+    }
+
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
         // Lista de subgrupos que vai ser retornada
         val muscleSubGroups = mutableListOf<MuscleSubGroupModel>()
@@ -87,8 +91,10 @@ class MuscleGroupRepositoryImpl(
 
         // Iterar sobre cada grupo muscular
         muscleGroups.forEach { muscleGroup ->
-            val muscleSubGroupsForGroup = getRelationById(muscleGroup.muscleGroupId) // Obter os subgrupos relacionados a cada grupo muscular
-            groupedSubGroups[muscleGroup] = muscleSubGroupsForGroup.mapNotNull { // Adicionar os subgrupos ao mapa
+            val muscleSubGroupsForGroup =
+                getRelationById(muscleGroup.muscleGroupId) // Obter os subgrupos relacionados a cada grupo muscular
+            groupedSubGroups[muscleGroup] =
+                muscleSubGroupsForGroup.mapNotNull { // Adicionar os subgrupos ao mapa
                     getSubgroupById(it)?.toModel()
                 }.toMutableList()
         }
@@ -118,11 +124,12 @@ class MuscleGroupRepositoryImpl(
         muscleGroupMuscleSubGroupDao.getRelationById(trainingMuscleGroup.muscleGroupId)
 
     override fun insertMuscleGroup(muscleGroup: MuscleGroupModel) {
-        muscleGroupDao.insert(muscleGroup.toEntity())
+        muscleGroupDao.insertGroup(muscleGroup.toEntity())
     }
 
     override suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel> {
-        return muscleGroupMuscleSubGroupDao.getAllMuscleGroupMuscleSubGroups().toMuscleGroupMuscleSubGroupModel()
+        return muscleGroupMuscleSubGroupDao.getAllMuscleGroupMuscleSubGroups()
+            .toMuscleGroupMuscleSubGroupModel()
     }
 
     override fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
@@ -155,5 +162,13 @@ class MuscleGroupRepositoryImpl(
 
     override fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         muscleSubGroupDao.updateSubGroup(subGroup.toEntity())
+    }
+
+    override fun updateGroup(group: MuscleGroupModel) {
+        muscleGroupDao.updateGroup(group.toEntity())
+    }
+
+    override fun deleteGroup(group: MuscleGroupModel) {
+        muscleGroupDao.deleteGroup(group.toEntity())
     }
 }
