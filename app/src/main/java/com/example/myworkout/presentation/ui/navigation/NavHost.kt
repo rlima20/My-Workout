@@ -56,6 +56,7 @@ fun NavHost(
     onNavigateToGroupSubgroup: () -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (List<TrainingModel>) -> Unit,
+    onFetchWorkoutsOther: () -> Unit,
     onFetchRelations: () -> Unit,
     onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
     onFetchTrainings: () -> Unit,
@@ -91,7 +92,8 @@ fun NavHost(
                 },
                 onDatabaseCreated = { onDatabaseCreated() },
                 onFetchWorkouts = { onFetchWorkouts(it) },
-                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) }
+                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
+                onFetchWorkoutsOther = { onFetchWorkoutsOther() }
             )
         }
 
@@ -188,6 +190,7 @@ private fun SetupTrainingStateObservers(
     onDatabaseCreated: @Composable () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
+    onFetchWorkoutsOther: () -> Unit
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -225,7 +228,8 @@ private fun SetupTrainingStateObservers(
                 listOfDays = listOfDays,
                 modifier = Modifier,
                 onTrainingChecked = { onTrainingChecked(it) },
-                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) }
+                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
+                onFetchWorkouts = { onFetchWorkoutsOther() }
             )
         }
     }

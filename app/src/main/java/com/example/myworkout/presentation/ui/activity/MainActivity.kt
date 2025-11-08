@@ -183,8 +183,9 @@ class MainActivity : ComponentActivity() {
                     },
                     onUpdateScreen = {
                         fetchTrainings()
-                        fetchWorkouts(trainings)
-                    }
+                        // fetchInfoIfNotFirstInstall(prefs, trainings)
+                    },
+                    onFetchWorkoutsOther = { fetchWorkouts(trainings) }
                 )
             },
             bottomBar = {
