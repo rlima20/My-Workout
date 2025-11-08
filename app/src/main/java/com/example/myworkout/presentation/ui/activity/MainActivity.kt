@@ -178,14 +178,8 @@ class MainActivity : ComponentActivity() {
                     onFetchTrainings = { fetchTrainings() },
                     onUpdateDayOfWeek = { updateDayOfWeek(it) },
                     onEditGroup = { editGroup(it) },
-                    onDeleteGroup = {
-                        deleteGroup(it)
-                    },
-                    onUpdateScreen = {
-                        fetchTrainings()
-                        // fetchInfoIfNotFirstInstall(prefs, trainings)
-                    },
-                    onFetchWorkoutsOther = { fetchWorkouts(trainings) }
+                    onDeleteGroup = { deleteGroup(it) },
+                    onUpdateScreen = { fetchTrainings() },
                 )
             },
             bottomBar = {

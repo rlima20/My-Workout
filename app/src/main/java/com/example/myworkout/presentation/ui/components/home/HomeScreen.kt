@@ -34,9 +34,7 @@ internal fun HomeScreen(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
-    onFetchWorkouts: () -> Unit
 ) {
-    onFetchWorkouts()
     LazyVerticalGrid(
         modifier = Modifier
             .homeScreenCardPaddings()
@@ -78,6 +76,5 @@ fun HomeScreenPreview() {
         listOfDays = Constants().getListOfDays(),
         onTrainingChecked = {},
         onUpdateDayOfWeek = {},
-        onFetchWorkouts = {}
     )
 }
