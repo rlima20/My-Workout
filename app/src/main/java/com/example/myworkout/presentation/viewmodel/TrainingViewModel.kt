@@ -39,6 +39,9 @@ class TrainingViewModel(
     private val _appBarTitle = MutableStateFlow("Home")
     val appBarTitle: StateFlow<String> get() = _appBarTitle
 
+    private val _trainingName = MutableStateFlow("")
+    val trainingName: StateFlow<String> = _trainingName
+
     private val _listOfDays = MutableStateFlow(
         listOf(
             Pair(DayOfWeek.SATURDAY, true)
@@ -65,6 +68,10 @@ class TrainingViewModel(
 
     fun updateDayOfWeek(value: String){
         _dayOfWeek.value = value
+    }
+
+    fun updateTrainingName(value: String){
+        _trainingName.value = value
     }
 
     fun updateTraining(trainingModel: TrainingModel) {
