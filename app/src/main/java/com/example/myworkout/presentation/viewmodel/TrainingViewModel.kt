@@ -16,6 +16,8 @@ import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel.Companion.EXCEPTION
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,6 +25,7 @@ import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 class TrainingViewModel(
+    private val dispatchers: Dispatchers,
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
 
@@ -38,6 +41,9 @@ class TrainingViewModel(
 
     private val _appBarTitle = MutableStateFlow("Home")
     val appBarTitle: StateFlow<String> get() = _appBarTitle
+
+    private val _trainingName = MutableStateFlow("")
+    val trainingName: StateFlow<String> = _trainingName
 
     private val _listOfDays = MutableStateFlow(
         listOf(
@@ -55,7 +61,7 @@ class TrainingViewModel(
         }
     }
 
-    private fun getFirstAvailableDay(): String{
+    private fun getFirstAvailableDay(): String {
         val firstAvailableDay = _listOfDays.value.firstOrNull { !it.second }?.first ?: DayOfWeek.values().first()
         return firstAvailableDay.toPortugueseString()
     }
@@ -63,17 +69,47 @@ class TrainingViewModel(
     private val _dayOfWeek: MutableStateFlow<String> = MutableStateFlow(getFirstAvailableDay())
     val dayOfWeek: StateFlow<String> = _dayOfWeek
 
-    fun updateDayOfWeek(value: String){
+    fun updateDayOfWeek(value: String) {
         _dayOfWeek.value = value
     }
 
-    fun updateTraining(trainingModel: TrainingModel) {
-        setLoadingState()
-        viewModelScope.launch(Dispatchers.IO) {
+    fun updateTrainingName(value: String) {
+        _trainingName.value = value
+    }
+
+    private suspend fun fetchTrainingsInternal() {
+        val trainings = trainingUseCase.getTrainings()
+        _trainings.value = trainings
+    }
+
+    private fun updateListOfDaysInternal() {
+        viewModelScope.launch(dispatchers.IO) {
             try {
+                val daysStatus = trainingUseCase.getTrainingDaysStatus()
+                _listOfDays.value = daysStatus
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString(), null)
+            }
+        }
+    }
+
+    fun updateTraining(trainingModel: TrainingModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            setLoadingState()
+            try {
+
                 trainingUseCase.updateTraining(trainingModel)
-                fetchTrainings()
-                updateListOfDays()
+
+                // Executa ambos em paralelo
+                val jobs = listOf(
+                    async { fetchTrainingsInternal() },
+                    async { updateListOfDaysInternal() }
+                )
+
+                jobs.awaitAll()
+
+                setSuccessState(_trainings.value)
+
             } catch (exception: Exception) {
                 setErrorState(exception.message.toString(), null)
             }

@@ -19,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,11 +67,13 @@ fun TrainingCard(
     subGroups: List<MuscleSubGroupModel>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     onUpdateTraining: (training: TrainingModel) -> Unit,
-    onUpdateDayOfWeek: (value: String) -> Unit
+    onUpdateDayOfWeek: (value: String) -> Unit,
+    onUpdateTrainingName: (value: String) -> Unit,
 ) {
     // Training
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
     var status by remember { mutableStateOf(training.status) }
+    val trainingName = training.trainingName
 
     // Dialog
     var showDialog by remember { mutableStateOf(false) }
@@ -80,12 +83,19 @@ fun TrainingCard(
 
     // Custom Dialog
     val focusRequester = remember { FocusRequester() }
-    var trainingName by remember { mutableStateOf(training.trainingName) }
+    var trainingNameInternal by remember { mutableStateOf(training.trainingName) }
+
+    LaunchedEffect(training.trainingName) {
+        trainingNameInternal = training.trainingName
+    }
 
     fun setInitialStates() {
         showDialog = false
+        showCustomDialog = false
         status = training.status
         isTrainingChecked = training.isChecked
+        onUpdateTrainingName(training.trainingName)
+        trainingNameInternal = trainingName
     }
 
     AlertDialogSection(
@@ -109,21 +119,24 @@ fun TrainingCard(
 
     CustomDialogSection(
         showCustomDialog = showCustomDialog,
-        trainingName = trainingName,
+        trainingName = trainingNameInternal,
         trainingStatus = training.status,
         focusRequester = focusRequester,
         listOfDays = listOfDays,
         dayOfWeek = dayOfWeek,
-        onShowDialog = { showCustomDialog = it },
-        onChangeTrainingName = { trainingName = it },
+        onChangeTrainingName = {
+            onUpdateTrainingName(it)
+            trainingNameInternal = it
+        },
         onChangeDayOfWeek = { onUpdateDayOfWeek(it) },
+        onDismiss = { setInitialStates() },
         onConfirmation = {
             showCustomDialog = false
             onUpdateTraining(
                 TrainingModel(
                     trainingId = training.trainingId,
                     status = training.status,
-                    trainingName = trainingName,
+                    trainingName = trainingNameInternal,
                     dayOfWeek = dayOfWeek.toDayOfWeek(),
                     isChecked = training.isChecked
                 )
@@ -182,10 +195,10 @@ private fun CustomDialogSection(
     focusRequester: FocusRequester,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     dayOfWeek: String,
-    onShowDialog: (value: Boolean) -> Unit,
     onChangeTrainingName: (name: String) -> Unit,
     onChangeDayOfWeek: (dayOfWeek: String) -> Unit,
-    onConfirmation: () -> Unit
+    onConfirmation: () -> Unit,
+    onDismiss: () -> Unit
 ) {
     if (showCustomDialog && trainingStatus == Status.PENDING) {
         CustomDialog(
@@ -195,7 +208,7 @@ private fun CustomDialogSection(
             onConfirmation = {
                 onConfirmation()
             },
-            onDismissRequest = { onShowDialog(false) },
+            onDismissRequest = { onDismiss() },
             content = {
                 TextFieldComponent(
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -406,7 +419,8 @@ fun TrainingCardPreview() {
                 filterChipListModifier = Modifier,
                 listOfDays = Constants().getListOfDays(),
                 onUpdateTraining = {},
-                onUpdateDayOfWeek = {}
+                onUpdateDayOfWeek = {},
+                onUpdateTrainingName = {},
             )
         }
     }

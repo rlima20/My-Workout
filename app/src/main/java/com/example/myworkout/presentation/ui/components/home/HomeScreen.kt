@@ -34,6 +34,7 @@ internal fun HomeScreen(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
+    onUpdateTrainingName: (value: String) -> Unit,
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -54,11 +55,12 @@ internal fun HomeScreen(
                 TrainingCard(
                     filterChipListModifier = modifier,
                     training = workouts[index].first,
-                    subGroups = workouts[index].second,
                     dayOfWeek = dayOfWeek,
+                    subGroups = workouts[index].second,
                     listOfDays = listOfDays,
                     onUpdateTraining = { onTrainingChecked(it) },
-                    onUpdateDayOfWeek = { onUpdateDayOfWeek(it) }
+                    onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
+                    onUpdateTrainingName = { onUpdateTrainingName(it) },
                 )
             }
         }
@@ -70,11 +72,12 @@ internal fun HomeScreen(
 @Preview
 fun HomeScreenPreview() {
     HomeScreen(
-        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
         modifier = Modifier,
         dayOfWeek = "DOMINGO",
         listOfDays = Constants().getListOfDays(),
+        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
         onTrainingChecked = {},
         onUpdateDayOfWeek = {},
+        onUpdateTrainingName = {},
     )
 }

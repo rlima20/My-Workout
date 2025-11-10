@@ -73,7 +73,6 @@ class MainActivity : ComponentActivity() {
 
             MyWorkoutTheme {
                 ScaffoldComponent(
-                    trainings = trainings,
                     workouts = workouts,
                     appBarTitle = appBarTitle,
                     isHomeScreen = isHomeScreen,
@@ -95,6 +94,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    // todo - refatorar aqui e criar uma classe Props para o Scaffold
     @RequiresApi(35)
     @Composable
     private fun ScaffoldComponent(
@@ -113,8 +113,7 @@ class MainActivity : ComponentActivity() {
         groupsWithRelations: List<MuscleGroupModel>,
         selectedGroup: MuscleGroupModel,
         listOfDays: List<Pair<DayOfWeek, Boolean>>,
-        dayOfWeek: String,
-        trainings: List<TrainingModel>
+        dayOfWeek: String
     ) {
         val snackBarHostState = remember { SnackbarHostState() }
 
@@ -180,6 +179,7 @@ class MainActivity : ComponentActivity() {
                     onEditGroup = { editGroup(it) },
                     onDeleteGroup = { deleteGroup(it) },
                     onUpdateScreen = { fetchTrainings() },
+                    onUpdateTrainingName = { changeTrainingName(it) }
                 )
             },
             bottomBar = {
@@ -197,15 +197,19 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun deleteGroup(group: MuscleGroupModel){
+    private fun changeTrainingName(value: String) {
+        trainingViewModel.updateTrainingName(value)
+    }
+
+    private fun deleteGroup(group: MuscleGroupModel) {
         muscleGroupViewModel.deleteGroup(group)
     }
 
-    private fun editGroup(group: MuscleGroupModel){
+    private fun editGroup(group: MuscleGroupModel) {
         muscleGroupViewModel.updateGroup(group)
     }
 
-    private fun updateDayOfWeek(value: String){
+    private fun updateDayOfWeek(value: String) {
         trainingViewModel.updateDayOfWeek(value)
     }
 
