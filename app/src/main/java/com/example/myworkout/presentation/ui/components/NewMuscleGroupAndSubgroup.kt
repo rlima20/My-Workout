@@ -112,7 +112,8 @@ fun NewMuscleGroupAndSubgroup(
                         groups = muscleGroups,
                         onSaveRelation = { subGroups, group -> onSaveRelation(subGroups, group) },
                     )
-                }
+                },
+                showDialog = showDialog
             )
         }
         item {
@@ -205,6 +206,7 @@ private fun MuscleSubGroupSection(
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
+    showDialog: Boolean
 ) {
     var buttonEnabled by remember { mutableStateOf(false) }
 
@@ -233,7 +235,8 @@ private fun MuscleSubGroupSection(
                         onConfirm = { onConfirm(it) },
                         onDeleteGroup = { onDeleteGroup(it) },
                         onShowDialog = { value, action -> onShowDialog(value, action) },
-                        onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) }
+                        onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) },
+                        showDialog = showDialog
                     )
 
                     MuscleSubGroupSection(
@@ -256,6 +259,7 @@ private fun MuscleGroupSection(
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (item: MuscleGroupModel) -> Unit,
+    showDialog: Boolean
 ) {
     val focusRequester = remember { FocusRequester() }
 
@@ -269,7 +273,13 @@ private fun MuscleGroupSection(
         items(muscleGroups) { muscleGroup ->
             val selected = utils.setSelectedItem(objSelected, muscleGroup)
             val interactionSource = remember { MutableInteractionSource() }
-            var name by remember { mutableStateOf(muscleGroup.name) }
+
+            // IMPORTANT: lembrar usando muscleGroup.name E showDialog como keys.
+            // Assim, quando o diálogo abrir/fechar (showDialog mudar) ou o nome do grupo mudar,
+            // o estado "name" será reinicializado com muscleGroup.name.
+            var name by remember(muscleGroup.name, showDialog) {
+                mutableStateOf(muscleGroup.name)
+            }
 
             CustomSelectableChip(
                 modifier = Modifier,
