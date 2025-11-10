@@ -75,7 +75,6 @@ fun HomeScreenPreview() {
         modifier = Modifier,
         dayOfWeek = "DOMINGO",
         listOfDays = Constants().getListOfDays(),
-        trainingName = "",
         workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
         onTrainingChecked = {},
         onUpdateDayOfWeek = {},

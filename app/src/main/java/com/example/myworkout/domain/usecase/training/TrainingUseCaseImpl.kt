@@ -3,6 +3,7 @@ package com.example.myworkout.domain.usecase.training
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.repository.training.TrainingRepository
+import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 
 class TrainingUseCaseImpl(private val repository: TrainingRepository) :
@@ -26,5 +27,20 @@ class TrainingUseCaseImpl(private val repository: TrainingRepository) :
 
     override suspend fun clearStatus(trainingId: Int, status: Status) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun getTrainingDays(): List<DayOfWeek> {
+        return repository.getTrainings()
+            .map { it.dayOfWeek }
+            .distinct()
+            .sortedBy { it.ordinal }
+    }
+
+    override suspend fun getTrainingDaysStatus(): List<Pair<DayOfWeek, Boolean>> {
+        val trainingDays = repository.getTrainings().map { it.dayOfWeek }
+
+        return DayOfWeek.values().map { day ->
+            Pair(day, trainingDays.contains(day))
+        }
     }
 }
