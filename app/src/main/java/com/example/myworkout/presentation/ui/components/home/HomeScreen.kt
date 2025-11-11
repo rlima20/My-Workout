@@ -35,6 +35,7 @@ internal fun HomeScreen(
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
+    onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier
@@ -61,6 +62,7 @@ internal fun HomeScreen(
                     onUpdateTraining = { onTrainingChecked(it) },
                     onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
                     onUpdateTrainingName = { onUpdateTrainingName(it) },
+                    onDeleteTraining = { onDeleteTraining(it) }
                 )
             }
         }
@@ -79,5 +81,6 @@ fun HomeScreenPreview() {
         onTrainingChecked = {},
         onUpdateDayOfWeek = {},
         onUpdateTrainingName = {},
+        onDeleteTraining = {}
     )
 }

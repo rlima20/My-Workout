@@ -25,8 +25,16 @@ class TrainingRepositoryImpl(
         trainingMuscleGroupDao.insert(trainingMuscleGroup.toEntity())
     }
 
+    override fun deleteTrainingMuscleGroup(trainingId: Int) {
+        trainingMuscleGroupDao.deleteTrainingMuscleGroup(trainingId)
+    }
+
     override suspend fun updateTraining(training: TrainingModel) {
         trainingDao.updateTraining(training.toEntity())
+    }
+
+    override suspend fun deleteTraining(training: TrainingModel) {
+        trainingDao.deleteTraining(training.toEntity())
     }
 
     override suspend fun clearTrainingStatus(trainingId: Int, status: Status) {

@@ -116,6 +116,30 @@ class TrainingViewModel(
         }
     }
 
+    fun deleteTraining(trainingModel: TrainingModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            setLoadingState()
+            try {
+
+                trainingUseCase.deleteTraining(trainingModel)
+                trainingUseCase.deleteTrainingMuscleGroup(trainingModel.trainingId)
+
+                // Executa ambos em paralelo
+                val jobs = listOf(
+                    async { fetchTrainingsInternal() },
+                    async { updateListOfDaysInternal() }
+                )
+
+                jobs.awaitAll()
+
+                setSuccessState(_trainings.value)
+
+            } catch (exception: Exception) {
+                setErrorState(exception.message.toString(), null)
+            }
+        }
+    }
+
     fun setEmptyState() {
         _viewState.value = TrainingViewState.Empty
     }

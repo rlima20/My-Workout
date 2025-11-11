@@ -179,7 +179,8 @@ class MainActivity : ComponentActivity() {
                     onEditGroup = { editGroup(it) },
                     onDeleteGroup = { deleteGroup(it) },
                     onUpdateScreen = { fetchTrainings() },
-                    onUpdateTrainingName = { changeTrainingName(it) }
+                    onUpdateTrainingName = { changeTrainingName(it) },
+                    onDeleteTraining = { deleteTraining(it) }
                 )
             },
             bottomBar = {
@@ -195,6 +196,10 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
+    }
+
+    private fun deleteTraining(training: TrainingModel){
+        trainingViewModel.deleteTraining(training)
     }
 
     private fun changeTrainingName(value: String) {

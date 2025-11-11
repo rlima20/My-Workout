@@ -69,6 +69,7 @@ fun TrainingCard(
     onUpdateTraining: (training: TrainingModel) -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
+    onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
     // Training
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
@@ -77,6 +78,7 @@ fun TrainingCard(
 
     // Dialog
     var showDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
     var showCustomDialog by remember { mutableStateOf(false) }
     var dialogTitle by remember { mutableStateOf(R.string.dialog_title) }
     var dialogText by remember { mutableStateOf(R.string.dialog_text) }
@@ -84,6 +86,7 @@ fun TrainingCard(
     // Custom Dialog
     val focusRequester = remember { FocusRequester() }
     var trainingNameInternal by remember { mutableStateOf(training.trainingName) }
+    var trainingToBeDeleted by remember { mutableStateOf(training) }
 
     LaunchedEffect(training.trainingName) {
         trainingNameInternal = training.trainingName
@@ -92,13 +95,14 @@ fun TrainingCard(
     fun setInitialStates() {
         showDialog = false
         showCustomDialog = false
+        showDeleteDialog = false
         status = training.status
         isTrainingChecked = training.isChecked
         onUpdateTrainingName(training.trainingName)
         trainingNameInternal = trainingName
     }
 
-    AlertDialogSection(
+    StatusAlertDialogSection(
         dialogTitle = dialogTitle,
         dialogText = dialogText,
         showDialog = showDialog,
@@ -117,9 +121,21 @@ fun TrainingCard(
         }
     )
 
+    DeleteAlertDialogSection(
+        dialogTitle = dialogTitle,
+        dialogText = dialogText,
+        showDialog = showDeleteDialog,
+        onDismiss = { setInitialStates() },
+        onConfirmation = {
+            onDeleteTraining(trainingToBeDeleted)
+            setInitialStates()
+        }
+    )
+
     CustomDialogSection(
         showCustomDialog = showCustomDialog,
         trainingName = trainingNameInternal,
+        title = dialogTitle,
         trainingStatus = training.status,
         focusRequester = focusRequester,
         listOfDays = listOfDays,
@@ -152,7 +168,14 @@ fun TrainingCard(
                     showCustomDialog = false
                 },
                 onLongClick = {
+                    dialogTitle = R.string.edit_training
                     showCustomDialog = true
+                },
+                onDoubleClick = {
+                    trainingToBeDeleted = training
+                    dialogTitle = R.string.delete_training
+                    dialogText = R.string.no_turning_back
+                    showDeleteDialog = true
                 }
             ),
         colors = Utils().buttonSectionCardsColors(),
@@ -189,6 +212,7 @@ fun TrainingCard(
 
 @Composable
 private fun CustomDialogSection(
+    title: Int,
     trainingName: String,
     trainingStatus: Status,
     showCustomDialog: Boolean,
@@ -198,12 +222,12 @@ private fun CustomDialogSection(
     onChangeTrainingName: (name: String) -> Unit,
     onChangeDayOfWeek: (dayOfWeek: String) -> Unit,
     onConfirmation: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
 ) {
     if (showCustomDialog && trainingStatus == Status.PENDING) {
         CustomDialog(
             modifier = Modifier.padding(16.dp),
-            title = R.string.dialog_title,
+            title = title,
             message = null,
             onConfirmation = {
                 onConfirmation()
@@ -338,7 +362,27 @@ private fun CheckboxSection(
 }
 
 @Composable
-private fun AlertDialogSection(
+private fun StatusAlertDialogSection(
+    dialogTitle: Int,
+    dialogText: Int,
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    onConfirmation: () -> Unit
+) {
+    if (showDialog) {
+        AlertDialog(
+            confirmButtonText = stringResource(R.string.dialog_confirm_text),
+            cancelButtonText = stringResource(R.string.dialog_cancel_text),
+            onDismissRequest = { onDismiss() },
+            onConfirmation = { onConfirmation() },
+            dialogTitle = stringResource(dialogTitle),
+            dialogText = stringResource(dialogText),
+        )
+    }
+}
+
+@Composable
+private fun DeleteAlertDialogSection(
     dialogTitle: Int,
     dialogText: Int,
     showDialog: Boolean,
@@ -421,6 +465,7 @@ fun TrainingCardPreview() {
                 onUpdateTraining = {},
                 onUpdateDayOfWeek = {},
                 onUpdateTrainingName = {},
+                onDeleteTraining = {}
             )
         }
     }
