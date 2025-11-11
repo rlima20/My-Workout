@@ -24,6 +24,7 @@ import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.ui.components.training.NewTraining
+import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import androidx.navigation.compose.NavHost as NavHostCompose
@@ -31,6 +32,7 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 @RequiresApi(35)
 @Composable
 fun NavHost(
+    viewModel: TrainingViewModel,
     navController: NavHostController,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
@@ -48,7 +50,6 @@ fun NavHost(
     onChangeRouteToHomeScreen: (Boolean) -> Unit,
     onChangeTopBarTitle: (String) -> Unit,
     onDatabaseCreated: @Composable (() -> Unit),
-    onTrainingChecked: (TrainingModel) -> Unit,
     onCreateMuscleGroup: (String) -> Unit,
     onUpdateSubGroup: (MuscleSubGroupModel) -> Unit,
     onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit,
@@ -60,9 +61,7 @@ fun NavHost(
     onFetchTrainings: () -> Unit,
     onEditGroup: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
-    onUpdateScreen: () -> Unit,
-    onUpdateTrainingName: (value: String) -> Unit,
-    onDeleteTraining: (training: TrainingModel) -> Unit
+    onUpdateScreen: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -80,18 +79,16 @@ fun NavHost(
 
             SetupTrainingStateObservers(
                 workouts = workouts,
+                viewModel = viewModel,
                 listOfDays = listOfDays,
                 trainingViewState = trainingViewState,
-                onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRouteToHomeScreen,
                 onNavigateToNewTraining = {
                     onNavigateToGroupSubgroup()
                     onFetchTrainings()
                 },
                 onDatabaseCreated = { onDatabaseCreated() },
-                onFetchWorkouts = { onFetchWorkouts(it) },
-                onUpdateTrainingName = { onUpdateTrainingName(it) },
-                onDeleteTraining = { onDeleteTraining(it) }
+                onFetchWorkouts = { onFetchWorkouts(it) }
             )
         }
 
@@ -179,15 +176,13 @@ private fun SetupMuscleGroupStateObservers(
 @Composable
 private fun SetupTrainingStateObservers(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+    viewModel: TrainingViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
-    onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
-    onUpdateTrainingName: (value: String) -> Unit,
-    onDeleteTraining: (training: TrainingModel) -> Unit
+    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -221,11 +216,9 @@ private fun SetupTrainingStateObservers(
             onFetchWorkouts(trainingViewState.trainings)
             HomeScreen(
                 workouts = workouts,
+                viewModel = viewModel,
                 listOfDays = listOfDays,
-                modifier = Modifier,
-                onTrainingChecked = { onTrainingChecked(it) },
-                onUpdateTrainingName = { onUpdateTrainingName(it) },
-                onDeleteTraining = { onDeleteTraining(it) }
+                modifier = Modifier
             )
         }
     }

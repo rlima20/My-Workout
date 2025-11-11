@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
-class TrainingViewModel(
+open class TrainingViewModel(
     private val dispatchers: Dispatchers,
     private val trainingUseCase: TrainingUseCase
 ) : ViewModel() {
