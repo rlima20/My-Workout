@@ -11,6 +11,8 @@ interface TrainingUseCase {
     suspend fun getTrainings(): List<TrainingModel>
     suspend fun insertTraining(training: TrainingModel)
     suspend fun updateTraining(training: TrainingModel)
+    suspend fun deleteTraining(training: TrainingModel)
     suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel)
+    suspend fun deleteTrainingMuscleGroup(trainingId: Int)
     suspend fun clearStatus(trainingId: Int, status: Status)
 }

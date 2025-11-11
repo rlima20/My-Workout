@@ -17,8 +17,16 @@ class TrainingUseCaseImpl(private val repository: TrainingRepository) :
         repository.updateTraining(training)
     }
 
+    override suspend fun deleteTraining(training: TrainingModel) {
+        repository.deleteTraining(training)
+    }
+
     override suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         repository.insertTrainingMuscleGroup(trainingMuscleGroup)
+    }
+
+    override suspend fun deleteTrainingMuscleGroup(trainingId: Int) {
+        repository.deleteTrainingMuscleGroup(trainingId)
     }
 
     override suspend fun getTrainings(): List<TrainingModel> {

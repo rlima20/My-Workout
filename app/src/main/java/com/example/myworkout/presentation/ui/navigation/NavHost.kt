@@ -64,6 +64,7 @@ fun NavHost(
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onUpdateScreen: () -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
+    onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -93,7 +94,8 @@ fun NavHost(
                 onDatabaseCreated = { onDatabaseCreated() },
                 onFetchWorkouts = { onFetchWorkouts(it) },
                 onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
-                onUpdateTrainingName = { onUpdateTrainingName(it) }
+                onUpdateTrainingName = { onUpdateTrainingName(it) },
+                onDeleteTraining = { onDeleteTraining(it) }
             )
         }
 
@@ -190,7 +192,8 @@ private fun SetupTrainingStateObservers(
     onDatabaseCreated: @Composable () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
     onUpdateDayOfWeek: (value: String) -> Unit,
-    onUpdateTrainingName: (value: String) -> Unit
+    onUpdateTrainingName: (value: String) -> Unit,
+    onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -229,7 +232,8 @@ private fun SetupTrainingStateObservers(
                 modifier = Modifier,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
-                onUpdateTrainingName = { onUpdateTrainingName(it) }
+                onUpdateTrainingName = { onUpdateTrainingName(it) },
+                onDeleteTraining = { onDeleteTraining(it) }
             )
         }
     }
