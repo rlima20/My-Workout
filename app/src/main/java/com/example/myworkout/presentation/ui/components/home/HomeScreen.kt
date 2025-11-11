@@ -29,11 +29,9 @@ import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCar
 @Composable
 internal fun HomeScreen(
     modifier: Modifier,
-    dayOfWeek: String,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     onTrainingChecked: (training: TrainingModel) -> Unit,
-    onUpdateDayOfWeek: (value: String) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
     onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
@@ -56,11 +54,9 @@ internal fun HomeScreen(
                 TrainingCard(
                     filterChipListModifier = modifier,
                     training = workouts[index].first,
-                    dayOfWeek = dayOfWeek,
                     subGroups = workouts[index].second,
                     listOfDays = listOfDays,
                     onUpdateTraining = { onTrainingChecked(it) },
-                    onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
                     onUpdateTrainingName = { onUpdateTrainingName(it) },
                     onDeleteTraining = { onDeleteTraining(it) }
                 )
@@ -75,11 +71,9 @@ internal fun HomeScreen(
 fun HomeScreenPreview() {
     HomeScreen(
         modifier = Modifier,
-        dayOfWeek = "DOMINGO",
         listOfDays = Constants().getListOfDays(),
         workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
         onTrainingChecked = {},
-        onUpdateDayOfWeek = {},
         onUpdateTrainingName = {},
         onDeleteTraining = {}
     )

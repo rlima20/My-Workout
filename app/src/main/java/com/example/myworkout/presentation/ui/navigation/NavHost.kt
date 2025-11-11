@@ -38,7 +38,6 @@ fun NavHost(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     trainingViewState: TrainingViewState,
     muscleGroupViewState: MuscleGroupViewState,
-    dayOfWeek: String,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     objSelected: Pair<Int, Boolean>,
     setSelectedGroup: (MuscleGroupModel) -> Unit,
@@ -59,7 +58,6 @@ fun NavHost(
     onFetchRelations: () -> Unit,
     onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
     onFetchTrainings: () -> Unit,
-    onUpdateDayOfWeek: (value: String) -> Unit,
     onEditGroup: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onUpdateScreen: () -> Unit,
@@ -84,7 +82,6 @@ fun NavHost(
                 workouts = workouts,
                 listOfDays = listOfDays,
                 trainingViewState = trainingViewState,
-                dayOfWeek = dayOfWeek,
                 onTrainingChecked = { onTrainingChecked(it) },
                 onChangeRoute = onChangeRouteToHomeScreen,
                 onNavigateToNewTraining = {
@@ -93,7 +90,6 @@ fun NavHost(
                 },
                 onDatabaseCreated = { onDatabaseCreated() },
                 onFetchWorkouts = { onFetchWorkouts(it) },
-                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
                 onUpdateTrainingName = { onUpdateTrainingName(it) },
                 onDeleteTraining = { onDeleteTraining(it) }
             )
@@ -185,13 +181,11 @@ private fun SetupTrainingStateObservers(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
-    dayOfWeek: String,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onTrainingChecked: (training: TrainingModel) -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
-    onUpdateDayOfWeek: (value: String) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
     onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
@@ -227,11 +221,9 @@ private fun SetupTrainingStateObservers(
             onFetchWorkouts(trainingViewState.trainings)
             HomeScreen(
                 workouts = workouts,
-                dayOfWeek = dayOfWeek,
                 listOfDays = listOfDays,
                 modifier = Modifier,
                 onTrainingChecked = { onTrainingChecked(it) },
-                onUpdateDayOfWeek = { onUpdateDayOfWeek(it) },
                 onUpdateTrainingName = { onUpdateTrainingName(it) },
                 onDeleteTraining = { onDeleteTraining(it) }
             )

@@ -46,6 +46,7 @@ import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.extensions.toDayOfWeek
+import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.extensions.trainingCardFilterChipListModifier
 import com.example.myworkout.presentation.ui.components.commons.AlertDialog
 import com.example.myworkout.presentation.ui.components.commons.CheckBox
@@ -63,11 +64,9 @@ fun TrainingCard(
     modifier: Modifier = Modifier,
     filterChipListModifier: Modifier = Modifier,
     training: TrainingModel,
-    dayOfWeek: String,
     subGroups: List<MuscleSubGroupModel>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     onUpdateTraining: (training: TrainingModel) -> Unit,
-    onUpdateDayOfWeek: (value: String) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
     onDeleteTraining: (training: TrainingModel) -> Unit
 ) {
@@ -75,6 +74,7 @@ fun TrainingCard(
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
     var status by remember { mutableStateOf(training.status) }
     val trainingName = training.trainingName
+    var dayOfWeek by remember { mutableStateOf(training.dayOfWeek.toPortugueseString()) }
 
     // Dialog
     var showDialog by remember { mutableStateOf(false) }
@@ -90,6 +90,10 @@ fun TrainingCard(
 
     LaunchedEffect(training.trainingName) {
         trainingNameInternal = training.trainingName
+    }
+
+    LaunchedEffect(training.dayOfWeek) {
+        dayOfWeek = training.dayOfWeek.toPortugueseString()
     }
 
     fun setInitialStates() {
@@ -144,8 +148,11 @@ fun TrainingCard(
             onUpdateTrainingName(it)
             trainingNameInternal = it
         },
-        onChangeDayOfWeek = { onUpdateDayOfWeek(it) },
-        onDismiss = { setInitialStates() },
+        onChangeDayOfWeek = { dayOfWeek = it },
+        onDismiss = {
+            setInitialStates()
+            dayOfWeek = training.dayOfWeek.toPortugueseString()
+        },
         onConfirmation = {
             showCustomDialog = false
             onUpdateTraining(
@@ -457,13 +464,11 @@ fun TrainingCardPreview() {
         Status.values().forEach {
             TrainingCard(
                 modifier = Modifier.padding(bottom = 4.dp),
-                dayOfWeek = "DOMINGO",
                 training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
                 subGroups = constants.subGroupsMock,
                 filterChipListModifier = Modifier,
                 listOfDays = Constants().getListOfDays(),
                 onUpdateTraining = {},
-                onUpdateDayOfWeek = {},
                 onUpdateTrainingName = {},
                 onDeleteTraining = {}
             )
