@@ -190,14 +190,6 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun deleteTraining(training: TrainingModel){
-        trainingViewModel.deleteTraining(training)
-    }
-
-    private fun changeTrainingName(value: String) {
-        trainingViewModel.updateTrainingName(value)
-    }
-
     private fun deleteGroup(group: MuscleGroupModel) {
         muscleGroupViewModel.deleteGroup(group)
     }
@@ -307,10 +299,6 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchRelations() {
         muscleGroupViewModel.getGroupsWithRelations()
-    }
-
-    private fun updateTraining(trainingModel: TrainingModel) {
-        trainingViewModel.updateTraining(trainingModel)
     }
 
     private fun fetchGroupsAndSubGroupsWithRelations() {
