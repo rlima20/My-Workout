@@ -24,17 +24,18 @@ import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
+import com.example.myworkout.presentation.viewmodel.TrainingViewModel
+import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 
 @RequiresApi(35)
 @Composable
 internal fun HomeScreen(
     modifier: Modifier,
+    viewModel: TrainingViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
-    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
-    onTrainingChecked: (training: TrainingModel) -> Unit,
-    onUpdateTrainingName: (value: String) -> Unit,
-    onDeleteTraining: (training: TrainingModel) -> Unit
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>
 ) {
+
     LazyVerticalGrid(
         modifier = Modifier
             .homeScreenCardPaddings()
@@ -56,9 +57,9 @@ internal fun HomeScreen(
                     training = workouts[index].first,
                     subGroups = workouts[index].second,
                     listOfDays = listOfDays,
-                    onUpdateTraining = { onTrainingChecked(it) },
-                    onUpdateTrainingName = { onUpdateTrainingName(it) },
-                    onDeleteTraining = { onDeleteTraining(it) }
+                    onUpdateTraining = { viewModel.updateTraining(it) },
+                    onUpdateTrainingName = { viewModel.updateTrainingName(it) },
+                    onDeleteTraining = { viewModel.deleteTraining(it) }
                 )
             }
         }
@@ -71,10 +72,8 @@ internal fun HomeScreen(
 fun HomeScreenPreview() {
     HomeScreen(
         modifier = Modifier,
+        viewModel = TrainingViewModelFake(),
         listOfDays = Constants().getListOfDays(),
-        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock(),
-        onTrainingChecked = {},
-        onUpdateTrainingName = {},
-        onDeleteTraining = {}
+        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock()
     )
 }

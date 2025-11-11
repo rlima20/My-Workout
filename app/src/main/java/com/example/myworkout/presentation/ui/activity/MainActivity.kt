@@ -123,6 +123,7 @@ class MainActivity : ComponentActivity() {
             },
             content = {
                 NavHost(
+                    viewModel = trainingViewModel,
                     navController = navController,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
@@ -143,7 +144,6 @@ class MainActivity : ComponentActivity() {
                             snackBarHostState,
                         )
                     },
-                    onTrainingChecked = { updateTraining(it) },
                     onCreateMuscleGroup = { createMuscleGroup(it) },
                     onSaveRelation = { subGroups, group ->
                         saveGroupSubGroupRelation(subGroups)
@@ -172,9 +172,7 @@ class MainActivity : ComponentActivity() {
                     onFetchTrainings = { fetchTrainings() },
                     onEditGroup = { editGroup(it) },
                     onDeleteGroup = { deleteGroup(it) },
-                    onUpdateScreen = { fetchTrainings() },
-                    onUpdateTrainingName = { changeTrainingName(it) },
-                    onDeleteTraining = { deleteTraining(it) }
+                    onUpdateScreen = { fetchTrainings() }
                 )
             },
             bottomBar = {
@@ -190,14 +188,6 @@ class MainActivity : ComponentActivity() {
                 )
             }
         )
-    }
-
-    private fun deleteTraining(training: TrainingModel){
-        trainingViewModel.deleteTraining(training)
-    }
-
-    private fun changeTrainingName(value: String) {
-        trainingViewModel.updateTrainingName(value)
     }
 
     private fun deleteGroup(group: MuscleGroupModel) {
@@ -309,10 +299,6 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchRelations() {
         muscleGroupViewModel.getGroupsWithRelations()
-    }
-
-    private fun updateTraining(trainingModel: TrainingModel) {
-        trainingViewModel.updateTraining(trainingModel)
     }
 
     private fun fetchGroupsAndSubGroupsWithRelations() {
