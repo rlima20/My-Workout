@@ -7,5 +7,6 @@ data class Actions(
     val onChangeTopBarTitle: (String) -> Unit,
     val onDatabaseCreated: @Composable (() -> Unit),
     val onNavigateToGroupSubgroup: () -> Unit,
-    val onNavigateToNewTraining: () -> Unit
+    val onNavigateToNewTraining: () -> Unit,
+    val onNavigateToHomeScreen: () -> Unit
 )

@@ -59,7 +59,8 @@ class MainActivity : ComponentActivity() {
                     )
                 },
                 onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(trainingProps.navController) },
-                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) }
+                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) },
+                onNavigateToHomeScreen = { navigateToHomeScreen(trainingProps.navController) }
             )
 
             with(trainingProps) {

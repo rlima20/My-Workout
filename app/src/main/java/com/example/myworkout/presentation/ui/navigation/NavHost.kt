@@ -99,7 +99,8 @@ fun NavHost(
                 subgroupsSelected = muscleGroupProps.subgroupsSelected,
                 selectedGroup = muscleGroupProps.selectedGroup,
                 listOfDays = trainingProps.listOfDays,
-                trainingsQuantity = muscleGroupProps.workouts.size
+                trainingsQuantity = muscleGroupProps.workouts.size,
+                onNavigateToHomeScreen = { actions.onNavigateToHomeScreen() }
             )
         }
     }

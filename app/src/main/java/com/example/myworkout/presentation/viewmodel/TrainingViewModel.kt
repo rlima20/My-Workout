@@ -188,7 +188,6 @@ open class TrainingViewModel(
     ) {
         setLoadingState()
         viewModelScope.launch(Dispatchers.IO) {
-            delay(2000)
             try {
                 performInsertTrainingAndGetId(training)?.let { insertedTrainingId ->
                     performInsertTrainingMuscleGroup(insertedTrainingId, groupId)

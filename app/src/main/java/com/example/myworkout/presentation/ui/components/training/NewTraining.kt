@@ -50,6 +50,7 @@ fun NewTraining(
     selectedGroup: MuscleGroupModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingsQuantity: Int,
+    onNavigateToHomeScreen: () -> Unit
 ) {
     groupViewModel.getGroupsAndSubGroups()
     val maxDaysQuantity = 6
@@ -86,6 +87,7 @@ fun NewTraining(
                         trainingName = trainingName
                     ), selectedGroup.muscleGroupId
                 )
+                onNavigateToHomeScreen()
             },
             content = {
                 TextFieldSection(
@@ -161,6 +163,7 @@ private fun NewTrainingPreview() {
         subgroupsSelected = constants.subGroupsMock,
         groupsWithRelations = constants.groupsMock,
         selectedGroup = constants.groupsMock.first(),
-        listOfDays = emptyList()
+        listOfDays = emptyList(),
+        onNavigateToHomeScreen = {}
     )
 }
