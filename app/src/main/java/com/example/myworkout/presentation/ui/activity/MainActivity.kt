@@ -3,7 +3,6 @@ package com.example.myworkout.presentation.ui.activity
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -12,20 +11,17 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleGroupModel
-import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
-import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
-import com.example.myworkout.enums.BodyPart
-import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.navigateSingleTopTo
 import com.example.myworkout.preferences.TrainingPrefs
+import com.example.myworkout.presentation.ui.activity.props.Actions
+import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
+import com.example.myworkout.presentation.ui.activity.props.TrainingProps
+import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
+import com.example.myworkout.presentation.ui.activity.props.trainingProps
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
@@ -34,8 +30,6 @@ import com.example.myworkout.presentation.ui.navigation.NewTraining
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
-import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
-import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.example.myworkout.presentation.ui.components.home.BottomAppBar as BottomBar
 
@@ -51,42 +45,52 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val trainings by trainingViewModel.trainings.collectAsState(listOf())
-            val workouts by muscleGroupViewModel.workouts.collectAsState()
-            val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
-            val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
-            val subgroupsSelected by muscleGroupViewModel.subgroupsSelected.collectAsState()
-            val selectedGroup by muscleGroupViewModel.selectedGroup.collectAsState()
-            val muscleGroupViewState by muscleGroupViewModel.viewState.collectAsState()
-            val muscleGroupsWithRelation by muscleGroupViewModel.muscleGroupsWithRelation.collectAsState()
-            val objSelected by muscleGroupViewModel.objSelected.collectAsState()
-            val trainingViewState by trainingViewModel.viewState.collectAsState()
-            val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
-            val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
-            val listOfDays by trainingViewModel.listOfDays.collectAsState()
-            val navController = rememberNavController()
-            val prefs = TrainingPrefs()
+            val snackBarHostState = remember { SnackbarHostState() }
+            val trainingProps = trainingProps(trainingViewModel)
+            val muscleGroupProps = muscleGroupProps(muscleGroupViewModel)
+            val actions = Actions(
+                onChangeRouteToHomeScreen = { isHome -> setIsHomeScreen(isHome) },
+                onChangeTopBarTitle = { title -> trainingViewModel.setAppBarTitle(title) },
+                onDatabaseCreated = {
+                    DatabaseCreationDone(
+                        trainingProps.prefs,
+                        trainingProps.isHomeScreen,
+                        snackBarHostState,
+                    )
+                },
+                onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(trainingProps.navController) },
+                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) }
+            )
 
-            setupInitialDatabase(prefs)
-            fetchInfoIfNotFirstInstall(prefs, trainings)
+            with(trainingProps) {
+                setupInitialDatabase(prefs)
+                fetchInfoIfNotFirstInstall(prefs, trainings)
+            }
 
             MyWorkoutTheme {
                 ScaffoldComponent(
-                    workouts = workouts,
-                    appBarTitle = appBarTitle,
-                    isHomeScreen = isHomeScreen,
-                    navController = navController,
-                    muscleGroups = muscleGroups,
-                    muscleSubGroups = muscleSubGroups,
-                    muscleGroupsWithRelation = muscleGroupsWithRelation,
-                    muscleGroupViewState = muscleGroupViewState,
-                    objSelected = objSelected,
-                    trainingViewState = trainingViewState,
-                    prefs = prefs,
-                    subgroupsSelected = subgroupsSelected,
-                    groupsWithRelations = muscleGroupsWithRelation,
-                    selectedGroup = selectedGroup,
-                    listOfDays = listOfDays,
+                    trainingProps = TrainingProps(
+                        trainings = trainingProps.trainings,
+                        viewState = trainingProps.viewState,
+                        isHomeScreen = trainingProps.isHomeScreen,
+                        appBarTitle = trainingProps.appBarTitle,
+                        listOfDays = trainingProps.listOfDays,
+                        navController = trainingProps.navController,
+                        prefs = trainingProps.prefs
+
+                    ),
+                    muscleGroupProps = MuscleGroupProps(
+                        workouts = muscleGroupProps.workouts,
+                        muscleGroups = muscleGroupProps.muscleGroups,
+                        muscleSubGroups = muscleGroupProps.muscleSubGroups,
+                        subgroupsSelected = muscleGroupProps.subgroupsSelected,
+                        selectedGroup = muscleGroupProps.selectedGroup,
+                        viewState = muscleGroupProps.viewState,
+                        muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
+                        objSelected = muscleGroupProps.objSelected
+                    ),
+                    snackBarHostState = snackBarHostState,
+                    actions = actions
                 )
             }
         }
@@ -95,73 +99,39 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(35)
     @Composable
     private fun ScaffoldComponent(
-        workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
-        appBarTitle: String,
-        isHomeScreen: Boolean,
-        navController: NavHostController,
-        muscleGroups: List<MuscleGroupModel>,
-        muscleSubGroups: List<MuscleSubGroupModel>,
-        muscleGroupsWithRelation: List<MuscleGroupModel>,
-        muscleGroupViewState: MuscleGroupViewState,
-        objSelected: Pair<Int, Boolean>,
-        trainingViewState: TrainingViewState,
-        prefs: TrainingPrefs,
-        subgroupsSelected: List<MuscleSubGroupModel>,
-        groupsWithRelations: List<MuscleGroupModel>,
-        selectedGroup: MuscleGroupModel,
-        listOfDays: List<Pair<DayOfWeek, Boolean>>,
+        trainingProps: TrainingProps,
+        muscleGroupProps: MuscleGroupProps,
+        snackBarHostState: SnackbarHostState,
+        actions: Actions
     ) {
-        val snackBarHostState = remember { SnackbarHostState() }
 
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
             topBar = {
                 TopBar(
-                    title = appBarTitle,
-                    isHomeScreen = isHomeScreen,
-                    onPopBackStack = { navController.navigateSingleTopTo(HomeScreen.route) })
+                    title = trainingProps.appBarTitle,
+                    isHomeScreen = trainingProps.isHomeScreen,
+                    onPopBackStack = { trainingProps.navController.navigateSingleTopTo(HomeScreen.route) })
             },
             content = {
                 NavHost(
                     trainingViewModel = trainingViewModel,
                     groupViewModel = muscleGroupViewModel,
-                    navController = navController,
-                    muscleGroups = muscleGroups,
-                    muscleSubGroups = muscleSubGroups,
-                    muscleGroupsWithRelation = muscleGroupsWithRelation,
-                    workouts = workouts,
-                    muscleGroupViewState = muscleGroupViewState,
-                    trainingViewState = trainingViewState,
-                    listOfDays = listOfDays,
-                    objSelected = objSelected,
-                    onChangeRouteToHomeScreen = { setIsHomeScreen(it) },
-                    onChangeTopBarTitle = { setAppBarTitle(it) },
-                    onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(navController) },
-                    onDatabaseCreated = {
-                        DatabaseCreationDone(
-                            prefs,
-                            isHomeScreen,
-                            snackBarHostState,
-                        )
-                    },
-                    onFetchWorkouts = { fetchWorkouts(it) },
-                    onNavigateToNewTraining = { navigateToNewTraining(navController) },
-                    selectedGroup = selectedGroup,
-                    subgroupsSelected = subgroupsSelected,
-                    groupsWithRelations = groupsWithRelations,
-                    onFetchTrainings = { fetchTrainings() },
-                    onUpdateScreen = { fetchTrainings() }
+                    navController = trainingProps.navController,
+                    trainingProps = trainingProps,
+                    muscleGroupProps = muscleGroupProps,
+                    actions = actions
                 )
             },
             bottomBar = {
                 BottomBar(
                     onNavigateToHomeScreen = {
                         clearGroupsAndSubGroupsSelected()
-                        navigateToHomeScreen(navController)
+                        navigateToHomeScreen(trainingProps.navController)
                     },
                     onNavigateToAddTrainingScreen = {
                         clearGroupsAndSubGroupsSelected()
-                        navigateToNewTrainingScreen(navController)
+                        navigateToNewTrainingScreen(trainingProps.navController)
                     }
                 )
             }
@@ -209,10 +179,6 @@ class MainActivity : ComponentActivity() {
 
     private fun navigateToNewTrainingScreen(navController: NavHostController) {
         navController.navigateSingleTopTo(NewTraining.route)
-    }
-
-    private fun setAppBarTitle(it: String) {
-        trainingViewModel.setAppBarTitle(it)
     }
 
     private fun setIsHomeScreen(it: Boolean) {
