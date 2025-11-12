@@ -49,4 +49,4 @@ class TrainingUseCaseFake : TrainingUseCase {
 class TrainingViewModelFake : TrainingViewModel(
     dispatchers = Dispatchers,
     trainingUseCase = TrainingUseCaseFake()
-) {}
+)

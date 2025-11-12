@@ -14,7 +14,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
-import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
@@ -24,6 +23,7 @@ import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.ui.components.training.NewTraining
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
@@ -32,7 +32,8 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 @RequiresApi(35)
 @Composable
 fun NavHost(
-    viewModel: TrainingViewModel,
+    trainingViewModel: TrainingViewModel,
+    groupViewModel: MuscleGroupViewModel,
     navController: NavHostController,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
@@ -46,21 +47,15 @@ fun NavHost(
     selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
-    onItemClick: (Pair<Int, Boolean>) -> Unit,
     onChangeRouteToHomeScreen: (Boolean) -> Unit,
     onChangeTopBarTitle: (String) -> Unit,
     onDatabaseCreated: @Composable (() -> Unit),
-    onCreateMuscleGroup: (String) -> Unit,
-    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit,
-    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit,
     onNavigateToGroupSubgroup: () -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (List<TrainingModel>) -> Unit,
     onFetchRelations: () -> Unit,
     onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
     onFetchTrainings: () -> Unit,
-    onEditGroup: (group: MuscleGroupModel) -> Unit,
-    onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onUpdateScreen: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
@@ -79,7 +74,7 @@ fun NavHost(
 
             SetupTrainingStateObservers(
                 workouts = workouts,
-                viewModel = viewModel,
+                viewModel = trainingViewModel,
                 listOfDays = listOfDays,
                 trainingViewState = trainingViewState,
                 onChangeRoute = onChangeRouteToHomeScreen,
@@ -97,17 +92,12 @@ fun NavHost(
             onChangeTopBarTitle(newTrainingScreen)
 
             NewMuscleGroupAndSubgroup(
+                viewModel = groupViewModel,
                 muscleGroups = muscleGroups,
                 muscleSubGroups = muscleSubGroups,
                 muscleGroupsWithRelation = muscleGroupsWithRelation,
                 objSelected = objSelected,
-                onItemClick = { onItemClick(it) },
-                onCreateMuscleGroup = { onCreateMuscleGroup(it) },
-                onUpdateSubGroup = { onUpdateSubGroup(it) },
-                onSaveRelation = { subGroups, group -> onSaveRelation(subGroups, group) },
                 onNavigateToNewTraining = { onNavigateToNewTraining() },
-                onEditGroup = { onEditGroup(it) },
-                onDeleteGroup = { onDeleteGroup(it) }
             )
 
             SetupMuscleGroupStateObservers(

@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class MuscleGroupViewModel(
+open class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
     private val muscleSubGroupUseCase: MuscleGroupUseCase,
     private val dispatchers: Dispatchers

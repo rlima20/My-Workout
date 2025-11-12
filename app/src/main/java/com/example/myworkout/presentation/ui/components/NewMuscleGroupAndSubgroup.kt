@@ -34,6 +34,7 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
@@ -45,23 +46,20 @@ import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun NewMuscleGroupAndSubgroup(
+    viewModel: MuscleGroupViewModel,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
-    onCreateMuscleGroup: (name: String) -> Unit,
     objSelected: Pair<Int, Boolean>,
-    onItemClick: (Pair<Int, Boolean>) -> Unit,
-    onUpdateSubGroup: (subGroup: MuscleSubGroupModel) -> Unit,
-    onSaveRelation: (subGroups: MutableList<MuscleGroupMuscleSubGroupModel>, group: MuscleGroupModel?) -> Unit,
     onNavigateToNewTraining: () -> Unit,
-    onEditGroup: (group: MuscleGroupModel) -> Unit,
-    onDeleteGroup: (group: MuscleGroupModel) -> Unit
 ) {
     val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
     var showDialog by remember { mutableStateOf(false) }
@@ -82,35 +80,39 @@ fun NewMuscleGroupAndSubgroup(
             .background(colorResource(R.color.global_background_color))
     ) {
         item {
-            MuscleGroupSection { onCreateMuscleGroup(it) }
+            MuscleGroupSection { viewModel.insertMuscleGroup(it, BodyPart.OTHER) }
         }
         item {
             MuscleSubGroupSection(
                 muscleGroups = muscleGroups,
                 muscleSubGroups = muscleSubGroups,
                 objSelected = objSelected,
-                onItemClick = { onItemClick(it) },
+                onItemClick = { viewModel.setMuscleGroupSelected(it) },
                 utils = utils,
                 isCardSectionVisible = isCardSectionVisible,
                 onConfirm = {
-                    onEditGroup(it)
+                    viewModel.updateGroup(it)
                     showDialog = false
                 },
                 onDeleteGroup = {
-                    onDeleteGroup(it)
+                    viewModel.deleteGroup(it)
                     showDialog = false
                 },
                 onShowDialog = { value, action ->
                     showDialog = value
                     currentAction = action
                 },
-                onAddMuscleSubGroup = { verifySubGroupSelected(it, onUpdateSubGroup) },
+                onAddMuscleSubGroup = {
+                    viewModel.updateSubGroup(it.copy(selected = !it.selected))
+                },
                 onSaveRelation = {
                     createRelations(
                         muscleSubGroups = muscleSubGroups,
                         muscleGroupId = it,
                         groups = muscleGroups,
-                        onSaveRelation = { subGroups, group -> onSaveRelation(subGroups, group) },
+                        onSaveRelation = { subGroups, group ->
+                            viewModel.insertMuscleGroupMuscleSubGroup(subGroups)
+                        }
                     )
                 },
                 showDialog = showDialog
@@ -146,13 +148,6 @@ private fun createRelations(
         )
     }
     onSaveRelation(muscleGroupSubGroups, group)
-}
-
-private fun verifySubGroupSelected(
-    subGroupSelected: MuscleSubGroupModel,
-    onUpdateSubGroup: (MuscleSubGroupModel) -> Unit
-) {
-    onUpdateSubGroup(subGroupSelected.copy(selected = !subGroupSelected.selected))
 }
 
 @Composable
@@ -402,17 +397,13 @@ private fun CardSection(
 @Composable
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {
+    val mgViewModelFake = MuscleGroupViewModelFake()
     NewMuscleGroupAndSubgroup(
+        viewModel = mgViewModelFake,
         muscleGroups = Constants().groupsMock,
         muscleGroupsWithRelation = listOf(),
-        onCreateMuscleGroup = {},
         objSelected = Pair(0, false),
-        onItemClick = {},
         muscleSubGroups = Constants().getAllSubGroupsMock(),
-        onUpdateSubGroup = {},
-        onSaveRelation = { _, _ -> },
-        onNavigateToNewTraining = {},
-        onEditGroup = {},
-        onDeleteGroup = {}
+        onNavigateToNewTraining = {}
     )
 }
