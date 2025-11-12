@@ -43,7 +43,6 @@ fun NavHost(
     muscleGroupViewState: MuscleGroupViewState,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     objSelected: Pair<Int, Boolean>,
-    setSelectedGroup: (MuscleGroupModel) -> Unit,
     selectedGroup: MuscleGroupModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
@@ -53,14 +52,13 @@ fun NavHost(
     onNavigateToGroupSubgroup: () -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onFetchWorkouts: (List<TrainingModel>) -> Unit,
-    onFetchRelations: () -> Unit,
-    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
     onFetchTrainings: () -> Unit,
     onUpdateScreen: () -> Unit
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
 
+    // Todo - Parei aqui. Excluir as lambdas desnecessárias fazendo as chamadas com os viewModels aqui no navHost mesmo
     NavHostCompose(
         navController = navController,
         startDestination = HomeScreen.route,
@@ -113,16 +111,13 @@ fun NavHost(
             onChangeRouteToHomeScreen(false)
             onChangeTopBarTitle(newTrainingScreen)
             NewTraining(
+                trainingViewModel = trainingViewModel,
+                groupViewModel = groupViewModel,
                 groupsWithRelations = groupsWithRelations,
                 subgroupsSelected = subgroupsSelected,
                 selectedGroup = selectedGroup,
                 listOfDays = listOfDays,
-                trainingsQuantity = workouts.size,
-                onSetSelectedGroup = { setSelectedGroup(it) },
-                onFetchRelations = { onFetchRelations() },
-                onSaveTraining = { training, selectedGroup ->
-                    onSaveTraining(training, selectedGroup)
-                },
+                trainingsQuantity = workouts.size
             )
         }
     }

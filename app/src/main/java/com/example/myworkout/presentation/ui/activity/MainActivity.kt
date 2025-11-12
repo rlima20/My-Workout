@@ -146,15 +146,6 @@ class MainActivity : ComponentActivity() {
                     },
                     onFetchWorkouts = { fetchWorkouts(it) },
                     onNavigateToNewTraining = { navigateToNewTraining(navController) },
-                    onFetchRelations = { fetchGroupsAndSubGroupsWithRelations() },
-                    onSaveTraining = { training, selectedGroup ->
-                        saveTrainingAndRelationWithGroup(
-                            training,
-                            selectedGroup.muscleGroupId
-                        )
-                        navigateToHomeScreen(navController)
-                    },
-                    setSelectedGroup = { muscleGroupViewModel.setSelectedGroup(it) },
                     selectedGroup = selectedGroup,
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
@@ -262,12 +253,5 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchGroupsAndSubGroupsWithRelations() {
         muscleGroupViewModel.getGroupsAndSubGroups()
-    }
-
-    private fun saveTrainingAndRelationWithGroup(
-        training: TrainingModel,
-        groupId: Int
-    ) {
-        trainingViewModel.insertTraining(training, groupId)
     }
 }

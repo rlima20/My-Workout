@@ -34,29 +34,33 @@ import com.example.myworkout.presentation.ui.components.commons.Tooltip
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
+import com.example.myworkout.presentation.viewmodel.TrainingViewModel
+import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NewTraining(
+    groupViewModel: MuscleGroupViewModel,
+    trainingViewModel: TrainingViewModel,
     subgroupsSelected: List<MuscleSubGroupModel>,
     groupsWithRelations: List<MuscleGroupModel>,
     selectedGroup: MuscleGroupModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingsQuantity: Int,
-    onFetchRelations: () -> Unit,
-    onSetSelectedGroup: (MuscleGroupModel) -> Unit,
-    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
 ) {
-    onFetchRelations()
+    groupViewModel.getGroupsAndSubGroups()
     val maxDaysQuantity = 6
-    val firstAvailableDay = listOfDays.firstOrNull { !it.second }?.first ?: DayOfWeek.values().first()
+    val firstAvailableDay =
+        listOfDays.firstOrNull { !it.second }?.first ?: DayOfWeek.values().first()
     var dayOfWeek by remember { mutableStateOf(firstAvailableDay.toPortugueseString()) }
     var enabled by remember { mutableStateOf(true) }
     var trainingName by remember { mutableStateOf(String()) }
     val focusRequester = remember { FocusRequester() }
     var firstTimeScreenOpenedListener by remember { mutableStateOf(true) }
-    if (firstTimeScreenOpenedListener) onSetSelectedGroup(groupsWithRelations.first())
+    if (firstTimeScreenOpenedListener) groupViewModel.setSelectedGroup(groupsWithRelations.first())
     val utils = Utils()
 
     Column(Modifier.fillMaxSize()) {
@@ -64,7 +68,7 @@ fun NewTraining(
             muscleGroups = groupsWithRelations,
             onItemSelected = {
                 firstTimeScreenOpenedListener = false
-                onSetSelectedGroup(it)
+                groupViewModel.setSelectedGroup(it)
             },
         )
         ButtonSection(
@@ -75,13 +79,12 @@ fun NewTraining(
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = trainingName.isNotEmpty(),
             onButtonClick = {
-                onSaveTraining(
+                trainingViewModel.insertTraining(
                     TrainingModel(
                         status = Status.PENDING,
                         dayOfWeek = dayOfWeek.toDayOfWeekOrNull()!!,
                         trainingName = trainingName
-                    ),
-                    selectedGroup
+                    ), selectedGroup.muscleGroupId
                 )
             },
             content = {
@@ -152,13 +155,12 @@ private fun TextFieldSection(
 private fun NewTrainingPreview() {
     val constants = Constants()
     NewTraining(
+        groupViewModel = MuscleGroupViewModelFake(),
+        trainingViewModel = TrainingViewModelFake(),
         trainingsQuantity = 1,
         subgroupsSelected = constants.subGroupsMock,
         groupsWithRelations = constants.groupsMock,
         selectedGroup = constants.groupsMock.first(),
-        listOfDays = emptyList(),
-        onFetchRelations = {},
-        onSetSelectedGroup = {},
-        onSaveTraining = { } as (TrainingModel, MuscleGroupModel) -> Unit,
+        listOfDays = emptyList()
     )
 }
