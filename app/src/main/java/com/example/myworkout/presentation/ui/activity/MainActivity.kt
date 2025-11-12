@@ -123,7 +123,8 @@ class MainActivity : ComponentActivity() {
             },
             content = {
                 NavHost(
-                    viewModel = trainingViewModel,
+                    trainingViewModel = trainingViewModel,
+                    groupViewModel = muscleGroupViewModel,
                     navController = navController,
                     muscleGroups = muscleGroups,
                     muscleSubGroups = muscleSubGroups,
@@ -132,7 +133,6 @@ class MainActivity : ComponentActivity() {
                     muscleGroupViewState = muscleGroupViewState,
                     trainingViewState = trainingViewState,
                     listOfDays = listOfDays,
-                    onItemClick = { setNewObjSelected(it) },
                     objSelected = objSelected,
                     onChangeRouteToHomeScreen = { setIsHomeScreen(it) },
                     onChangeTopBarTitle = { setAppBarTitle(it) },
@@ -144,17 +144,6 @@ class MainActivity : ComponentActivity() {
                             snackBarHostState,
                         )
                     },
-                    onCreateMuscleGroup = { createMuscleGroup(it) },
-                    onSaveRelation = { subGroups, group ->
-                        saveGroupSubGroupRelation(subGroups)
-                        showToast(
-                            this@MainActivity.getString(
-                                R.string.create_training_message,
-                                group?.name
-                            )
-                        )
-                    },
-                    onUpdateSubGroup = { updateSubGroup(it) },
                     onFetchWorkouts = { fetchWorkouts(it) },
                     onNavigateToNewTraining = { navigateToNewTraining(navController) },
                     onFetchRelations = { fetchGroupsAndSubGroupsWithRelations() },
@@ -170,8 +159,6 @@ class MainActivity : ComponentActivity() {
                     subgroupsSelected = subgroupsSelected,
                     groupsWithRelations = groupsWithRelations,
                     onFetchTrainings = { fetchTrainings() },
-                    onEditGroup = { editGroup(it) },
-                    onDeleteGroup = { deleteGroup(it) },
                     onUpdateScreen = { fetchTrainings() }
                 )
             },
@@ -190,24 +177,12 @@ class MainActivity : ComponentActivity() {
         )
     }
 
-    private fun deleteGroup(group: MuscleGroupModel) {
-        muscleGroupViewModel.deleteGroup(group)
-    }
-
-    private fun editGroup(group: MuscleGroupModel) {
-        muscleGroupViewModel.updateGroup(group)
-    }
-
     private fun navigateToHomeScreen(navController: NavHostController) {
         navController.navigateSingleTopTo(HomeScreen.route)
     }
 
     private fun navigateToNewTraining(navController: NavHostController) {
         navController.navigateSingleTopTo(New.route)
-    }
-
-    private fun showToast(message: String) {
-        Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
     }
 
     @Composable
@@ -257,10 +232,6 @@ class MainActivity : ComponentActivity() {
         trainingViewModel.fetchTrainings()
     }
 
-    private fun createMuscleGroup(it: String) {
-        muscleGroupViewModel.insertMuscleGroup(it, BodyPart.OTHER)
-    }
-
     private fun fetchMuscleGroups() {
         muscleGroupViewModel.fetchMuscleGroups()
     }
@@ -273,24 +244,12 @@ class MainActivity : ComponentActivity() {
         prefs.setFirstInstallValue(this@MainActivity.baseContext, true)
     }
 
-    private fun saveGroupSubGroupRelation(list: MutableList<MuscleGroupMuscleSubGroupModel>) {
-        muscleGroupViewModel.insertMuscleGroupMuscleSubGroup(list)
-    }
-
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
         snackBarHostState.showSnackbar(getString(R.string.everything_ready))
     }
 
     private fun clearGroupsAndSubGroupsSelected() {
         muscleGroupViewModel.clearSubGroups()
-    }
-
-    private fun updateSubGroup(subGroup: MuscleSubGroupModel) {
-        muscleGroupViewModel.updateSubGroup(subGroup)
-    }
-
-    private fun setNewObjSelected(objSelected: Pair<Int, Boolean>) {
-        muscleGroupViewModel.setMuscleGroupSelected(objSelected)
     }
 
     private fun fetchWorkouts(trainings: List<TrainingModel>) {
