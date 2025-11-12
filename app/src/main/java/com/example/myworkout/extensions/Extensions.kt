@@ -1,11 +1,14 @@
 package com.example.myworkout.extensions
 
 import android.annotation.SuppressLint
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -90,6 +93,13 @@ fun Modifier.trainingCardFilterChipListModifier(): Modifier = composed {
     this
         .fillMaxWidth()
         .padding(start = DEFAULT_PADDING, end = DEFAULT_PADDING)
+}
+
+
+fun Modifier.defaultNavHostValues(): Modifier = composed {
+    this
+        .fillMaxHeight()
+        .background(colorResource(R.color.global_background_color))
 }
 
 fun List<TrainingModel>.sortedByDayOfWeek(): List<TrainingModel> =

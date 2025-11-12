@@ -1,8 +1,6 @@
 package com.example.myworkout.presentation.ui.navigation
 
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,10 +11,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
+import com.example.myworkout.extensions.defaultNavHostValues
+import com.example.myworkout.presentation.ui.activity.props.Actions
+import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
+import com.example.myworkout.presentation.ui.activity.props.TrainingProps
 import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
@@ -35,28 +36,9 @@ fun NavHost(
     trainingViewModel: TrainingViewModel,
     groupViewModel: MuscleGroupViewModel,
     navController: NavHostController,
-    muscleGroups: List<MuscleGroupModel>,
-    muscleSubGroups: List<MuscleSubGroupModel>,
-    muscleGroupsWithRelation: List<MuscleGroupModel>,
-    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
-    trainingViewState: TrainingViewState,
-    muscleGroupViewState: MuscleGroupViewState,
-    listOfDays: List<Pair<DayOfWeek, Boolean>>,
-    objSelected: Pair<Int, Boolean>,
-    setSelectedGroup: (MuscleGroupModel) -> Unit,
-    selectedGroup: MuscleGroupModel,
-    subgroupsSelected: List<MuscleSubGroupModel>,
-    groupsWithRelations: List<MuscleGroupModel>,
-    onChangeRouteToHomeScreen: (Boolean) -> Unit,
-    onChangeTopBarTitle: (String) -> Unit,
-    onDatabaseCreated: @Composable (() -> Unit),
-    onNavigateToGroupSubgroup: () -> Unit,
-    onNavigateToNewTraining: () -> Unit,
-    onFetchWorkouts: (List<TrainingModel>) -> Unit,
-    onFetchRelations: () -> Unit,
-    onSaveTraining: (TrainingModel, MuscleGroupModel) -> Unit,
-    onFetchTrainings: () -> Unit,
-    onUpdateScreen: () -> Unit
+    trainingProps: TrainingProps,
+    muscleGroupProps: MuscleGroupProps,
+    actions: Actions
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
     val newTrainingScreen: String = stringResource(R.string.new_training)
@@ -64,65 +46,61 @@ fun NavHost(
     NavHostCompose(
         navController = navController,
         startDestination = HomeScreen.route,
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(colorResource(R.color.global_background_color))
+        modifier = Modifier.defaultNavHostValues()
     ) {
         composable(route = HomeScreen.route) {
-            onChangeRouteToHomeScreen(true)
-            onChangeTopBarTitle(homeScreen)
+            actions.onChangeRouteToHomeScreen(true)
+            actions.onChangeTopBarTitle(homeScreen)
 
             SetupTrainingStateObservers(
-                workouts = workouts,
+                workouts = muscleGroupProps.workouts,
                 viewModel = trainingViewModel,
-                listOfDays = listOfDays,
-                trainingViewState = trainingViewState,
-                onChangeRoute = onChangeRouteToHomeScreen,
+                listOfDays = trainingProps.listOfDays,
+                trainingViewState = trainingProps.viewState,
+                onChangeRoute = actions.onChangeRouteToHomeScreen,
                 onNavigateToNewTraining = {
-                    onNavigateToGroupSubgroup()
-                    onFetchTrainings()
+                    actions.onNavigateToGroupSubgroup()
+                    trainingViewModel.fetchTrainings()
                 },
-                onDatabaseCreated = { onDatabaseCreated() },
-                onFetchWorkouts = { onFetchWorkouts(it) }
+                onDatabaseCreated = { actions.onDatabaseCreated() },
+                onFetchWorkouts = { groupViewModel.fetchWorkouts(it) }
             )
         }
 
         composable(route = NewTraining.route) {
-            onChangeRouteToHomeScreen(false)
-            onChangeTopBarTitle(newTrainingScreen)
+            actions.onChangeRouteToHomeScreen(false)
+            actions.onChangeTopBarTitle(newTrainingScreen)
 
             NewMuscleGroupAndSubgroup(
                 viewModel = groupViewModel,
-                muscleGroups = muscleGroups,
-                muscleSubGroups = muscleSubGroups,
-                muscleGroupsWithRelation = muscleGroupsWithRelation,
-                objSelected = objSelected,
-                onNavigateToNewTraining = { onNavigateToNewTraining() },
+                muscleGroups = muscleGroupProps.muscleGroups,
+                muscleSubGroups = muscleGroupProps.muscleSubGroups,
+                muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
+                objSelected = muscleGroupProps.objSelected,
+                onNavigateToNewTraining = { actions.onNavigateToNewTraining() },
             )
 
             SetupMuscleGroupStateObservers(
-                muscleGroupViewState = muscleGroupViewState,
-                onDatabaseCreated = onDatabaseCreated,
-                onChangeRoute = onChangeRouteToHomeScreen,
-                onUpdateScreen = { onUpdateScreen() },
-                onNavigateToNewTraining = onNavigateToGroupSubgroup,
+                muscleGroupViewState = muscleGroupProps.viewState,
+                onDatabaseCreated = actions.onDatabaseCreated,
+                onChangeRoute = actions.onChangeRouteToHomeScreen,
+                onUpdateScreen = { trainingViewModel.fetchTrainings() },
+                onNavigateToNewTraining = actions.onNavigateToGroupSubgroup,
             )
         }
 
         composable(route = New.route) {
-            onChangeRouteToHomeScreen(false)
-            onChangeTopBarTitle(newTrainingScreen)
+            actions.onChangeRouteToHomeScreen(false)
+            actions.onChangeTopBarTitle(newTrainingScreen)
             NewTraining(
-                groupsWithRelations = groupsWithRelations,
-                subgroupsSelected = subgroupsSelected,
-                selectedGroup = selectedGroup,
-                listOfDays = listOfDays,
-                trainingsQuantity = workouts.size,
-                onSetSelectedGroup = { setSelectedGroup(it) },
-                onFetchRelations = { onFetchRelations() },
-                onSaveTraining = { training, selectedGroup ->
-                    onSaveTraining(training, selectedGroup)
-                },
+                trainingViewModel = trainingViewModel,
+                groupViewModel = groupViewModel,
+                groupsWithRelations = muscleGroupProps.muscleGroupsWithRelation,
+                subgroupsSelected = muscleGroupProps.subgroupsSelected,
+                selectedGroup = muscleGroupProps.selectedGroup,
+                listOfDays = trainingProps.listOfDays,
+                trainingsQuantity = muscleGroupProps.workouts.size,
+                onNavigateToHomeScreen = { actions.onNavigateToHomeScreen() }
             )
         }
     }
@@ -152,11 +130,10 @@ private fun SetupMuscleGroupStateObservers(
             onDatabaseCreated()
         }
 
-        MuscleGroupViewState.Success -> {
-            // Todo - Futuramente, levar todos os estados para esse State
+        is MuscleGroupViewState.Success -> { /* TODO */
         }
 
-        MuscleGroupViewState.SuccessDeleteGroup -> {
+        is MuscleGroupViewState.SuccessDeleteGroup -> {
             onUpdateScreen()
         }
     }

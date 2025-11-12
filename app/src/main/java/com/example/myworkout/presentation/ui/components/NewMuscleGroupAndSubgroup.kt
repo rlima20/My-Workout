@@ -397,9 +397,8 @@ private fun CardSection(
 @Composable
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {
-    val mgViewModelFake = MuscleGroupViewModelFake()
     NewMuscleGroupAndSubgroup(
-        viewModel = mgViewModelFake,
+        viewModel = MuscleGroupViewModelFake(),
         muscleGroups = Constants().groupsMock,
         muscleGroupsWithRelation = listOf(),
         objSelected = Pair(0, false),
