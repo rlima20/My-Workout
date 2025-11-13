@@ -112,7 +112,10 @@ class MainActivity : ComponentActivity() {
                 TopBar(
                     title = trainingProps.appBarTitle,
                     isHomeScreen = trainingProps.isHomeScreen,
-                    onPopBackStack = { trainingProps.navController.navigateSingleTopTo(HomeScreen.route) })
+                    onPopBackStack = {
+                        clearGroupsAndSubGroupsSelected()
+                        trainingProps.navController.navigateSingleTopTo(HomeScreen.route)
+                    })
             },
             content = {
                 NavHost(
