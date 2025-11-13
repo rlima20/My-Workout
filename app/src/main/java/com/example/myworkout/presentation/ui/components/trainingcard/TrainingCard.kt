@@ -48,6 +48,8 @@ import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.extensions.toDayOfWeek
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.extensions.trainingCardFilterChipListModifier
+import com.example.myworkout.presentation.ui.components.commons.Action
+import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.AlertDialog
 import com.example.myworkout.presentation.ui.components.commons.CheckBox
 import com.example.myworkout.presentation.ui.components.commons.CustomDialog
@@ -77,6 +79,7 @@ fun TrainingCard(
     var dayOfWeek by remember { mutableStateOf(training.dayOfWeek.toPortugueseString()) }
 
     // Dialog
+
     var showDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showCustomDialog by remember { mutableStateOf(false) }
@@ -88,6 +91,9 @@ fun TrainingCard(
     var trainingNameInternal by remember { mutableStateOf(training.trainingName) }
     var trainingToBeDeleted by remember { mutableStateOf(training) }
 
+    var showDialogNew by remember { mutableStateOf(false) }
+    var currentAction by remember { mutableStateOf<Action?>(null) }
+
     LaunchedEffect(training.trainingName) {
         trainingNameInternal = training.trainingName
     }
@@ -98,6 +104,7 @@ fun TrainingCard(
 
     fun setInitialStates() {
         showDialog = false
+        showDialogNew = false
         showCustomDialog = false
         showDeleteDialog = false
         status = training.status
@@ -106,24 +113,33 @@ fun TrainingCard(
         trainingNameInternal = trainingName
     }
 
-    StatusAlertDialogSection(
-        dialogTitle = dialogTitle,
-        dialogText = dialogText,
-        showDialog = showDialog,
-        onDismiss = { setInitialStates() },
-        onConfirmation = {
-            onUpdateTraining(
-                TrainingModel(
-                    trainingId = training.trainingId,
-                    status = status,
-                    trainingName = training.trainingName,
-                    dayOfWeek = training.dayOfWeek,
-                    isChecked = isTrainingChecked
-                )
-            )
-            setInitialStates()
-        }
-    )
+
+
+    if (showDialogNew) {
+        ActionDialog(
+            action = currentAction,
+            onDismiss = { setInitialStates() }
+        )
+    }
+
+//    StatusAlertDialogSection(
+//        dialogTitle = dialogTitle,
+//        dialogText = dialogText,
+//        showDialog = showDialog,
+//        onDismiss = { setInitialStates() },
+//        onConfirmation = {
+//            onUpdateTraining(
+//                TrainingModel(
+//                    trainingId = training.trainingId,
+//                    status = status,
+//                    trainingName = training.trainingName,
+//                    dayOfWeek = training.dayOfWeek,
+//                    isChecked = isTrainingChecked
+//                )
+//            )
+//            setInitialStates()
+//        }
+//    )
 
     DeleteAlertDialogSection(
         dialogTitle = dialogTitle,
@@ -210,7 +226,27 @@ fun TrainingCard(
                 onChangeDialogTitle = { dialogTitle = it },
                 onShowDialog = {
                     showCustomDialog = false
-                    showDialog = it
+                    showDialogNew = it
+                },
+                onChangeAction = { currentAction = it },
+                onConfirm = {
+                    currentAction = it
+                    dialogTitle = it.title
+
+                    it.message?.let { message ->
+                        dialogText = message
+                    }
+
+                    onUpdateTraining(
+                        TrainingModel(
+                            trainingId = training.trainingId,
+                            status = status,
+                            trainingName = training.trainingName,
+                            dayOfWeek = training.dayOfWeek,
+                            isChecked = isTrainingChecked
+                        )
+                    )
+                    setInitialStates()
                 }
             )
         }
@@ -280,7 +316,9 @@ private fun SetCheckboxSection(
     onChangeStatus: (status: Status) -> Unit,
     onChangeDialogTitle: (value: Int) -> Unit,
     onChangeDialogText: (value: Int) -> Unit,
-    onShowDialog: (value: Boolean) -> Unit
+    onShowDialog: (value: Boolean) -> Unit,
+    onChangeAction: (action: Action) -> Unit,
+    onConfirm: (action: Action) -> Unit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -290,9 +328,9 @@ private fun SetCheckboxSection(
             training = training,
             onCheckTraining = { onCheckTraining(it) },
             onChangeStatus = { onChangeStatus(it) },
-            onChangeDialogTitle = { onChangeDialogTitle(it) },
-            onChangeDialogText = { onChangeDialogText(it) },
+            onChangeAction = { onChangeAction(it) },
             onShowDialog = { onShowDialog(it) },
+            onConfirm = { onConfirm(it) }
         )
         SkipButtonSection(
             training = training,
@@ -341,9 +379,9 @@ private fun CheckboxSection(
     training: TrainingModel,
     onCheckTraining: (Boolean) -> Unit,
     onChangeStatus: (Status) -> Unit,
-    onChangeDialogTitle: (Int) -> Unit,
-    onChangeDialogText: (Int) -> Unit,
-    onShowDialog: (Boolean) -> Unit
+    onShowDialog: (Boolean) -> Unit,
+    onChangeAction: (action: Action) -> Unit,
+    onConfirm: (action: Action) -> Unit
 ) {
     if (training.status != Status.MISSED) {
         CheckBox(
@@ -351,17 +389,28 @@ private fun CheckboxSection(
             isTrainingChecked = training.isChecked,
             enabled = true,
             onChecked = {
-                if (training.isChecked) {
-                    onCheckTraining(false)
-                    onChangeStatus(Status.PENDING)
-                    onChangeDialogTitle(R.string.dialog_title_restore)
-                    onChangeDialogText(R.string.dialog_text_restore)
-                } else {
-                    onCheckTraining(true)
-                    onChangeStatus(Status.ACHIEVED)
-                    onChangeDialogTitle(R.string.dialog_title)
-                    onChangeDialogText(R.string.dialog_text)
-                }
+                val restoreAction =
+                    Action.Restore(
+                        title = R.string.dialog_title_restore,
+                        message = R.string.dialog_text_restore,
+                        onConfirm = {
+                            onCheckTraining(false)
+                            onChangeStatus(Status.PENDING)
+                        },
+                        content = {}
+                    )
+                val achieveAction =
+                    Action.Achieve(
+                        title = R.string.dialog_title,
+                        message = R.string.dialog_text,
+                        onConfirm = {
+                            onCheckTraining(true)
+                            onChangeStatus(Status.ACHIEVED)
+                        },
+                        content = {}
+                    )
+
+                if (training.isChecked) onConfirm(restoreAction) else onConfirm(achieveAction)
                 onShowDialog(true)
             },
         )
