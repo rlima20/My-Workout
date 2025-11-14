@@ -31,9 +31,11 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
@@ -57,6 +59,7 @@ fun NewMuscleGroupAndSubgroup(
     viewModel: MuscleGroupViewModel,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    subGroups: List<SubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
@@ -115,6 +118,16 @@ fun NewMuscleGroupAndSubgroup(
                         }
                     )
                 },
+                onSaveRelation2 = {
+                    createRelations2(
+                        subGroups = subGroups,
+                        muscleGroupId = it,
+                        groups = muscleGroups,
+                        onSaveRelation = { subGroups, group ->
+                            viewModel.insertGroupSubGroup(subGroups)
+                        }
+                    )
+                },
                 showDialog = showDialog
             )
         }
@@ -142,6 +155,27 @@ private fun createRelations(
     subGroupsSelected.forEach { subGroup ->
         muscleGroupSubGroups.add(
             MuscleGroupMuscleSubGroupModel(
+                muscleGroupId = muscleGroupId,
+                muscleSubGroupId = subGroup.id
+            )
+        )
+    }
+    onSaveRelation(muscleGroupSubGroups, group)
+}
+
+private fun createRelations2(
+    groups: List<MuscleGroupModel>,
+    subGroups: List<SubGroupModel>,
+    muscleGroupId: Int,
+    onSaveRelation: (MutableList<GroupSubGroupModel>, MuscleGroupModel?) -> Unit
+) {
+    val muscleGroupSubGroups: MutableList<GroupSubGroupModel> = mutableListOf()
+    val subGroupsSelected: List<SubGroupModel> = subGroups.filter { it.selected }
+    val group: MuscleGroupModel? = groups.find { it.muscleGroupId == muscleGroupId }
+
+    subGroupsSelected.forEach { subGroup ->
+        muscleGroupSubGroups.add(
+            GroupSubGroupModel(
                 muscleGroupId = muscleGroupId,
                 muscleSubGroupId = subGroup.id
             )
@@ -201,6 +235,7 @@ private fun MuscleSubGroupSection(
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
+    onSaveRelation2: (muscleGroupId: Int) -> Unit,
     showDialog: Boolean
 ) {
     var buttonEnabled by remember { mutableStateOf(false) }
@@ -394,15 +429,15 @@ private fun CardSection(
     }
 }
 
-@Composable
-@Preview
-private fun NewMuscleGroupAndSubgroupPreview() {
-    NewMuscleGroupAndSubgroup(
-        viewModel = MuscleGroupViewModelFake(),
-        muscleGroups = Constants().groupsMock,
-        muscleGroupsWithRelation = listOf(),
-        objSelected = Pair(0, false),
-        muscleSubGroups = Constants().getAllSubGroupsMock(),
-        onNavigateToNewTraining = {}
-    )
-}
+//@Composable
+//@Preview
+//private fun NewMuscleGroupAndSubgroupPreview() {
+//    NewMuscleGroupAndSubgroup(
+//        viewModel = MuscleGroupViewModelFake(),
+//        muscleGroups = Constants().groupsMock,
+//        muscleGroupsWithRelation = listOf(),
+//        objSelected = Pair(0, false),
+//        muscleSubGroups = Constants().getAllSubGroupsMock(),
+//        onNavigateToNewTraining = {}
+//    )
+//}

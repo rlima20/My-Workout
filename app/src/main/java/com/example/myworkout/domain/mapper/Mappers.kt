@@ -1,8 +1,10 @@
 package com.example.myworkout.domain.mapper
 
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.entity.MuscleGroupEntity
@@ -10,6 +12,8 @@ import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
+import com.example.myworkout.domain.room.entity.training.homescreen.GroupSubGroupEntity
+import com.example.myworkout.domain.room.entity.training.homescreen.SubGroupEntity
 
 fun TrainingModel.toEntity(): TrainingEntity {
     return TrainingEntity(
@@ -42,6 +46,22 @@ fun MuscleGroupModel.toEntity(): MuscleGroupEntity {
 fun MuscleSubGroupEntity.toModel(): MuscleSubGroupModel {
     return MuscleSubGroupModel(
         id = this.muscleSubGroupId,
+        name = this.name,
+        selected = this.selected
+    )
+}
+
+fun SubGroupEntity.toModel(): SubGroupModel {
+    return SubGroupModel(
+        id = this.muscleSubGroupId,
+        name = this.name,
+        selected = this.selected
+    )
+}
+
+fun SubGroupModel.toEntity(): SubGroupEntity {
+    return SubGroupEntity(
+        muscleSubGroupId = this.id,
         name = this.name,
         selected = this.selected
     )
@@ -81,6 +101,13 @@ fun MuscleGroupMuscleSubGroupEntity.toModel(): MuscleGroupMuscleSubGroupModel {
 
 fun MuscleGroupMuscleSubGroupModel.toEntity(): MuscleGroupMuscleSubGroupEntity {
     return MuscleGroupMuscleSubGroupEntity(
+        muscleGroupId = this.muscleGroupId,
+        muscleSubGroupId = this.muscleSubGroupId
+    )
+}
+
+fun GroupSubGroupModel.toEntity(): GroupSubGroupEntity {
+    return GroupSubGroupEntity(
         muscleGroupId = this.muscleGroupId,
         muscleSubGroupId = this.muscleSubGroupId
     )
@@ -127,6 +154,17 @@ fun List<MuscleSubGroupEntity>.toModelMuscleSubGroupList(): List<MuscleSubGroupM
         )
     }
 }
+
+fun List<SubGroupEntity>.toModelSubGroupList(): List<SubGroupModel> {
+    return this.map { subGroupEntity ->
+        SubGroupModel(
+            id = subGroupEntity.muscleSubGroupId,
+            name = subGroupEntity.name,
+            selected = subGroupEntity.selected
+        )
+    }
+}
+
 
 fun List<MuscleGroupMuscleSubGroupEntity>.toMuscleGroupMuscleSubGroupModel(): List<MuscleGroupMuscleSubGroupModel> {
     return this.map { muscleGroupMuscleSubGroup ->

@@ -1,8 +1,10 @@
 package com.example.myworkout.domain.repository.musclegroup
 
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
@@ -17,6 +19,7 @@ interface MuscleGroupRepository {
 
     // SubGroups
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
+    suspend fun getSubGroups(): List<SubGroupModel>
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>
     suspend fun getSubGroupsById(id: Int): List<MuscleSubGroupModel>
@@ -27,6 +30,7 @@ interface MuscleGroupRepository {
     fun updateSubGroup(subGroup: MuscleSubGroupModel)
     fun updateGroup(group: MuscleGroupModel)
     fun deleteGroup(group: MuscleGroupModel)
+    fun insertSubGroup(subGroup: SubGroupModel)
 
     // Group and Subgroup relation
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
@@ -35,6 +39,10 @@ interface MuscleGroupRepository {
     suspend fun replaceRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<MuscleGroupMuscleSubGroupModel>
+    )
+    suspend fun replaceRelationsForGroup2(
+        muscleGroupId: Int,
+        newRelations: List<GroupSubGroupModel>
     )
 
     // Training group relation

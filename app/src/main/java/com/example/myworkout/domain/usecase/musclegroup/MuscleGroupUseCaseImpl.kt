@@ -1,8 +1,10 @@
 package com.example.myworkout.domain.usecase.musclegroup
 
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
@@ -20,6 +22,7 @@ class MuscleGroupUseCaseImpl(
         return repository.getMuscleSubGroupsByTrainingId(trainingId)
     }
 
+    // Todo - Vou precisar dessa função para pegar os relacionamentos da nova tabela
     override suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel> {
         val muscleGroups = repository.getMuscleGroups()
         val relations = repository.getAllRelations().map { it.muscleGroupId }.toSet()
@@ -52,6 +55,13 @@ class MuscleGroupUseCaseImpl(
         repository.replaceRelationsForGroup(muscleGroupId, newRelations)
     }
 
+    override suspend fun replaceRelationsForGroup2(
+        muscleGroupId: Int,
+        newRelations: List<GroupSubGroupModel>
+    ) {
+        repository.replaceRelationsForGroup2(muscleGroupId, newRelations)
+    }
+
     override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
         return repository.getSubGroupsGroupedByMuscleGroups()
     }
@@ -72,6 +82,10 @@ class MuscleGroupUseCaseImpl(
         repository.insertMuscleSubGroup(muscleSubGroup)
     }
 
+    override suspend fun insertSubGroup(subGroup: SubGroupModel) {
+        repository.insertSubGroup(subGroup)
+    }
+
     override suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         repository.insertTrainingMuscleGroup(trainingMuscleGroup)
     }
@@ -86,6 +100,10 @@ class MuscleGroupUseCaseImpl(
 
     override suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel> {
         return repository.getMuscleSubGroups()
+    }
+
+    override suspend fun getSubGroups(): List<SubGroupModel> {
+        return repository.getSubGroups()
     }
 
     override suspend fun updateSubGroup(subGroup: MuscleSubGroupModel) {

@@ -4,9 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.myworkout.domain.room.dao.GroupSubgroupDao
 import com.example.myworkout.domain.room.dao.MuscleGroupDao
 import com.example.myworkout.domain.room.dao.MuscleGroupMuscleSubGroupDao
 import com.example.myworkout.domain.room.dao.MuscleSubGroupDao
+import com.example.myworkout.domain.room.dao.SubGroupDao
 import com.example.myworkout.domain.room.dao.TrainingDao
 import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
 import com.example.myworkout.domain.room.entity.MuscleGroupEntity
@@ -14,6 +16,8 @@ import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.MuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
+import com.example.myworkout.domain.room.entity.training.homescreen.GroupSubGroupEntity
+import com.example.myworkout.domain.room.entity.training.homescreen.SubGroupEntity
 
 private const val DATA_BASE_NAME = "database"
 
@@ -23,9 +27,11 @@ private const val DATA_BASE_NAME = "database"
         MuscleGroupEntity::class,
         TrainingEntity::class,
         MuscleGroupMuscleSubGroupEntity::class,
-        TrainingMuscleGroupEntity::class
+        TrainingMuscleGroupEntity::class,
+        SubGroupEntity::class,
+        GroupSubGroupEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun trainingDao(): TrainingDao
@@ -33,6 +39,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun muscleSubGroupDao(): MuscleSubGroupDao
     abstract fun muscleGroupMuscleSubGroupDao(): MuscleGroupMuscleSubGroupDao
     abstract fun trainingMuscleGroupDao(): TrainingMuscleGroupDao
+    abstract fun subGroupDao(): SubGroupDao
+    abstract fun groupSubgroupDao(): GroupSubgroupDao
 
     companion object {
 

@@ -75,6 +75,7 @@ fun NavHost(
                 viewModel = groupViewModel,
                 muscleGroups = muscleGroupProps.muscleGroups,
                 muscleSubGroups = muscleGroupProps.muscleSubGroups,
+                subGroups = muscleGroupProps.subGroups,
                 muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                 objSelected = muscleGroupProps.objSelected,
                 onNavigateToNewTraining = { actions.onNavigateToNewTraining() },

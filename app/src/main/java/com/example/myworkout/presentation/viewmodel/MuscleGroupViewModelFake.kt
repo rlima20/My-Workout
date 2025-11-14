@@ -2,9 +2,11 @@ package com.example.myworkout.presentation.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
@@ -18,6 +20,10 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
     }
 
     override suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getSubGroups(): List<SubGroupModel> {
         TODO("Not yet implemented")
     }
 
@@ -63,6 +69,13 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
+    override suspend fun replaceRelationsForGroup2(
+        muscleGroupId: Int,
+        newRelations: List<GroupSubGroupModel>
+    ) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
         TODO("Not yet implemented")
     }
@@ -89,6 +102,10 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
 
     override suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel) {
         // no-op
+    }
+
+    override suspend fun insertSubGroup(subGroup: SubGroupModel) {
+        TODO("Not yet implemented")
     }
 
     override suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {

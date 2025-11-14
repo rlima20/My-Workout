@@ -47,8 +47,23 @@ val trainingMuscleGroupDaoDI = module {
     factory { get<AppDatabase>().trainingMuscleGroupDao() }
 }
 
+val subGroupDao = module {
+    factory { get<AppDatabase>().subGroupDao() }
+}
+
+val groupSubGroupDao = module {
+    factory { get<AppDatabase>().groupSubgroupDao() }
+}
+
 val muscleGroupRepositoryDI = module {
-    factory<MuscleGroupRepository> { MuscleGroupRepositoryImpl(get(), get(), get(), get()) }
+    factory<MuscleGroupRepository> { MuscleGroupRepositoryImpl(
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get()
+    ) }
 }
 
 val trainingRepositoryDI = module {
@@ -88,6 +103,8 @@ val appModules = listOf(
     muscleSubGroupDaoDI,
     muscleGroupMuscleSubGroupDaoDI,
     trainingMuscleGroupDaoDI,
+    subGroupDao,
+    groupSubGroupDao,
     trainingRepositoryDI,
     muscleGroupRepositoryDI,
     trainingUseCaseDI,

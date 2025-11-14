@@ -84,11 +84,12 @@ class MainActivity : ComponentActivity() {
                         workouts = muscleGroupProps.workouts,
                         muscleGroups = muscleGroupProps.muscleGroups,
                         muscleSubGroups = muscleGroupProps.muscleSubGroups,
+                        subGroups = muscleGroupProps.subGroups,
                         subgroupsSelected = muscleGroupProps.subgroupsSelected,
                         selectedGroup = muscleGroupProps.selectedGroup,
                         viewState = muscleGroupProps.viewState,
                         muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
-                        objSelected = muscleGroupProps.objSelected
+                        objSelected = muscleGroupProps.objSelected,
                     ),
                     snackBarHostState = snackBarHostState,
                     actions = actions
@@ -170,6 +171,7 @@ class MainActivity : ComponentActivity() {
             fetchTrainings()
             fetchMuscleGroups()
             fetchMuscleSubGroups()
+            fetchSubGroups()
             fetchRelations()
             fetchWorkouts(trainings)
             fetchGroupsAndSubGroupsWithRelations()
@@ -199,6 +201,10 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchMuscleSubGroups() {
         muscleGroupViewModel.fetchMuscleSubGroups()
+    }
+
+    private fun fetchSubGroups() {
+        muscleGroupViewModel.fetchSubGroups()
     }
 
     private fun setInstallValue(prefs: TrainingPrefs) {
