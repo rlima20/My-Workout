@@ -24,6 +24,7 @@ interface MuscleGroupUseCase {
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>
     suspend fun getSubGroups(): List<SubGroupModel>
     suspend fun updateSubGroup(subGroup: MuscleSubGroupModel)
+    suspend fun updateNewSubGroup(subGroup: SubGroupModel)
     suspend fun updateGroup(group: MuscleGroupModel)
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>
     suspend fun getAllRelations(): List<MuscleGroupMuscleSubGroupModel>
@@ -35,7 +36,7 @@ interface MuscleGroupUseCase {
         muscleGroupId: Int,
         newRelations: List<MuscleGroupMuscleSubGroupModel>
     )
-    suspend fun replaceRelationsForGroup2(
+    suspend fun replaceNewRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>
     )

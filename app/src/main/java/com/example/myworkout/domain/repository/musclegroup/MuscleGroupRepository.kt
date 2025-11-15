@@ -28,6 +28,7 @@ interface MuscleGroupRepository {
     suspend fun getMuscleSubGroupsByMuscleGroups(listOfMuscleGroups: List<MuscleSubGroupModel>): List<MuscleSubGroupModel>
     fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     fun updateSubGroup(subGroup: MuscleSubGroupModel)
+    fun updateNewSubGroup(subGroup: SubGroupModel)
     fun updateGroup(group: MuscleGroupModel)
     fun deleteGroup(group: MuscleGroupModel)
     fun insertSubGroup(subGroup: SubGroupModel)

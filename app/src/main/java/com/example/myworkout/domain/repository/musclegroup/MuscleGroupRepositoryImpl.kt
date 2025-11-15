@@ -182,6 +182,10 @@ class MuscleGroupRepositoryImpl(
         muscleSubGroupDao.updateSubGroup(subGroup.toEntity())
     }
 
+    override fun updateNewSubGroup(subGroup: SubGroupModel) {
+        subGroupDao.updateSubGroup(subGroup.toEntity())
+    }
+
     override fun updateGroup(group: MuscleGroupModel) {
         muscleGroupDao.updateGroup(group.toEntity())
     }

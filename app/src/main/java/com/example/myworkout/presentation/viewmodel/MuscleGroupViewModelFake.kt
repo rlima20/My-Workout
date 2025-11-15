@@ -31,6 +31,10 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
+    override suspend fun updateNewSubGroup(subGroup: SubGroupModel) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun updateGroup(group: MuscleGroupModel) {
         TODO("Not yet implemented")
     }
@@ -69,7 +73,7 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
-    override suspend fun replaceRelationsForGroup2(
+    override suspend fun replaceNewRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>
     ) {

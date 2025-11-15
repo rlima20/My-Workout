@@ -25,7 +25,6 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
@@ -49,7 +48,6 @@ import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipL
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
-import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -113,19 +111,13 @@ fun NewMuscleGroupAndSubgroup(
                         muscleSubGroups = muscleSubGroups,
                         muscleGroupId = it,
                         groups = muscleGroups,
-                        onSaveRelation = { subGroups, group ->
-                            viewModel.insertMuscleGroupMuscleSubGroup(subGroups)
-                        }
-                    )
-                },
-                onSaveRelation2 = {
-                    createRelations2(
-                        subGroups = subGroups,
-                        muscleGroupId = it,
-                        groups = muscleGroups,
-                        onSaveRelation = { subGroups, group ->
-                            viewModel.insertGroupSubGroup(subGroups)
-                        }
+                        onSaveRelation = { relation, newRelation, group ->
+                            viewModel.insertMuscleGroupMuscleSubGroup(
+                                groupSubGroups = newRelation,
+                                muscleGroupMuscleSubGroups = relation
+                            )
+                        },
+                        subGroups = subGroups
                     )
                 },
                 showDialog = showDialog
@@ -145,14 +137,22 @@ fun NewMuscleGroupAndSubgroup(
 private fun createRelations(
     groups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    subGroups: List<SubGroupModel>,
     muscleGroupId: Int,
-    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit
+    onSaveRelation: (
+        MutableList<MuscleGroupMuscleSubGroupModel>,
+        MutableList<GroupSubGroupModel>,
+        MuscleGroupModel?
+    ) -> Unit
 ) {
     val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
-    val subGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
+    val groupSubGroups: MutableList<GroupSubGroupModel> = mutableListOf()
+    val muscleSubGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
+    val subGroupsSelected: List<SubGroupModel> = subGroups.filter { it.selected }
+
     val group: MuscleGroupModel? = groups.find { it.muscleGroupId == muscleGroupId }
 
-    subGroupsSelected.forEach { subGroup ->
+    muscleSubGroupsSelected.forEach { subGroup ->
         muscleGroupSubGroups.add(
             MuscleGroupMuscleSubGroupModel(
                 muscleGroupId = muscleGroupId,
@@ -160,28 +160,21 @@ private fun createRelations(
             )
         )
     }
-    onSaveRelation(muscleGroupSubGroups, group)
-}
-
-private fun createRelations2(
-    groups: List<MuscleGroupModel>,
-    subGroups: List<SubGroupModel>,
-    muscleGroupId: Int,
-    onSaveRelation: (MutableList<GroupSubGroupModel>, MuscleGroupModel?) -> Unit
-) {
-    val muscleGroupSubGroups: MutableList<GroupSubGroupModel> = mutableListOf()
-    val subGroupsSelected: List<SubGroupModel> = subGroups.filter { it.selected }
-    val group: MuscleGroupModel? = groups.find { it.muscleGroupId == muscleGroupId }
 
     subGroupsSelected.forEach { subGroup ->
-        muscleGroupSubGroups.add(
+        groupSubGroups.add(
             GroupSubGroupModel(
                 muscleGroupId = muscleGroupId,
                 muscleSubGroupId = subGroup.id
             )
         )
     }
-    onSaveRelation(muscleGroupSubGroups, group)
+
+    onSaveRelation(
+        muscleGroupSubGroups,
+        groupSubGroups,
+        group
+    )
 }
 
 @Composable
@@ -235,7 +228,6 @@ private fun MuscleSubGroupSection(
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
-    onSaveRelation2: (muscleGroupId: Int) -> Unit,
     showDialog: Boolean
 ) {
     var buttonEnabled by remember { mutableStateOf(false) }
@@ -249,7 +241,9 @@ private fun MuscleSubGroupSection(
             titleSection = stringResource(R.string.training),
             buttonName = stringResource(R.string.button_section_save_button),
             buttonEnabled = buttonEnabled,
-            onButtonClick = { onSaveRelation(muscleGroupId) },
+            onButtonClick = {
+                onSaveRelation(muscleGroupId)
+            },
             content = {
                 val objSelected = Pair(muscleGroupId, selected)
                 Column {

@@ -67,6 +67,14 @@ fun SubGroupModel.toEntity(): SubGroupEntity {
     )
 }
 
+fun MuscleSubGroupModel.toSubGroup(): SubGroupModel {
+    return SubGroupModel(
+        id = this.id,
+        name = this.name,
+        selected = this.selected
+    )
+}
+
 fun List<MuscleSubGroupEntity?>.toListModel(): List<MuscleSubGroupModel> {
     return this.map {
         MuscleSubGroupModel(

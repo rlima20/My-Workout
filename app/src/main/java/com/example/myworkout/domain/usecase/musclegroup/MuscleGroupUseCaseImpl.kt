@@ -55,7 +55,7 @@ class MuscleGroupUseCaseImpl(
         repository.replaceRelationsForGroup(muscleGroupId, newRelations)
     }
 
-    override suspend fun replaceRelationsForGroup2(
+    override suspend fun replaceNewRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>
     ) {
@@ -108,6 +108,10 @@ class MuscleGroupUseCaseImpl(
 
     override suspend fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         repository.updateSubGroup(subGroup)
+    }
+
+    override suspend fun updateNewSubGroup(subGroup: SubGroupModel) {
+        repository.updateNewSubGroup(subGroup)
     }
 
     override suspend fun updateGroup(group: MuscleGroupModel) {
