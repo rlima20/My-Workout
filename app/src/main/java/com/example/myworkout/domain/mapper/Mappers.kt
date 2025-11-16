@@ -182,3 +182,12 @@ fun List<MuscleGroupMuscleSubGroupEntity>.toMuscleGroupMuscleSubGroupModel(): Li
         )
     }
 }
+
+fun List<MuscleGroupMuscleSubGroupModel>.toGroupSubGroupModel(): List<GroupSubGroupModel> {
+    return this.map { muscleGroupMuscleSubGroup ->
+        GroupSubGroupModel(
+            muscleGroupId = muscleGroupMuscleSubGroup.muscleGroupId,
+            muscleSubGroupId = muscleGroupMuscleSubGroup.muscleSubGroupId
+        )
+    }
+}

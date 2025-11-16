@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -111,13 +110,11 @@ fun NewMuscleGroupAndSubgroup(
                         muscleSubGroups = muscleSubGroups,
                         muscleGroupId = it,
                         groups = muscleGroups,
-                        onSaveRelation = { relation, newRelation, group ->
+                        onSaveRelation = { relation, group ->
                             viewModel.insertMuscleGroupMuscleSubGroup(
-                                groupSubGroups = newRelation,
                                 muscleGroupMuscleSubGroups = relation
                             )
                         },
-                        subGroups = subGroups
                     )
                 },
                 showDialog = showDialog
@@ -137,19 +134,11 @@ fun NewMuscleGroupAndSubgroup(
 private fun createRelations(
     groups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
-    subGroups: List<SubGroupModel>,
     muscleGroupId: Int,
-    onSaveRelation: (
-        MutableList<MuscleGroupMuscleSubGroupModel>,
-        MutableList<GroupSubGroupModel>,
-        MuscleGroupModel?
-    ) -> Unit
+    onSaveRelation: (MutableList<MuscleGroupMuscleSubGroupModel>, MuscleGroupModel?) -> Unit
 ) {
     val muscleGroupSubGroups: MutableList<MuscleGroupMuscleSubGroupModel> = mutableListOf()
-    val groupSubGroups: MutableList<GroupSubGroupModel> = mutableListOf()
     val muscleSubGroupsSelected: List<MuscleSubGroupModel> = muscleSubGroups.filter { it.selected }
-    val subGroupsSelected: List<SubGroupModel> = subGroups.filter { it.selected }
-
     val group: MuscleGroupModel? = groups.find { it.muscleGroupId == muscleGroupId }
 
     muscleSubGroupsSelected.forEach { subGroup ->
@@ -161,20 +150,7 @@ private fun createRelations(
         )
     }
 
-    subGroupsSelected.forEach { subGroup ->
-        groupSubGroups.add(
-            GroupSubGroupModel(
-                muscleGroupId = muscleGroupId,
-                muscleSubGroupId = subGroup.id
-            )
-        )
-    }
-
-    onSaveRelation(
-        muscleGroupSubGroups,
-        groupSubGroups,
-        group
-    )
+    onSaveRelation(muscleGroupSubGroups, group)
 }
 
 @Composable
