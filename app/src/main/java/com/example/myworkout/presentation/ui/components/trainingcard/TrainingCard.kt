@@ -89,6 +89,13 @@ fun TrainingCard(
     var trainingNameInternal by remember { mutableStateOf(training.trainingName) }
     var trainingToBeDeleted by remember { mutableStateOf(training) }
 
+    // SubGroupSection
+    var isEnabled by remember { mutableStateOf(training.status == Status.PENDING) }
+
+    LaunchedEffect(training.status) {
+        isEnabled = training.status == Status.PENDING
+    }
+
     LaunchedEffect(training.trainingName) {
         trainingNameInternal = training.trainingName
     }
@@ -198,6 +205,7 @@ fun TrainingCard(
             SetSubGroupSection(
                 filterChipListModifier = filterChipListModifier,
                 training = training,
+                isEnabled = isEnabled,
                 newSubGroups = subGroups,
                 onUpdateSubGroup = { onUpdateSubGroup(it) }
             )
@@ -432,6 +440,7 @@ private fun SetTrainingName(
 private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
     training: TrainingModel,
+    isEnabled: Boolean,
     newSubGroups: List<SubGroupModel>,
     onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
 ) {
@@ -448,7 +457,7 @@ private fun SetSubGroupSection(
                 orientationProps = HomeGridProps(
                     colors = Utils().selectableChipColors(),
                     listOfMuscleSubGroup = newSubGroups,
-                    enabled = true,
+                    enabled = isEnabled,
                     horizontalSpacedBy = DEFAULT_PADDING,
                     verticalSpacedBy = DEFAULT_PADDING,
                     onItemClick = { onUpdateSubGroup(it) }
