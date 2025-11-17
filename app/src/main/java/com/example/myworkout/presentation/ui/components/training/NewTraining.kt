@@ -153,18 +153,18 @@ private fun TextFieldSection(
     )
 }
 
-//@Preview
-//@Composable
-//private fun NewTrainingPreview() {
-//    val constants = Constants()
-//    NewTraining(
-//        groupViewModel = MuscleGroupViewModelFake(),
-//        trainingViewModel = TrainingViewModelFake(),
-//        trainingsQuantity = 1,
-//        subgroupsSelected = constants.subGroupsMock,
-//        groupsWithRelations = constants.groupsMock,
-//        selectedGroup = constants.groupsMock.first(),
-//        listOfDays = emptyList(),
-//        onNavigateToHomeScreen = {}
-//    )
-//}
+@Preview
+@Composable
+private fun NewTrainingPreview() {
+    val constants = Constants()
+    NewTraining(
+        groupViewModel = MuscleGroupViewModelFake(),
+        trainingViewModel = TrainingViewModelFake(),
+        trainingsQuantity = 1,
+        subgroupsSelected = constants.subGroupsMock,
+        groupsWithRelations = constants.groupsMock,
+        selectedGroup = constants.groupsMock.first(),
+        listOfDays = emptyList(),
+        onNavigateToHomeScreen = {}
+    )
+}

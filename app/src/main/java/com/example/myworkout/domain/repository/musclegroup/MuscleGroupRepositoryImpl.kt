@@ -184,7 +184,7 @@ class MuscleGroupRepositoryImpl(
         muscleGroupMuscleSubGroupDao.replaceRelationsForGroup(muscleGroupId, entities)
     }
 
-    override suspend fun replaceRelationsForGroup2(
+    override suspend fun replaceNewRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>
     ) {
