@@ -22,6 +22,10 @@ class MuscleGroupUseCaseImpl(
         return repository.getMuscleSubGroupsByTrainingId(trainingId)
     }
 
+    override suspend fun getSubGroupsByTrainingId(trainingId: Int): List<SubGroupModel> {
+        return repository.getSubGroupsByTrainingId(trainingId)
+    }
+
     // Todo - Vou precisar dessa função para pegar os relacionamentos da nova tabela
     override suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel> {
         val muscleGroups = repository.getMuscleGroups()

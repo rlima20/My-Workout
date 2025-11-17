@@ -18,6 +18,7 @@ import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_MIN_SIZE
 import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_SPACING
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.homeScreenCardPaddings
@@ -33,7 +34,8 @@ internal fun HomeScreen(
     modifier: Modifier,
     viewModel: TrainingViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
-    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>
+    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+    newWorkouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
 ) {
 
     LazyVerticalGrid(
@@ -44,18 +46,19 @@ internal fun HomeScreen(
         horizontalArrangement = Arrangement.spacedBy(LAZY_VERTICAL_GRID_SPACING),
         columns = GridCells.Adaptive(LAZY_VERTICAL_GRID_MIN_SIZE)
     ) {
-        items(workouts.size) { index ->
+        items(newWorkouts.size) { index ->
             Column {
                 LabelTrainingCard(
-                    text = workouts[index].first.dayOfWeek.toPortugueseString(),
+                    text = newWorkouts[index].first.dayOfWeek.toPortugueseString(),
                     modifier = Modifier.padding(bottom = 8.dp),
                     color = colorResource(R.color.title_color),
                     fontSize = 20.sp
                 )
                 TrainingCard(
                     filterChipListModifier = modifier,
-                    training = workouts[index].first,
-                    subGroups = workouts[index].second,
+                    training = newWorkouts[index].first,
+                    // subGroups = workouts[index].second,
+                    newSubGroups = newWorkouts[index].second,
                     listOfDays = listOfDays,
                     onUpdateTraining = { viewModel.updateTraining(it) },
                     onUpdateTrainingName = { viewModel.updateTrainingName(it) },
@@ -66,14 +69,14 @@ internal fun HomeScreen(
     }
 }
 
-@RequiresApi(35)
-@Composable
-@Preview
-fun HomeScreenPreview() {
-    HomeScreen(
-        modifier = Modifier,
-        viewModel = TrainingViewModelFake(),
-        listOfDays = Constants().getListOfDays(),
-        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock()
-    )
-}
+//@RequiresApi(35)
+//@Composable
+//@Preview
+//fun HomeScreenPreview() {
+//    HomeScreen(
+//        modifier = Modifier,
+//        viewModel = TrainingViewModelFake(),
+//        listOfDays = Constants().getListOfDays(),
+//        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock()
+//    )
+//}

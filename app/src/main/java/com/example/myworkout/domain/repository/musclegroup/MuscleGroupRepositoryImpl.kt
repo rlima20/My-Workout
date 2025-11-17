@@ -20,6 +20,7 @@ import com.example.myworkout.domain.room.dao.SubGroupDao
 import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
+import com.example.myworkout.domain.room.entity.training.homescreen.SubGroupEntity
 
 class MuscleGroupRepositoryImpl(
     private val muscleGroupDao: MuscleGroupDao,
@@ -58,6 +59,32 @@ class MuscleGroupRepositoryImpl(
             }
         }
         return muscleSubGroups
+    }
+
+    override suspend fun getSubGroupsByTrainingId(trainingId: Int): List<SubGroupModel> {
+        // Lista de subgrupos que vai ser retornada
+        val subGroups = mutableListOf<SubGroupModel>()
+
+        // Obter todos os MuscleGroups relacionados ao Training
+        val muscleGroupRelations = trainingMuscleGroupDao.getMuscleGroupsForTraining(trainingId)
+
+        // Coleta todos os MuscleSubGroups
+        muscleGroupRelations.forEach { trainingMuscleGroup ->
+            // Atribui valor
+            val subGroupRelations = getRelationByTrainingMuscleGroup(trainingMuscleGroup)
+
+            // Passa pela lista coletando os items
+            subGroupRelations.forEach { subGroupRelation ->
+
+                // Obtem a lista de muscleSUbGroup a partir do id da relação
+                val subGroup = getNewSubgroupById(subGroupRelation)?.toModel()
+
+                subGroup?.let {
+                    subGroups.add(it)
+                }
+            }
+        }
+        return subGroups
     }
 
     override suspend fun getMuscleSubGroupsByMuscleGroups(
@@ -125,6 +152,9 @@ class MuscleGroupRepositoryImpl(
 
     override suspend fun getSubgroupById(groupRelation: MuscleGroupMuscleSubGroupEntity) =
         muscleSubGroupDao.getSubgroupById(groupRelation.muscleSubGroupId)
+
+    override suspend fun getNewSubgroupById(groupRelation: MuscleGroupMuscleSubGroupEntity) =
+        subGroupDao.getSubgroupById(groupRelation.muscleSubGroupId)
 
     override suspend fun getRelationByTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity> =
         muscleGroupMuscleSubGroupDao.getRelationById(trainingMuscleGroup.muscleGroupId)

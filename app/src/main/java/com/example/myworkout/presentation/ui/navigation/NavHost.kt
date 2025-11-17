@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.defaultNavHostValues
@@ -54,6 +55,7 @@ fun NavHost(
 
             SetupTrainingStateObservers(
                 workouts = muscleGroupProps.workouts,
+                newWorkouts = muscleGroupProps.newWorkouts,
                 viewModel = trainingViewModel,
                 listOfDays = trainingProps.listOfDays,
                 trainingViewState = trainingProps.viewState,
@@ -144,6 +146,7 @@ private fun SetupMuscleGroupStateObservers(
 @Composable
 private fun SetupTrainingStateObservers(
     workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+    newWorkouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
     viewModel: TrainingViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
@@ -184,6 +187,7 @@ private fun SetupTrainingStateObservers(
             onFetchWorkouts(trainingViewState.trainings)
             HomeScreen(
                 workouts = workouts,
+                newWorkouts = newWorkouts,
                 viewModel = viewModel,
                 listOfDays = listOfDays,
                 modifier = Modifier

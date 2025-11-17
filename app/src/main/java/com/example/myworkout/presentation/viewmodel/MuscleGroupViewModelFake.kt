@@ -88,6 +88,10 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
+    override suspend fun getSubGroupsByTrainingId(trainingId: Int): List<SubGroupModel> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
         TODO("Not yet implemented")
     }
