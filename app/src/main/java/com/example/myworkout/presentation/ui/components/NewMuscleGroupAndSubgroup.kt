@@ -25,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
@@ -47,6 +48,7 @@ import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipL
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -399,15 +401,16 @@ private fun CardSection(
     }
 }
 
-//@Composable
-//@Preview
-//private fun NewMuscleGroupAndSubgroupPreview() {
-//    NewMuscleGroupAndSubgroup(
-//        viewModel = MuscleGroupViewModelFake(),
-//        muscleGroups = Constants().groupsMock,
-//        muscleGroupsWithRelation = listOf(),
-//        objSelected = Pair(0, false),
-//        muscleSubGroups = Constants().getAllSubGroupsMock(),
-//        onNavigateToNewTraining = {}
-//    )
-//}
+@Composable
+@Preview
+private fun NewMuscleGroupAndSubgroupPreview() {
+    NewMuscleGroupAndSubgroup(
+        viewModel = MuscleGroupViewModelFake(),
+        muscleGroups = Constants().groupsMock,
+        muscleGroupsWithRelation = listOf(),
+        objSelected = Pair(0, false),
+        muscleSubGroups = Constants().getAllSubGroupsMock(),
+        onNavigateToNewTraining = {},
+        subGroups = Constants().newSubGroupsMock
+    )
+}

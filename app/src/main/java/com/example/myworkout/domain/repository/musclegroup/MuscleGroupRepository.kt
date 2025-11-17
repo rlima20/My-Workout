@@ -44,7 +44,8 @@ interface MuscleGroupRepository {
         muscleGroupId: Int,
         newRelations: List<MuscleGroupMuscleSubGroupModel>
     )
-    suspend fun replaceRelationsForGroup2(
+
+    suspend fun replaceNewRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>
     )
