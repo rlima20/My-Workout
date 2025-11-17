@@ -84,11 +84,12 @@ class MainActivity : ComponentActivity() {
                         workouts = muscleGroupProps.workouts,
                         muscleGroups = muscleGroupProps.muscleGroups,
                         muscleSubGroups = muscleGroupProps.muscleSubGroups,
+                        subGroups = muscleGroupProps.subGroups,
                         subgroupsSelected = muscleGroupProps.subgroupsSelected,
                         selectedGroup = muscleGroupProps.selectedGroup,
                         viewState = muscleGroupProps.viewState,
                         muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
-                        objSelected = muscleGroupProps.objSelected
+                        objSelected = muscleGroupProps.objSelected,
                     ),
                     snackBarHostState = snackBarHostState,
                     actions = actions
@@ -105,19 +106,22 @@ class MainActivity : ComponentActivity() {
         snackBarHostState: SnackbarHostState,
         actions: Actions
     ) {
-
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
             topBar = {
                 TopBar(
                     title = trainingProps.appBarTitle,
                     isHomeScreen = trainingProps.isHomeScreen,
-                    onPopBackStack = { trainingProps.navController.navigateSingleTopTo(HomeScreen.route) })
+                    onPopBackStack = {
+                        clearGroupsAndSubGroupsSelected()
+                        trainingProps.navController.navigateSingleTopTo(HomeScreen.route)
+                    })
             },
             content = {
                 NavHost(
                     trainingViewModel = trainingViewModel,
                     groupViewModel = muscleGroupViewModel,
+                    muscleGroupViewModel = muscleGroupViewModel,
                     navController = trainingProps.navController,
                     trainingProps = trainingProps,
                     muscleGroupProps = muscleGroupProps,
@@ -167,6 +171,7 @@ class MainActivity : ComponentActivity() {
             fetchTrainings()
             fetchMuscleGroups()
             fetchMuscleSubGroups()
+            fetchSubGroups()
             fetchRelations()
             fetchWorkouts(trainings)
             fetchGroupsAndSubGroupsWithRelations()
@@ -196,6 +201,10 @@ class MainActivity : ComponentActivity() {
 
     private fun fetchMuscleSubGroups() {
         muscleGroupViewModel.fetchMuscleSubGroups()
+    }
+
+    private fun fetchSubGroups() {
+        muscleGroupViewModel.fetchSubGroups()
     }
 
     private fun setInstallValue(prefs: TrainingPrefs) {

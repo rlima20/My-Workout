@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
-import kotlinx.coroutines.flow.StateFlow
 
 class Constants {
 
@@ -44,6 +44,13 @@ class Constants {
         MuscleSubGroupModel(name = "Lateral"),
         MuscleSubGroupModel(name = "Anterior"),
         MuscleSubGroupModel(name = "Trapézio"),
+    )
+
+    val newSubGroupsMock = listOf(
+        SubGroupModel(name = "Posterior"),
+        SubGroupModel(name = "Lateral"),
+        SubGroupModel(name = "Anterior"),
+        SubGroupModel(name = "Trapézio"),
     )
 
     val groupsMock = mutableListOf(
@@ -124,6 +131,39 @@ class Constants {
             selected = false
         ),
         MuscleSubGroupModel(
+            id = 9,
+            name = SUB_GROUP_NAME_SHOULDER_LATERAL,
+            selected = false
+        )
+    )
+
+    val newChestAndTricepsSubGroupsMock = mutableListOf(
+        SubGroupModel(
+            id = 4,
+            name = SUB_GROUP_NAME_UPPER_CHEST,
+            selected = false
+        ),
+        SubGroupModel(
+            id = 5,
+            name = SUB_GROUP_NAME_MEDIAL_CHEST,
+            selected = false
+        ),
+        SubGroupModel(
+            id = 6,
+            name = SUB_GROUP_NAME_CROSS,
+            selected = false
+        ),
+        SubGroupModel(
+            id = 7,
+            name = SUB_GROUP_NAME_TRICEPS_POLIA,
+            selected = false
+        ),
+        SubGroupModel(
+            id = 8,
+            name = SUB_GROUP_NAME_TRICEPS_FRANCH,
+            selected = false
+        ),
+        SubGroupModel(
             id = 9,
             name = SUB_GROUP_NAME_SHOULDER_LATERAL,
             selected = false
@@ -262,6 +302,18 @@ class Constants {
                 dayOfWeek = DayOfWeek.WEDNESDAY
             ),
             this.bicepsSubGroupsMock
+        )
+    )
+
+    @Composable
+    fun getNewTrainingAndSubGroupsHomeScreenMock() = listOf(
+        Pair(
+            this.getTrainingMock(
+                Status.ACHIEVED,
+                TRAINING_NAME_CHEST_TRICEPS,
+                dayOfWeek = DayOfWeek.SUNDAY
+            ),
+            this.newChestAndTricepsSubGroupsMock
         )
     )
 

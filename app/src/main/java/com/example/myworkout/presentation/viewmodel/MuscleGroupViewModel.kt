@@ -4,9 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myworkout.Constants.Companion.MUSCLE_SUB_GROUP_NAMES
+import com.example.myworkout.domain.mapper.toGroupSubGroupModel
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
 import com.example.myworkout.enums.BodyPart
@@ -25,6 +28,12 @@ open class MuscleGroupViewModel(
     private val dispatchers: Dispatchers
 ) : ViewModel() {
 
+    /**
+     * Essa variável é utilizada para compor os workouts para a HomeScreen
+     */
+    private val _subGroups = MutableStateFlow<List<SubGroupModel>>(emptyList())
+    val subGroups: StateFlow<List<SubGroupModel>> get() = _subGroups
+
     private val _viewState: MutableStateFlow<MuscleGroupViewState> =
         MutableStateFlow(MuscleGroupViewState.Loading)
     val viewState: StateFlow<MuscleGroupViewState> get() = _viewState
@@ -38,19 +47,13 @@ open class MuscleGroupViewModel(
     private val _muscleSubGroups = MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
     val muscleSubGroups: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroups
 
-    private val _muscleSubGroupsByTraining = MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
-    val muscleSubGroupsByTraining: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroupsByTraining
-
-    private val _groupsAndSubgroupsWithRelations =
-        MutableStateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>>(emptyList())
-    val groupsAndSubgroupsWithRelations: StateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>> get() = _groupsAndSubgroupsWithRelations
+    private var groupsAndSubgroupsWithRelations: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> = emptyList()
 
     private val _objSelected = MutableStateFlow(Pair(0, false))
     val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
 
-    private val _workouts =
-        MutableStateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>>(emptyList())
-    val workouts: StateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>> = _workouts
+    private val _newWorkouts = MutableStateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>>(emptyList())
+    val newWorkouts: StateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>> = _newWorkouts
 
     private val _subgroupsSelected = MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
     val subgroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _subgroupsSelected
@@ -58,12 +61,8 @@ open class MuscleGroupViewModel(
     private val _selectedGroup = MutableStateFlow(getDefaultGroup())
     val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
 
-    // ===============================================================
-    // PUBLIC FUNCTIONS (API KEPT TO COMPATIBILITY)
-    // ===============================================================
-
     fun setSelectedGroup(group: MuscleGroupModel) {
-        val list = _groupsAndSubgroupsWithRelations.value.firstOrNull { it.containsKey(group) }?.get(group).orEmpty()
+        val list = groupsAndSubgroupsWithRelations.firstOrNull { it.containsKey(group) }?.get(group).orEmpty()
         _selectedGroup.value = group
         _subgroupsSelected.value = list
     }
@@ -85,7 +84,7 @@ open class MuscleGroupViewModel(
                 val subgroups = getSubgroupsByGroupIdInternal(group.muscleGroupId)
                 mapOf(group to subgroups)
             }
-            _groupsAndSubgroupsWithRelations.value = result
+            groupsAndSubgroupsWithRelations = result
             setSuccessState()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
@@ -100,6 +99,10 @@ open class MuscleGroupViewModel(
         fetchMuscleSubGroupsInternal()
     }
 
+    fun fetchSubGroups() = viewModelScope.launch(dispatchers.IO) {
+        fetchSubGroupsInternal()
+    }
+
     fun fetchWorkouts(trainings: List<TrainingModel>) = viewModelScope.launch(dispatchers.IO) {
         setLoadingState()
         try {
@@ -107,10 +110,10 @@ open class MuscleGroupViewModel(
                 .sortedByDayOfWeek()
                 .map { training ->
                     val subGroups =
-                        muscleGroupUseCase.getMuscleSubGroupsByTrainingId(training.trainingId)
+                        muscleGroupUseCase.getSubGroupsByTrainingId(+training.trainingId)
                     training to subGroups
                 }
-            _workouts.value = workouts
+            _newWorkouts.value = workouts
             setSuccessState()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
@@ -118,21 +121,27 @@ open class MuscleGroupViewModel(
     }
 
     fun insertMuscleGroupMuscleSubGroup(
-        muscleGroupMuscleSubGroups: List<MuscleGroupMuscleSubGroupModel>
+        muscleGroupMuscleSubGroups: List<MuscleGroupMuscleSubGroupModel>,
     ) = viewModelScope.launch(dispatchers.IO) {
         setLoadingState()
         try {
+            val muscleGroupId = muscleGroupMuscleSubGroups.first().muscleGroupId
+
             if (muscleGroupMuscleSubGroups.isEmpty()) {
                 setErrorState(NO_RELATION_ERROR)
                 return@launch
             }
 
-            val muscleGroupId = muscleGroupMuscleSubGroups.first().muscleGroupId
             muscleGroupUseCase.replaceRelationsForGroup(muscleGroupId, muscleGroupMuscleSubGroups)
-
             _objSelected.value = Pair(0, false)
 
             val jobs = listOf(
+                async {
+                    replaceNewRelationsForGroup(
+                        muscleGroupId,
+                        muscleGroupMuscleSubGroups.toGroupSubGroupModel()
+                    )
+                },
                 async { getGroupsWithRelationsInternal() },
                 async { getGroupsAndSubGroupsInternal() },
                 async { clearSubGroupsInternal() }
@@ -145,17 +154,29 @@ open class MuscleGroupViewModel(
         }
     }
 
+    private suspend fun replaceNewRelationsForGroup(
+        groupId: Int,
+        groupSubGroups: List<GroupSubGroupModel>
+    ) {
+        muscleGroupUseCase.replaceNewRelationsForGroup(
+            groupId,
+            groupSubGroups
+        )
+    }
+
     fun createInitialDatabase(isFirstInstall: Boolean) {
         viewModelScope.launch(dispatchers.IO) {
             setLoadingState()
             try {
                 if (isFirstInstall) {
                     insertMuscleSubGroupsInternal()
+                    insertSubGroupsInternal()
                     _viewState.value = MuscleGroupViewState.DatabaseCreated
                 } else {
                     val jobs = listOf(
                         async { fetchMuscleGroupsInternal() },
                         async { fetchMuscleSubGroupsInternal() },
+                        async { fetchSubGroupsInternal() },
                         async { getGroupsWithRelationsInternal() }
                     )
                     jobs.awaitAll()
@@ -174,6 +195,7 @@ open class MuscleGroupViewModel(
             val jobs = listOf(
                 async { fetchMuscleGroupsInternal() },
                 async { fetchMuscleSubGroupsInternal() },
+                async { fetchSubGroupsInternal() },
                 async { clearSubGroupsInternal() }
             )
             jobs.awaitAll()
@@ -207,7 +229,28 @@ open class MuscleGroupViewModel(
         setLoadingState()
         try {
             muscleGroupUseCase.updateSubGroup(subGroup)
-            fetchMuscleSubGroupsInternal()
+
+            val jobs = listOf(
+                async { fetchMuscleGroupsInternal() }
+            )
+            jobs.awaitAll()
+
+            setSuccessState()
+        } catch (e: Exception) {
+            setErrorState(e.message.toString())
+        }
+    }
+
+    fun updateNewSubGroup(subGroup: SubGroupModel) = viewModelScope.launch(dispatchers.IO) {
+        setLoadingState()
+        try {
+            muscleGroupUseCase.updateNewSubGroup(subGroup)
+
+            val jobs = listOf(
+                async { fetchMuscleGroupsInternal() }
+            )
+            jobs.awaitAll()
+
             setSuccessState()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
@@ -251,6 +294,13 @@ open class MuscleGroupViewModel(
         setSuccessState()
     }
 
+    private suspend fun fetchSubGroupsInternal() {
+        setLoadingState()
+        val muscleSubGroups = muscleGroupUseCase.getSubGroups()
+        _subGroups.value = muscleSubGroups
+        setSuccessState()
+    }
+
     private suspend fun getGroupsWithRelationsInternal() {
         _muscleGroupsWithRelation.value = muscleGroupUseCase.getMuscleGroupsWithRelations()
     }
@@ -260,7 +310,7 @@ open class MuscleGroupViewModel(
             val subgroups = getSubgroupsByGroupIdInternal(group.muscleGroupId)
             mapOf(group to subgroups)
         }
-        _groupsAndSubgroupsWithRelations.value = result
+        groupsAndSubgroupsWithRelations = result
     }
 
     private suspend fun getSubgroupsByGroupIdInternal(id: Int): List<MuscleSubGroupModel> =
@@ -279,6 +329,15 @@ open class MuscleGroupViewModel(
             )
         }
     }
+
+    private suspend fun insertSubGroupsInternal() {
+        MUSCLE_SUB_GROUP_NAMES.forEachIndexed { index, name ->
+            muscleGroupUseCase.insertSubGroup(
+                SubGroupModel(id = index + 1, name = name)
+            )
+        }
+    }
+
 
     private suspend fun clearSubGroupsInternal() {
         setLoadingState()

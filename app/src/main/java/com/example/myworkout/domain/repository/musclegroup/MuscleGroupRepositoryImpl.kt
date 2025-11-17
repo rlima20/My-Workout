@@ -5,23 +5,30 @@ import com.example.myworkout.domain.mapper.toListModel
 import com.example.myworkout.domain.mapper.toModel
 import com.example.myworkout.domain.mapper.toModelMuscleGroupList
 import com.example.myworkout.domain.mapper.toModelMuscleSubGroupList
+import com.example.myworkout.domain.mapper.toModelSubGroupList
 import com.example.myworkout.domain.mapper.toMuscleGroupMuscleSubGroupModel
+import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.dao.MuscleGroupDao
 import com.example.myworkout.domain.room.dao.MuscleGroupMuscleSubGroupDao
 import com.example.myworkout.domain.room.dao.MuscleSubGroupDao
+import com.example.myworkout.domain.room.dao.SubGroupDao
 import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
+import com.example.myworkout.domain.room.entity.training.homescreen.SubGroupEntity
 
 class MuscleGroupRepositoryImpl(
     private val muscleGroupDao: MuscleGroupDao,
     private val trainingMuscleGroupDao: TrainingMuscleGroupDao,
     private val muscleGroupMuscleSubGroupDao: MuscleGroupMuscleSubGroupDao,
-    private val muscleSubGroupDao: MuscleSubGroupDao
+    private val muscleSubGroupDao: MuscleSubGroupDao,
+    private val subGroupDao: SubGroupDao,
+    private val groupSubGroupDao: SubGroupDao
 ) : MuscleGroupRepository {
 
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
@@ -52,6 +59,32 @@ class MuscleGroupRepositoryImpl(
             }
         }
         return muscleSubGroups
+    }
+
+    override suspend fun getSubGroupsByTrainingId(trainingId: Int): List<SubGroupModel> {
+        // Lista de subgrupos que vai ser retornada
+        val subGroups = mutableListOf<SubGroupModel>()
+
+        // Obter todos os MuscleGroups relacionados ao Training
+        val muscleGroupRelations = trainingMuscleGroupDao.getMuscleGroupsForTraining(trainingId)
+
+        // Coleta todos os MuscleSubGroups
+        muscleGroupRelations.forEach { trainingMuscleGroup ->
+            // Atribui valor
+            val subGroupRelations = getRelationByTrainingMuscleGroup(trainingMuscleGroup)
+
+            // Passa pela lista coletando os items
+            subGroupRelations.forEach { subGroupRelation ->
+
+                // Obtem a lista de muscleSUbGroup a partir do id da relação
+                val subGroup = getNewSubgroupById(subGroupRelation)?.toModel()
+
+                subGroup?.let {
+                    subGroups.add(it)
+                }
+            }
+        }
+        return subGroups
     }
 
     override suspend fun getMuscleSubGroupsByMuscleGroups(
@@ -120,6 +153,9 @@ class MuscleGroupRepositoryImpl(
     override suspend fun getSubgroupById(groupRelation: MuscleGroupMuscleSubGroupEntity) =
         muscleSubGroupDao.getSubgroupById(groupRelation.muscleSubGroupId)
 
+    override suspend fun getNewSubgroupById(groupRelation: MuscleGroupMuscleSubGroupEntity) =
+        subGroupDao.getSubgroupById(groupRelation.muscleSubGroupId)
+
     override suspend fun getRelationByTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupEntity): List<MuscleGroupMuscleSubGroupEntity> =
         muscleGroupMuscleSubGroupDao.getRelationById(trainingMuscleGroup.muscleGroupId)
 
@@ -148,6 +184,14 @@ class MuscleGroupRepositoryImpl(
         muscleGroupMuscleSubGroupDao.replaceRelationsForGroup(muscleGroupId, entities)
     }
 
+    override suspend fun replaceRelationsForGroup2(
+        muscleGroupId: Int,
+        newRelations: List<GroupSubGroupModel>
+    ) {
+        val entities = newRelations.map { it.toEntity() }
+        groupSubGroupDao.replaceRelationsForGroup(muscleGroupId, entities)
+    }
+
     override fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         trainingMuscleGroupDao.insert(trainingMuscleGroup.toEntity())
     }
@@ -160,8 +204,16 @@ class MuscleGroupRepositoryImpl(
         return muscleSubGroupDao.getAllMuscleSubGroups().toModelMuscleSubGroupList()
     }
 
+    override suspend fun getSubGroups(): List<SubGroupModel> {
+        return subGroupDao.getAllMuscleSubGroups().toModelSubGroupList()
+    }
+
     override fun updateSubGroup(subGroup: MuscleSubGroupModel) {
         muscleSubGroupDao.updateSubGroup(subGroup.toEntity())
+    }
+
+    override fun updateNewSubGroup(subGroup: SubGroupModel) {
+        subGroupDao.updateSubGroup(subGroup.toEntity())
     }
 
     override fun updateGroup(group: MuscleGroupModel) {
@@ -170,5 +222,9 @@ class MuscleGroupRepositoryImpl(
 
     override fun deleteGroup(group: MuscleGroupModel) {
         muscleGroupDao.deleteGroup(group.toEntity())
+    }
+
+    override fun insertSubGroup(subGroup: SubGroupModel) {
+        subGroupDao.insert(subGroup.toEntity())
     }
 }

@@ -17,13 +17,15 @@ import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_MIN_SIZE
 import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_SPACING
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
+import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 
@@ -32,8 +34,9 @@ import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 internal fun HomeScreen(
     modifier: Modifier,
     viewModel: TrainingViewModel,
+    muscleGroupViewModel: MuscleGroupViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
-    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>
+    workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
 ) {
 
     LazyVerticalGrid(
@@ -59,7 +62,13 @@ internal fun HomeScreen(
                     listOfDays = listOfDays,
                     onUpdateTraining = { viewModel.updateTraining(it) },
                     onUpdateTrainingName = { viewModel.updateTrainingName(it) },
-                    onDeleteTraining = { viewModel.deleteTraining(it) }
+                    onDeleteTraining = { viewModel.deleteTraining(it) },
+                    onUpdateSubGroup = {
+                        muscleGroupViewModel
+                            .updateNewSubGroup(
+                                it.copy(selected = !it.selected)
+                            )
+                    }
                 )
             }
         }
@@ -72,8 +81,9 @@ internal fun HomeScreen(
 fun HomeScreenPreview() {
     HomeScreen(
         modifier = Modifier,
+        muscleGroupViewModel = MuscleGroupViewModelFake(),
         viewModel = TrainingViewModelFake(),
         listOfDays = Constants().getListOfDays(),
-        workouts = Constants().getTrainingAndSubGroupsHomeScreenMock()
+        workouts = Constants().getNewTrainingAndSubGroupsHomeScreenMock(),
     )
 }

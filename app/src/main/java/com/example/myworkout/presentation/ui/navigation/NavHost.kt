@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.defaultNavHostValues
@@ -34,6 +34,7 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 @Composable
 fun NavHost(
     trainingViewModel: TrainingViewModel,
+    muscleGroupViewModel: MuscleGroupViewModel,
     groupViewModel: MuscleGroupViewModel,
     navController: NavHostController,
     trainingProps: TrainingProps,
@@ -55,6 +56,7 @@ fun NavHost(
             SetupTrainingStateObservers(
                 workouts = muscleGroupProps.workouts,
                 viewModel = trainingViewModel,
+                muscleGroupViewModel = muscleGroupViewModel,
                 listOfDays = trainingProps.listOfDays,
                 trainingViewState = trainingProps.viewState,
                 onChangeRoute = actions.onChangeRouteToHomeScreen,
@@ -75,6 +77,7 @@ fun NavHost(
                 viewModel = groupViewModel,
                 muscleGroups = muscleGroupProps.muscleGroups,
                 muscleSubGroups = muscleGroupProps.muscleSubGroups,
+                subGroups = muscleGroupProps.subGroups,
                 muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                 objSelected = muscleGroupProps.objSelected,
                 onNavigateToNewTraining = { actions.onNavigateToNewTraining() },
@@ -142,8 +145,9 @@ private fun SetupMuscleGroupStateObservers(
 @RequiresApi(35)
 @Composable
 private fun SetupTrainingStateObservers(
-    workouts: List<Pair<TrainingModel, List<MuscleSubGroupModel>>>,
+    workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
     viewModel: TrainingViewModel,
+    muscleGroupViewModel: MuscleGroupViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
     onChangeRoute: (value: Boolean) -> Unit,
@@ -184,6 +188,7 @@ private fun SetupTrainingStateObservers(
             HomeScreen(
                 workouts = workouts,
                 viewModel = viewModel,
+                muscleGroupViewModel = muscleGroupViewModel,
                 listOfDays = listOfDays,
                 modifier = Modifier
             )

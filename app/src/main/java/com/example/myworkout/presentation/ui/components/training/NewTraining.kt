@@ -22,6 +22,7 @@ import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
+import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
@@ -152,18 +153,18 @@ private fun TextFieldSection(
     )
 }
 
-@Preview
-@Composable
-private fun NewTrainingPreview() {
-    val constants = Constants()
-    NewTraining(
-        groupViewModel = MuscleGroupViewModelFake(),
-        trainingViewModel = TrainingViewModelFake(),
-        trainingsQuantity = 1,
-        subgroupsSelected = constants.subGroupsMock,
-        groupsWithRelations = constants.groupsMock,
-        selectedGroup = constants.groupsMock.first(),
-        listOfDays = emptyList(),
-        onNavigateToHomeScreen = {}
-    )
-}
+//@Preview
+//@Composable
+//private fun NewTrainingPreview() {
+//    val constants = Constants()
+//    NewTraining(
+//        groupViewModel = MuscleGroupViewModelFake(),
+//        trainingViewModel = TrainingViewModelFake(),
+//        trainingsQuantity = 1,
+//        subgroupsSelected = constants.subGroupsMock,
+//        groupsWithRelations = constants.groupsMock,
+//        selectedGroup = constants.groupsMock.first(),
+//        listOfDays = emptyList(),
+//        onNavigateToHomeScreen = {}
+//    )
+//}
