@@ -22,12 +22,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-// Todo - Verificar variáveis que não estão sendo usadas
 open class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
     private val muscleSubGroupUseCase: MuscleGroupUseCase,
     private val dispatchers: Dispatchers
 ) : ViewModel() {
+
+    /**
+     * Essa variável é utilizada para compor os workouts para a HomeScreen
+     */
+    private val _subGroups = MutableStateFlow<List<SubGroupModel>>(emptyList())
+    val subGroups: StateFlow<List<SubGroupModel>> get() = _subGroups
 
     private val _viewState: MutableStateFlow<MuscleGroupViewState> =
         MutableStateFlow(MuscleGroupViewState.Loading)
@@ -42,29 +47,12 @@ open class MuscleGroupViewModel(
     private val _muscleSubGroups = MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
     val muscleSubGroups: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroups
 
-    /**
-     * Essa variável é utilizada para compor os workouts para a HomeScreen
-     */
-    private val _subGroups = MutableStateFlow<List<SubGroupModel>>(emptyList())
-    val subGroups: StateFlow<List<SubGroupModel>> get() = _subGroups
-
-    private val _muscleSubGroupsByTraining =
-        MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
-    val muscleSubGroupsByTraining: StateFlow<List<MuscleSubGroupModel>> get() = _muscleSubGroupsByTraining
-
-    private val _groupsAndSubgroupsWithRelations =
-        MutableStateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>>(emptyList())
-    val groupsAndSubgroupsWithRelations: StateFlow<List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>> get() = _groupsAndSubgroupsWithRelations
+    private var groupsAndSubgroupsWithRelations: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> = emptyList()
 
     private val _objSelected = MutableStateFlow(Pair(0, false))
     val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
 
-    private val _workouts =
-        MutableStateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>>(emptyList())
-    val workouts: StateFlow<List<Pair<TrainingModel, List<MuscleSubGroupModel>>>> = _workouts
-
-    private val _newWorkouts =
-        MutableStateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>>(emptyList())
+    private val _newWorkouts = MutableStateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>>(emptyList())
     val newWorkouts: StateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>> = _newWorkouts
 
     private val _subgroupsSelected = MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
@@ -73,14 +61,8 @@ open class MuscleGroupViewModel(
     private val _selectedGroup = MutableStateFlow(getDefaultGroup())
     val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
 
-    // ===============================================================
-    // PUBLIC FUNCTIONS (API KEPT TO COMPATIBILITY)
-    // ===============================================================
-
     fun setSelectedGroup(group: MuscleGroupModel) {
-        val list =
-            _groupsAndSubgroupsWithRelations.value.firstOrNull { it.containsKey(group) }?.get(group)
-                .orEmpty()
+        val list = groupsAndSubgroupsWithRelations.firstOrNull { it.containsKey(group) }?.get(group).orEmpty()
         _selectedGroup.value = group
         _subgroupsSelected.value = list
     }
@@ -102,7 +84,7 @@ open class MuscleGroupViewModel(
                 val subgroups = getSubgroupsByGroupIdInternal(group.muscleGroupId)
                 mapOf(group to subgroups)
             }
-            _groupsAndSubgroupsWithRelations.value = result
+            groupsAndSubgroupsWithRelations = result
             setSuccessState()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
@@ -328,7 +310,7 @@ open class MuscleGroupViewModel(
             val subgroups = getSubgroupsByGroupIdInternal(group.muscleGroupId)
             mapOf(group to subgroups)
         }
-        _groupsAndSubgroupsWithRelations.value = result
+        groupsAndSubgroupsWithRelations = result
     }
 
     private suspend fun getSubgroupsByGroupIdInternal(id: Int): List<MuscleSubGroupModel> =

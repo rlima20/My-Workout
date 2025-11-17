@@ -40,7 +40,6 @@ import com.example.myworkout.Constants.Companion.TRAINING_CARD_PADDING_BOTTOM
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
 import com.example.myworkout.R
-import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
@@ -65,12 +64,12 @@ fun TrainingCard(
     modifier: Modifier = Modifier,
     filterChipListModifier: Modifier = Modifier,
     training: TrainingModel,
-    // subGroups: List<MuscleSubGroupModel>,
-    newSubGroups: List<SubGroupModel>,
+    subGroups: List<SubGroupModel>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     onUpdateTraining: (training: TrainingModel) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
-    onDeleteTraining: (training: TrainingModel) -> Unit
+    onDeleteTraining: (training: TrainingModel) -> Unit,
+    onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
 ) {
     // Training
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
@@ -199,8 +198,8 @@ fun TrainingCard(
             SetSubGroupSection(
                 filterChipListModifier = filterChipListModifier,
                 training = training,
-                // subGroups = subGroups,
-                newSubGroups = newSubGroups
+                newSubGroups = subGroups,
+                onUpdateSubGroup = { onUpdateSubGroup(it) }
             )
             SetCheckboxSection(
                 training = training,
@@ -433,8 +432,8 @@ private fun SetTrainingName(
 private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
     training: TrainingModel,
-    // subGroups: List<MuscleSubGroupModel>,
     newSubGroups: List<SubGroupModel>,
+    onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -449,33 +448,35 @@ private fun SetSubGroupSection(
                 orientationProps = HomeGridProps(
                     colors = Utils().selectableChipColors(),
                     listOfMuscleSubGroup = newSubGroups,
-                    enabled = false,
+                    enabled = true,
                     horizontalSpacedBy = DEFAULT_PADDING,
                     verticalSpacedBy = DEFAULT_PADDING,
+                    onItemClick = { onUpdateSubGroup(it) }
                 ),
             )
         } else IconButton(painter = painterResource(R.drawable.add_icon))
     }
 }
-//
-//@RequiresApi(35)
-//@Preview
-//@Composable
-//fun TrainingCardPreview() {
-//    val constants = Constants()
-//    val shoulder = TRAINING_NAME_SHOULDER
-//    Column {
-//        Status.values().forEach {
-//            TrainingCard(
-//                modifier = Modifier.padding(bottom = 4.dp),
-//                training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
-//                subGroups = constants.subGroupsMock,
-//                filterChipListModifier = Modifier,
-//                listOfDays = Constants().getListOfDays(),
-//                onUpdateTraining = {},
-//                onUpdateTrainingName = {},
-//                onDeleteTraining = {}
-//            )
-//        }
-//    }
-//}
+
+@RequiresApi(35)
+@Preview
+@Composable
+fun TrainingCardPreview() {
+    val constants = Constants()
+    val shoulder = TRAINING_NAME_SHOULDER
+    Column {
+        Status.values().forEach {
+            TrainingCard(
+                modifier = Modifier.padding(bottom = 4.dp),
+                training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
+                subGroups = constants.newSubGroupsMock,
+                filterChipListModifier = Modifier,
+                listOfDays = Constants().getListOfDays(),
+                onUpdateTraining = {},
+                onUpdateTrainingName = {},
+                onDeleteTraining = {},
+                onUpdateSubGroup = {}
+            )
+        }
+    }
+}

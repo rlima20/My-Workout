@@ -90,7 +90,6 @@ class MainActivity : ComponentActivity() {
                         viewState = muscleGroupProps.viewState,
                         muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                         objSelected = muscleGroupProps.objSelected,
-                        newWorkouts = muscleGroupProps.newWorkouts,
                     ),
                     snackBarHostState = snackBarHostState,
                     actions = actions
@@ -107,7 +106,6 @@ class MainActivity : ComponentActivity() {
         snackBarHostState: SnackbarHostState,
         actions: Actions
     ) {
-
         Scaffold(
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
             topBar = {
@@ -123,6 +121,7 @@ class MainActivity : ComponentActivity() {
                 NavHost(
                     trainingViewModel = trainingViewModel,
                     groupViewModel = muscleGroupViewModel,
+                    muscleGroupViewModel = muscleGroupViewModel,
                     navController = trainingProps.navController,
                     trainingProps = trainingProps,
                     muscleGroupProps = muscleGroupProps,
