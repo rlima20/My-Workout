@@ -24,7 +24,6 @@ import kotlinx.coroutines.launch
 
 open class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
-    private val muscleSubGroupUseCase: MuscleGroupUseCase,
     private val dispatchers: Dispatchers
 ) : ViewModel() {
 
@@ -315,8 +314,8 @@ open class MuscleGroupViewModel(
 
     private suspend fun getSubgroupsByGroupIdInternal(id: Int): List<MuscleSubGroupModel> =
         try {
-            val ids = muscleSubGroupUseCase.getSubGroupIdFromRelation(id)
-            ids.map { subId -> muscleSubGroupUseCase.getSubgroupById(subId) }
+            val ids = muscleGroupUseCase.getSubGroupIdFromRelation(id)
+            ids.map { subId -> muscleGroupUseCase.getSubgroupById(subId) }
         } catch (e: Exception) {
             setErrorState(e.message.toString())
             emptyList()
