@@ -371,7 +371,7 @@ open class MuscleGroupViewModel(
         _viewState.value = MuscleGroupViewState.Error
     }
 
-    private fun getDefaultGroup() = MuscleGroupModel(0, "", BodyPart.LEG)
+    private fun getDefaultGroup() = MuscleGroupModel(0, "")
 
     companion object {
         const val EXCEPTION = "Exception"

@@ -300,7 +300,6 @@ private fun MuscleGroupSection(
                                     MuscleGroupModel(
                                         muscleGroupId = muscleGroup.muscleGroupId,
                                         name = name,
-                                        image = muscleGroup.image,
                                         selected = muscleGroup.selected,
                                         enabled = muscleGroup.enabled
                                     )

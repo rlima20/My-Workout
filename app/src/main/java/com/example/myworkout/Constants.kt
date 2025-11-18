@@ -6,7 +6,6 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
-import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
 
@@ -57,27 +56,22 @@ class Constants {
         MuscleGroupModel(
             muscleGroupId = 1,
             name = GROUP_NAME_CHEST,
-            image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 2,
             name = TRAINING_NAME_SHOULDER,
-            image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 3,
             name = GROUP_NAME_ARM,
-            image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 4,
             name = GROUP_NAME_LEGS,
-            image = BodyPart.OTHER
         ),
         MuscleGroupModel(
             muscleGroupId = 5,
             name = GROUP_NAME_ABDOMEN,
-            image = BodyPart.OTHER
         ),
     )
 
@@ -356,13 +350,13 @@ class Constants {
 
     companion object {
         val dayOrder = listOf(
-            DayOfWeek.SUNDAY,
             DayOfWeek.MONDAY,
             DayOfWeek.TUESDAY,
             DayOfWeek.WEDNESDAY,
             DayOfWeek.THURSDAY,
             DayOfWeek.FRIDAY,
-            DayOfWeek.SATURDAY
+            DayOfWeek.SATURDAY,
+            DayOfWeek.SUNDAY
         )
 
         // Training

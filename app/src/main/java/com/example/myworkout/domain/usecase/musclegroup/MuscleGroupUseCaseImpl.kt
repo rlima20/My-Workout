@@ -36,7 +36,6 @@ class MuscleGroupUseCaseImpl(
         val newGroup = MuscleGroupModel(
             muscleGroupId = repository.getMuscleGroups().size + 1,
             name = name,
-            image = image
         )
         repository.insertMuscleGroup(newGroup)
         return newGroup

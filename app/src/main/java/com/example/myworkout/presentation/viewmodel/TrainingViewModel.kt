@@ -203,20 +203,6 @@ open class TrainingViewModel(
      * Responsável apenas por inserir o treino e retornar seu ID.
      */
     private suspend fun performInsertTrainingAndGetId(training: TrainingModel): Int? {
-        // Verifica se já existe um treinamento com o mesmo nome
-        val alreadyExists = _trainings.value.any {
-            it.trainingName.toLowerCase(locale = Locale.current).equals(
-                training.trainingName.toLowerCase(locale = Locale.current),
-                ignoreCase = true
-            )
-        }
-
-        if (alreadyExists) {
-            setErrorState(EXCEPTION, training.trainingName)
-            return null
-        }
-
-        // Continua o fluxo normalmente se não houver duplicidade
         trainingUseCase.insertTraining(training)
         val updatedTrainings = fetchAndReturnTrainings()
         return getLastInsertedTrainingId(updatedTrainings)
