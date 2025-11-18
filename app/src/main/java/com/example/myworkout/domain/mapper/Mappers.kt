@@ -39,7 +39,6 @@ fun MuscleGroupModel.toEntity(): MuscleGroupEntity {
     return MuscleGroupEntity(
         muscleGroupId = this.muscleGroupId,
         name = this.name,
-        image = this.image
     )
 }
 
@@ -148,7 +147,6 @@ fun List<MuscleGroupEntity>.toModelMuscleGroupList(): List<MuscleGroupModel> {
         MuscleGroupModel(
             muscleGroupId = muscleGroupEntity.muscleGroupId,
             name = muscleGroupEntity.name,
-            image = muscleGroupEntity.image
         )
     }
 }

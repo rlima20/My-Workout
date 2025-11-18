@@ -31,7 +31,7 @@ private const val DATA_BASE_NAME = "database"
         SubGroupEntity::class,
         GroupSubGroupEntity::class
     ],
-    version = 2
+    version = 1
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun trainingDao(): TrainingDao
