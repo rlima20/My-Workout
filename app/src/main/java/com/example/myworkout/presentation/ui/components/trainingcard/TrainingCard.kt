@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -206,7 +207,7 @@ fun TrainingCard(
                 filterChipListModifier = filterChipListModifier,
                 training = training,
                 isEnabled = isEnabled,
-                newSubGroups = subGroups,
+                subGroups = subGroups,
                 onUpdateSubGroup = { onUpdateSubGroup(it) }
             )
             SetCheckboxSection(
@@ -441,7 +442,7 @@ private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
     training: TrainingModel,
     isEnabled: Boolean,
-    newSubGroups: List<SubGroupModel>,
+    subGroups: List<SubGroupModel>,
     onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
 ) {
     Box(
@@ -456,7 +457,7 @@ private fun SetSubGroupSection(
                 orientation = HomeGrid,
                 orientationProps = HomeGridProps(
                     colors = Utils().selectableChipColors(),
-                    listOfMuscleSubGroup = newSubGroups,
+                    listOfMuscleSubGroup = subGroups,
                     enabled = isEnabled,
                     horizontalSpacedBy = DEFAULT_PADDING,
                     verticalSpacedBy = DEFAULT_PADDING,
@@ -476,7 +477,9 @@ fun TrainingCardPreview() {
     Column {
         Status.values().forEach {
             TrainingCard(
-                modifier = Modifier.padding(bottom = 4.dp),
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .width(200.dp),
                 training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
                 subGroups = constants.newSubGroupsMock,
                 filterChipListModifier = Modifier,
