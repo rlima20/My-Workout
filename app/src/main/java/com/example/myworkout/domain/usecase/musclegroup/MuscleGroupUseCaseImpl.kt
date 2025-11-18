@@ -14,6 +14,15 @@ class MuscleGroupUseCaseImpl(
     private val repository: MuscleGroupRepository
 
 ) : MuscleGroupUseCase {
+
+    override fun setSelectedGroup(
+        map: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+        group: MuscleGroupModel
+    ): List<MuscleSubGroupModel> {
+        return map.firstOrNull { it.containsKey(group) }?.get(group)
+            .orEmpty()
+    }
+
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
         repository.deleteGroupCascade(group)
     }
@@ -26,7 +35,6 @@ class MuscleGroupUseCaseImpl(
         return repository.getSubGroupsByTrainingId(trainingId)
     }
 
-    // Todo - Vou precisar dessa função para pegar os relacionamentos da nova tabela
     override suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel> {
         val muscleGroups = repository.getMuscleGroups()
         val relations = repository.getAllRelations().map { it.muscleGroupId }.toSet()

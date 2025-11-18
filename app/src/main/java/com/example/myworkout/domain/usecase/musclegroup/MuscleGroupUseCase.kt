@@ -11,6 +11,10 @@ import com.example.myworkout.enums.BodyPart
 
 interface MuscleGroupUseCase {
     suspend fun deleteGroupCascade(group: MuscleGroupModel)
+    fun setSelectedGroup(
+        map: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+        group: MuscleGroupModel
+    ): List<MuscleSubGroupModel>
     suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel>
     suspend fun getSubGroupsByTrainingId(trainingId: Int): List<SubGroupModel>
     suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>>

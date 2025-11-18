@@ -84,6 +84,13 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
+    override fun setSelectedGroup(
+        map: List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>>,
+        group: MuscleGroupModel
+    ): List<MuscleSubGroupModel> {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
         TODO("Not yet implemented")
     }
@@ -127,7 +134,6 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
 
 @RequiresApi(Build.VERSION_CODES.O)
 class MuscleGroupViewModelFake : MuscleGroupViewModel(
-    muscleGroupUseCase = MuscleGroupUseCaseFake(),
-    muscleSubGroupUseCase = MuscleGroupUseCaseFake(),  // importante!
+    useCase = MuscleGroupUseCaseFake(),
     dispatchers = Dispatchers
 )
