@@ -26,7 +26,6 @@ class MuscleGroupUseCaseImpl(
         return repository.getSubGroupsByTrainingId(trainingId)
     }
 
-    // Todo - Vou precisar dessa função para pegar os relacionamentos da nova tabela
     override suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel> {
         val muscleGroups = repository.getMuscleGroups()
         val relations = repository.getAllRelations().map { it.muscleGroupId }.toSet()
