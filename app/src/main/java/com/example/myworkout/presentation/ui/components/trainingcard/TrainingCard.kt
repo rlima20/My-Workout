@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -88,6 +89,13 @@ fun TrainingCard(
     val focusRequester = remember { FocusRequester() }
     var trainingNameInternal by remember { mutableStateOf(training.trainingName) }
     var trainingToBeDeleted by remember { mutableStateOf(training) }
+
+    // SubGroupSection
+    var isEnabled by remember { mutableStateOf(training.status == Status.PENDING) }
+
+    LaunchedEffect(training.status) {
+        isEnabled = training.status == Status.PENDING
+    }
 
     LaunchedEffect(training.trainingName) {
         trainingNameInternal = training.trainingName
@@ -198,7 +206,8 @@ fun TrainingCard(
             SetSubGroupSection(
                 filterChipListModifier = filterChipListModifier,
                 training = training,
-                newSubGroups = subGroups,
+                isEnabled = isEnabled,
+                subGroups = subGroups,
                 onUpdateSubGroup = { onUpdateSubGroup(it) }
             )
             SetCheckboxSection(
@@ -432,7 +441,8 @@ private fun SetTrainingName(
 private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
     training: TrainingModel,
-    newSubGroups: List<SubGroupModel>,
+    isEnabled: Boolean,
+    subGroups: List<SubGroupModel>,
     onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
 ) {
     Box(
@@ -447,8 +457,8 @@ private fun SetSubGroupSection(
                 orientation = HomeGrid,
                 orientationProps = HomeGridProps(
                     colors = Utils().selectableChipColors(),
-                    listOfMuscleSubGroup = newSubGroups,
-                    enabled = true,
+                    listOfMuscleSubGroup = subGroups,
+                    enabled = isEnabled,
                     horizontalSpacedBy = DEFAULT_PADDING,
                     verticalSpacedBy = DEFAULT_PADDING,
                     onItemClick = { onUpdateSubGroup(it) }
@@ -467,7 +477,9 @@ fun TrainingCardPreview() {
     Column {
         Status.values().forEach {
             TrainingCard(
-                modifier = Modifier.padding(bottom = 4.dp),
+                modifier = Modifier
+                    .padding(bottom = 4.dp)
+                    .width(200.dp),
                 training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
                 subGroups = constants.newSubGroupsMock,
                 filterChipListModifier = Modifier,

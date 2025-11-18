@@ -10,12 +10,10 @@ import androidx.compose.material.FilterChip
 import androidx.compose.material.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -118,6 +116,7 @@ object HomeGrid : Orientation {
         SetHomeGrid(
             modifier = modifier,
             colors = props.colors,
+            isEnabled = props.enabled,
             listOfMuscleSubGroup = props.listOfMuscleSubGroup,
             horizontalSpacedBy = props.horizontalSpacedBy,
             verticalSpacedBy = props.verticalSpacedBy,
@@ -190,6 +189,7 @@ private fun SetGrid(
 private fun SetHomeGrid(
     modifier: Modifier,
     colors: SelectableChipColors,
+    isEnabled: Boolean,
     listOfMuscleSubGroup: List<SubGroupModel>,
     horizontalSpacedBy: Dp,
     verticalSpacedBy: Dp,
@@ -201,7 +201,12 @@ private fun SetHomeGrid(
         verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
         listOfMuscleSubGroup.forEach { item ->
-            HomeFilterChip(colors, item, onItemClick)
+            HomeFilterChip(
+                colors,
+                isEnabled,
+                item,
+                onItemClick
+            )
         }
     }
 }
@@ -234,11 +239,14 @@ private fun FilterChip(
 @OptIn(ExperimentalMaterialApi::class)
 private fun HomeFilterChip(
     colors: SelectableChipColors,
+    isEnabled: Boolean,
     item: SubGroupModel,
     onItemClick: (item: SubGroupModel) -> Unit,
 ) {
     FilterChip(
         colors = colors,
+        selected = item.selected,
+        enabled = isEnabled,
         onClick = { onItemClick(item) },
         content = {
             Text(
@@ -250,6 +258,5 @@ private fun HomeFilterChip(
                 softWrap = false
             )
         },
-        selected = item.selected
     )
 }

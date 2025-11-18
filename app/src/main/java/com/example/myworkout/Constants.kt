@@ -47,9 +47,9 @@ class Constants {
     )
 
     val newSubGroupsMock = listOf(
-        SubGroupModel(name = "Posterior"),
+        SubGroupModel(name = "Posterior", selected = true),
         SubGroupModel(name = "Lateral"),
-        SubGroupModel(name = "Anterior"),
+        SubGroupModel(name = "Anterior", selected = true),
         SubGroupModel(name = "Trapézio"),
     )
 

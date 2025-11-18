@@ -63,7 +63,7 @@ class MuscleGroupUseCaseImpl(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>
     ) {
-        repository.replaceRelationsForGroup2(muscleGroupId, newRelations)
+        repository.replaceNewRelationsForGroup(muscleGroupId, newRelations)
     }
 
     override suspend fun getSubGroupsGroupedByMuscleGroups(): Map<MuscleGroupModel, List<MuscleSubGroupModel>> {
