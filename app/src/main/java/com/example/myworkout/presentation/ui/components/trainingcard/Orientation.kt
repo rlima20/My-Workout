@@ -246,8 +246,8 @@ private fun HomeFilterChip(
     FilterChip(
         colors = colors,
         selected = item.selected,
-        enabled = isEnabled,
-        onClick = { onItemClick(item) },
+        enabled = true,
+        onClick = { if (isEnabled) return@FilterChip onItemClick(item) },
         content = {
             Text(
                 color = colorResource(if (item.selected) R.color.white else R.color.text_color),
