@@ -22,10 +22,12 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
+import com.example.myworkout.presentation.ui.activity.props.trainingProps
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
+import com.example.myworkout.presentation.viewmodel.TrainingSubGroupState
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 
@@ -36,7 +38,7 @@ internal fun HomeScreen(
     viewModel: TrainingViewModel,
     muscleGroupViewModel: MuscleGroupViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
-    workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
+    workouts: List<Pair<TrainingModel, List<TrainingSubGroupState>>>,
 ) {
 
     LazyVerticalGrid(
@@ -58,15 +60,16 @@ internal fun HomeScreen(
                 TrainingCard(
                     filterChipListModifier = modifier,
                     training = workouts[index].first,
-                    subGroups = workouts[index].second,
+                    trainingSubGroups = workouts[index].second,
                     listOfDays = listOfDays,
                     onUpdateTraining = { viewModel.updateTraining(it) },
                     onUpdateTrainingName = { viewModel.updateTrainingName(it) },
                     onDeleteTraining = { viewModel.deleteTraining(it) },
                     onUpdateSubGroup = {
                         muscleGroupViewModel
-                            .updateNewSubGroup(
-                                it.copy(selected = !it.selected)
+                            .toggleSubGroupSelection(
+                                trainingId = workouts[index].first.trainingId,
+                                it.id
                             )
                     }
                 )
@@ -75,15 +78,15 @@ internal fun HomeScreen(
     }
 }
 
-@RequiresApi(35)
-@Composable
-@Preview
-fun HomeScreenPreview() {
-    HomeScreen(
-        modifier = Modifier,
-        muscleGroupViewModel = MuscleGroupViewModelFake(),
-        viewModel = TrainingViewModelFake(),
-        listOfDays = Constants().getListOfDays(),
-        workouts = Constants().getNewTrainingAndSubGroupsHomeScreenMock(),
-    )
-}
+//@RequiresApi(35)
+//@Composable
+//@Preview
+//fun HomeScreenPreview() {
+//    HomeScreen(
+//        modifier = Modifier,
+//        muscleGroupViewModel = MuscleGroupViewModelFake(),
+//        viewModel = TrainingViewModelFake(),
+//        listOfDays = Constants().getListOfDays(),
+//        workouts = Constants().getNewTrainingAndSubGroupsHomeScreenMock(),
+//    )
+//}

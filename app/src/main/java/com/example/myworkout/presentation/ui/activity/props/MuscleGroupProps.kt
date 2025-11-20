@@ -8,10 +8,11 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
+import com.example.myworkout.presentation.viewmodel.TrainingSubGroupState
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 
 data class MuscleGroupProps(
-    val workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
+    val workouts: List<Pair<TrainingModel, List<TrainingSubGroupState>>>,
     val muscleGroups: List<MuscleGroupModel>,
     val muscleSubGroups: List<MuscleSubGroupModel>,
     val subGroups: List<SubGroupModel>,

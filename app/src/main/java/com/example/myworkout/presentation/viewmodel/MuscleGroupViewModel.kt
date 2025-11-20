@@ -22,6 +22,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+data class TrainingSubGroupState(
+    val subGroup: SubGroupModel,
+    val isSelected: Boolean = false
+)
+
 open class MuscleGroupViewModel(
     private val muscleGroupUseCase: MuscleGroupUseCase,
     private val muscleSubGroupUseCase: MuscleGroupUseCase,
@@ -52,14 +57,48 @@ open class MuscleGroupViewModel(
     private val _objSelected = MutableStateFlow(Pair(0, false))
     val objSelected: StateFlow<Pair<Int, Boolean>> get() = _objSelected
 
-    private val _newWorkouts = MutableStateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>>(emptyList())
-    val newWorkouts: StateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>> = _newWorkouts
+//    private val _newWorkouts = MutableStateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>>(emptyList())
+//    val newWorkouts: StateFlow<List<Pair<TrainingModel, List<SubGroupModel>>>> = _newWorkouts
+
+    private val _newWorkouts =
+        MutableStateFlow<List<Pair<TrainingModel, List<TrainingSubGroupState>>>>(emptyList())
+    val newWorkouts = _newWorkouts
 
     private val _subgroupsSelected = MutableStateFlow<List<MuscleSubGroupModel>>(emptyList())
     val subgroupsSelected: StateFlow<List<MuscleSubGroupModel>> get() = _subgroupsSelected
 
     private val _selectedGroup = MutableStateFlow(getDefaultGroup())
     val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
+
+    private val _trainingSubGroups = MutableStateFlow<Map<Int, List<TrainingSubGroupState>>>(emptyMap())
+    val trainingSubGroups = _trainingSubGroups
+
+    private val _trainingSubGroupsState =
+        MutableStateFlow<Map<Int, List<TrainingSubGroupState>>>(emptyMap())
+
+    val trainingSubGroupsState = _trainingSubGroupsState
+
+//    fun loadSubGroupsForTraining(trainingId: Int, subGroups: List<MuscleSubGroupModel>) {
+//        val state = subGroups.map { subgroup ->
+//            TrainingSubGroupState(subGroup = subgroup.copy()) // 🔥 cópia!
+//        }
+//
+//        _trainingSubGroups.update { current ->
+//            current + (trainingId to state)
+//        }
+//    }
+//
+//    fun toggleSubGroupSelection(trainingId: Int, subGroupId: Int) {
+//        _trainingSubGroups.update { map ->
+//            val updatedList = map[trainingId]?.map { item ->
+//                if (item.subGroup.id == subGroupId)
+//                    item.copy(isSelected = !item.isSelected)
+//                else item
+//            } ?: emptyList()
+//
+//            map + (trainingId to updatedList)
+//        }
+//    }
 
     fun setSelectedGroup(group: MuscleGroupModel) {
         val list = groupsAndSubgroupsWithRelations.firstOrNull { it.containsKey(group) }?.get(group).orEmpty()
@@ -103,22 +142,134 @@ open class MuscleGroupViewModel(
         fetchSubGroupsInternal()
     }
 
+
+
     fun fetchWorkouts(trainings: List<TrainingModel>) = viewModelScope.launch(dispatchers.IO) {
         setLoadingState()
+
         try {
-            val workouts = trainings
-                .sortedByDayOfWeek()
-                .map { training ->
-                    val subGroups =
-                        muscleGroupUseCase.getSubGroupsByTrainingId(+training.trainingId)
-                    training to subGroups
-                }
+            val workouts: List<Pair<TrainingModel, List<TrainingSubGroupState>>> =
+                trainings
+                    .sortedByDayOfWeek()
+                    .map { training ->
+
+                        val baseSubGroups =
+                            muscleGroupUseCase.getSubGroupsByTrainingId(training.trainingId)
+
+                        // Pega o estado atual armazenado no mapa
+                        val selectedMap =
+                             trainingSubGroupsState.value[training.trainingId] ?: emptyList()
+
+                        // Mescla estado vindo do banco + estado de seleção
+                        val merged = baseSubGroups.map { sg ->
+                            val selected = selectedMap.firstOrNull { it.subGroup.id == sg.id }?.isSelected ?: false
+
+                            TrainingSubGroupState(
+                                subGroup = sg,
+                                isSelected = selected
+                            )
+                        }
+
+                        training to merged
+                    }
+
             _newWorkouts.value = workouts
             setSuccessState()
+
         } catch (e: Exception) {
             setErrorState(e.message.toString())
         }
     }
+
+//    fun fetchWorkouts(trainings: List<TrainingModel>) = viewModelScope.launch(dispatchers.IO) {
+//        setLoadingState()
+//        try {
+//            val workouts = trainings
+//                .sortedByDayOfWeek()
+//                .map { training ->
+//                    val subGroups = muscleGroupUseCase.getSubGroupsByTrainingId(training.trainingId)
+//
+//                    // 🔥 Aqui está a correção: cada treino ganha seu próprio estado
+//                    val uiStates = subGroups.map { subgroup ->
+//                        TrainingSubGroupState(
+//                            subGroup = subgroup.copy(),   // evita compartilhamento de instância
+//                            isSelected = false      // estado inicial
+//                        )
+//                    }
+//
+//                    training to uiStates
+//                }
+//
+//            _newWorkouts.value = workouts
+//            setSuccessState()
+//        } catch (e: Exception) {
+//            setErrorState(e.message.toString())
+//        }
+//    }
+
+    fun toggleSubGroupSelection(trainingId: Int, subGroupId: Int) {
+        _newWorkouts.value = _newWorkouts.value.map { (training, subGroups) ->
+            if (training.trainingId == trainingId) {
+                val updatedSubGroups = subGroups.map { state ->
+                    if (state.subGroup.id == subGroupId) {
+                        state.copy(isSelected = !state.isSelected)
+                    } else state
+                }
+                training to updatedSubGroups
+            } else {
+                training to subGroups
+            }
+        }
+    }
+
+//    fun fetchWorkouts(trainings: List<TrainingModel>) = viewModelScope.launch(dispatchers.IO) {
+//        setLoadingState()
+//        try {
+//            val workouts = trainings
+//                .sortedByDayOfWeek()
+//                .map { training ->
+//                    val subGroups =
+//                        muscleGroupUseCase.getSubGroupsByTrainingId(+training.trainingId)
+//                    training to subGroups
+//                }
+//            _newWorkouts.value = workouts
+//            setSuccessState()
+//        } catch (e: Exception) {
+//            setErrorState(e.message.toString())
+//        }
+//    }
+
+
+//    fun fetchWorkouts(trainings: List<TrainingModel>) =
+//        viewModelScope.launch(dispatchers.IO) {
+//        setLoadingState()
+//        try {
+//            val allSubGroups = _subGroups.value // lista global (proveniente da tabela SubGroup)
+//            val workouts = trainings
+//                .sortedByDayOfWeek()
+//                .map { training ->
+//                    // 1) cria cópias "limpas" (selected = false)
+//                    val freshSubGroups = allSubGroups.map { sub -> sub.copy(selected = false) }
+//
+//                    // 2) pega os subgroups relacionados a esse treino (pela useCase)
+//                    val relatedSubGroups: List<SubGroupModel> =
+//                        muscleGroupUseCase.getSubGroupsByTrainingId(training.trainingId)
+//
+//                    // 3) marca como selected = true apenas os que realmente pertencem a esse treino
+//                    val relatedIds = relatedSubGroups.map { it.id }.toSet()
+//                    val subGroupsForThisTraining = freshSubGroups.map { sub ->
+//                        if (relatedIds.contains(sub.id)) sub.copy(selected = true) else sub
+//                    }
+//
+//                    training to subGroupsForThisTraining
+//                }
+//
+//            _newWorkouts.value = workouts
+//            setSuccessState()
+//        } catch (e: Exception) {
+//            setErrorState(e.message.toString())
+//        }
+//    }
 
     fun insertMuscleGroupMuscleSubGroup(
         muscleGroupMuscleSubGroups: List<MuscleGroupMuscleSubGroupModel>,

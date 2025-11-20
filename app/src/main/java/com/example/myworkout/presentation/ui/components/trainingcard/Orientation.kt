@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
+import com.example.myworkout.presentation.viewmodel.TrainingSubGroupState
 
 sealed interface Orientation {
     @OptIn(ExperimentalMaterialApi::class)
@@ -55,7 +56,7 @@ data class GridProps @OptIn(ExperimentalMaterialApi::class) constructor(
 
 data class HomeGridProps @OptIn(ExperimentalMaterialApi::class) constructor(
     val colors: SelectableChipColors,
-    val listOfMuscleSubGroup: List<SubGroupModel>,
+    val listOfMuscleSubGroup: List<TrainingSubGroupState>,
     val enabled: Boolean = true,
     val horizontalSpacedBy: Dp,
     val verticalSpacedBy: Dp,
@@ -117,7 +118,7 @@ object HomeGrid : Orientation {
             modifier = modifier,
             colors = props.colors,
             isEnabled = props.enabled,
-            listOfMuscleSubGroup = props.listOfMuscleSubGroup,
+            trainingSubGroups = props.listOfMuscleSubGroup,
             horizontalSpacedBy = props.horizontalSpacedBy,
             verticalSpacedBy = props.verticalSpacedBy,
             onItemClick = props.onItemClick
@@ -190,7 +191,7 @@ private fun SetHomeGrid(
     modifier: Modifier,
     colors: SelectableChipColors,
     isEnabled: Boolean,
-    listOfMuscleSubGroup: List<SubGroupModel>,
+    trainingSubGroups: List<TrainingSubGroupState>,
     horizontalSpacedBy: Dp,
     verticalSpacedBy: Dp,
     onItemClick: (item: SubGroupModel) -> Unit
@@ -200,7 +201,7 @@ private fun SetHomeGrid(
         horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy),
         verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
-        listOfMuscleSubGroup.forEach { item ->
+        trainingSubGroups.forEach { item ->
             HomeFilterChip(
                 colors,
                 isEnabled,
@@ -240,19 +241,19 @@ private fun FilterChip(
 private fun HomeFilterChip(
     colors: SelectableChipColors,
     isEnabled: Boolean,
-    item: SubGroupModel,
-    onItemClick: (item: SubGroupModel) -> Unit,
+    item: TrainingSubGroupState,
+    onItemClick: (SubGroupModel) -> Unit,
 ) {
     FilterChip(
         colors = colors,
-        selected = item.selected,
+        selected = item.isSelected,
         enabled = true,
-        onClick = { if (isEnabled) return@FilterChip onItemClick(item) },
+        onClick = { if (isEnabled) return@FilterChip onItemClick(item.subGroup) },
         content = {
             Text(
-                color = colorResource(if (item.selected) R.color.white else R.color.text_color),
+                color = colorResource(if (item.isSelected) R.color.white else R.color.text_color),
                 fontSize = 14.sp,
-                text = item.name,
+                text = item.subGroup.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 softWrap = false

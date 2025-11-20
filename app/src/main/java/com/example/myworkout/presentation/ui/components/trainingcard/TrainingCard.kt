@@ -55,6 +55,7 @@ import com.example.myworkout.presentation.ui.components.commons.CustomDialog
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
 import com.example.myworkout.presentation.ui.components.commons.IconButton
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
+import com.example.myworkout.presentation.viewmodel.TrainingSubGroupState
 import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -65,7 +66,7 @@ fun TrainingCard(
     modifier: Modifier = Modifier,
     filterChipListModifier: Modifier = Modifier,
     training: TrainingModel,
-    subGroups: List<SubGroupModel>,
+    trainingSubGroups: List<TrainingSubGroupState>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     onUpdateTraining: (training: TrainingModel) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
@@ -207,8 +208,8 @@ fun TrainingCard(
                 filterChipListModifier = filterChipListModifier,
                 training = training,
                 isEnabled = isEnabled,
-                subGroups = subGroups,
-                onUpdateSubGroup = { onUpdateSubGroup(it) }
+                trainingSubGroups = trainingSubGroups,
+                onUpdateSubGroup = { onUpdateSubGroup(it) },
             )
             SetCheckboxSection(
                 training = training,
@@ -442,7 +443,7 @@ private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
     training: TrainingModel,
     isEnabled: Boolean,
-    subGroups: List<SubGroupModel>,
+    trainingSubGroups: List<TrainingSubGroupState>,
     onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
 ) {
     Box(
@@ -457,7 +458,7 @@ private fun SetSubGroupSection(
                 orientation = HomeGrid,
                 orientationProps = HomeGridProps(
                     colors = Utils().selectableChipColors(),
-                    listOfMuscleSubGroup = subGroups,
+                    listOfMuscleSubGroup = trainingSubGroups,
                     enabled = isEnabled,
                     horizontalSpacedBy = DEFAULT_PADDING,
                     verticalSpacedBy = DEFAULT_PADDING,
@@ -468,27 +469,27 @@ private fun SetSubGroupSection(
     }
 }
 
-@RequiresApi(35)
-@Preview
-@Composable
-fun TrainingCardPreview() {
-    val constants = Constants()
-    val shoulder = TRAINING_NAME_SHOULDER
-    Column {
-        Status.values().forEach {
-            TrainingCard(
-                modifier = Modifier
-                    .padding(bottom = 4.dp)
-                    .width(200.dp),
-                training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
-                subGroups = constants.newSubGroupsMock,
-                filterChipListModifier = Modifier,
-                listOfDays = Constants().getListOfDays(),
-                onUpdateTraining = {},
-                onUpdateTrainingName = {},
-                onDeleteTraining = {},
-                onUpdateSubGroup = {}
-            )
-        }
-    }
-}
+//@RequiresApi(35)
+//@Preview
+//@Composable
+//fun TrainingCardPreview() {
+//    val constants = Constants()
+//    val shoulder = TRAINING_NAME_SHOULDER
+//    Column {
+//        Status.values().forEach {
+//            TrainingCard(
+//                modifier = Modifier
+//                    .padding(bottom = 4.dp)
+//                    .width(200.dp),
+//                training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
+//                subGroups = constants.newSubGroupsMock,
+//                filterChipListModifier = Modifier,
+//                listOfDays = Constants().getListOfDays(),
+//                onUpdateTraining = {},
+//                onUpdateTrainingName = {},
+//                onDeleteTraining = {},
+//                onUpdateSubGroup = {}
+//            )
+//        }
+//    }
+//}

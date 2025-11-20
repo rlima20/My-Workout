@@ -25,6 +25,7 @@ import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
 import com.example.myworkout.presentation.ui.components.training.NewTraining
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
+import com.example.myworkout.presentation.viewmodel.TrainingSubGroupState
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import com.example.myworkout.presentation.viewmodel.viewstate.TrainingViewState
@@ -145,7 +146,7 @@ private fun SetupMuscleGroupStateObservers(
 @RequiresApi(35)
 @Composable
 private fun SetupTrainingStateObservers(
-    workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
+    workouts: List<Pair<TrainingModel, List<TrainingSubGroupState>>>,
     viewModel: TrainingViewModel,
     muscleGroupViewModel: MuscleGroupViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
