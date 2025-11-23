@@ -43,7 +43,7 @@ internal fun HomeScreen(
         modifier = Modifier
             .homeScreenCardPaddings()
             .fillMaxWidth(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalArrangement = Arrangement.spacedBy(LAZY_VERTICAL_GRID_SPACING),
         columns = GridCells.Adaptive(LAZY_VERTICAL_GRID_MIN_SIZE)
     ) {
