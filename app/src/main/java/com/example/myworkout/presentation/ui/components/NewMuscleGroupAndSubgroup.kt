@@ -1,6 +1,8 @@
 package com.example.myworkout.presentation.ui.components
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -251,7 +253,6 @@ private fun MuscleSubGroupSection(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun MuscleGroupSection(
     muscleGroups: List<MuscleGroupModel>,
@@ -400,6 +401,7 @@ private fun CardSection(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {

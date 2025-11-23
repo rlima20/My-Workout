@@ -45,13 +45,12 @@ class Utils {
     )
 
     @Composable
-    fun getTextFieldColors(): TextFieldColors =
-        TextFieldDefaults.textFieldColors(
-    focusedLabelColor = colorResource(R.color.text_color),
-    cursorColor = colorResource(R.color.text_color),
-    backgroundColor = colorResource(R.color.text_field_background_color),
-    textColor = colorResource(R.color.text_color),
-    focusedIndicatorColor = colorResource(R.color.title_color)
+    fun getTextFieldColors(): TextFieldColors = TextFieldDefaults.textFieldColors(
+        focusedLabelColor = colorResource(R.color.text_color),
+        cursorColor = colorResource(R.color.text_color),
+        backgroundColor = colorResource(R.color.text_field_background_color),
+        textColor = colorResource(R.color.text_color),
+        focusedIndicatorColor = colorResource(R.color.title_color)
     )
 
     @Composable

@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -56,7 +56,7 @@ fun CustomSelectableChip(
                 onLongClick = { onLongClick() },
                 onDoubleClick = { onDoubledClick() },
                 interactionSource = interactionSource,
-                indication = rememberRipple(bounded = true),
+                indication = ripple(),
                 role = Role.Button
             ),
         color = backgroundColor,

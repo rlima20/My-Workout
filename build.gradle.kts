@@ -1,21 +1,24 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+plugins {
+    id("com.android.application") version "8.13.0" apply false
+    id("com.android.library") version "8.13.0" apply false
+
+    // Kotlin 2.0.21 para todo o projeto
+    id("org.jetbrains.kotlin.android") version "2.0.21" apply false
+
+    // Compose Compiler obrigatório no Kotlin 2.0+
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
+
+    id("jacoco")
+}
 
 buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        google()
     }
 
     dependencies {
-        // Make sure that you have the Google services Gradle plugin dependency
         classpath("com.google.gms:google-services:4.3.15")
     }
-}// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
-plugins {
-    id ("com.android.application") version ("8.13.0") apply false
-    id ("com.android.library") version ("8.13.0") apply false
-    id ("org.jetbrains.kotlin.android") version ("1.8.10") apply false
-    id ("jacoco")
-    id("org.jetbrains.kotlin.plugin.compose") version "2.0.21" apply false
 }
