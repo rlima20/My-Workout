@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -326,8 +327,8 @@ private fun SkipButtonSection(
     if (training.status == Status.PENDING || training.status == Status.MISSED)
         Button(
             modifier = Modifier
-                .padding(start = 8.dp, bottom = 8.dp)
-                .height(30.dp),
+                .padding(start = 8.dp, bottom = 8.dp, top = 8.dp)
+                .height(35.dp),
             onClick = {
                 onChangeDialogTitle(if (training.status == Status.PENDING) R.string.dialog_title_skip else R.string.dialog_title_restore)
                 onChangeDialogText(R.string.dialog_text)
@@ -337,13 +338,18 @@ private fun SkipButtonSection(
             enabled = true,
             colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.button_skip_training))
         ) {
-            Text(
-                fontSize = 10.sp,
-                text = stringResource(
-                    if (training.status == Status.PENDING) R.string.skip_training
-                    else R.string.restore_training
+            Column(
+                Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    fontSize = 10.sp,
+                    text = stringResource(
+                        if (training.status == Status.PENDING) R.string.skip_training
+                        else R.string.restore_training
+                    )
                 )
-            )
+            }
         }
 }
 
