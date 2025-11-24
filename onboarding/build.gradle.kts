@@ -41,6 +41,9 @@ android {
 }
 
 dependencies {
+    val koin = "3.5.6"
+    val navVersion = "2.7.2"
+
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
     implementation("androidx.activity:activity-compose:1.9.2")
@@ -56,4 +59,17 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Koin main
+    implementation("io.insert-koin:koin-core:${koin}")
+    // Koin Android
+    implementation("io.insert-koin:koin-android:${koin}")
+    // Koin + Jetpack Compose
+    implementation("io.insert-koin:koin-androidx-compose:${koin}")
+
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    implementation("com.google.accompanist:accompanist-pager:0.31.3-beta")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
 }
