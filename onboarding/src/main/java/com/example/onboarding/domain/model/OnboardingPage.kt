@@ -1,7 +1,9 @@
 package com.example.onboarding.domain.model
 
+import androidx.annotation.DrawableRes
+
 data class OnboardingPage(
+    @DrawableRes val image: Int,
     val title: String,
-    val description: String,
-    val imageRes: Int? = null
+    val description: String
 )

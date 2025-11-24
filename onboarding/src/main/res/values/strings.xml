@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Onboarding</string>
+    <string name="next">Pular</string>
+    <string name="start">Começar</string>
 </resources>

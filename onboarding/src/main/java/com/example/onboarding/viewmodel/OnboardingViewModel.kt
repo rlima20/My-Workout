@@ -17,29 +17,11 @@ class OnboardingViewModel(private val prefs: OnboardingPrefs) : ViewModel() {
     val showOnboarding: StateFlow<Boolean> = _showOnboarding
 
     init {
-        _pages.value = loadPages()
+        // _pages.value = loadPages()
         viewModelScope.launch {
             _showOnboarding.value = prefs.isCompleted()
         }
     }
-
-    private fun loadPages(): List<OnboardingPage> = listOf(
-        OnboardingPage(
-            title = "Organize seus treinos",
-            description = "Crie e personalize sua rotina.",
-            imageRes = null
-        ),
-        OnboardingPage(
-            title = "Acompanhe sua evolução",
-            description = "Veja seu progresso ao longo dos dias.",
-            imageRes = null
-        ),
-        OnboardingPage(
-            title = "Tudo no mesmo lugar",
-            description = "Informações centralizadas para você.",
-            imageRes = null
-        )
-    )
 
     fun completeOnboarding() {
         viewModelScope.launch {
