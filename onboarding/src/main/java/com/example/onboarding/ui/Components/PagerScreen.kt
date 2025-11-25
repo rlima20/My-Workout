@@ -13,13 +13,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.onboarding.domain.model.OnboardingPage
 
 @Composable
-fun PagerScreen(page: OnboardingPage) {
+fun PagerScreen(
+    page: OnboardingPage
+
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,13 +34,14 @@ fun PagerScreen(page: OnboardingPage) {
         Image(
             painter = painterResource(id = page.image),
             contentDescription = null,
-            modifier = Modifier.size(280.dp)
+            modifier = Modifier.size(320.dp)
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
             text = page.title,
+            color = colorResource(page.titleColor),
             style = MaterialTheme.typography.headlineMedium
         )
 
@@ -44,6 +49,7 @@ fun PagerScreen(page: OnboardingPage) {
 
         Text(
             text = page.description,
+            color = colorResource(page.descriptionColor),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodyLarge
         )

@@ -1,11 +1,10 @@
-    plugins {
+plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 
     // OBRIGATÓRIO NO KOTLIN 2.0+
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp") version "2.0.21-1.0.25"
-
 }
 
 android {
@@ -118,4 +117,8 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+
+
+    implementation(project(":onboarding"))
 }

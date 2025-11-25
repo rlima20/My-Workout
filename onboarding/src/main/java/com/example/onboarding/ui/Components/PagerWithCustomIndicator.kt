@@ -65,8 +65,8 @@ fun PagerWithCustomIndicator(
         ) {
 
             TextButton(
-                onClick = onFinished,
-                content = { Text(stringResource(R.string.next)) }
+                onClick = { onFinished() },
+                content = { Text(stringResource(R.string.skip)) }
             )
 
             Button(

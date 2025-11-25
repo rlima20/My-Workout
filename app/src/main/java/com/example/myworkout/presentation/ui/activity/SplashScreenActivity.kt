@@ -8,7 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
+import com.example.myworkout.Constants
+import com.example.myworkout.R
 import com.example.myworkout.presentation.ui.components.commons.SplashComponent
+import com.example.onboarding.domain.data.OnboardingPrefs
+import com.example.onboarding.ui.activity.OnboardingActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -18,8 +22,24 @@ class SplashScreenActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch {
-            delay(3000)
-            startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
+            val alreadySeen = OnboardingPrefs(this@SplashScreenActivity).isCompleted()
+
+            if (alreadySeen) {
+                lifecycleScope.launch {
+                    delay(3000)
+                    startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
+                    finish()
+                }
+            } else {
+                startActivity(
+                    OnboardingActivity.createIntent(
+                        context = this@SplashScreenActivity,
+                        pages = Constants().onboardingPages,
+                        showSkip = true,
+                        finishButtonText = getString(R.string.start)
+                    )
+                )
+            }
             finish()
         }
 
