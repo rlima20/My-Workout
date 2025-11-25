@@ -20,28 +20,32 @@ import kotlinx.coroutines.launch
 class SplashScreenActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val alreadySeen = OnboardingPrefs(this@SplashScreenActivity).isCompleted()
 
         lifecycleScope.launch {
-            val alreadySeen = OnboardingPrefs(this@SplashScreenActivity).isCompleted()
+            delay(3000)
 
             if (alreadySeen) {
-                lifecycleScope.launch {
-                    delay(3000)
-                    startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
-                    finish()
-                }
+                startActivity(Intent(this@SplashScreenActivity, MainActivity::class.java))
+                finish()
             } else {
                 startActivity(
                     OnboardingActivity.createIntent(
                         context = this@SplashScreenActivity,
                         pages = Constants().onboardingPages,
-                        showSkip = true,
-                        finishButtonText = getString(R.string.start)
+                        showSkipButton = true,
+                        finishButtonText = getString(R.string.start),
+                        nextButtonText = Pair(
+                            this@SplashScreenActivity.getString(R.string.start),
+                            this@SplashScreenActivity.getString(R.string.next)
+                        ),
+                        skipButtonText = this@SplashScreenActivity.getString(R.string.skip)
                     )
                 )
             }
             finish()
         }
+
 
         setContent {
             SplashComponent()

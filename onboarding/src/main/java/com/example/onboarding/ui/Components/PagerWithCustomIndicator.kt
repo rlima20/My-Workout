@@ -14,17 +14,19 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.onboarding.R
 import com.example.onboarding.domain.model.OnboardingPage
 
 @Composable
 fun PagerWithCustomIndicator(
     pages: List<OnboardingPage>,
     modifier: Modifier = Modifier,
+    nextButtonText: Pair<String, String>,
+    skipButtonText: String,
+    showSkipButton: Boolean,
+    finishButtonText: String,
     onFinished: () -> Unit,
-    onNextPage: () -> Unit
+    onNextPage: () -> Unit,
 ) {
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
@@ -64,23 +66,27 @@ fun PagerWithCustomIndicator(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            TextButton(
-                onClick = { onFinished() },
-                content = { Text(stringResource(R.string.skip)) }
-            )
+            // SkipButton
+            if (showSkipButton) {
+                TextButton(
+                    onClick = { onFinished() },
+                    content = { Text(text = skipButtonText) }
+                )
+            }
 
+            // NextButton
             Button(
                 onClick = {
                     if (pagerState.currentPage < pages.lastIndex) onNextPage()
                     else onFinished()
+                },
+                content = {
+                    Text(
+                        if (pagerState.currentPage == pages.lastIndex) nextButtonText.first
+                        else nextButtonText.second
+                    )
                 }
-            ) {
-                Text(
-                    if (pagerState.currentPage == pages.lastIndex)
-                        stringResource(R.string.start)
-                    else stringResource(R.string.next)
-                )
-            }
+            )
         }
     }
 }
