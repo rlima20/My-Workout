@@ -7,8 +7,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OnboardingPage(
-    val title: String = "",
-    val description: String = "",
+    val title: String? = null,
+    val description: String? = null,
     val titleColor: Int = R.color.text_color,
     val descriptionColor: Int = R.color.text_color,
     val dotColor: Int = R.color.black,

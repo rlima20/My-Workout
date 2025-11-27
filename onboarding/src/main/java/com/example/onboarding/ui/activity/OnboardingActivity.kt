@@ -31,9 +31,8 @@ class OnboardingActivity : ComponentActivity() {
                     nextButtonText = nextButtonText,
                     skipButtonText = skipButtonText,
                     showSkipButton = showSkipButton,
-                    finishButtonText = finishButtonText,
                     onFinished = { this@OnboardingActivity.finish() },
-                    onNextPage = { },
+                    onNextPage = {  },
                 )
             }
         }

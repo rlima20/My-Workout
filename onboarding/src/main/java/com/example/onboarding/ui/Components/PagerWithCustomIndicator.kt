@@ -24,7 +24,6 @@ fun PagerWithCustomIndicator(
     nextButtonText: Pair<String, String>,
     skipButtonText: String,
     showSkipButton: Boolean,
-    finishButtonText: String,
     onFinished: () -> Unit,
     onNextPage: () -> Unit,
 ) {
