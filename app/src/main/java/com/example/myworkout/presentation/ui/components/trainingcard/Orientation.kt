@@ -20,7 +20,6 @@ import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
 
 sealed interface Orientation {
-    @OptIn(ExperimentalMaterialApi::class)
     @Composable
     fun Render(modifier: Modifier, props: OrientationProps)
 }

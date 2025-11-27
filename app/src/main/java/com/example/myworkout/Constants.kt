@@ -8,6 +8,7 @@ import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
+import com.example.onboarding.domain.model.OnboardingPage
 
 class Constants {
 
@@ -325,7 +326,6 @@ class Constants {
         return subGroups
     }
 
-
     fun emptyString(): String = ""
 
     fun getGroupsAndSubgroupsWithRelations(): List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
@@ -346,6 +346,45 @@ class Constants {
                 Constants().groupsMock[4] to Constants().subGroupsMock // Abdômen (mock genérico)
             )
         )
+
+    val pageWelcome = OnboardingPage(
+        image = com.example.onboarding.R.drawable.welcome,
+        description = "Conheça as funcionalidades incríveis do nosso app."
+    )
+
+    val pageYourJourney = OnboardingPage(
+        image = com.example.onboarding.R.drawable.home_img,
+        title = "Sua Jornada, Seu Ritmo",
+        description = "Personalize seus treinos e acompanhe tudo. Tenha total controle sobre sua evolução — um passo de cada vez."
+    )
+
+    val pageGroups = OnboardingPage(
+        image = com.example.onboarding.R.drawable.create_group_img,
+        title = "Organize seus Grupos Musculares",
+        description = "Crie grupos musculares para estruturar seus treinos. Assim você mantém tudo organizado e acessa os exercícios de forma rápida e intuitiva."
+    )
+
+    val pageYourTraining = OnboardingPage(
+        image = com.example.onboarding.R.drawable.new_training_img,
+        title = "Monte Seu Treino Ideal",
+        description = "Crie grupos musculares para estruturar seus treinos. Assim você mantém tudo organizado e acessa os exercícios de forma rápida e intuitiva."
+    )
+
+    val pageEditAndDelete = OnboardingPage(
+        image = com.example.onboarding.R.drawable.delete_register_img,
+        title = "Edite e Exclua com Gestos Simples",
+        description = "Toque e segure para editar qualquer treino ou grupo muscular.\n" +
+                "Dê um duplo clique para excluir rapidamente o que não usa mais.\n" +
+                "Gerencie tudo de forma prática, direta e do seu jeito."
+    )
+
+    val onboardingPages = listOf(
+        pageWelcome,
+        pageYourJourney,
+        pageGroups,
+        pageYourTraining,
+        pageEditAndDelete
+    )
 
 
     companion object {
