@@ -22,7 +22,6 @@ import com.example.onboarding.domain.model.OnboardingPage
 @Composable
 fun PagerScreen(
     page: OnboardingPage
-
 ) {
     Column(
         modifier = Modifier
@@ -39,19 +38,24 @@ fun PagerScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(
-            text = page.title,
-            color = colorResource(page.titleColor),
-            style = MaterialTheme.typography.headlineMedium
-        )
+
+        page.title?.let {
+            Text(
+                text = it,
+                color = colorResource(page.titleColor),
+                style = MaterialTheme.typography.headlineMedium
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        Text(
-            text = page.description,
-            color = colorResource(page.descriptionColor),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyLarge
-        )
+        page.description?.let {
+            Text(
+                text = it,
+                color = colorResource(page.descriptionColor),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
     }
 }

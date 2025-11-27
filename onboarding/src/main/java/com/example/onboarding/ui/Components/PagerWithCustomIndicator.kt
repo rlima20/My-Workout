@@ -7,15 +7,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
+import com.example.onboarding.R
 import com.example.onboarding.domain.model.OnboardingPage
+import kotlinx.coroutines.launch
 
 @Composable
 fun PagerWithCustomIndicator(
@@ -25,10 +31,10 @@ fun PagerWithCustomIndicator(
     skipButtonText: String,
     showSkipButton: Boolean,
     onFinished: () -> Unit,
-    onNextPage: () -> Unit,
 ) {
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -69,23 +75,49 @@ fun PagerWithCustomIndicator(
             if (showSkipButton) {
                 TextButton(
                     onClick = { onFinished() },
-                    content = { Text(text = skipButtonText) }
+                    content = {
+                        Text(
+                            color = colorResource(R.color.text_color),
+                            text = skipButtonText
+                        )
+                    }
                 )
             }
 
             // NextButton
             Button(
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = colorResource(R.color.button_color)
+                ),
                 onClick = {
-                    if (pagerState.currentPage < pages.lastIndex) onNextPage()
+                    if (pagerState.currentPage < pages.lastIndex)
+                        scope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
                     else onFinished()
                 },
                 content = {
                     Text(
-                        if (pagerState.currentPage == pages.lastIndex) nextButtonText.first
-                        else nextButtonText.second
+                        color = colorResource(R.color.white),
+                        text = setNextButtonText(
+                            pagerState,
+                            pages,
+                            nextButtonText
+                        )
                     )
                 }
             )
         }
     }
 }
+
+@Composable
+private fun setNextButtonText(
+    pagerState: PagerState,
+    pages: List<OnboardingPage>,
+    nextButtonText: Pair<String, String>?
+): String =
+    if (pagerState.currentPage == pages.lastIndex)
+        nextButtonText?.first ?: ""
+    else
+        nextButtonText?.second ?: ""

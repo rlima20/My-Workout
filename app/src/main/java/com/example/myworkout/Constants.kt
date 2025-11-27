@@ -348,8 +348,7 @@ class Constants {
         )
 
     val pageWelcome = OnboardingPage(
-        image = com.example.onboarding.R.drawable.logo_white_cut_img,
-        title = "Bem-vindo!",
+        image = com.example.onboarding.R.drawable.welcome,
         description = "Conheça as funcionalidades incríveis do nosso app."
     )
 
