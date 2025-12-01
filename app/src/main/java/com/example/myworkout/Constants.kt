@@ -326,6 +326,20 @@ class Constants {
         return subGroups
     }
 
+    fun getAllSubGroupsFewMock(): List<MuscleSubGroupModel> {
+        val subGroups: MutableList<MuscleSubGroupModel> = mutableListOf()
+        MUSCLE_SUB_GROUP_FEW_NAMES.forEachIndexed { index, subGroupName ->
+            subGroups.add(
+                MuscleSubGroupModel(
+                    id = index,
+                    name = subGroupName,
+                    selected = false
+                )
+            )
+        }
+        return subGroups
+    }
+
     fun emptyString(): String = ""
 
     fun getGroupsAndSubgroupsWithRelations(): List<Map<MuscleGroupModel, List<MuscleSubGroupModel>>> =
@@ -439,6 +453,14 @@ class Constants {
         const val SUB_GROUP_NAME_BACK_LEG = "Posterior de perna"
         const val SUB_GROUP_NAME_CALF = "Panturrilha"
         const val SUB_GROUP_NAME_REST = "Descanso"
+
+        val MUSCLE_SUB_GROUP_FEW_NAMES = listOf(
+            // Chest
+            SUB_GROUP_NAME_UPPER_CHEST,
+            SUB_GROUP_NAME_MEDIAL_CHEST,
+            SUB_GROUP_NAME_CROSS,
+            SUB_GROUP_NAME_PULLEY_CROSS,
+        )
 
         val MUSCLE_SUB_GROUP_NAMES = listOf(
             // Chest

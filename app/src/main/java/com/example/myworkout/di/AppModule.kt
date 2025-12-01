@@ -88,7 +88,6 @@ val muscleGroupViewModelDI = module {
     viewModel {
         MuscleGroupViewModel(
             get(),
-            get(),
             get()
         )
     }

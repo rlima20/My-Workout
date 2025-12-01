@@ -25,6 +25,7 @@
     <string name="new_sub_group">Sub grupos</string>
     <string name="training">Treino</string>
     <string name="create_training">Criar treino</string>
+    <string name="create_new_subgroup">Novo subgrupo</string>
     <string name="select_your_training">Selecione o treino</string>
     <string name="match_subgroup_with_group">Marque os subgrupos</string>
     <string name="subgroups">Subgrupos</string>
@@ -49,6 +50,7 @@
     <string name="confirm">Confirmar</string>
     <string name="cancell">Cancelar</string>
     <string name="training_name_string">Nome do treino</string>
+    <string name="subgroup_name_string">Nome do novo subgrupo</string>
     <string name="delete_training">Deletar treino?</string>
     <string name="no_turning_back">Após confirmar não será possível desfazer essa operação</string>
     <string name="warning_icon">Warning Icon</string>

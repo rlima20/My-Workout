@@ -34,6 +34,8 @@ interface MuscleGroupRepository {
     fun updateGroup(group: MuscleGroupModel)
     fun deleteGroup(group: MuscleGroupModel)
     fun insertSubGroup(subGroup: SubGroupModel)
+    fun fetchMuscleSubGroups()
+    fun fetchSubGroups()
 
     // Group and Subgroup relation
     suspend fun getRelationById(muscleGroupId: Int): List<MuscleGroupMuscleSubGroupEntity>

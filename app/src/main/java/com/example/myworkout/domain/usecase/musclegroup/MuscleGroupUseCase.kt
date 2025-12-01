@@ -19,6 +19,8 @@ interface MuscleGroupUseCase {
     suspend fun getSubGroupIdFromRelation(id: Int): List<Int>
     suspend fun insertMuscleSubGroup(muscleSubGroup: MuscleSubGroupModel)
     suspend fun insertSubGroup(subGroup: SubGroupModel)
+    suspend fun fetchMuscleSubGroups()
+    suspend fun fetchSubGroups()
     suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel)
     suspend fun insertMuscleGroupMuscleSubGroup(muscleGroupMuscleSubGroup: MuscleGroupMuscleSubGroupModel)
     suspend fun getMuscleGroups(): List<MuscleGroupModel>

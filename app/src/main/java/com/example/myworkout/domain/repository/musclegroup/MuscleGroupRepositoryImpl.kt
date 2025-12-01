@@ -227,4 +227,12 @@ class MuscleGroupRepositoryImpl(
     override fun insertSubGroup(subGroup: SubGroupModel) {
         subGroupDao.insert(subGroup.toEntity())
     }
+
+    override fun fetchMuscleSubGroups() {
+        muscleSubGroupDao.getAllMuscleSubGroups()
+    }
+
+    override fun fetchSubGroups() {
+        subGroupDao.getAllMuscleSubGroups()
+    }
 }
