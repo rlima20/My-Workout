@@ -121,7 +121,11 @@ fun NewMuscleGroupAndSubgroup(
                         },
                     )
                 },
-                showDialog = showDialog
+                showDialog = showDialog,
+                onCreateNewSubgroup = {
+                    viewModel.insertNewSubGroup(it)
+                    showDialog = false
+                }
             )
         }
         item {
@@ -167,9 +171,9 @@ private fun MuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
     ButtonSection(
         modifier = Modifier,
         titleSection = stringResource(R.string.new_training),
-        buttonName = stringResource(R.string.button_section_add_button),
-        buttonEnabled = buttonEnabled,
-        onButtonClick = {
+        firstButtonName = stringResource(R.string.button_section_add_button),
+        firstButtonEnabled = buttonEnabled,
+        onFirstButtonClick = {
             buttonEnabled = false
             onAddButtonClicked(muscleGroupName)
             muscleGroupName = Constants().emptyString()
@@ -208,8 +212,12 @@ private fun MuscleSubGroupSection(
     onItemClick: (Pair<Int, Boolean>) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
+    onCreateNewSubgroup: (subGroupName: String) -> Unit,
     showDialog: Boolean
 ) {
+    val constants = Constants()
+    var newSubgroup by remember { mutableStateOf(constants.emptyString()) }
+    val focusRequester = remember { FocusRequester() }
     var buttonEnabled by remember { mutableStateOf(false) }
 
     if (muscleGroups.isNotEmpty()) {
@@ -217,12 +225,42 @@ private fun MuscleSubGroupSection(
         val selected = objSelected.second
 
         ButtonSection(
+            isDualButton = true,
             modifier = utils.setModifier(isCardSectionVisible),
             titleSection = stringResource(R.string.training),
-            buttonName = stringResource(R.string.button_section_save_button),
-            buttonEnabled = buttonEnabled,
-            onButtonClick = {
-                onSaveRelation(muscleGroupId)
+            firstButtonName = stringResource(R.string.button_section_save_button),
+            secondButtonName = "Criar subgrupo",
+            firstButtonEnabled = buttonEnabled,
+            secondButtonEnabled = true,
+            onFirstButtonClick = { onSaveRelation(muscleGroupId) },
+            onSecondButtonClick = {
+                onShowDialog(
+                    true,
+                    Action.Edit(
+                        title = R.string.create_new_subgroup,
+                        onConfirm = {
+                            onCreateNewSubgroup(newSubgroup)
+                            newSubgroup = constants.emptyString()
+                        },
+                        content = {
+                            TextFieldComponent(
+                                modifier = Modifier.padding(bottom = 16.dp),
+                                text = newSubgroup,
+                                isSingleLine = true,
+                                focusRequester = focusRequester,
+                                onValueChange = { newSubgroup = it },
+                                enabled = true,
+                                label = {
+                                    Text(
+                                        text = stringResource(R.string.subgroup_name_string),
+                                        color = colorResource(R.color.title_color),
+                                        fontSize = 16.sp
+                                    )
+                                }
+                            )
+                        },
+                    )
+                )
             },
             content = {
                 val objSelected = Pair(muscleGroupId, selected)
@@ -410,7 +448,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         muscleGroups = Constants().groupsMock,
         muscleGroupsWithRelation = listOf(),
         objSelected = Pair(0, false),
-        muscleSubGroups = Constants().getAllSubGroupsMock(),
+        muscleSubGroups = Constants().getAllSubGroupsFewMock(),
         onNavigateToNewTraining = {},
         subGroups = Constants().newSubGroupsMock
     )

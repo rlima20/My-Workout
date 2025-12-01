@@ -88,6 +88,14 @@ class MuscleGroupUseCaseImpl(
         repository.insertSubGroup(subGroup)
     }
 
+    override suspend fun fetchMuscleSubGroups() {
+        repository.fetchMuscleSubGroups()
+    }
+
+    override suspend fun fetchSubGroups() {
+        repository.fetchSubGroups()
+    }
+
     override suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         repository.insertTrainingMuscleGroup(trainingMuscleGroup)
     }

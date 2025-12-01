@@ -3,13 +3,11 @@ package com.example.myworkout.presentation.ui.components.commons
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
@@ -34,26 +32,31 @@ import com.example.myworkout.utils.Utils
 fun ButtonSection(
     modifier: Modifier,
     titleSection: String,
-    buttonName: String = Constants().emptyString(),
+    firstButtonName: String = Constants().emptyString(),
+    secondButtonName: String = Constants().emptyString(),
+    isDualButton: Boolean = false,
     buttonVisibility: Boolean = true,
-    buttonEnabled: Boolean = false,
-    onButtonClick: () -> Unit = {},
+    firstButtonEnabled: Boolean = false,
+    secondButtonEnabled: Boolean = false,
+    onFirstButtonClick: () -> Unit = {},
+    onSecondButtonClick: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Card(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp),
+            .padding(16.dp),
         colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         border = BorderStroke(1.dp, colorResource(R.color.border_color)),
         elevation = CardDefaults.cardElevation()
     ) {
+
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-            ) {
+                .padding(top = 8.dp, start = 16.dp, end = 16.dp)
+        ) {
             Text(
                 modifier = Modifier.padding(start = 16.dp, top = 8.dp),
                 fontSize = 18.sp,
@@ -62,57 +65,129 @@ fun ButtonSection(
                 maxLines = 1,
                 text = titleSection
             )
-
         }
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .fillMaxHeight()
+                .fillMaxSize()
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Column{ content() }
+            Column { content() }
 
             if (buttonVisibility) {
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    onClick = { onButtonClick() },
-                    enabled = buttonEnabled,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.button_color)
-                    )
-                ) {
-                    Text(text = buttonName)
-                }
+                ButtonRow(
+                    isDualButton = isDualButton,
+                    firstButtonName = firstButtonName,
+                    secondButtonName = secondButtonName,
+                    firstButtonEnabled = firstButtonEnabled,
+                    secondButtonEnabled = secondButtonEnabled,
+                    onFirstClick = onFirstButtonClick,
+                    onSecondClick = onSecondButtonClick
+                )
             }
         }
     }
 }
 
 @Composable
-@Preview
-private fun NewMuscleGroupPreview() {
+private fun ButtonRow(
+    isDualButton: Boolean,
+    firstButtonName: String,
+    secondButtonName: String,
+    firstButtonEnabled: Boolean,
+    secondButtonEnabled: Boolean,
+    onFirstClick: () -> Unit,
+    onSecondClick: () -> Unit
+) {
+    if (isDualButton) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            PrimaryButton(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp),
+                text = firstButtonName,
+                enabled = firstButtonEnabled,
+                onClick = onFirstClick
+            )
+
+            PrimaryButton(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(top = 8.dp),
+                text = secondButtonName,
+                enabled = secondButtonEnabled,
+                onClick = onSecondClick
+            )
+        }
+    } else {
+        PrimaryButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            text = firstButtonName,
+            enabled = firstButtonEnabled,
+            onClick = onFirstClick
+        )
+    }
+}
+
+// -------------------------
+// PREVIEWS
+// -------------------------
+
+@Composable
+@Preview(showBackground = true)
+private fun ButtonSectionPreview() {
     var text by remember { mutableStateOf(Constants().emptyString()) }
     var buttonEnabled by remember { mutableStateOf(false) }
 
     ButtonSection(
         modifier = Modifier.height(300.dp),
         titleSection = stringResource(R.string.new_muscle_group),
-        buttonName = stringResource(R.string.button_section_add_button),
-        buttonEnabled = buttonEnabled,
-        onButtonClick = { },
-        content = {
-            TextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = text,
-                onValueChange = {
-                    text = it
-                    buttonEnabled = it.isNotEmpty()
-                },
-                label = { Text(stringResource(R.string.new_training_input_text_label)) }
-            )
-        }
-    )
+        firstButtonName = stringResource(R.string.button_section_add_button),
+        firstButtonEnabled = buttonEnabled,
+        onFirstButtonClick = { /*TODO*/ }
+    ) {
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = text,
+            onValueChange = {
+                text = it
+                buttonEnabled = it.isNotEmpty()
+            },
+            label = { Text(stringResource(R.string.new_training_input_text_label)) }
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun DualButtonSectionPreview() {
+    var text by remember { mutableStateOf(Constants().emptyString()) }
+    var buttonEnabled by remember { mutableStateOf(false) }
+
+    ButtonSection(
+        modifier = Modifier.height(300.dp),
+        titleSection = stringResource(R.string.new_muscle_group),
+        isDualButton = true,
+        firstButtonName = stringResource(R.string.button_section_add_button),
+        secondButtonName = stringResource(R.string.button_section_add_button),
+        firstButtonEnabled = buttonEnabled,
+        onFirstButtonClick = { /*TODO*/ },
+        onSecondButtonClick = { /*TODO*/ }
+    ) {
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = text,
+            onValueChange = {
+                text = it
+                buttonEnabled = it.isNotEmpty()
+            },
+            label = { Text(stringResource(R.string.new_training_input_text_label)) }
+        )
+    }
 }

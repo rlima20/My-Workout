@@ -116,6 +116,14 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
+    override suspend fun fetchMuscleSubGroups() {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun fetchSubGroups() {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun insertTrainingMuscleGroup(trainingMuscleGroup: TrainingMuscleGroupModel) {
         TODO("Not yet implemented")
     }
@@ -127,7 +135,6 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
 
 @RequiresApi(Build.VERSION_CODES.O)
 class MuscleGroupViewModelFake : MuscleGroupViewModel(
-    muscleGroupUseCase = MuscleGroupUseCaseFake(),
-    muscleSubGroupUseCase = MuscleGroupUseCaseFake(),  // importante!
+    useCase = MuscleGroupUseCaseFake(),
     dispatchers = Dispatchers
 )

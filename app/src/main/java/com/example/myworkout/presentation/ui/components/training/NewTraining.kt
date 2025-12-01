@@ -1,5 +1,7 @@
 package com.example.myworkout.presentation.ui.components.training
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,7 +24,6 @@ import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.enums.Status
@@ -41,6 +42,7 @@ import com.example.myworkout.presentation.viewmodel.TrainingViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 import com.example.myworkout.utils.Utils
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun NewTraining(
@@ -78,9 +80,9 @@ fun NewTraining(
                 .padding(top = 8.dp, bottom = 78.dp)
                 .fillMaxHeight(),
             titleSection = stringResource(R.string.subgroups),
-            buttonName = stringResource(R.string.button_section_save_button),
-            buttonEnabled = trainingName.isNotEmpty(),
-            onButtonClick = {
+            firstButtonName = stringResource(R.string.button_section_save_button),
+            firstButtonEnabled = trainingName.isNotEmpty(),
+            onFirstButtonClick = {
                 trainingViewModel.insertTraining(
                     TrainingModel(
                         status = Status.PENDING,
@@ -153,6 +155,7 @@ private fun TextFieldSection(
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 private fun NewTrainingPreview() {
