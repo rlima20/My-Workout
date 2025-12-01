@@ -36,7 +36,6 @@ import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
-import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.enums.BodyPart
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
@@ -56,11 +55,10 @@ import com.example.myworkout.utils.Utils
 @OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun NewMuscleGroupAndSubgroup(
+fun MuscleConfig(
     viewModel: MuscleGroupViewModel,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
-    subGroups: List<SubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
@@ -443,13 +441,12 @@ private fun CardSection(
 @Composable
 @Preview
 private fun NewMuscleGroupAndSubgroupPreview() {
-    NewMuscleGroupAndSubgroup(
+    MuscleConfig(
         viewModel = MuscleGroupViewModelFake(),
         muscleGroups = Constants().groupsMock,
         muscleGroupsWithRelation = listOf(),
         objSelected = Pair(0, false),
         muscleSubGroups = Constants().getAllSubGroupsFewMock(),
         onNavigateToNewTraining = {},
-        subGroups = Constants().newSubGroupsMock
     )
 }

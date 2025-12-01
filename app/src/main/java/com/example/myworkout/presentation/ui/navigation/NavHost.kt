@@ -18,7 +18,7 @@ import com.example.myworkout.extensions.defaultNavHostValues
 import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
-import com.example.myworkout.presentation.ui.components.NewMuscleGroupAndSubgroup
+import com.example.myworkout.presentation.ui.components.MuscleConfig
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
@@ -42,6 +42,7 @@ fun NavHost(
     actions: Actions
 ) {
     val homeScreen: String = stringResource(R.string.home_screen)
+    val muscleConfig: String = stringResource(R.string.muscle_config)
     val newTrainingScreen: String = stringResource(R.string.new_training)
 
     NavHostCompose(
@@ -71,13 +72,12 @@ fun NavHost(
 
         composable(route = NewTraining.route) {
             actions.onChangeRouteToHomeScreen(false)
-            actions.onChangeTopBarTitle(newTrainingScreen)
+            actions.onChangeTopBarTitle(muscleConfig)
 
-            NewMuscleGroupAndSubgroup(
+            MuscleConfig(
                 viewModel = groupViewModel,
                 muscleGroups = muscleGroupProps.muscleGroups,
                 muscleSubGroups = muscleGroupProps.muscleSubGroups,
-                subGroups = muscleGroupProps.subGroups,
                 muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                 objSelected = muscleGroupProps.objSelected,
                 onNavigateToNewTraining = { actions.onNavigateToNewTraining() },

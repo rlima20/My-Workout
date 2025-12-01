@@ -21,6 +21,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlin.collections.sorted
 
 open class MuscleGroupViewModel(
     private val useCase: MuscleGroupUseCase,
@@ -313,7 +314,7 @@ open class MuscleGroupViewModel(
     private suspend fun fetchMuscleSubGroupsInternal() {
         setLoadingState()
         val muscleSubGroups = useCase.getMuscleSubGroups()
-        _muscleSubGroups.value = muscleSubGroups
+        _muscleSubGroups.value = muscleSubGroups.sortedBy { it.name.lowercase() }
         setSuccessState()
     }
 
