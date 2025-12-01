@@ -5,6 +5,7 @@
     <string name="home_icon">Home Icon</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="new_training">Novo treino</string>
+    <string name="muscle_config">Configuração muscular</string>
     <string name="try_again">Tente novamente</string>
     <string name="something_went_wrong">Algo deu errado</string>
     <string name="error">Erro!</string>

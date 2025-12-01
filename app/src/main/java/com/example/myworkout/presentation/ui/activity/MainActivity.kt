@@ -134,9 +134,13 @@ class MainActivity : ComponentActivity() {
                         clearGroupsAndSubGroupsSelected()
                         navigateToHomeScreen(trainingProps.navController)
                     },
-                    onNavigateToAddTrainingScreen = {
+                    onNavigateToMuscleConfigScreen = {
                         clearGroupsAndSubGroupsSelected()
                         navigateToNewTrainingScreen(trainingProps.navController)
+                    },
+                    onNavigateToNewTrainingScreen = {
+                        clearGroupsAndSubGroupsSelected()
+                        navigateToNewTraining(trainingProps.navController)
                     }
                 )
             }
