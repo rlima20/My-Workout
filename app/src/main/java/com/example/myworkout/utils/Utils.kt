@@ -45,6 +45,14 @@ class Utils {
     )
 
     @Composable
+    fun buttonSectionCardsDisabledColors(): CardColors = CardDefaults.cardColors(
+        containerColor = colorResource(R.color.empty),
+        contentColor = colorResource(R.color.empty),
+        disabledContainerColor = colorResource(R.color.empty),
+        disabledContentColor = colorResource(R.color.empty)
+    )
+
+    @Composable
     fun getTextFieldColors(): TextFieldColors = TextFieldDefaults.textFieldColors(
         focusedLabelColor = colorResource(R.color.text_color),
         cursorColor = colorResource(R.color.text_color),

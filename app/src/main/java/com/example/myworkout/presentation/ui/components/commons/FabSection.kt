@@ -12,6 +12,7 @@ import com.example.myworkout.R
 
 @Composable
 fun FabSection(
+    enabled: Boolean = false,
     buttonName: String = stringResource(R.string.next),
     onClick: () -> Unit
 ) {

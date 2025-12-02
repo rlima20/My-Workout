@@ -28,6 +28,7 @@ import com.example.myworkout.R
 
 @Composable
 fun BottomAppBar(
+    showNewTraining: Boolean = false,
     onNavigateToHomeScreen: () -> Unit,
     onNavigateToMuscleConfigScreen: () -> Unit,
     onNavigateToNewTrainingScreen: () -> Unit,
@@ -88,25 +89,27 @@ fun BottomAppBar(
                     onClick = { onNavigateToMuscleConfigScreen() }
                 )
 
-                IconButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(100.dp, 100.dp),
-                    content = {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(25.dp),
-                                imageVector = Icons.Filled.AddCircle,
-                                contentDescription = "",
-                            )
-                            Text(text = stringResource(R.string.new_training))
-                        }
-                    },
-                    onClick = { onNavigateToNewTrainingScreen() }
-                )
+                if (showNewTraining) {
+                    IconButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .size(100.dp, 100.dp),
+                        content = {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(25.dp),
+                                    imageVector = Icons.Filled.AddCircle,
+                                    contentDescription = "",
+                                )
+                                Text(text = stringResource(R.string.new_training))
+                            }
+                        },
+                        onClick = { onNavigateToNewTrainingScreen() }
+                    )
+                }
             }
         }
     )
@@ -115,5 +118,5 @@ fun BottomAppBar(
 @Composable
 @Preview
 private fun BottomBarPreview() {
-    BottomAppBar({}, {}, {})
+    BottomAppBar(false, {}, {}, {})
 }
