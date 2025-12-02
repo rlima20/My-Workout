@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material.SelectableChipColors
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
+import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
 
@@ -50,6 +52,15 @@ data class GridProps @OptIn(ExperimentalMaterialApi::class) constructor(
     val horizontalSpacedBy: Dp,
     val verticalSpacedBy: Dp,
     val onItemClick: (MuscleSubGroupModel) -> Unit = {}
+) : OrientationProps
+
+data class GridTrainingProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val colors: SelectableChipColors,
+    val listOfMuscleGroup: List<MuscleGroupModel>,
+    val enabled: Boolean = true,
+    val horizontalSpacedBy: Dp,
+    val verticalSpacedBy: Dp,
+    val onItemClick: (MuscleGroupModel) -> Unit = {}
 ) : OrientationProps
 
 data class HomeGridProps @OptIn(ExperimentalMaterialApi::class) constructor(
@@ -107,6 +118,22 @@ object Grid : Orientation {
     }
 }
 
+object GridTraining : Orientation {
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    override fun Render(modifier: Modifier, props: OrientationProps) {
+        props as GridTrainingProps
+        SetGridTraining(
+            modifier = modifier,
+            colors = props.colors,
+            listOfMuscleGroup = props.listOfMuscleGroup,
+            horizontalSpacedBy = props.horizontalSpacedBy,
+            verticalSpacedBy = props.verticalSpacedBy,
+            onItemClick = props.onItemClick
+        )
+    }
+}
+
 object HomeGrid : Orientation {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
@@ -134,7 +161,7 @@ private fun SetColumn(
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
         listOfMuscleSubGroup.forEach { item ->
@@ -153,7 +180,7 @@ private fun SetRow(
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
     Row(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy)
     ) {
         listOfMuscleSubGroup.forEach { item ->
@@ -173,7 +200,7 @@ private fun SetGrid(
     onItemClick: (item: MuscleSubGroupModel) -> Unit
 ) {
     FlowRow(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy),
         verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
@@ -183,6 +210,26 @@ private fun SetGrid(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
+@Composable
+private fun SetGridTraining(
+    modifier: Modifier,
+    colors: SelectableChipColors,
+    listOfMuscleGroup: List<MuscleGroupModel>,
+    horizontalSpacedBy: Dp,
+    verticalSpacedBy: Dp,
+    onItemClick: (item: MuscleGroupModel) -> Unit
+) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy),
+        verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
+    ) {
+        listOfMuscleGroup.forEach { item ->
+            FilterChipTraining(colors, item, onItemClick)
+        }
+    }
+}
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun SetHomeGrid(
@@ -195,7 +242,7 @@ private fun SetHomeGrid(
     onItemClick: (item: SubGroupModel) -> Unit
 ) {
     FlowRow(
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(horizontalSpacedBy),
         verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
@@ -216,6 +263,30 @@ private fun FilterChip(
     colors: SelectableChipColors,
     item: MuscleSubGroupModel,
     onItemClick: (item: MuscleSubGroupModel) -> Unit,
+) {
+    FilterChip(
+        colors = colors,
+        onClick = { onItemClick(item) },
+        content = {
+            Text(
+                color = colorResource(if (item.selected) R.color.white else R.color.text_color),
+                fontSize = 14.sp,
+                text = item.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                softWrap = false
+            )
+        },
+        selected = item.selected
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterialApi::class)
+private fun FilterChipTraining(
+    colors: SelectableChipColors,
+    item: MuscleGroupModel,
+    onItemClick: (item: MuscleGroupModel) -> Unit,
 ) {
     FilterChip(
         colors = colors,
