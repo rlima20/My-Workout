@@ -130,6 +130,7 @@ class MainActivity : ComponentActivity() {
             },
             bottomBar = {
                 BottomBar(
+                    showNewTraining = muscleGroupProps.muscleGroupsWithRelation.isNotEmpty(),
                     onNavigateToHomeScreen = {
                         clearGroupsAndSubGroupsSelected()
                         navigateToHomeScreen(trainingProps.navController)

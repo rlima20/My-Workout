@@ -11,7 +11,11 @@ import androidx.compose.ui.res.stringResource
 import com.example.myworkout.R
 
 @Composable
-fun FabSection(onClick: () -> Unit) {
+fun FabSection(
+    enabled: Boolean = false,
+    buttonName: String = stringResource(R.string.next),
+    onClick: () -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier.fillMaxWidth()
@@ -19,7 +23,7 @@ fun FabSection(onClick: () -> Unit) {
         ExtendedFab(
             modifier = Modifier.fillMaxWidth(),
             icon = Icons.Default.ArrowForward,
-            text = stringResource(R.string.next),
+            text = buttonName,
             onClick = { onClick() }
         )
     }

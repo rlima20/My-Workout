@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -30,7 +31,7 @@ import com.example.myworkout.utils.Utils
 
 @Composable
 fun ButtonSection(
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     titleSection: String,
     firstButtonName: String = Constants().emptyString(),
     secondButtonName: String = Constants().emptyString(),
@@ -38,15 +39,14 @@ fun ButtonSection(
     buttonVisibility: Boolean = true,
     firstButtonEnabled: Boolean = false,
     secondButtonEnabled: Boolean = false,
+    cardColors: CardColors = Utils().buttonSectionCardsColors(),
     onFirstButtonClick: () -> Unit = {},
     onSecondButtonClick: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        colors = Utils().buttonSectionCardsColors(),
+        modifier = modifier.fillMaxSize().padding(16.dp),
+        colors = cardColors,
         shape = CardDefaults.elevatedShape,
         border = BorderStroke(1.dp, colorResource(R.color.border_color)),
         elevation = CardDefaults.cardElevation()

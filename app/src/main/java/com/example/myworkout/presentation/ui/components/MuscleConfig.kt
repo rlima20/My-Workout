@@ -9,8 +9,6 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -27,6 +25,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,13 +40,14 @@ import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
-import com.example.myworkout.presentation.ui.components.commons.FabSection
+import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
-import com.example.myworkout.presentation.ui.components.musclegroup.ItemCard
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
+import com.example.myworkout.presentation.ui.components.trainingcard.GridTraining
+import com.example.myworkout.presentation.ui.components.trainingcard.GridTrainingProps
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.utils.Utils
@@ -129,8 +129,7 @@ fun MuscleConfig(
         item {
             CardSection(
                 groupsWithRelation = muscleGroupsWithRelation,
-                isCardSectionVisible = isCardSectionVisible,
-                onFabClick = { onNavigateToNewTraining() },
+                enabled = muscleGroupsWithRelation.isNotEmpty(),
                 onGroupWithRelationClicked = { onNavigateToNewTraining() }
             )
         }
@@ -168,8 +167,8 @@ private fun MuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 
     ButtonSection(
         modifier = Modifier,
-        titleSection = stringResource(R.string.new_training),
-        firstButtonName = stringResource(R.string.button_section_add_button),
+        titleSection = stringResource(R.string.create_muscle_group),
+        firstButtonName = stringResource(R.string.button_section_add_group),
         firstButtonEnabled = buttonEnabled,
         onFirstButtonClick = {
             buttonEnabled = false
@@ -218,75 +217,76 @@ private fun MuscleSubGroupSection(
     val focusRequester = remember { FocusRequester() }
     var buttonEnabled by remember { mutableStateOf(false) }
 
-    if (muscleGroups.isNotEmpty()) {
-        val muscleGroupId = objSelected.first
-        val selected = objSelected.second
+    Divider()
+    val muscleGroupId = objSelected.first
+    val selected = objSelected.second
 
-        ButtonSection(
-            isDualButton = true,
-            modifier = utils.setModifier(isCardSectionVisible),
-            titleSection = stringResource(R.string.training),
-            firstButtonName = stringResource(R.string.button_section_save_button),
-            secondButtonName = "Criar subgrupo",
-            firstButtonEnabled = buttonEnabled,
-            secondButtonEnabled = true,
-            onFirstButtonClick = { onSaveRelation(muscleGroupId) },
-            onSecondButtonClick = {
-                onShowDialog(
-                    true,
-                    Action.Edit(
-                        title = R.string.create_new_subgroup,
-                        onConfirm = {
-                            onCreateNewSubgroup(newSubgroup)
-                            newSubgroup = constants.emptyString()
-                        },
-                        content = {
-                            TextFieldComponent(
-                                modifier = Modifier.padding(bottom = 16.dp),
-                                text = newSubgroup,
-                                isSingleLine = true,
-                                focusRequester = focusRequester,
-                                onValueChange = { newSubgroup = it },
-                                enabled = true,
-                                label = {
-                                    Text(
-                                        text = stringResource(R.string.subgroup_name_string),
-                                        color = colorResource(R.color.title_color),
-                                        fontSize = 16.sp
-                                    )
-                                }
-                            )
-                        },
-                    )
+    ButtonSection(
+        isDualButton = true,
+        cardColors = if (muscleGroups.isNotEmpty()) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
+        titleSection = stringResource(R.string.join_groups),
+        firstButtonName = stringResource(R.string.button_section_save_button),
+        secondButtonName = "Novo subgrupo",
+        firstButtonEnabled = buttonEnabled,
+        secondButtonEnabled = muscleGroups.isNotEmpty(),
+        onFirstButtonClick = { onSaveRelation(muscleGroupId) },
+        onSecondButtonClick = {
+            onShowDialog(
+                true,
+                Action.Edit(
+                    title = R.string.create_new_subgroup,
+                    onConfirm = {
+                        onCreateNewSubgroup(newSubgroup)
+                        newSubgroup = constants.emptyString()
+                    },
+                    content = {
+                        TextFieldComponent(
+                            modifier = Modifier.padding(bottom = 16.dp),
+                            text = newSubgroup,
+                            isSingleLine = true,
+                            focusRequester = focusRequester,
+                            onValueChange = { newSubgroup = it },
+                            enabled = true,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.subgroup_name_string),
+                                    color = colorResource(R.color.title_color),
+                                    fontSize = 16.sp
+                                )
+                            }
+                        )
+                    },
                 )
-            },
-            content = {
-                val objSelected = Pair(muscleGroupId, selected)
-                Column {
-                    val isMuscleGroupSelected =
-                        (objSelected.second) || (muscleGroups.any { it.selected })
-                    val shouldEnableSaveButton = utils.verifyEnabledButton(muscleSubGroups)
-                    buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
+            )
+        },
+        content = {
+            val objSelected = Pair(muscleGroupId, selected)
+            Column {
+                val isMuscleGroupSelected =
+                    (objSelected.second) || (muscleGroups.any { it.selected })
+                val shouldEnableSaveButton = utils.verifyEnabledButton(muscleSubGroups)
+                buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
 
-                    MuscleGroupSection(
-                        muscleGroups = muscleGroups,
-                        utils = utils,
-                        objSelected = Pair(muscleGroupId, selected),
-                        onConfirm = { onConfirm(it) },
-                        onDeleteGroup = { onDeleteGroup(it) },
-                        onShowDialog = { value, action -> onShowDialog(value, action) },
-                        onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) },
-                        showDialog = showDialog
-                    )
+                MuscleGroupSection(
+                    muscleGroups = muscleGroups,
+                    utils = utils,
+                    objSelected = Pair(muscleGroupId, selected),
+                    onConfirm = { onConfirm(it) },
+                    onDeleteGroup = { onDeleteGroup(it) },
+                    onShowDialog = { value, action -> onShowDialog(value, action) },
+                    onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) },
+                    showDialog = showDialog
+                )
 
+                if (muscleGroups.isNotEmpty()) {
                     MuscleSubGroupSection(
                         muscleSubGroups = muscleSubGroups,
                         onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
                     )
                 }
             }
-        )
-    }
+        }
+    )
 }
 
 @Composable
@@ -303,8 +303,9 @@ private fun MuscleGroupSection(
     val focusRequester = remember { FocusRequester() }
 
     Label(
-        modifier = Modifier.padding(bottom = 4.dp),
-        text = stringResource(R.string.select_your_training),
+        modifier = Modifier.padding(bottom = 6.dp),
+        text = stringResource(R.string.join_groups_description),
+        style = TextStyle(lineHeight = 14.sp),
         fontSize = 14.sp,
     )
 
@@ -383,7 +384,7 @@ private fun MuscleSubGroupSection(
 ) {
     Label(
         modifier = Modifier.padding(top = 16.dp),
-        text = stringResource(R.string.match_subgroup_with_group),
+        text = stringResource(R.string.available_sub_groups),
         fontSize = 14.sp,
     )
 
@@ -400,41 +401,46 @@ private fun MuscleSubGroupSection(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun CardSection(
+    enabled: Boolean = false,
     groupsWithRelation: List<MuscleGroupModel>,
-    isCardSectionVisible: Boolean = false,
-    onFabClick: () -> Unit,
     onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit,
 ) {
-    if (isCardSectionVisible) {
-        ButtonSection(
-            modifier = Modifier.padding(bottom = 78.dp),
-            titleSection = stringResource(R.string.create_training),
-            buttonVisibility = false,
-            content = {
-                Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-                    groupsWithRelation.forEach { item ->
-                        ItemCard(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(30.dp),
-                            colors = Utils().getCardColors(),
-                            onClick = { onGroupWithRelationClicked(item) }
-                        ) {
-                            Label(
-                                modifier = Modifier.padding(start = 16.dp),
-                                text = item.name,
-                                fontSize = 14.sp,
-                                textColor = colorResource(R.color.text_color)
-                            )
-                        }
-                    }
-                    FabSection(onClick = { onFabClick() })
-                }
+    val utils = Utils()
+    Divider()
+    ButtonSection(
+        firstButtonEnabled = enabled,
+        cardColors = if (enabled) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
+        modifier = Modifier.padding(bottom = 78.dp),
+        titleSection = stringResource(R.string.create_training),
+        buttonVisibility = true,
+        firstButtonName = stringResource(R.string.new_training),
+        content = {
+            Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
+                Label(
+                    text = stringResource(R.string.configured_group),
+                    style = TextStyle(lineHeight = 14.sp),
+                    fontSize = 14.sp,
+                    modifier = Modifier
+                )
+
+                FilterChipList(
+                    modifier = Modifier,
+                    backGroundColor = R.color.white,
+                    orientation = GridTraining,
+                    orientationProps = GridTrainingProps(
+                        colors = Utils().selectableChipColors(),
+                        listOfMuscleGroup = groupsWithRelation,
+                        horizontalSpacedBy = 8.dp,
+                        verticalSpacedBy = 1.dp,
+                        onItemClick = { onGroupWithRelationClicked(it) }
+                    )
+                )
             }
-        )
-    }
+        }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
