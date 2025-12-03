@@ -29,7 +29,8 @@
     <string name="groups_list">Lista de Grupos</string>
     <string name="join_groups">Vincular grupos</string>
     <string name="join_save_groups">Salvar Vinculação</string>
-    <string name="join_groups_description">Selecione um grupo e escolha quais subgrupos fazem parte dele.</string>
+    <string name="join_groups_description">Selecione um grupo</string>
+    <string name="join_groups_description2">Escolha quais subgrupos fazem parte do seu treino</string>
     <string name="create_training">Criar treino</string>
     <string name="configured_group">Escolha um grupo configurado para começar a montar seu treino.</string>
     <string name="create_muscle_group">Criar Grupo Muscular</string>
@@ -55,6 +56,7 @@
     <string name="edit_training">Editar treinamento</string>
     <string name="edit_group">Editar grupo</string>
     <string name="delete_group">Deletar grupo</string>
+    <string name="sort_sub_group">Ordenar</string>
     <string name="confirm_edit_training">Confirmar alteração?</string>
     <string name="confirm">Confirmar</string>
     <string name="cancell">Cancelar</string>
