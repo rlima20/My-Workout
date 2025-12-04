@@ -8,8 +8,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -20,12 +24,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,13 +42,16 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.Sort
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
+import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
 import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
+import com.example.myworkout.presentation.ui.components.commons.TextIcon
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
@@ -63,7 +72,6 @@ fun MuscleConfig(
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
 ) {
-    val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
     var showDialog by remember { mutableStateOf(false) }
     var currentAction: Action? by remember { mutableStateOf(null) }
     val utils = Utils()
@@ -91,7 +99,6 @@ fun MuscleConfig(
                 objSelected = objSelected,
                 onItemClick = { viewModel.setMuscleGroupSelected(it) },
                 utils = utils,
-                isCardSectionVisible = isCardSectionVisible,
                 onConfirm = {
                     viewModel.updateGroup(it)
                     showDialog = false
@@ -123,7 +130,8 @@ fun MuscleConfig(
                 onCreateNewSubgroup = {
                     viewModel.insertNewSubGroup(it)
                     showDialog = false
-                }
+                },
+                onSelectSort = { viewModel.setSelectedSort(it) },
             )
         }
         item {
@@ -201,7 +209,6 @@ private fun MuscleSubGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
-    isCardSectionVisible: Boolean,
     utils: Utils,
     onConfirm: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
@@ -210,6 +217,7 @@ private fun MuscleSubGroupSection(
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
     onCreateNewSubgroup: (subGroupName: String) -> Unit,
+    onSelectSort: (selectedSort: String) -> Unit,
     showDialog: Boolean
 ) {
     val constants = Constants()
@@ -278,9 +286,13 @@ private fun MuscleSubGroupSection(
                     showDialog = showDialog
                 )
 
+                Column(modifier = Modifier.padding(top = 16.dp)) {
+                    Divider()
+                }
                 if (muscleGroups.isNotEmpty()) {
                     MuscleSubGroupSection(
                         muscleSubGroups = muscleSubGroups,
+                        onSelectSort = { onSelectSort(it) },
                         onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
                     )
                 }
@@ -380,13 +392,43 @@ private fun MuscleGroupSection(
 @Composable
 private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
+    onSelectSort: (selectedSort: String) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
-    Label(
+    Text(
         modifier = Modifier.padding(top = 16.dp),
+        fontSize = 18.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = colorResource(R.color.title_color),
+        maxLines = 1,
         text = stringResource(R.string.available_sub_groups),
-        fontSize = 14.sp,
     )
+
+    Row {
+        Label(
+            modifier = Modifier.padding(top = 6.dp).width(230.dp),
+            text = stringResource(R.string.join_groups_description2),
+            fontSize = 14.sp,
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .offset(y = (-30).dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Column {
+                TextIcon(modifier = Modifier.padding(end = 8.dp))
+                TwoOptionToggle(
+                    optionA = Sort().sortAZ,
+                    optionB = Sort().sortZA,
+                    onSelected = { onSelectSort(it) }
+                )
+            }
+        }
+    }
 
     FilterChipList(
         backGroundColor = R.color.white,
