@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -40,9 +42,11 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.Sort
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
+import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
 import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
@@ -68,7 +72,6 @@ fun MuscleConfig(
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
 ) {
-    val isCardSectionVisible = muscleGroupsWithRelation.isNotEmpty()
     var showDialog by remember { mutableStateOf(false) }
     var currentAction: Action? by remember { mutableStateOf(null) }
     val utils = Utils()
@@ -127,7 +130,8 @@ fun MuscleConfig(
                 onCreateNewSubgroup = {
                     viewModel.insertNewSubGroup(it)
                     showDialog = false
-                }
+                },
+                onSelectSort = { viewModel.setSelectedSort(it) },
             )
         }
         item {
@@ -213,6 +217,7 @@ private fun MuscleSubGroupSection(
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
     onCreateNewSubgroup: (subGroupName: String) -> Unit,
+    onSelectSort: (selectedSort: String) -> Unit,
     showDialog: Boolean
 ) {
     val constants = Constants()
@@ -287,7 +292,7 @@ private fun MuscleSubGroupSection(
                 if (muscleGroups.isNotEmpty()) {
                     MuscleSubGroupSection(
                         muscleSubGroups = muscleSubGroups,
-                        onShowDialog = { value, action -> onShowDialog(value, action) },
+                        onSelectSort = { onSelectSort(it) },
                         onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
                     )
                 }
@@ -387,42 +392,43 @@ private fun MuscleGroupSection(
 @Composable
 private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
-    onShowDialog: (value: Boolean, action: Action) -> Unit,
+    onSelectSort: (selectedSort: String) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            modifier = Modifier.padding(top = 16.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = colorResource(R.color.title_color),
-            maxLines = 1,
-            text = stringResource(R.string.available_sub_groups),
+    Text(
+        modifier = Modifier.padding(top = 16.dp),
+        fontSize = 18.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = colorResource(R.color.title_color),
+        maxLines = 1,
+        text = stringResource(R.string.available_sub_groups),
+    )
+
+    Row {
+        Label(
+            modifier = Modifier.padding(top = 6.dp).width(230.dp),
+            text = stringResource(R.string.join_groups_description2),
+            fontSize = 14.sp,
         )
-        TextIcon(
-            modifier = Modifier.padding(top = 16.dp),
-            onClick = {
-                onShowDialog(
-                    true,
-                    Action.Edit(
-                        title = R.string.sort_sub_group,
-                        onConfirm = { },
-                        content = { Text(text = "Ordene os subgrupos por:") }
-                    )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .offset(y = (-30).dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.End
+        ) {
+            Column {
+                TextIcon(modifier = Modifier.padding(end = 8.dp))
+                TwoOptionToggle(
+                    optionA = Sort().sortAZ,
+                    optionB = Sort().sortZA,
+                    onSelected = { onSelectSort(it) }
                 )
             }
-        )
+        }
     }
-
-    Label(
-        modifier = Modifier.padding(top = 6.dp),
-        text = stringResource(R.string.available_sub_groups),
-        fontSize = 14.sp,
-    )
 
     FilterChipList(
         backGroundColor = R.color.white,

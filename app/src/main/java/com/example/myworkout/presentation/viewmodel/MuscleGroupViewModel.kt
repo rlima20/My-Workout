@@ -13,6 +13,7 @@ import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
 import com.example.myworkout.enums.BodyPart
+import com.example.myworkout.enums.Sort
 import com.example.myworkout.extensions.sortedByDayOfWeek
 import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewState
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +22,6 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlin.collections.sorted
 
 open class MuscleGroupViewModel(
     private val useCase: MuscleGroupUseCase,
@@ -62,6 +62,20 @@ open class MuscleGroupViewModel(
 
     private val _selectedGroup = MutableStateFlow(getDefaultGroup())
     val selectedGroup: StateFlow<MuscleGroupModel> = _selectedGroup
+
+    private val _selectedSort: MutableStateFlow<String> = MutableStateFlow(Sort().sortAZ)
+    val selectedSort: StateFlow<String> get() = _selectedSort
+
+    fun setSelectedSort(selectedSort: String) {
+        _selectedSort.value = selectedSort
+    }
+
+    fun sortSubGroups(selectedSort: String) {
+        if (selectedSort == Sort().sortAZ) _muscleSubGroups.value =
+            _muscleSubGroups.value.sortedBy { it.name.lowercase() }
+        else _muscleSubGroups.value =
+            _muscleSubGroups.value.sortedByDescending { it.name.lowercase() }
+    }
 
     fun setSelectedGroup(group: MuscleGroupModel) {
         val list = groupsAndSubgroupsWithRelations.firstOrNull { it.containsKey(group) }?.get(group)
@@ -314,7 +328,8 @@ open class MuscleGroupViewModel(
     private suspend fun fetchMuscleSubGroupsInternal() {
         setLoadingState()
         val muscleSubGroups = useCase.getMuscleSubGroups()
-        _muscleSubGroups.value = muscleSubGroups.sortedBy { it.name.lowercase() }
+        _muscleSubGroups.value = muscleSubGroups
+        sortSubGroups(_selectedSort.value)
         setSuccessState()
     }
 
@@ -365,7 +380,7 @@ open class MuscleGroupViewModel(
 
     private suspend fun clearSubGroupsInternal() {
         setLoadingState()
-        val selected = _muscleSubGroups.value.filter { it.selected }
+        val selected = _muscleSubGroups.value
         useCase.clearSelectedMuscleSubGroups(selected)
         fetchMuscleSubGroupsInternal()
         setSuccessState()

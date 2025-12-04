@@ -12,6 +12,7 @@ import com.example.myworkout.presentation.viewmodel.viewstate.MuscleGroupViewSta
 
 data class MuscleGroupProps(
     val workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
+    val selectedSort: String,
     val muscleGroups: List<MuscleGroupModel>,
     val muscleSubGroups: List<MuscleSubGroupModel>,
     val subGroups: List<SubGroupModel>,
@@ -27,6 +28,7 @@ fun muscleGroupProps(
     muscleGroupViewModel: MuscleGroupViewModel
 ): MuscleGroupProps {
     val workouts by muscleGroupViewModel.newWorkouts.collectAsState()
+    val selectedSort by muscleGroupViewModel.selectedSort.collectAsState()
     val muscleGroups by muscleGroupViewModel.muscleGroups.collectAsState(listOf())
     val muscleSubGroups by muscleGroupViewModel.muscleSubGroups.collectAsState()
     val subGroups by muscleGroupViewModel.subGroups.collectAsState()
@@ -38,6 +40,7 @@ fun muscleGroupProps(
 
     return MuscleGroupProps(
         workouts = workouts,
+        selectedSort = selectedSort,
         muscleGroups = muscleGroups,
         muscleSubGroups = muscleSubGroups,
         subGroups = subGroups,

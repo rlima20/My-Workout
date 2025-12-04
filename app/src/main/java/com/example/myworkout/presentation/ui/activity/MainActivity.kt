@@ -90,6 +90,7 @@ class MainActivity : ComponentActivity() {
                         viewState = muscleGroupProps.viewState,
                         muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                         objSelected = muscleGroupProps.objSelected,
+                        selectedSort = muscleGroupProps.selectedSort
                     ),
                     snackBarHostState = snackBarHostState,
                     actions = actions

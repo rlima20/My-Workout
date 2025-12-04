@@ -1,6 +1,6 @@
 package com.example.myworkout.enums
 
-enum class Sort {
-    A_TO_Z,
-    Z_TO_A
-}
+class Sort(
+    val sortAZ: String = "A - Z",
+    val sortZA: String = "Z - A"
+)

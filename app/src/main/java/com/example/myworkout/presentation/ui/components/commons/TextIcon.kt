@@ -1,8 +1,6 @@
 package com.example.myworkout.presentation.ui.components.commons
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -17,17 +15,9 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 
 @Composable()
-fun TextIcon(
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
+fun TextIcon(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier
-            .clickable(
-                enabled = true,
-                onClick = { onClick() }
-            )
-            .padding(8.dp),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -47,5 +37,5 @@ fun TextIcon(
 @Composable
 @Preview
 private fun TextIconPreview() {
-    TextIcon(Modifier, {})
+    TextIcon(Modifier)
 }

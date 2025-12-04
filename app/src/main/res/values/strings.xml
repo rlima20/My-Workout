@@ -56,7 +56,7 @@
     <string name="edit_training">Editar treinamento</string>
     <string name="edit_group">Editar grupo</string>
     <string name="delete_group">Deletar grupo</string>
-    <string name="sort_sub_group">Ordenar</string>
+    <string name="sort_sub_group">Ordenar por:</string>
     <string name="confirm_edit_training">Confirmar alteração?</string>
     <string name="confirm">Confirmar</string>
     <string name="cancell">Cancelar</string>
