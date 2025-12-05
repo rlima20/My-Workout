@@ -46,12 +46,12 @@ import com.example.myworkout.enums.Sort
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
-import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
 import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
 import com.example.myworkout.presentation.ui.components.commons.TextIcon
+import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
@@ -225,7 +225,8 @@ private fun MuscleSubGroupSection(
     val focusRequester = remember { FocusRequester() }
     var buttonEnabled by remember { mutableStateOf(false) }
 
-    if(buttonEnabled) Divider()
+    Divider()
+
     val muscleGroupId = objSelected.first
     val selected = objSelected.second
 
@@ -286,8 +287,11 @@ private fun MuscleSubGroupSection(
                     showDialog = showDialog
                 )
 
-                Column(modifier = Modifier.padding(top = 16.dp)) {
-                    Divider()
+
+                if (muscleGroups.isNotEmpty()) {
+                    Column(modifier = Modifier.padding(top = 16.dp)) {
+                        Divider()
+                    }
                 }
                 if (muscleGroups.isNotEmpty()) {
                     MuscleSubGroupSection(
@@ -406,7 +410,9 @@ private fun MuscleSubGroupSection(
 
     Row {
         Label(
-            modifier = Modifier.padding(top = 6.dp).width(230.dp),
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .width(230.dp),
             text = stringResource(R.string.join_groups_description2),
             fontSize = 14.sp,
         )
