@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,12 +47,12 @@ import com.example.myworkout.enums.Sort
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
-import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
 import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
 import com.example.myworkout.presentation.ui.components.commons.TextIcon
+import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
@@ -69,6 +70,7 @@ fun MuscleConfig(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
+    selectedSort: String,
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
 ) {
@@ -132,6 +134,7 @@ fun MuscleConfig(
                     showDialog = false
                 },
                 onSelectSort = { viewModel.setSelectedSort(it) },
+                selectedSort = selectedSort
             )
         }
         item {
@@ -210,6 +213,7 @@ private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
     utils: Utils,
+    selectedSort: String,
     onConfirm: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
@@ -225,7 +229,8 @@ private fun MuscleSubGroupSection(
     val focusRequester = remember { FocusRequester() }
     var buttonEnabled by remember { mutableStateOf(false) }
 
-    if(buttonEnabled) Divider()
+    Divider()
+
     val muscleGroupId = objSelected.first
     val selected = objSelected.second
 
@@ -286,11 +291,15 @@ private fun MuscleSubGroupSection(
                     showDialog = showDialog
                 )
 
-                Column(modifier = Modifier.padding(top = 16.dp)) {
-                    Divider()
+
+                if (muscleGroups.isNotEmpty()) {
+                    Column(modifier = Modifier.padding(top = 16.dp)) {
+                        Divider()
+                    }
                 }
                 if (muscleGroups.isNotEmpty()) {
                     MuscleSubGroupSection(
+                        selectedSort = selectedSort,
                         muscleSubGroups = muscleSubGroups,
                         onSelectSort = { onSelectSort(it) },
                         onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
@@ -391,10 +400,17 @@ private fun MuscleGroupSection(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MuscleSubGroupSection(
+    selectedSort: String,
     muscleSubGroups: List<MuscleSubGroupModel>,
     onSelectSort: (selectedSort: String) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
+    var selectedSortInner by remember { mutableStateOf(selectedSort) }
+
+    LaunchedEffect(selectedSort) {
+        selectedSortInner = selectedSort
+    }
+
     Text(
         modifier = Modifier.padding(top = 16.dp),
         fontSize = 18.sp,
@@ -406,7 +422,9 @@ private fun MuscleSubGroupSection(
 
     Row {
         Label(
-            modifier = Modifier.padding(top = 6.dp).width(230.dp),
+            modifier = Modifier
+                .padding(top = 6.dp)
+                .width(230.dp),
             text = stringResource(R.string.join_groups_description2),
             fontSize = 14.sp,
         )
@@ -419,9 +437,10 @@ private fun MuscleSubGroupSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Column {
+            Column(modifier = Modifier.padding(end = 8.dp)) {
                 TextIcon(modifier = Modifier.padding(end = 8.dp))
                 TwoOptionToggle(
+                    selectedSort = selectedSortInner,
                     optionA = Sort().sortAZ,
                     optionB = Sort().sortZA,
                     onSelected = { onSelectSort(it) }
@@ -496,5 +515,6 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         objSelected = Pair(0, false),
         muscleSubGroups = Constants().getAllSubGroupsFewMock(),
         onNavigateToNewTraining = {},
+        selectedSort = Sort().sortAZ
     )
 }

@@ -25,15 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
+import com.example.myworkout.enums.Sort
 
 @Composable
 fun TwoOptionToggle(
     optionA: String,
     optionB: String,
+    selectedSort: String,
     modifier: Modifier = Modifier,
     onSelected: (String) -> Unit
 ) {
-    var selected by remember { mutableStateOf(optionA) }
 
     Row(
         modifier = modifier,
@@ -41,20 +42,14 @@ fun TwoOptionToggle(
     ) {
         ToggleItem(
             label = optionA,
-            selected = selected == optionA,
-            onClick = {
-                selected = optionA
-                onSelected(optionA)
-            }
+            selected = selectedSort == optionA,
+            onClick = { onSelected(optionA) }
         )
 
         ToggleItem(
             label = optionB,
-            selected = selected == optionB,
-            onClick = {
-                selected = optionB
-                onSelected(optionB)
-            }
+            selected = selectedSort == optionB,
+            onClick = { onSelected(optionB) }
         )
     }
 }
@@ -100,6 +95,7 @@ private fun ToggleItem(
 @Preview
 private fun ClassicTwoOptionTogglePreview() {
     TwoOptionToggle(
+        selectedSort = Sort().sortAZ,
         optionA = "Masculino",
         optionB = "Feminino",
         onSelected = { selected ->
