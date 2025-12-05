@@ -81,6 +81,7 @@ fun NavHost(
                 muscleSubGroups = muscleGroupProps.muscleSubGroups,
                 muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                 objSelected = muscleGroupProps.objSelected,
+                selectedSort = muscleGroupProps.selectedSort,
                 onNavigateToNewTraining = { actions.onNavigateToNewTraining() },
             )
 

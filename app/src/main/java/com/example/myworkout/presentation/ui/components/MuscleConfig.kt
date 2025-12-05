@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +70,7 @@ fun MuscleConfig(
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
     muscleGroupsWithRelation: List<MuscleGroupModel>,
+    selectedSort: String,
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
 ) {
@@ -132,6 +134,7 @@ fun MuscleConfig(
                     showDialog = false
                 },
                 onSelectSort = { viewModel.setSelectedSort(it) },
+                selectedSort = selectedSort
             )
         }
         item {
@@ -210,6 +213,7 @@ private fun MuscleSubGroupSection(
     muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
     utils: Utils,
+    selectedSort: String,
     onConfirm: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
@@ -295,6 +299,7 @@ private fun MuscleSubGroupSection(
                 }
                 if (muscleGroups.isNotEmpty()) {
                     MuscleSubGroupSection(
+                        selectedSort = selectedSort,
                         muscleSubGroups = muscleSubGroups,
                         onSelectSort = { onSelectSort(it) },
                         onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
@@ -395,10 +400,17 @@ private fun MuscleGroupSection(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MuscleSubGroupSection(
+    selectedSort: String,
     muscleSubGroups: List<MuscleSubGroupModel>,
     onSelectSort: (selectedSort: String) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
+    var selectedSortInner by remember { mutableStateOf(selectedSort) }
+
+    LaunchedEffect(selectedSort) {
+        selectedSortInner = selectedSort
+    }
+
     Text(
         modifier = Modifier.padding(top = 16.dp),
         fontSize = 18.sp,
@@ -425,9 +437,10 @@ private fun MuscleSubGroupSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.End
         ) {
-            Column {
+            Column(modifier = Modifier.padding(end = 8.dp)) {
                 TextIcon(modifier = Modifier.padding(end = 8.dp))
                 TwoOptionToggle(
+                    selectedSort = selectedSortInner,
                     optionA = Sort().sortAZ,
                     optionB = Sort().sortZA,
                     onSelected = { onSelectSort(it) }
@@ -502,5 +515,6 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         objSelected = Pair(0, false),
         muscleSubGroups = Constants().getAllSubGroupsFewMock(),
         onNavigateToNewTraining = {},
+        selectedSort = Sort().sortAZ
     )
 }
