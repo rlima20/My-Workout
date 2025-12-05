@@ -225,7 +225,7 @@ private fun MuscleSubGroupSection(
     val focusRequester = remember { FocusRequester() }
     var buttonEnabled by remember { mutableStateOf(false) }
 
-    Divider()
+    if(buttonEnabled) Divider()
     val muscleGroupId = objSelected.first
     val selected = objSelected.second
 

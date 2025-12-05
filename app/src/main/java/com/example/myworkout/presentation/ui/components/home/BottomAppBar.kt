@@ -1,6 +1,8 @@
 package com.example.myworkout.presentation.ui.components.home
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -33,63 +36,24 @@ fun BottomAppBar(
     onNavigateToMuscleConfigScreen: () -> Unit,
     onNavigateToNewTrainingScreen: () -> Unit,
 ) {
-    BottomAppBar(
+    Box(
         modifier = Modifier
-            .height(76.dp)
-            .fillMaxWidth(),
-        containerColor = colorResource(R.color.bottom_bar_color),
-        actions = {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                IconButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(100.dp, 100.dp),
-                    content = {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(25.dp),
-                                imageVector = Icons.Filled.Home,
-                                contentDescription = "",
-                            )
-                            Text(text = stringResource(R.string.home))
-                        }
-
-                    },
-                    onClick = { onNavigateToHomeScreen() }
-                )
-                IconButton(
-                    modifier = Modifier
-                        .weight(1f)
-                        .size(100.dp, 100.dp),
-                    content = {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Icon(
-                                modifier = Modifier.size(25.dp),
-                                imageVector = Icons.Filled.Build,
-                                contentDescription = "",
-                            )
-                            Text(
-                                textAlign = TextAlign.Center,
-                                text = stringResource(R.string.muscle_config),
-                                style = TextStyle(
-                                    lineHeight = 12.sp
-                                )
-                            )
-                        }
-                    },
-                    onClick = { onNavigateToMuscleConfigScreen() }
-                )
-
-                if (showNewTraining) {
+            .border(
+                width = 0.1.dp, // metade de 1.dp
+                color = colorResource(R.color.bottom_bar_color),
+                shape = RectangleShape // sem cantos arredondados
+            )
+    ) {
+        BottomAppBar(
+            modifier = Modifier
+                .height(76.dp)
+                .fillMaxWidth(),
+            containerColor = colorResource(R.color.top_bar_color),
+            actions = {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
                     IconButton(
                         modifier = Modifier
                             .weight(1f)
@@ -101,18 +65,66 @@ fun BottomAppBar(
                             ) {
                                 Icon(
                                     modifier = Modifier.size(25.dp),
-                                    imageVector = Icons.Filled.AddCircle,
+                                    imageVector = Icons.Filled.Home,
                                     contentDescription = "",
                                 )
-                                Text(text = stringResource(R.string.new_training))
+                                Text(text = stringResource(R.string.home))
+                            }
+
+                        },
+                        onClick = { onNavigateToHomeScreen() }
+                    )
+                    IconButton(
+                        modifier = Modifier
+                            .weight(1f)
+                            .size(100.dp, 100.dp),
+                        content = {
+                            Column(
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(25.dp),
+                                    imageVector = Icons.Filled.Build,
+                                    contentDescription = "",
+                                )
+                                Text(
+                                    textAlign = TextAlign.Center,
+                                    text = stringResource(R.string.muscle_config),
+                                    style = TextStyle(
+                                        lineHeight = 12.sp
+                                    )
+                                )
                             }
                         },
-                        onClick = { onNavigateToNewTrainingScreen() }
+                        onClick = { onNavigateToMuscleConfigScreen() }
                     )
+
+                    if (showNewTraining) {
+                        IconButton(
+                            modifier = Modifier
+                                .weight(1f)
+                                .size(100.dp, 100.dp),
+                            content = {
+                                Column(
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        modifier = Modifier.size(25.dp),
+                                        imageVector = Icons.Filled.AddCircle,
+                                        contentDescription = "",
+                                    )
+                                    Text(text = stringResource(R.string.new_training))
+                                }
+                            },
+                            onClick = { onNavigateToNewTrainingScreen() }
+                        )
+                    }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable

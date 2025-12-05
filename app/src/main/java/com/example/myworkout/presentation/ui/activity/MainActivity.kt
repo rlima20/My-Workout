@@ -6,12 +6,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavHostController
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.TrainingModel
@@ -22,6 +29,7 @@ import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
 import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.trainingProps
+import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
@@ -43,6 +51,8 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(35)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             val snackBarHostState = remember { SnackbarHostState() }
@@ -108,6 +118,8 @@ class MainActivity : ComponentActivity() {
         actions: Actions
     ) {
         Scaffold(
+            modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars),
+
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
             topBar = {
                 TopBar(
@@ -116,10 +128,14 @@ class MainActivity : ComponentActivity() {
                     onPopBackStack = {
                         clearGroupsAndSubGroupsSelected()
                         trainingProps.navController.navigateSingleTopTo(HomeScreen.route)
-                    })
+                    }
+                )
             },
-            content = {
+            content = { innerPadding ->
                 NavHost(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .windowInsetsPadding(WindowInsets.safeDrawing),
                     trainingViewModel = trainingViewModel,
                     groupViewModel = muscleGroupViewModel,
                     muscleGroupViewModel = muscleGroupViewModel,
