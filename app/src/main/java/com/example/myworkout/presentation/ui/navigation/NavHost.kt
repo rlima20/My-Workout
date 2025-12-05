@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost as NavHostCompose
 @RequiresApi(35)
 @Composable
 fun NavHost(
+    modifier: Modifier = Modifier,
     trainingViewModel: TrainingViewModel,
     muscleGroupViewModel: MuscleGroupViewModel,
     groupViewModel: MuscleGroupViewModel,

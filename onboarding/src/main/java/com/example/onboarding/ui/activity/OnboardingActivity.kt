@@ -6,7 +6,11 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.ui.Modifier
+import androidx.core.view.WindowCompat
 import com.example.onboarding.domain.data.OnboardingPrefs
 import com.example.onboarding.domain.model.OnboardingPage
 import com.example.onboarding.ui.Components.PagerWithCustomIndicator
@@ -22,13 +26,16 @@ class OnboardingActivity : ComponentActivity() {
         val skipButtonText = intent.getStringExtra(EXTRA_SKIP_BUTTON_TEXT) as String
         val nextButtonText = intent.getSerializableExtra(EXTRA_NEXT_BUTTON) as Pair<String, String>
         val showSkipButton = intent.getBooleanExtra(EXTRA_SHOW_SKIP, true)
-        val finishPendingIntent = intent.getParcelableExtra<PendingIntent>(EXTRA_FINISH_PENDING_INTENT)
+        val finishPendingIntent =
+            intent.getParcelableExtra<PendingIntent>(EXTRA_FINISH_PENDING_INTENT)
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         pages?.let {
             setContent {
                 PagerWithCustomIndicator(
                     pages = pages,
-                    modifier = Modifier,
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.systemBars),
                     nextButtonText = nextButtonText,
                     skipButtonText = skipButtonText,
                     showSkipButton = showSkipButton,
