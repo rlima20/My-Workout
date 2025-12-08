@@ -173,8 +173,19 @@ open class MuscleGroupViewModel(
 
     fun insertNewSubGroup(subgroupName: String) = viewModelScope.launch(dispatchers.IO) {
         setLoadingState()
-        val muscleSubGroup = MuscleSubGroupModel(name = subgroupName)
-        val subgroup = SubGroupModel(name = subgroupName)
+
+        val newId = getLastInsertedSubGroupId(muscleSubGroups.value) + 1
+
+        val muscleSubGroup =
+            MuscleSubGroupModel(
+                id = newId,
+                name = subgroupName
+            )
+        val subgroup =
+            SubGroupModel(
+                id = newId,
+                name = subgroupName
+            )
 
         try {
             val jobs = listOf(
@@ -241,6 +252,11 @@ open class MuscleGroupViewModel(
         } catch (e: Exception) {
             setErrorState(e.message.toString())
         }
+    }
+
+    private fun getLastInsertedSubGroupId(subGroups: List<MuscleSubGroupModel>): Int {
+        return subGroups.maxByOrNull { it.id }?.id
+            ?: throw IllegalStateException("Falha ao obter o ID do treinamento recém inserido")
     }
 
     fun deleteGroup(group: MuscleGroupModel) = viewModelScope.launch(dispatchers.IO) {

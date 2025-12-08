@@ -141,6 +141,7 @@ fun MuscleConfig(
             CardSection(
                 groupsWithRelation = muscleGroupsWithRelation,
                 enabled = muscleGroupsWithRelation.isNotEmpty(),
+                onButtonClick = { onNavigateToNewTraining() },
                 onGroupWithRelationClicked = { onNavigateToNewTraining() }
             )
         }
@@ -468,6 +469,7 @@ private fun CardSection(
     enabled: Boolean = false,
     groupsWithRelation: List<MuscleGroupModel>,
     onGroupWithRelationClicked: (muscleGroup: MuscleGroupModel) -> Unit,
+    onButtonClick: () -> Unit
 ) {
     val utils = Utils()
     Divider()
@@ -478,6 +480,7 @@ private fun CardSection(
         titleSection = stringResource(R.string.create_training),
         buttonVisibility = true,
         firstButtonName = stringResource(R.string.new_training),
+        onFirstButtonClick = { onButtonClick()},
         content = {
             Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
                 Label(
