@@ -1,7 +1,6 @@
 package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Button
@@ -21,9 +20,9 @@ import com.example.myworkout.R
 fun PrimaryButton(
     modifier: Modifier = Modifier,
     text: String,
-//    hintEnabled: Boolean,
-//    hintText: String,
-//    hintColor: Color = colorResource(R.color.missed),
+    hintEnabled: Boolean,
+    hintText: String,
+    hintColor: Color = colorResource(R.color.missed),
     enabled: Boolean,
     onClick: () -> Unit
 ) {
@@ -41,14 +40,14 @@ fun PrimaryButton(
         ) {
             Text(text)
         }
-//        if (hintEnabled) {
-//            Text(
-//                modifier = Modifier.offset(y = (-5).dp),
-//                color = hintColor,
-//                fontSize = 16.sp,
-//                text = hintText
-//            )
-//        }
+        if (hintEnabled) {
+            Text(
+                modifier = Modifier.offset(y = (-5).dp),
+                color = hintColor,
+                fontSize = 16.sp,
+                text = hintText
+            )
+        }
     }
 }
 
@@ -58,7 +57,7 @@ private fun PrimaryButtonPreview() {
     PrimaryButton(
         text = "Salvar",
         enabled = false,
-//        hintText = "Selecione um grupo",
-//        hintEnabled = true
+        hintText = "Selecione um grupo",
+        hintEnabled = true
     ) { }
 }

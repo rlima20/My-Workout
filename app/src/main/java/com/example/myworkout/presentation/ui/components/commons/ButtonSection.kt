@@ -84,8 +84,8 @@ fun ButtonSection(
                     secondButtonName = secondButtonName,
                     firstButtonEnabled = firstButtonEnabled,
                     secondButtonEnabled = secondButtonEnabled,
-//                    hintEnabled = hintEnabled,
-//                    hintText = hintText,
+                    hintEnabled = hintEnabled,
+                    hintText = hintText,
                     onFirstClick = onFirstButtonClick,
                     onSecondClick = onSecondButtonClick
                 )
@@ -101,8 +101,8 @@ private fun ButtonRow(
     secondButtonName: String,
     firstButtonEnabled: Boolean,
     secondButtonEnabled: Boolean,
-//    hintEnabled: Boolean,
-//    hintText: String,
+    hintEnabled: Boolean,
+    hintText: String,
     onFirstClick: () -> Unit,
     onSecondClick: () -> Unit
 ) {
@@ -117,8 +117,8 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = firstButtonName,
                 enabled = firstButtonEnabled,
-//                hintEnabled = hintEnabled,
-//                hintText = hintText,
+                hintEnabled = hintEnabled,
+                hintText = hintText,
                 onClick = onFirstClick
             )
 
@@ -128,8 +128,8 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = secondButtonName,
                 enabled = secondButtonEnabled,
-//                hintEnabled = hintEnabled,
-//                hintText = hintText,
+                hintEnabled = hintEnabled,
+                hintText = hintText,
                 onClick = { onSecondClick()}
             )
         }
@@ -140,8 +140,8 @@ private fun ButtonRow(
                 .padding(top = 8.dp),
             text = firstButtonName,
             enabled = firstButtonEnabled,
-//            hintEnabled = hintEnabled,
-//            hintText = hintText,
+            hintEnabled = hintEnabled,
+            hintText = hintText,
             onClick = { onFirstClick()}
         )
     }

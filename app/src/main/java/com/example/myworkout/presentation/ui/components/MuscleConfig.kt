@@ -385,6 +385,12 @@ private fun SubGroupsSelectionSection(
         onFirstButtonClick = { onSaveRelation(muscleGroupId) },
         onSecondButtonClick = {},
         content = {
+            Label(
+                modifier = Modifier.padding(top = 6.dp),
+                text = stringResource(R.string.join_groups_description2),
+                fontSize = 14.sp,
+            )
+
             if (showSubGroupsSelectionSection) {
                 MuscleSubGroupSection(
                     selectedSort = selectedSort,
@@ -500,12 +506,6 @@ private fun MuscleSubGroupSection(
     }
 
     Column {
-        Label(
-            modifier = Modifier.padding(top = 6.dp),
-            text = stringResource(R.string.join_groups_description2),
-            fontSize = 14.sp,
-        )
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
