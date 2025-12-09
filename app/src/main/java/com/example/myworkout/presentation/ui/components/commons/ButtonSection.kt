@@ -40,6 +40,8 @@ fun ButtonSection(
     firstButtonEnabled: Boolean = false,
     secondButtonEnabled: Boolean = false,
     cardColors: CardColors = Utils().buttonSectionCardsColors(),
+    hintEnabled: Boolean = false,
+    hintText: String = Constants().emptyString(),
     onFirstButtonClick: () -> Unit = {},
     onSecondButtonClick: () -> Unit = {},
     content: @Composable () -> Unit
@@ -82,6 +84,8 @@ fun ButtonSection(
                     secondButtonName = secondButtonName,
                     firstButtonEnabled = firstButtonEnabled,
                     secondButtonEnabled = secondButtonEnabled,
+                    hintEnabled = hintEnabled,
+                    hintText = hintText,
                     onFirstClick = onFirstButtonClick,
                     onSecondClick = onSecondButtonClick
                 )
@@ -97,6 +101,8 @@ private fun ButtonRow(
     secondButtonName: String,
     firstButtonEnabled: Boolean,
     secondButtonEnabled: Boolean,
+    hintEnabled: Boolean,
+    hintText: String,
     onFirstClick: () -> Unit,
     onSecondClick: () -> Unit
 ) {
@@ -111,6 +117,8 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = firstButtonName,
                 enabled = firstButtonEnabled,
+                hintEnabled = hintEnabled,
+                hintText = hintText,
                 onClick = onFirstClick
             )
 
@@ -120,6 +128,8 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = secondButtonName,
                 enabled = secondButtonEnabled,
+                hintEnabled = hintEnabled,
+                hintText = hintText,
                 onClick = onSecondClick
             )
         }
@@ -130,6 +140,8 @@ private fun ButtonRow(
                 .padding(top = 8.dp),
             text = firstButtonName,
             enabled = firstButtonEnabled,
+            hintEnabled = hintEnabled,
+            hintText = hintText,
             onClick = onFirstClick
         )
     }
@@ -146,6 +158,7 @@ private fun ButtonSectionPreview() {
     var buttonEnabled by remember { mutableStateOf(false) }
 
     ButtonSection(
+        buttonVisibility = true,
         modifier = Modifier.height(300.dp),
         titleSection = stringResource(R.string.new_muscle_group),
         firstButtonName = stringResource(R.string.button_section_add_button),
