@@ -31,7 +31,6 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,7 +97,6 @@ fun MuscleConfig(
         item {
             GroupSelectionSection(
                 muscleGroups = muscleGroups,
-                muscleSubGroups = muscleSubGroups,
                 objSelected = objSelected,
                 onItemClick = { viewModel.setMuscleGroupSelected(it) },
                 utils = utils,
@@ -114,9 +112,6 @@ fun MuscleConfig(
                     showDialog = value
                     currentAction = action
                 },
-                onAddMuscleSubGroup = {
-                    viewModel.updateSubGroup(it.copy(selected = !it.selected))
-                },
                 onSaveRelation = {
                     createRelations(
                         muscleSubGroups = muscleSubGroups,
@@ -130,12 +125,6 @@ fun MuscleConfig(
                     )
                 },
                 showDialog = showDialog,
-                onCreateNewSubgroup = {
-                    viewModel.insertNewSubGroup(it)
-                    showDialog = false
-                },
-                onSelectSort = { viewModel.setSelectedSort(it) },
-                selectedSort = selectedSort,
                 onShowSubGroupsSelectionSection = { showSubGroupsSelectionSection = it }
             )
         }
@@ -145,16 +134,7 @@ fun MuscleConfig(
                 muscleGroups = muscleGroups,
                 muscleSubGroups = muscleSubGroups,
                 objSelected = objSelected,
-                onItemClick = { viewModel.setMuscleGroupSelected(it) },
                 utils = utils,
-                onConfirm = {
-                    viewModel.updateGroup(it)
-                    showDialog = false
-                },
-                onDeleteGroup = {
-                    viewModel.deleteGroup(it)
-                    showDialog = false
-                },
                 onShowDialog = { value, action ->
                     showDialog = value
                     currentAction = action
@@ -174,7 +154,6 @@ fun MuscleConfig(
                         },
                     )
                 },
-                showDialog = showDialog,
                 onCreateNewSubgroup = {
                     viewModel.insertNewSubGroup(it)
                     showDialog = false
@@ -257,28 +236,17 @@ private fun MuscleGroupSection(onAddButtonClicked: (name: String) -> Unit) {
 @Composable
 private fun GroupSelectionSection(
     muscleGroups: List<MuscleGroupModel>,
-    muscleSubGroups: List<MuscleSubGroupModel>,
     objSelected: Pair<Int, Boolean>,
     utils: Utils,
-    selectedSort: String,
     onConfirm: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (Pair<Int, Boolean>) -> Unit,
-    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
-    onCreateNewSubgroup: (subGroupName: String) -> Unit,
-    onSelectSort: (selectedSort: String) -> Unit,
     showDialog: Boolean,
     onShowSubGroupsSelectionSection: (value: Boolean) -> Unit
 ) {
-    val constants = Constants()
-    var newSubgroup by remember { mutableStateOf(constants.emptyString()) }
-    val focusRequester = remember { FocusRequester() }
-    var buttonEnabled by remember { mutableStateOf(false) }
-
     Divider()
-
     val muscleGroupId = objSelected.first
     val selected = objSelected.second
 
@@ -286,6 +254,65 @@ private fun GroupSelectionSection(
         cardColors = if (muscleGroups.isNotEmpty()) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
         titleSection = stringResource(R.string.groups),
         buttonVisibility = false,
+        onFirstButtonClick = { onSaveRelation(muscleGroupId) },
+        onSecondButtonClick = {},
+        content = {
+            val objSelected = Pair(muscleGroupId, selected)
+            Column {
+                val isMuscleGroupSelected =
+                    (objSelected.second) || (muscleGroups.any { it.selected })
+
+                onShowSubGroupsSelectionSection(isMuscleGroupSelected)
+
+                MuscleGroupSection(
+                    muscleGroups = muscleGroups,
+                    utils = utils,
+                    objSelected = Pair(muscleGroupId, selected),
+                    onConfirm = { onConfirm(it) },
+                    onDeleteGroup = { onDeleteGroup(it) },
+                    onShowDialog = { value, action -> onShowDialog(value, action) },
+                    onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) },
+                    showDialog = showDialog
+                )
+            }
+        }
+    )
+}
+
+@Composable
+private fun SubGroupsSelectionSection(
+    showSubGroupsSelectionSection: Boolean,
+    muscleGroups: List<MuscleGroupModel>,
+    muscleSubGroups: List<MuscleSubGroupModel>,
+    objSelected: Pair<Int, Boolean>,
+    utils: Utils,
+    selectedSort: String,
+    onShowDialog: (value: Boolean, action: Action) -> Unit,
+    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    onSaveRelation: (muscleGroupId: Int) -> Unit,
+    onCreateNewSubgroup: (subGroupName: String) -> Unit,
+    onSelectSort: (selectedSort: String) -> Unit,
+) {
+    val constants = Constants()
+    var newSubgroup by remember { mutableStateOf(constants.emptyString()) }
+    val focusRequester = remember { FocusRequester() }
+    var buttonEnabled by remember { mutableStateOf(false) }
+
+    Divider()
+    val muscleGroupId = objSelected.first
+
+    val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any { it.selected })
+    val shouldEnableSaveButton = utils.verifyEnabledButton(muscleSubGroups)
+    buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
+
+    ButtonSection(
+        isDualButton = true,
+        cardColors = if (showSubGroupsSelectionSection) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
+        titleSection = stringResource(R.string.join_subgroups),
+        firstButtonName = stringResource(R.string.button_section_save_button),
+        secondButtonName = stringResource(R.string.new_subgroup),
+        firstButtonEnabled = buttonEnabled,
+        secondButtonEnabled = showSubGroupsSelectionSection,
         onFirstButtonClick = { onSaveRelation(muscleGroupId) },
         onSecondButtonClick = {
             onShowDialog(
@@ -316,74 +343,6 @@ private fun GroupSelectionSection(
                 )
             )
         },
-        content = {
-            val objSelected = Pair(muscleGroupId, selected)
-            Column {
-                val isMuscleGroupSelected =
-                    (objSelected.second) || (muscleGroups.any { it.selected })
-                onShowSubGroupsSelectionSection(isMuscleGroupSelected)
-
-
-                MuscleGroupSection(
-                    muscleGroups = muscleGroups,
-                    utils = utils,
-                    objSelected = Pair(muscleGroupId, selected),
-                    onConfirm = { onConfirm(it) },
-                    onDeleteGroup = { onDeleteGroup(it) },
-                    onShowDialog = { value, action -> onShowDialog(value, action) },
-                    onItemClick = {
-                        onItemClick(Pair(it.muscleGroupId, true))
-                    },
-                    showDialog = showDialog
-                )
-            }
-        }
-    )
-}
-
-@Composable
-private fun SubGroupsSelectionSection(
-    showSubGroupsSelectionSection: Boolean,
-    muscleGroups: List<MuscleGroupModel>,
-    muscleSubGroups: List<MuscleSubGroupModel>,
-    objSelected: Pair<Int, Boolean>,
-    utils: Utils,
-    selectedSort: String,
-    onConfirm: (group: MuscleGroupModel) -> Unit,
-    onDeleteGroup: (group: MuscleGroupModel) -> Unit,
-    onShowDialog: (value: Boolean, action: Action) -> Unit,
-    onItemClick: (Pair<Int, Boolean>) -> Unit,
-    onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
-    onSaveRelation: (muscleGroupId: Int) -> Unit,
-    onCreateNewSubgroup: (subGroupName: String) -> Unit,
-    onSelectSort: (selectedSort: String) -> Unit,
-    showDialog: Boolean
-) {
-    val constants = Constants()
-    var newSubgroup by remember { mutableStateOf(constants.emptyString()) }
-    val focusRequester = remember { FocusRequester() }
-    var buttonEnabled by remember { mutableStateOf(false) }
-
-    Divider()
-
-    val muscleGroupId = objSelected.first
-    val selected = objSelected.second
-
-
-    val isMuscleGroupSelected = (objSelected.second) || (muscleGroups.any { it.selected })
-    val shouldEnableSaveButton = utils.verifyEnabledButton(muscleSubGroups)
-    buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
-
-    ButtonSection(
-        isDualButton = true,
-        cardColors = if (showSubGroupsSelectionSection) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
-        titleSection = stringResource(R.string.join_subgroups),
-        firstButtonName = stringResource(R.string.button_section_save_button),
-        secondButtonName = "Novo subgrupo",
-        firstButtonEnabled = buttonEnabled,
-        secondButtonEnabled = showSubGroupsSelectionSection,
-        onFirstButtonClick = { onSaveRelation(muscleGroupId) },
-        onSecondButtonClick = {},
         content = {
             Label(
                 modifier = Modifier.padding(top = 6.dp),

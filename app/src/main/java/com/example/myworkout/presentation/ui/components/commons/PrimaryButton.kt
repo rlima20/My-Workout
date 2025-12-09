@@ -2,6 +2,7 @@ package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,11 +28,14 @@ fun PrimaryButton(
     onClick: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),        // 👈 agora o Row controla a largura do botão
-        horizontalAlignment = Alignment.CenterHorizontally) {
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         Button(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp),
             onClick = onClick,
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(
@@ -39,14 +43,15 @@ fun PrimaryButton(
             )
         ) {
             Text(text)
-        }
-        if (hintEnabled) {
-            Text(
-                modifier = Modifier.offset(y = (-5).dp),
-                color = hintColor,
-                fontSize = 16.sp,
-                text = hintText
-            )
+            if (hintEnabled) {
+                Text(
+                    modifier = Modifier.offset(x = -(60.dp), y = 5.dp),
+                    maxLines = 1,
+                    color = hintColor,
+                    fontSize = 16.sp,
+                    text = hintText
+                )
+            }
         }
     }
 }
