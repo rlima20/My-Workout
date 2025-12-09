@@ -375,7 +375,6 @@ private fun SubGroupsSelectionSection(
     buttonEnabled = shouldEnableSaveButton && isMuscleGroupSelected
 
     ButtonSection(
-        buttonVisibility = true,
         isDualButton = true,
         cardColors = if (showSubGroupsSelectionSection) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
         titleSection = stringResource(R.string.join_subgroups),

@@ -84,8 +84,8 @@ fun ButtonSection(
                     secondButtonName = secondButtonName,
                     firstButtonEnabled = firstButtonEnabled,
                     secondButtonEnabled = secondButtonEnabled,
-                    hintEnabled = hintEnabled,
-                    hintText = hintText,
+//                    hintEnabled = hintEnabled,
+//                    hintText = hintText,
                     onFirstClick = onFirstButtonClick,
                     onSecondClick = onSecondButtonClick
                 )
@@ -101,8 +101,8 @@ private fun ButtonRow(
     secondButtonName: String,
     firstButtonEnabled: Boolean,
     secondButtonEnabled: Boolean,
-    hintEnabled: Boolean,
-    hintText: String,
+//    hintEnabled: Boolean,
+//    hintText: String,
     onFirstClick: () -> Unit,
     onSecondClick: () -> Unit
 ) {
@@ -117,8 +117,8 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = firstButtonName,
                 enabled = firstButtonEnabled,
-                hintEnabled = hintEnabled,
-                hintText = hintText,
+//                hintEnabled = hintEnabled,
+//                hintText = hintText,
                 onClick = onFirstClick
             )
 
@@ -128,9 +128,9 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = secondButtonName,
                 enabled = secondButtonEnabled,
-                hintEnabled = hintEnabled,
-                hintText = hintText,
-                onClick = onSecondClick
+//                hintEnabled = hintEnabled,
+//                hintText = hintText,
+                onClick = { onSecondClick()}
             )
         }
     } else {
@@ -140,9 +140,9 @@ private fun ButtonRow(
                 .padding(top = 8.dp),
             text = firstButtonName,
             enabled = firstButtonEnabled,
-            hintEnabled = hintEnabled,
-            hintText = hintText,
-            onClick = onFirstClick
+//            hintEnabled = hintEnabled,
+//            hintText = hintText,
+            onClick = { onFirstClick()}
         )
     }
 }
@@ -184,12 +184,13 @@ private fun DualButtonSectionPreview() {
     var buttonEnabled by remember { mutableStateOf(false) }
 
     ButtonSection(
+        isDualButton = true,
         modifier = Modifier.height(300.dp),
         titleSection = stringResource(R.string.new_muscle_group),
-        isDualButton = true,
         firstButtonName = stringResource(R.string.button_section_add_button),
         secondButtonName = stringResource(R.string.button_section_add_button),
         firstButtonEnabled = buttonEnabled,
+        secondButtonEnabled = buttonEnabled,
         onFirstButtonClick = { /*TODO*/ },
         onSecondButtonClick = { /*TODO*/ }
     ) {
