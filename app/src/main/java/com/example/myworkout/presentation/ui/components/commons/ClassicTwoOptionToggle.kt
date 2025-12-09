@@ -13,15 +13,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
@@ -33,9 +32,16 @@ fun TwoOptionToggle(
     optionB: String,
     selectedSort: String,
     modifier: Modifier = Modifier,
-    onSelected: (String) -> Unit
+    onSelected: (String) -> Unit,
+    fontSize: TextUnit = 12.sp,
+    textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
+    selectedColor: Color = MaterialTheme.colorScheme.primary,
+    unselectedColor: Color = Color.Gray,
+    roundBorderSelectedColor: Color = colorResource(R.color.button_color),
+    roundBorderUnselectedColor: Color = Color.Gray,
+    roundBackgroundSelectedColor: Color = colorResource(R.color.button_color),
+    roundBackgroundUnselectedColor: Color = Color.Transparent
 ) {
-
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -43,12 +49,28 @@ fun TwoOptionToggle(
         ToggleItem(
             label = optionA,
             selected = selectedSort == optionA,
+            fontSize = fontSize,
+            textStyle = textStyle,
+            selectedColor = selectedColor,
+            unselectedColor = unselectedColor,
+            roundBorderSelectedColor = roundBorderSelectedColor,
+            roundBorderUnselectedColor = roundBorderUnselectedColor,
+            roundBackgroundSelectedColor = roundBackgroundSelectedColor,
+            roundBackgroundUnselectedColor = roundBackgroundUnselectedColor,
             onClick = { onSelected(optionA) }
         )
 
         ToggleItem(
             label = optionB,
             selected = selectedSort == optionB,
+            fontSize = fontSize,
+            textStyle = textStyle,
+            selectedColor = selectedColor,
+            unselectedColor = unselectedColor,
+            roundBorderSelectedColor = roundBorderSelectedColor,
+            roundBorderUnselectedColor = roundBorderUnselectedColor,
+            roundBackgroundSelectedColor = roundBackgroundSelectedColor,
+            roundBackgroundUnselectedColor = roundBackgroundUnselectedColor,
             onClick = { onSelected(optionB) }
         )
     }
@@ -58,6 +80,14 @@ fun TwoOptionToggle(
 private fun ToggleItem(
     label: String,
     selected: Boolean,
+    fontSize: TextUnit,
+    textStyle: TextStyle,
+    selectedColor: Color,
+    unselectedColor: Color,
+    roundBorderSelectedColor: Color,
+    roundBorderUnselectedColor: Color,
+    roundBackgroundSelectedColor: Color,
+    roundBackgroundUnselectedColor: Color,
     onClick: () -> Unit
 ) {
     Row(
@@ -68,14 +98,21 @@ private fun ToggleItem(
             modifier = Modifier
                 .size(12.dp)
                 .border(
-                    width = 2.dp,
-                    color = if (selected) colorResource(R.color.button_color)
-                    else Color.Gray,
+                    width = 1.dp,
+                    color = setBorderColor(
+                        selected,
+                        roundBorderSelectedColor,
+                        roundBorderUnselectedColor
+                    ),
                     shape = CircleShape
                 )
                 .background(
-                    color = if (selected) colorResource(R.color.button_color)
-                    else Color.Transparent,
+                    color =
+                        setBackGroundColor(
+                            selected,
+                            roundBackgroundSelectedColor,
+                            roundBackgroundUnselectedColor
+                        ),
                     shape = CircleShape
                 )
         )
@@ -83,23 +120,51 @@ private fun ToggleItem(
         Spacer(modifier = Modifier.width(6.dp))
 
         Text(
-            fontSize = 12.sp,
+            fontSize = fontSize,
             text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = if (selected) MaterialTheme.colorScheme.primary else Color.Gray
+            style = textStyle,
+            color = setColor(selected, selectedColor, unselectedColor)
         )
     }
 }
+
+@Composable
+private fun setColor(
+    selected: Boolean,
+    selectedColor: Color,
+    unselectedColor: Color
+): Color = setBorderColor(
+    selected,
+    selectedColor,
+    unselectedColor
+)
+
+@Composable
+private fun setBorderColor(
+    selected: Boolean,
+    roundBorderSelectedColor: Color,
+    roundBorderUnselectedColor: Color
+): Color = setBackGroundColor(
+    selected,
+    roundBorderSelectedColor,
+    roundBorderUnselectedColor
+)
+
+@Composable
+private fun setBackGroundColor(
+    selected: Boolean,
+    roundBackgroundSelectedColor: Color,
+    roundBackgroundUnselectedColor: Color
+): Color = if (selected) roundBackgroundSelectedColor
+else roundBackgroundUnselectedColor
 
 @Composable
 @Preview
 private fun ClassicTwoOptionTogglePreview() {
     TwoOptionToggle(
         selectedSort = Sort().sortAZ,
-        optionA = "Masculino",
-        optionB = "Feminino",
-        onSelected = { selected ->
-            println("Selecionado: $selected")
-        }
+        optionA = stringResource(R.string.male),
+        optionB = stringResource(R.string.female),
+        onSelected = { }
     )
 }

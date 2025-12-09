@@ -67,4 +67,10 @@
     <string name="warning_icon">Warning Icon</string>
     <string name="start">Começar</string>
     <string name="skip">Pular</string>
+    <string name="sort">Ordenar</string>
+    <string name="female">Feminino</string>
+    <string name="male">Masculino</string>
+    <string name="search">Buscar</string>
+    <string name="search_points">Buscar...</string>
+    <string name="clean">Limpar</string>
 </resources>

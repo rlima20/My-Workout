@@ -58,7 +58,7 @@ fun ButtonSection(
                 .padding(top = 8.dp, start = 16.dp, end = 16.dp)
         ) {
             Text(
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp),
+                modifier = Modifier.padding(top = 8.dp),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = colorResource(R.color.title_color),

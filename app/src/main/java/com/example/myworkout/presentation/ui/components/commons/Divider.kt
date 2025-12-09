@@ -5,14 +5,20 @@ import androidx.compose.material.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Divider() {
+fun Divider(
+    modifier: Modifier = Modifier,
+    thickness: Dp = 1.dp,
+    color: Color = Color.LightGray,
+    startIndent: Dp = 1.dp
+) {
     Divider(
-        modifier = Modifier.padding(horizontal = 16.dp),
-        thickness = 1.dp,
-        color = Color.LightGray,
-        startIndent = 1.dp
+        modifier = modifier.padding(horizontal = 4.dp),
+        thickness = thickness,
+        color = color,
+        startIndent = startIndent
     )
 }

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -30,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -47,6 +47,7 @@ import com.example.myworkout.enums.Sort
 import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
+import com.example.myworkout.presentation.ui.components.commons.CustomSearchBar
 import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
 import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
@@ -294,7 +295,7 @@ private fun MuscleSubGroupSection(
 
 
                 if (muscleGroups.isNotEmpty()) {
-                    Column(modifier = Modifier.padding(top = 16.dp)) {
+                    Column(modifier = Modifier.padding(top = 24.dp)) {
                         Divider()
                     }
                 }
@@ -407,13 +408,14 @@ private fun MuscleSubGroupSection(
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
     var selectedSortInner by remember { mutableStateOf(selectedSort) }
+    var query by remember { mutableStateOf("") }
 
     LaunchedEffect(selectedSort) {
         selectedSortInner = selectedSort
     }
 
     Text(
-        modifier = Modifier.padding(top = 16.dp),
+        modifier = Modifier.padding(top = 24.dp),
         fontSize = 18.sp,
         fontWeight = FontWeight.SemiBold,
         color = colorResource(R.color.title_color),
@@ -421,11 +423,9 @@ private fun MuscleSubGroupSection(
         text = stringResource(R.string.available_sub_groups),
     )
 
-    Row {
+    Column {
         Label(
-            modifier = Modifier
-                .padding(top = 6.dp)
-                .width(230.dp),
+            modifier = Modifier.padding(top = 6.dp),
             text = stringResource(R.string.join_groups_description2),
             fontSize = 14.sp,
         )
@@ -433,22 +433,34 @@ private fun MuscleSubGroupSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
-                .offset(y = (-30).dp),
+                .padding(top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.Start
         ) {
-            Column(modifier = Modifier.padding(end = 8.dp)) {
-                TextIcon(modifier = Modifier.padding(end = 8.dp))
-                TwoOptionToggle(
-                    selectedSort = selectedSortInner,
-                    optionA = Sort().sortAZ,
-                    optionB = Sort().sortZA,
-                    onSelected = { onSelectSort(it) }
-                )
-            }
+            TextIcon(
+                modifier = Modifier.padding(end = 8.dp),
+                text = stringResource(R.string.sort),
+                icon = painterResource(R.drawable.sort)
+            )
+            TwoOptionToggle(
+                selectedSort = selectedSortInner,
+                optionA = Sort().sortAZ,
+                optionB = Sort().sortZA,
+                onSelected = { onSelectSort(it) }
+            )
         }
     }
+
+    CustomSearchBar(
+        modifier = Modifier.padding(bottom = 8.dp),
+        query = query,
+        onQueryChange = { query = it },
+        onClear = { query = "" },
+        onSearch = { text ->
+            // Chamada da busca em tempo real
+            println("Buscando por: $text")
+        }
+    )
 
     FilterChipList(
         backGroundColor = R.color.white,
@@ -480,7 +492,7 @@ private fun CardSection(
         titleSection = stringResource(R.string.create_training),
         buttonVisibility = true,
         firstButtonName = stringResource(R.string.new_training),
-        onFirstButtonClick = { onButtonClick()},
+        onFirstButtonClick = { onButtonClick() },
         content = {
             Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
                 Label(

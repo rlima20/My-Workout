@@ -7,29 +7,42 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 
 @Composable()
-fun TextIcon(modifier: Modifier = Modifier) {
+fun TextIcon(
+    modifier: Modifier = Modifier,
+    text: String,
+    fontSize: TextUnit = 16.sp,
+    contentDescription: String? = null,
+    icon: Painter,
+    iconSize: Dp = 15.dp,
+    textColor: Color = colorResource(R.color.title_color),
+    tintColor: Color = colorResource(R.color.title_color)
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            painter = painterResource(R.drawable.sort),
-            contentDescription = null,
-            modifier = Modifier.size(15.dp),
-            tint = colorResource(R.color.text_color)
+            painter = icon,
+            contentDescription = contentDescription,
+            modifier = Modifier.size(iconSize),
+            tint = tintColor,
         )
         Text(
-            color = colorResource(R.color.text_color),
-            fontSize = 16.sp,
-            text = "Ordenar"
+            color = textColor,
+            fontSize = fontSize,
+            text = text
         )
     }
 }
@@ -37,5 +50,9 @@ fun TextIcon(modifier: Modifier = Modifier) {
 @Composable
 @Preview
 private fun TextIconPreview() {
-    TextIcon(Modifier)
+    TextIcon(
+        modifier = Modifier,
+        text = "Ordenar",
+        icon = painterResource(R.drawable.sort)
+    )
 }
