@@ -27,7 +27,8 @@
     <string name="new_sub_group">Sub grupos</string>
     <string name="training">Treino</string>
     <string name="groups_list">Lista de Grupos</string>
-    <string name="join_groups">Vincular grupos</string>
+    <string name="join_subgroups">Vincular subgrupos</string>
+    <string name="groups">Grupos</string>
     <string name="join_save_groups">Salvar Vinculação</string>
     <string name="join_groups_description">Selecione um grupo</string>
     <string name="join_groups_description2">Escolha quais subgrupos fazem parte do seu treino</string>

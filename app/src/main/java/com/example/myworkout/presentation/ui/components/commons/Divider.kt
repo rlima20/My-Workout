@@ -16,7 +16,7 @@ fun Divider(
     startIndent: Dp = 1.dp
 ) {
     Divider(
-        modifier = modifier.padding(horizontal = 4.dp),
+        modifier = modifier.padding(horizontal = 12.dp),
         thickness = thickness,
         color = color,
         startIndent = startIndent
