@@ -5,6 +5,7 @@
     <string name="home_icon">Home Icon</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="new_training">Novo treino</string>
+    <string name="new_training_2">Novo</string>
     <string name="muscle_config">Configuração muscular</string>
     <string name="try_again">Tente novamente</string>
     <string name="something_went_wrong">Algo deu errado</string>
@@ -27,7 +28,8 @@
     <string name="new_sub_group">Sub grupos</string>
     <string name="training">Treino</string>
     <string name="groups_list">Lista de Grupos</string>
-    <string name="join_groups">Vincular grupos</string>
+    <string name="join_subgroups">Vincular subgrupos</string>
+    <string name="groups">Grupos</string>
     <string name="join_save_groups">Salvar Vinculação</string>
     <string name="join_groups_description">Selecione um grupo</string>
     <string name="join_groups_description2">Escolha quais subgrupos fazem parte do seu treino</string>
@@ -67,4 +69,11 @@
     <string name="warning_icon">Warning Icon</string>
     <string name="start">Começar</string>
     <string name="skip">Pular</string>
+    <string name="sort">Ordenar</string>
+    <string name="female">Feminino</string>
+    <string name="male">Masculino</string>
+    <string name="search">Buscar</string>
+    <string name="search_points">Buscar...</string>
+    <string name="clean">Limpar</string>
+    <string name="new_subgroup">Novo subgrupo</string>
 </resources>

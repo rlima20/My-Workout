@@ -165,7 +165,7 @@ private fun SetupTrainingStateObservers(
         is TrainingViewState.Empty -> {
             EmptyStateComponent(
                 modifier = Modifier.size(150.dp, 180.dp),
-                text = stringResource(R.string.new_training),
+                text = stringResource(R.string.new_training_2),
                 painter = painterResource(R.drawable.add_icon),
                 onClick = {
                     onChangeRoute(false)
