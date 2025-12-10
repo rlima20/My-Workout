@@ -1,9 +1,9 @@
 package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -24,6 +24,7 @@ fun PrimaryButton(
     hintEnabled: Boolean,
     hintText: String,
     hintColor: Color = colorResource(R.color.missed),
+    shouldHaveSpacer: Boolean,
     enabled: Boolean,
     onClick: () -> Unit
 ) {
@@ -32,6 +33,20 @@ fun PrimaryButton(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        if (hintEnabled) {
+            Text(
+                modifier = Modifier.align(Alignment.Start), // <-- alinha à esquerda
+                text = hintText,
+                color = hintColor,
+                fontSize = 12.sp,
+                maxLines = 1,
+            )
+        } else {
+            if(shouldHaveSpacer) {
+                // Espaço do mesmo tamanho que o hint usaria
+                Spacer(modifier = Modifier.height(28.dp))
+            }
+        }
         Button(
             modifier = Modifier
                 .fillMaxWidth()
@@ -40,21 +55,11 @@ fun PrimaryButton(
             enabled = enabled,
             colors = ButtonDefaults.buttonColors(
                 containerColor = colorResource(R.color.button_color)
-            )
-        ) {
-            Text(text)
-            if (hintEnabled) {
-                Text(
-                    modifier = Modifier.offset(x = -(60.dp), y = 5.dp),
-                    maxLines = 1,
-                    color = hintColor,
-                    fontSize = 16.sp,
-                    text = hintText
-                )
-            }
-        }
+            ),
+            content = { Text(text) })
     }
 }
+
 
 @Preview
 @Composable
@@ -63,6 +68,7 @@ private fun PrimaryButtonPreview() {
         text = "Salvar",
         enabled = false,
         hintText = "Selecione um grupo",
-        hintEnabled = true
+        hintEnabled = true,
+        shouldHaveSpacer = true
     ) { }
 }

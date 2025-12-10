@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
@@ -40,14 +41,18 @@ fun ButtonSection(
     firstButtonEnabled: Boolean = false,
     secondButtonEnabled: Boolean = false,
     cardColors: CardColors = Utils().buttonSectionCardsColors(),
-    hintEnabled: Boolean = false,
-    hintText: String = Constants().emptyString(),
+    firstButtonHintEnabled: Boolean = false,
+    firstButtonHintText: String = Constants().emptyString(),
+    secondButtonHintEnabled: Boolean = false,
+    secondButtonHintText: String = Constants().emptyString(),
     onFirstButtonClick: () -> Unit = {},
     onSecondButtonClick: () -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp),
         colors = cardColors,
         shape = CardDefaults.elevatedShape,
         border = BorderStroke(1.dp, colorResource(R.color.border_color)),
@@ -84,8 +89,10 @@ fun ButtonSection(
                     secondButtonName = secondButtonName,
                     firstButtonEnabled = firstButtonEnabled,
                     secondButtonEnabled = secondButtonEnabled,
-                    hintEnabled = hintEnabled,
-                    hintText = hintText,
+                    firstButtonHintEnabled = firstButtonHintEnabled,
+                    firstButtonHintText = firstButtonHintText,
+                    secondButtonHintEnabled = secondButtonHintEnabled,
+                    secondButtonHintText = secondButtonHintText,
                     onFirstClick = onFirstButtonClick,
                     onSecondClick = onSecondButtonClick
                 )
@@ -101,14 +108,17 @@ private fun ButtonRow(
     secondButtonName: String,
     firstButtonEnabled: Boolean,
     secondButtonEnabled: Boolean,
-    hintEnabled: Boolean,
-    hintText: String,
+    firstButtonHintEnabled: Boolean,
+    firstButtonHintText: String,
+    secondButtonHintEnabled: Boolean,
+    secondButtonHintText: String,
     onFirstClick: () -> Unit,
     onSecondClick: () -> Unit
 ) {
     if (isDualButton) {
         Row(
             modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             PrimaryButton(
@@ -117,8 +127,9 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = firstButtonName,
                 enabled = firstButtonEnabled,
-                hintEnabled = hintEnabled,
-                hintText = hintText,
+                hintEnabled = firstButtonHintEnabled,
+                hintText = firstButtonHintText,
+                shouldHaveSpacer = firstButtonHintEnabled || secondButtonHintEnabled,
                 onClick = onFirstClick
             )
 
@@ -128,9 +139,10 @@ private fun ButtonRow(
                     .padding(top = 8.dp),
                 text = secondButtonName,
                 enabled = secondButtonEnabled,
-                hintEnabled = hintEnabled,
-                hintText = hintText,
-                onClick = { onSecondClick()}
+                hintEnabled = secondButtonHintEnabled,
+                hintText = secondButtonHintText,
+                shouldHaveSpacer = firstButtonHintEnabled || secondButtonHintEnabled,
+                onClick = { onSecondClick() }
             )
         }
     } else {
@@ -140,9 +152,10 @@ private fun ButtonRow(
                 .padding(top = 8.dp),
             text = firstButtonName,
             enabled = firstButtonEnabled,
-            hintEnabled = hintEnabled,
-            hintText = hintText,
-            onClick = { onFirstClick()}
+            hintEnabled = firstButtonHintEnabled,
+            hintText = firstButtonHintText,
+            shouldHaveSpacer = firstButtonHintEnabled || secondButtonHintEnabled,
+            onClick = { onFirstClick() }
         )
     }
 }
@@ -190,7 +203,9 @@ private fun DualButtonSectionPreview() {
         firstButtonName = stringResource(R.string.button_section_add_button),
         secondButtonName = stringResource(R.string.button_section_add_button),
         firstButtonEnabled = buttonEnabled,
-        secondButtonEnabled = buttonEnabled,
+        secondButtonEnabled = true,
+        firstButtonHintEnabled = true,
+        firstButtonHintText = "Select",
         onFirstButtonClick = { /*TODO*/ },
         onSecondButtonClick = { /*TODO*/ }
     ) {
