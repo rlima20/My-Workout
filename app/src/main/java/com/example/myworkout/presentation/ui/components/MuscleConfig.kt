@@ -312,6 +312,10 @@ private fun SubGroupsSelectionSection(
         firstButtonName = stringResource(R.string.button_section_save_button),
         secondButtonName = stringResource(R.string.new_subgroup),
         firstButtonEnabled = buttonEnabled,
+        firstButtonHintEnabled = ((!isMuscleGroupSelected) || (!buttonEnabled)),
+        firstButtonHintText = if (isMuscleGroupSelected && !buttonEnabled)
+            stringResource(R.string.join_select_subgroups)
+        else stringResource(R.string.join_groups_description),
         secondButtonEnabled = showSubGroupsSelectionSection,
         onFirstButtonClick = { onSaveRelation(muscleGroupId) },
         onSecondButtonClick = {
@@ -347,6 +351,7 @@ private fun SubGroupsSelectionSection(
             Label(
                 modifier = Modifier.padding(top = 6.dp),
                 text = stringResource(R.string.join_groups_description2),
+                style = TextStyle(lineHeight = 14.sp),
                 fontSize = 14.sp,
             )
 
@@ -375,12 +380,22 @@ private fun MuscleGroupSection(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    Label(
-        modifier = Modifier.padding(bottom = 6.dp),
-        text = stringResource(R.string.join_groups_description),
-        style = TextStyle(lineHeight = 14.sp),
-        fontSize = 14.sp,
-    )
+    if (muscleGroups.isNotEmpty()) {
+        Label(
+            modifier = Modifier.padding(bottom = 6.dp),
+            text = stringResource(R.string.join_groups_description),
+            style = TextStyle(lineHeight = 14.sp),
+            fontSize = 14.sp,
+        )
+    } else {
+        Text(
+            text = stringResource(R.string.join_groups_description),
+            color = colorResource(R.color.missed),
+            fontSize = 12.sp,
+            maxLines = 1,
+        )
+    }
+
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
         items(muscleGroups) { muscleGroup ->
@@ -526,13 +541,14 @@ private fun CardSection(
         modifier = Modifier.padding(bottom = 78.dp),
         titleSection = stringResource(R.string.create_training),
         buttonVisibility = true,
+        firstButtonHintEnabled = !enabled,
+        firstButtonHintText = stringResource(R.string.join_group_to_subgroup),
         firstButtonName = stringResource(R.string.new_training),
         onFirstButtonClick = { onButtonClick() },
         content = {
             Column(verticalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
                 Label(
                     text = stringResource(R.string.configured_group),
-                    style = TextStyle(lineHeight = 14.sp),
                     fontSize = 14.sp,
                     modifier = Modifier
                 )
