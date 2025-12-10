@@ -383,7 +383,7 @@ private fun MuscleGroupSection(
     if (muscleGroups.isNotEmpty()) {
         Label(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = stringResource(R.string.join_groups_description),
+            text = stringResource(R.string.join_groups),
             style = TextStyle(lineHeight = 14.sp),
             fontSize = 14.sp,
         )
