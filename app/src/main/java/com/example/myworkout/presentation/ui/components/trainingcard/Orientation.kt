@@ -1,25 +1,38 @@
 package com.example.myworkout.presentation.ui.components.trainingcard
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
+import com.example.myworkout.presentation.ui.components.commons.Action
+import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
+import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
+import com.example.myworkout.utils.Utils
 
 sealed interface Orientation {
     @Composable
@@ -61,6 +74,16 @@ data class GridTrainingProps @OptIn(ExperimentalMaterialApi::class) constructor(
     val horizontalSpacedBy: Dp,
     val verticalSpacedBy: Dp,
     val onItemClick: (MuscleGroupModel) -> Unit = {}
+) : OrientationProps
+
+data class GridMuscleGroupProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val objSelected: Pair<Int, Boolean>,
+    val showDialog: Boolean,
+    val listOfMuscleGroup: List<MuscleGroupModel>,
+    val onItemClick: (MuscleGroupModel) -> Unit,
+    val onConfirm: (MuscleGroupModel) -> Unit,
+    val onDeleteGroup: (MuscleGroupModel) -> Unit,
+    val onShowDialog: (Boolean, Action) -> Unit,
 ) : OrientationProps
 
 data class HomeGridProps @OptIn(ExperimentalMaterialApi::class) constructor(
@@ -130,6 +153,25 @@ object GridTraining : Orientation {
             horizontalSpacedBy = props.horizontalSpacedBy,
             verticalSpacedBy = props.verticalSpacedBy,
             onItemClick = props.onItemClick
+        )
+    }
+}
+
+object GridMuscleGroup : Orientation {
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    override fun Render(modifier: Modifier, props: OrientationProps) {
+        props as GridMuscleGroupProps
+
+        SetGridMuscleGroup(
+            modifier = modifier,
+            listOfMuscleGroup = props.listOfMuscleGroup,
+            objSelected = props.objSelected,
+            showDialog = props.showDialog,
+            onItemClick = props.onItemClick,
+            onConfirm = props.onConfirm,
+            onDeleteGroup = props.onDeleteGroup,
+            onShowDialog = props.onShowDialog
         )
     }
 }
@@ -230,6 +272,91 @@ private fun SetGridTraining(
         }
     }
 }
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
+@Composable
+fun SetGridMuscleGroup(
+    modifier: Modifier = Modifier,
+    objSelected: Pair<Int, Boolean>,
+    showDialog: Boolean,
+    listOfMuscleGroup: List<MuscleGroupModel>,
+    onItemClick: (MuscleGroupModel) -> Unit,
+    onConfirm: (MuscleGroupModel) -> Unit,
+    onDeleteGroup: (MuscleGroupModel) -> Unit,
+    onShowDialog: (Boolean, Action) -> Unit,
+) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        val utils = Utils()
+        listOfMuscleGroup.forEach { muscleGroup ->
+
+            val interactionSource = remember { MutableInteractionSource() }
+            val focusRequester = remember { FocusRequester() }
+            val selected = utils.setSelectedItem(objSelected, muscleGroup)
+
+            // IMPORTANT: lembrar usando muscleGroup.name E showDialog como keys.
+            // Assim, quando o diálogo abrir/fechar (showDialog mudar) ou o nome do grupo mudar,
+            // o estado "name" será reinicializado com muscleGroup.name.
+            var name by remember(muscleGroup.name, showDialog) {
+                mutableStateOf(muscleGroup.name)
+            }
+
+            CustomSelectableChip(
+                modifier = Modifier,
+                text = muscleGroup.name,
+                selected = selected,
+                enabled = muscleGroup.enabled,
+                interactionSource = interactionSource,
+                onClick = { onItemClick(muscleGroup) },
+                onLongClick = {
+                    onShowDialog(
+                        true,
+                        Action.Edit(
+                            title = R.string.edit_group,
+                            onConfirm = {
+                                onConfirm(
+                                    muscleGroup.copy(name = name)
+                                )
+                            },
+                            content = {
+                                TextFieldComponent(
+                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    text = name,
+                                    isSingleLine = true,
+                                    focusRequester = focusRequester,
+                                    onValueChange = { name = it },
+                                    enabled = true,
+                                    label = {
+                                        Text(
+                                            text = stringResource(R.string.training_name_string),
+                                            color = colorResource(R.color.title_color),
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    )
+                },
+                onDoubledClick = {
+                    onShowDialog(
+                        true,
+                        Action.Delete(
+                            title = R.string.delete_group,
+                            onConfirm = { onDeleteGroup(muscleGroup) },
+                            content = { Text("Deseja deletar esse grupo?") }
+                        )
+                    )
+                }
+            )
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
 @Composable
 private fun SetHomeGrid(
