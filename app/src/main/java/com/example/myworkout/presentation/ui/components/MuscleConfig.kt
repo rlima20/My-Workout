@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,9 +59,12 @@ import com.example.myworkout.presentation.ui.components.commons.TextIcon
 import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
 import com.example.myworkout.presentation.ui.components.trainingcard.Grid
+import com.example.myworkout.presentation.ui.components.trainingcard.GridMuscleGroup
+import com.example.myworkout.presentation.ui.components.trainingcard.GridMuscleGroupProps
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.presentation.ui.components.trainingcard.GridTraining
 import com.example.myworkout.presentation.ui.components.trainingcard.GridTrainingProps
+import com.example.myworkout.presentation.ui.components.trainingcard.Orientation
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.utils.Utils
@@ -266,7 +274,6 @@ private fun GroupSelectionSection(
 
                 MuscleGroupSection(
                     muscleGroups = muscleGroups,
-                    utils = utils,
                     objSelected = Pair(muscleGroupId, selected),
                     onConfirm = { onConfirm(it) },
                     onDeleteGroup = { onDeleteGroup(it) },
@@ -367,19 +374,17 @@ private fun SubGroupsSelectionSection(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun MuscleGroupSection(
     muscleGroups: List<MuscleGroupModel>,
     objSelected: Pair<Int, Boolean>,
-    utils: Utils,
     onConfirm: (group: MuscleGroupModel) -> Unit,
     onDeleteGroup: (group: MuscleGroupModel) -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
     onItemClick: (item: MuscleGroupModel) -> Unit,
     showDialog: Boolean
 ) {
-    val focusRequester = remember { FocusRequester() }
-
     if (muscleGroups.isNotEmpty()) {
         Label(
             modifier = Modifier.padding(bottom = 6.dp),
@@ -396,72 +401,20 @@ private fun MuscleGroupSection(
         )
     }
 
-
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(DEFAULT_PADDING)) {
-        items(muscleGroups) { muscleGroup ->
-            val selected = utils.setSelectedItem(objSelected, muscleGroup)
-            val interactionSource = remember { MutableInteractionSource() }
-
-            // IMPORTANT: lembrar usando muscleGroup.name E showDialog como keys.
-            // Assim, quando o diálogo abrir/fechar (showDialog mudar) ou o nome do grupo mudar,
-            // o estado "name" será reinicializado com muscleGroup.name.
-            var name by remember(muscleGroup.name, showDialog) {
-                mutableStateOf(muscleGroup.name)
-            }
-
-            CustomSelectableChip(
-                modifier = Modifier,
-                text = muscleGroup.name,
-                selected = selected,
-                enabled = muscleGroup.enabled,
-                interactionSource = interactionSource,
-                onClick = { onItemClick(muscleGroup) },
-                onLongClick = {
-                    onShowDialog(
-                        true,
-                        Action.Edit(
-                            title = R.string.edit_group,
-                            onConfirm = {
-                                onConfirm(
-                                    MuscleGroupModel(
-                                        muscleGroupId = muscleGroup.muscleGroupId,
-                                        name = name,
-                                        selected = muscleGroup.selected,
-                                        enabled = muscleGroup.enabled
-                                    )
-                                )
-                            },
-                            content = {
-                                TextFieldComponent(
-                                    modifier = Modifier.padding(bottom = 16.dp),
-                                    text = name,
-                                    isSingleLine = true,
-                                    focusRequester = focusRequester,
-                                    onValueChange = { name = it },
-                                    enabled = true,
-                                    label = {
-                                        Text(
-                                            text = stringResource(R.string.training_name_string),
-                                            color = colorResource(R.color.title_color),
-                                            fontSize = 16.sp
-                                        )
-                                    }
-                                )
-                            })
-                    )
-                },
-                onDoubledClick = {
-                    onShowDialog(
-                        true, Action.Delete(
-                            title = R.string.delete_group,
-                            onConfirm = { onDeleteGroup(muscleGroup) },
-                            content = { Text(text = "Deseja deletar esse grupo?") }
-                        )
-                    )
-                }
-            )
-        }
-    }
+    FilterChipList(
+        modifier = Modifier.fillMaxWidth(),
+        backGroundColor = R.color.white,
+        orientation = GridMuscleGroup,
+        orientationProps = GridMuscleGroupProps(
+            listOfMuscleGroup = muscleGroups,
+            objSelected = objSelected,
+            showDialog = showDialog,
+            onItemClick = { onItemClick(it)},
+            onConfirm = { onConfirm(it)},
+            onDeleteGroup = {onDeleteGroup(it)},
+            onShowDialog = { value, action -> onShowDialog(value, action)},
+        )
+    )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
