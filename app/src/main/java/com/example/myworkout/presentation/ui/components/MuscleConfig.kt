@@ -158,6 +158,8 @@ fun MuscleConfig(
                             )
                         },
                     )
+                    viewModel.clearQuery()
+                    viewModel.sortSubGroups()
                 },
                 onCreateNewSubgroup = {
                     viewModel.insertNewSubGroup(it)
