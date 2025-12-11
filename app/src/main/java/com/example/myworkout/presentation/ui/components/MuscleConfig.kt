@@ -64,6 +64,7 @@ import com.example.myworkout.utils.Utils
 @Composable
 fun MuscleConfig(
     query: String,
+    noResult: Boolean,
     viewModel: MuscleGroupViewModel,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
@@ -159,7 +160,7 @@ fun MuscleConfig(
                         },
                     )
                     viewModel.clearQuery()
-                    viewModel.sortSubGroups()
+                    viewModel.sortAndFilterSubGroups()
                 },
                 onCreateNewSubgroup = {
                     viewModel.insertNewSubGroup(it)
@@ -169,13 +170,14 @@ fun MuscleConfig(
                 selectedSort = selectedSort,
                 onSearch = {
                     viewModel.setQuery(it)
-                    viewModel.sortSubGroups()
+                    viewModel.sortAndFilterSubGroups()
                 },
                 onClear = {
                     viewModel.clearQuery()
-                    viewModel.sortSubGroups()
+                    viewModel.sortAndFilterSubGroups()
                 },
-                query = innerQuery
+                query = innerQuery,
+                noResult = noResult
             )
         }
         item {
@@ -303,6 +305,7 @@ private fun SubGroupsSelectionSection(
     utils: Utils,
     selectedSort: String,
     query: String,
+    noResult: Boolean,
     onSearch: (text: String) -> Unit,
     onClear: () -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
@@ -376,6 +379,7 @@ private fun SubGroupsSelectionSection(
                     query = query,
                     selectedSort = selectedSort,
                     muscleSubGroups = muscleSubGroups,
+                    noResult = noResult,
                     onSearch = { onSearch(it) },
                     onClear = { onClear() },
                     onSelectSort = { onSelectSort(it) },
@@ -433,6 +437,7 @@ private fun MuscleGroupSection(
 @Composable
 private fun MuscleSubGroupSection(
     selectedSort: String,
+    noResult: Boolean,
     muscleSubGroups: List<MuscleSubGroupModel>,
     query: String,
     onSearch: (text: String) -> Unit,
@@ -471,6 +476,19 @@ private fun MuscleSubGroupSection(
         onValueChange = { onSearch(it) },
         onClear = { onClear() }
     )
+
+    if (noResult) {
+        TextIcon(
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+            fontSize = 18.sp,
+            iconSize = 20.dp,
+            spaceBetweenIconAndText = 4.dp,
+            textColor = colorResource(R.color.missed),
+            text = stringResource(R.string.no_subgroup_found),
+            icon = painterResource(R.drawable.baseline_warning_24),
+            tintColor = colorResource(R.color.missed)
+        )
+    }
 
     FilterChipList(
         backGroundColor = R.color.white,
@@ -534,9 +552,12 @@ private fun CardSection(
 private fun setFirstButtonHintText(
     isMuscleGroupSelected: Boolean,
     buttonEnabled: Boolean
-): String = if (isMuscleGroupSelected && !buttonEnabled)
-    stringResource(R.string.join_select_subgroups)
-else stringResource(R.string.join_groups_description)
+): String =
+    if (!isMuscleGroupSelected && !buttonEnabled)
+        stringResource(R.string.join_select_subgroups)
+    else if (isMuscleGroupSelected && !buttonEnabled)
+        stringResource(R.string.join_groups_description)
+    else stringResource(R.string.join_select_subgroups)
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -550,6 +571,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         muscleSubGroups = Constants().getAllSubGroupsFewMock(),
         onNavigateToNewTraining = {},
         selectedSort = Sort().sortAZ,
-        query = ""
+        query = "",
+        noResult = false
     )
 }

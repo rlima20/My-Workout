@@ -101,7 +101,8 @@ class MainActivity : ComponentActivity() {
                         muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,
                         objSelected = muscleGroupProps.objSelected,
                         selectedSort = muscleGroupProps.selectedSort,
-                        query = muscleGroupProps.query
+                        query = muscleGroupProps.query,
+                        noResult = muscleGroupProps.noResult
                     ),
                     snackBarHostState = snackBarHostState,
                     actions = actions
