@@ -31,7 +31,7 @@
     <string name="join_subgroups">Vincular subgrupos</string>
     <string name="groups">Grupos</string>
     <string name="join_save_groups">Salvar Vinculação</string>
-    <string name="join_groups_description">*Selecione um grupo</string>
+    <string name="join_groups_description">*Selecione um subgrupo</string>
     <string name="join_groups">Selecione um grupo</string>
     <string name="join_select_subgroups">*Selecione um grupo</string>
     <string name="join_groups_description2">Escolha quais subgrupos fazem parte do seu treino</string>
@@ -79,4 +79,5 @@
     <string name="clean">Limpar</string>
     <string name="new_subgroup">Novo subgrupo</string>
     <string name="join_group_to_subgroup">*Vincule um subgrupo a um grupo</string>
+    <string name="no_subgroup_found">Nenhum resultado encontrado</string>
 </resources>

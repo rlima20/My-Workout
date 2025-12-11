@@ -70,6 +70,9 @@ open class MuscleGroupViewModel(
     private val _query = MutableStateFlow(Constants().emptyString())
     val query: StateFlow<String> get() = _query
 
+    private val _noResult = MutableStateFlow(false)
+    val noResult: StateFlow<Boolean> get() = _noResult
+
     fun setQuery(filter: String) {
         _query.value = filter
     }
@@ -82,18 +85,21 @@ open class MuscleGroupViewModel(
         _selectedSort.value = selectedSort
     }
 
-    fun sortSubGroups() {
+    fun sortAndFilterSubGroups() {
         val subgroupsSortedAndFiltered = if (_query.value.isEmpty()) setNormalSortWithoutQuery()
         else setSortWithQuery()
+        _noResult.value = subgroupsSortedAndFiltered.isEmpty()
         _muscleSubGroups.value = subgroupsSortedAndFiltered
     }
 
-    private fun setNormalSortWithoutQuery(): List<MuscleSubGroupModel> =
-        if (_selectedSort.value == Sort().sortAZ) _muscleSubGroups.value.sortedBy { it.name.lowercase() }
+    private fun setNormalSortWithoutQuery(): List<MuscleSubGroupModel> {
+        return if (_selectedSort.value == Sort().sortAZ) _muscleSubGroups.value.sortedBy { it.name.lowercase() }
         else _muscleSubGroups.value.sortedByDescending { it.name.lowercase() }
+    }
 
-    private fun setSortWithQuery(): List<MuscleSubGroupModel> =
-        _muscleSubGroups.value.filter { it.name.contains(_query.value, ignoreCase = true) }
+    private fun setSortWithQuery(): List<MuscleSubGroupModel> {
+        return _muscleSubGroups.value.filter { it.name.contains(_query.value, ignoreCase = true) }
+    }
 
     fun setSelectedGroup(group: MuscleGroupModel) {
         val list = groupsAndSubgroupsWithRelations.firstOrNull { it.containsKey(group) }?.get(group)
@@ -363,7 +369,7 @@ open class MuscleGroupViewModel(
         setLoadingState()
         val muscleSubGroups = useCase.getMuscleSubGroups()
         _muscleSubGroups.value = muscleSubGroups
-        sortSubGroups()
+        sortAndFilterSubGroups()
         setSuccessState()
     }
 

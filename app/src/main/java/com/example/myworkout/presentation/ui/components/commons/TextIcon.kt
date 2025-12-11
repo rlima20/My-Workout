@@ -1,6 +1,7 @@
 package com.example.myworkout.presentation.ui.components.commons
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,6 +26,7 @@ fun TextIcon(
     fontSize: TextUnit = 16.sp,
     contentDescription: String? = null,
     icon: Painter,
+    spaceBetweenIconAndText: Dp = 0.dp,
     iconSize: Dp = 15.dp,
     textColor: Color = colorResource(R.color.title_color),
     tintColor: Color = colorResource(R.color.title_color)
@@ -36,7 +38,9 @@ fun TextIcon(
         Icon(
             painter = icon,
             contentDescription = contentDescription,
-            modifier = Modifier.size(iconSize),
+            modifier = Modifier
+                .size(iconSize)
+                .padding(end = spaceBetweenIconAndText),
             tint = tintColor,
         )
         Text(
