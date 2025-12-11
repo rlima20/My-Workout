@@ -3,6 +3,7 @@ package com.example.myworkout.presentation.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.MUSCLE_SUB_GROUP_NAMES
 import com.example.myworkout.domain.mapper.toGroupSubGroupModel
 import com.example.myworkout.domain.model.GroupSubGroupModel
@@ -66,16 +67,33 @@ open class MuscleGroupViewModel(
     private val _selectedSort: MutableStateFlow<String> = MutableStateFlow(Sort().sortAZ)
     val selectedSort: StateFlow<String> get() = _selectedSort
 
+    private val _query = MutableStateFlow(Constants().emptyString())
+    val query: StateFlow<String> get() = _query
+
+    fun setQuery(filter: String) {
+        _query.value = filter
+    }
+
+    fun clearQuery() {
+        _query.value = ""
+    }
+
     fun setSelectedSort(selectedSort: String) {
         _selectedSort.value = selectedSort
     }
 
-    fun sortSubGroups(selectedSort: String) {
-        if (selectedSort == Sort().sortAZ) _muscleSubGroups.value =
-            _muscleSubGroups.value.sortedBy { it.name.lowercase() }
-        else _muscleSubGroups.value =
-            _muscleSubGroups.value.sortedByDescending { it.name.lowercase() }
+    fun sortSubGroups() {
+        val subgroupsSortedAndFiltered = if (_query.value.isEmpty()) setNormalSortWithoutQuery()
+        else setSortWithQuery()
+        _muscleSubGroups.value = subgroupsSortedAndFiltered
     }
+
+    private fun setNormalSortWithoutQuery(): List<MuscleSubGroupModel> =
+        if (_selectedSort.value == Sort().sortAZ) _muscleSubGroups.value.sortedBy { it.name.lowercase() }
+        else _muscleSubGroups.value.sortedByDescending { it.name.lowercase() }
+
+    private fun setSortWithQuery(): List<MuscleSubGroupModel> =
+        _muscleSubGroups.value.filter { it.name.contains(_query.value, ignoreCase = true) }
 
     fun setSelectedGroup(group: MuscleGroupModel) {
         val list = groupsAndSubgroupsWithRelations.firstOrNull { it.containsKey(group) }?.get(group)
@@ -345,7 +363,7 @@ open class MuscleGroupViewModel(
         setLoadingState()
         val muscleSubGroups = useCase.getMuscleSubGroups()
         _muscleSubGroups.value = muscleSubGroups
-        sortSubGroups(_selectedSort.value)
+        sortSubGroups()
         setSuccessState()
     }
 
