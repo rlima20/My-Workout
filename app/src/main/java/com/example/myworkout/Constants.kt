@@ -427,31 +427,26 @@ class Constants {
         // MuscleSubGroups
         const val SUB_GROUP_NAME_PULLEY = "Puxada na polia"
         const val SUB_GROUP_NAME_REMADA_SERROTE = "Remada serrote"
-        const val SUB_GROUP_NAME_DORSAL_45 = "Dorsal na polia 45C"
         const val SUB_GROUP_NAME_LOWER_BACK = "Remada baixa"
         const val SUB_GROUP_NAME_UPPER_BACK = "Remada alta"
-        const val SUB_GROUP_NAME_BICEPS_W = "Bíceps Barra W"
-        const val SUB_GROUP_NAME_BICEPS_HAMMER = "Martelo"
-        const val SUB_GROUP_NAME_BICEPS_SCOTCH = "Scotch"
+        const val SUB_GROUP_NAME_BICEPS_W = "Bíceps Rosca Barra W"
+        const val SUB_GROUP_NAME_BICEPS_HAMMER = "Bíceps Rosca Martelo"
+        const val SUB_GROUP_NAME_BICEPS_SCOTCH = "Bíceps Rosca Scotch"
         const val SUB_GROUP_NAME_BICEPS_45 = "45 graus"
         const val SUB_GROUP_NAME_UPPER_CHEST = "Supino inclinado"
         const val SUB_GROUP_NAME_MEDIAL_CHEST = "Supino reto"
         const val SUB_GROUP_NAME_CROSS = "Cross"
         const val SUB_GROUP_NAME_PULLEY_CROSS = "Cross no pulley"
-        const val SUB_GROUP_NAME_TRICEPS_POLIA = "Tríceps polia"
+        const val SUB_GROUP_NAME_TRICEPS_POLIA = "Tríceps pulldown na polia"
         const val SUB_GROUP_NAME_TRICEPS_FRANCH = "Tríceps Francês"
         const val SUB_GROUP_NAME_TRICEPS_FOREHEAD = "Tríceps Testa"
         const val SUB_GROUP_NAME_SHOULDER_LATERAL = "Ombro lateral"
         const val SUB_GROUP_NAME_TRAPEZIUS = "Trapézio"
-        const val SUB_GROUP_NAME_SHOULDER_ANTERIOR = "Anterior"
-        const val SUB_GROUP_NAME_SHOULDER_POSTERIOR = "Posterior"
+        const val SUB_GROUP_NAME_SHOULDER_ANTERIOR = "Ombro Anterior"
+        const val SUB_GROUP_NAME_SHOULDER_POSTERIOR = "Ombro Posterior"
         const val SUB_GROUP_NAME_SHOULDER_TRAPZ = "Trapézio"
-        const val SUB_GROUP_NAME_FOREARM = "Antebraço"
-        const val SUB_GROUP_NAME_FRONT_LEG = "Quadríceps"
-        const val SUB_GROUP_NAME_LEG_PRESS = "Leg press"
-        const val SUB_GROUP_NAME_STIFF = "Stiff"
-        const val SUB_GROUP_NAME_BACK_LEG = "Posterior de perna"
-        const val SUB_GROUP_NAME_CALF = "Panturrilha"
+        const val SUB_GROUP_NAME_LEG_PRESS = "Perna Leg press"
+        const val SUB_GROUP_NAME_BACK_LEG = "Perna Posterior"
         const val SUB_GROUP_NAME_REST = "Descanso"
 
         val MUSCLE_SUB_GROUP_FEW_NAMES = listOf(
@@ -466,13 +461,9 @@ class Constants {
             // Chest
             SUB_GROUP_NAME_UPPER_CHEST,
             SUB_GROUP_NAME_MEDIAL_CHEST,
-            SUB_GROUP_NAME_CROSS,
-            SUB_GROUP_NAME_PULLEY_CROSS,
 
             // Back
             SUB_GROUP_NAME_LOWER_BACK,
-            SUB_GROUP_NAME_DORSAL_45,
-            SUB_GROUP_NAME_PULLEY,
             SUB_GROUP_NAME_REMADA_SERROTE,
             SUB_GROUP_NAME_UPPER_BACK,
 
@@ -483,11 +474,9 @@ class Constants {
             SUB_GROUP_NAME_TRAPEZIUS,
 
             // Briceps
-            SUB_GROUP_NAME_BICEPS_45,
             SUB_GROUP_NAME_BICEPS_W,
             SUB_GROUP_NAME_BICEPS_SCOTCH,
             SUB_GROUP_NAME_BICEPS_HAMMER,
-            SUB_GROUP_NAME_FOREARM,
 
             // Tríceps
             SUB_GROUP_NAME_TRICEPS_FRANCH,
@@ -495,11 +484,8 @@ class Constants {
             SUB_GROUP_NAME_TRICEPS_FOREHEAD,
 
             // Legs
-            SUB_GROUP_NAME_FRONT_LEG,
             SUB_GROUP_NAME_LEG_PRESS,
-            SUB_GROUP_NAME_STIFF,
             SUB_GROUP_NAME_BACK_LEG,
-            SUB_GROUP_NAME_CALF,
 
             // Rest
             SUB_GROUP_NAME_REST
