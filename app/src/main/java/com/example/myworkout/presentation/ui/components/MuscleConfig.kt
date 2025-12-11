@@ -5,22 +5,14 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material3.SelectableChipColors
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -51,7 +43,6 @@ import com.example.myworkout.presentation.ui.components.commons.Action
 import com.example.myworkout.presentation.ui.components.commons.ActionDialog
 import com.example.myworkout.presentation.ui.components.commons.ButtonSection
 import com.example.myworkout.presentation.ui.components.commons.CustomSearchBar
-import com.example.myworkout.presentation.ui.components.commons.CustomSelectableChip
 import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.commons.Label
 import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
@@ -64,7 +55,6 @@ import com.example.myworkout.presentation.ui.components.trainingcard.GridMuscleG
 import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
 import com.example.myworkout.presentation.ui.components.trainingcard.GridTraining
 import com.example.myworkout.presentation.ui.components.trainingcard.GridTrainingProps
-import com.example.myworkout.presentation.ui.components.trainingcard.Orientation
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.utils.Utils
@@ -73,6 +63,7 @@ import com.example.myworkout.utils.Utils
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun MuscleConfig(
+    query: String,
     viewModel: MuscleGroupViewModel,
     muscleGroups: List<MuscleGroupModel>,
     muscleSubGroups: List<MuscleSubGroupModel>,
@@ -81,6 +72,12 @@ fun MuscleConfig(
     objSelected: Pair<Int, Boolean>,
     onNavigateToNewTraining: () -> Unit,
 ) {
+    var innerMuscleSubGroups: List<MuscleSubGroupModel> = muscleSubGroups
+    var innerQuery = query
+
+    LaunchedEffect(viewModel.query) { innerMuscleSubGroups = muscleSubGroups }
+    LaunchedEffect(viewModel.query) { innerQuery = query }
+
     var showDialog by remember { mutableStateOf(false) }
     var currentAction: Action? by remember { mutableStateOf(null) }
     val utils = Utils()
@@ -122,7 +119,7 @@ fun MuscleConfig(
                 },
                 onSaveRelation = {
                     createRelations(
-                        muscleSubGroups = muscleSubGroups,
+                        muscleSubGroups = innerMuscleSubGroups,
                         muscleGroupId = it,
                         groups = muscleGroups,
                         onSaveRelation = { relation, group ->
@@ -140,7 +137,7 @@ fun MuscleConfig(
             SubGroupsSelectionSection(
                 showSubGroupsSelectionSection = showSubGroupsSelectionSection,
                 muscleGroups = muscleGroups,
-                muscleSubGroups = muscleSubGroups,
+                muscleSubGroups = innerMuscleSubGroups,
                 objSelected = objSelected,
                 utils = utils,
                 onShowDialog = { value, action ->
@@ -152,7 +149,7 @@ fun MuscleConfig(
                 },
                 onSaveRelation = {
                     createRelations(
-                        muscleSubGroups = muscleSubGroups,
+                        muscleSubGroups = innerMuscleSubGroups,
                         muscleGroupId = it,
                         groups = muscleGroups,
                         onSaveRelation = { relation, group ->
@@ -161,13 +158,24 @@ fun MuscleConfig(
                             )
                         },
                     )
+                    viewModel.clearQuery()
+                    viewModel.sortSubGroups()
                 },
                 onCreateNewSubgroup = {
                     viewModel.insertNewSubGroup(it)
                     showDialog = false
                 },
                 onSelectSort = { viewModel.setSelectedSort(it) },
-                selectedSort = selectedSort
+                selectedSort = selectedSort,
+                onSearch = {
+                    viewModel.setQuery(it)
+                    viewModel.sortSubGroups()
+                },
+                onClear = {
+                    viewModel.clearQuery()
+                    viewModel.sortSubGroups()
+                },
+                query = innerQuery
             )
         }
         item {
@@ -294,6 +302,9 @@ private fun SubGroupsSelectionSection(
     objSelected: Pair<Int, Boolean>,
     utils: Utils,
     selectedSort: String,
+    query: String,
+    onSearch: (text: String) -> Unit,
+    onClear: () -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
     onSaveRelation: (muscleGroupId: Int) -> Unit,
@@ -320,9 +331,7 @@ private fun SubGroupsSelectionSection(
         secondButtonName = stringResource(R.string.new_subgroup),
         firstButtonEnabled = buttonEnabled,
         firstButtonHintEnabled = ((!isMuscleGroupSelected) || (!buttonEnabled)),
-        firstButtonHintText = if (isMuscleGroupSelected && !buttonEnabled)
-            stringResource(R.string.join_select_subgroups)
-        else stringResource(R.string.join_groups_description),
+        firstButtonHintText = setFirstButtonHintText(isMuscleGroupSelected, buttonEnabled),
         secondButtonEnabled = showSubGroupsSelectionSection,
         onFirstButtonClick = { onSaveRelation(muscleGroupId) },
         onSecondButtonClick = {
@@ -364,10 +373,13 @@ private fun SubGroupsSelectionSection(
 
             if (showSubGroupsSelectionSection) {
                 MuscleSubGroupSection(
+                    query = query,
                     selectedSort = selectedSort,
                     muscleSubGroups = muscleSubGroups,
+                    onSearch = { onSearch(it) },
+                    onClear = { onClear() },
                     onSelectSort = { onSelectSort(it) },
-                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
+                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) }
                 )
             }
         }
@@ -409,10 +421,10 @@ private fun MuscleGroupSection(
             listOfMuscleGroup = muscleGroups,
             objSelected = objSelected,
             showDialog = showDialog,
-            onItemClick = { onItemClick(it)},
-            onConfirm = { onConfirm(it)},
-            onDeleteGroup = {onDeleteGroup(it)},
-            onShowDialog = { value, action -> onShowDialog(value, action)},
+            onItemClick = { onItemClick(it) },
+            onConfirm = { onConfirm(it) },
+            onDeleteGroup = { onDeleteGroup(it) },
+            onShowDialog = { value, action -> onShowDialog(value, action) },
         )
     )
 }
@@ -422,15 +434,14 @@ private fun MuscleGroupSection(
 private fun MuscleSubGroupSection(
     selectedSort: String,
     muscleSubGroups: List<MuscleSubGroupModel>,
+    query: String,
+    onSearch: (text: String) -> Unit,
+    onClear: () -> Unit,
     onSelectSort: (selectedSort: String) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
 ) {
     var selectedSortInner by remember { mutableStateOf(selectedSort) }
-    var query by remember { mutableStateOf("") }
-
-    LaunchedEffect(selectedSort) {
-        selectedSortInner = selectedSort
-    }
+    LaunchedEffect(selectedSort) { selectedSortInner = selectedSort }
 
     Column {
         Row(
@@ -457,12 +468,8 @@ private fun MuscleSubGroupSection(
     CustomSearchBar(
         modifier = Modifier.padding(bottom = 8.dp),
         query = query,
-        onQueryChange = { query = it },
-        onClear = { query = "" },
-        onSearch = { text ->
-            // Chamada da busca em tempo real
-            println("Buscando por: $text")
-        }
+        onValueChange = { onSearch(it) },
+        onClear = { onClear() }
     )
 
     FilterChipList(
@@ -523,6 +530,14 @@ private fun CardSection(
     )
 }
 
+@Composable
+private fun setFirstButtonHintText(
+    isMuscleGroupSelected: Boolean,
+    buttonEnabled: Boolean
+): String = if (isMuscleGroupSelected && !buttonEnabled)
+    stringResource(R.string.join_select_subgroups)
+else stringResource(R.string.join_groups_description)
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview
@@ -534,6 +549,7 @@ private fun NewMuscleGroupAndSubgroupPreview() {
         objSelected = Pair(0, false),
         muscleSubGroups = Constants().getAllSubGroupsFewMock(),
         onNavigateToNewTraining = {},
-        selectedSort = Sort().sortAZ
+        selectedSort = Sort().sortAZ,
+        query = ""
     )
 }

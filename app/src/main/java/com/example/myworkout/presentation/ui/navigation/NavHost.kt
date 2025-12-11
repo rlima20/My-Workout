@@ -77,6 +77,7 @@ fun NavHost(
 
             MuscleConfig(
                 viewModel = groupViewModel,
+                query = muscleGroupProps.query,
                 muscleGroups = muscleGroupProps.muscleGroups,
                 muscleSubGroups = muscleGroupProps.muscleSubGroups,
                 muscleGroupsWithRelation = muscleGroupProps.muscleGroupsWithRelation,

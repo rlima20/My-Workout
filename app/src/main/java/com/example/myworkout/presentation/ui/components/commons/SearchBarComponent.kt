@@ -41,10 +41,9 @@ import com.example.myworkout.R
 @Composable
 fun CustomSearchBar(
     query: String,
-    onQueryChange: (String) -> Unit,
+    onValueChange: (String) -> Unit,
     onClear: () -> Unit,
     modifier: Modifier = Modifier,
-    onSearch: (String) -> Unit = {},
     showLeadingIcon: Boolean = true,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -80,10 +79,7 @@ fun CustomSearchBar(
 
             BasicTextField(
                 value = query,
-                onValueChange = {
-                    onQueryChange(it)
-                    onSearch(it)
-                },
+                onValueChange = { onValueChange(it) },
                 modifier = Modifier
                     .weight(1f)
                     .focusRequester(focusRequester)
@@ -132,11 +128,7 @@ private fun SearchBarComponentPreview() {
 
     CustomSearchBar(
         query = query,
-        onQueryChange = { query = it },
+        onValueChange = { query = it },
         onClear = { query = "" },
-        onSearch = { text ->
-            // Chamada da busca em tempo real
-            println("Buscando por: $text")
-        }
     )
 }
