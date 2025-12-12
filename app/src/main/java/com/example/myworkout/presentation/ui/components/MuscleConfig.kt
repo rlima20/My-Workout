@@ -268,6 +268,13 @@ private fun GroupSelectionSection(
     val muscleGroupId = objSelected.first
     val selected = objSelected.second
 
+    fun selectMuscleGroup(
+        model: MuscleGroupModel,
+        objSelected: Pair<Int, Boolean>
+    ): Boolean =
+        if (model.muscleGroupId != objSelected.first) true
+        else !objSelected.second
+
     ButtonSection(
         cardColors = if (muscleGroups.isNotEmpty()) utils.buttonSectionCardsColors() else utils.buttonSectionCardsDisabledColors(),
         titleSection = stringResource(R.string.groups),
@@ -288,7 +295,14 @@ private fun GroupSelectionSection(
                     onConfirm = { onConfirm(it) },
                     onDeleteGroup = { onDeleteGroup(it) },
                     onShowDialog = { value, action -> onShowDialog(value, action) },
-                    onItemClick = { onItemClick(Pair(it.muscleGroupId, true)) },
+                    onItemClick = {
+                        onItemClick(
+                            Pair(
+                                it.muscleGroupId,
+                                selectMuscleGroup(it, objSelected)
+                            )
+                        )
+                    },
                     showDialog = showDialog
                 )
             }
@@ -401,16 +415,9 @@ private fun MuscleGroupSection(
     onItemClick: (item: MuscleGroupModel) -> Unit,
     showDialog: Boolean
 ) {
-    if (muscleGroups.isNotEmpty()) {
-        Label(
-            modifier = Modifier.padding(bottom = 6.dp),
-            text = stringResource(R.string.join_groups),
-            style = TextStyle(lineHeight = 14.sp),
-            fontSize = 14.sp,
-        )
-    } else {
+    if (muscleGroups.isEmpty()) {
         Text(
-            text = stringResource(R.string.join_groups_description),
+            text = stringResource(R.string.create_a_group),
             color = colorResource(R.color.missed),
             fontSize = 12.sp,
             maxLines = 1,
