@@ -174,8 +174,6 @@ open class MuscleGroupViewModel(
             }
 
             useCase.replaceRelationsForGroup(muscleGroupId, muscleGroupMuscleSubGroups)
-            _objSelected.value = Pair(0, false)
-
             val jobs = listOf(
                 async {
                     replaceNewRelationsForGroup(
@@ -189,6 +187,7 @@ open class MuscleGroupViewModel(
             )
             jobs.awaitAll()
 
+            unselectMuscleGroup()
             setSuccessState()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
@@ -216,6 +215,7 @@ open class MuscleGroupViewModel(
                 async { useCase.insertMuscleSubGroup(muscleSubGroup) },
                 async { useCase.insertSubGroup(subgroup) },
                 async { useCase.fetchMuscleSubGroups() },
+                async {  _muscleSubGroups.value = useCase.getMuscleSubGroups() },
                 async { useCase.fetchSubGroups() }
             )
             jobs.awaitAll()
@@ -292,11 +292,16 @@ open class MuscleGroupViewModel(
                 async { getGroupsWithRelationsInternal() },
                 async { clearSubGroupsInternal() }
             )
+            unselectMuscleGroup()
             jobs.awaitAll()
             setSuccessDeleteGroup()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
         }
+    }
+
+    private fun unselectMuscleGroup() {
+        _objSelected.value = Pair(0, false)
     }
 
     fun clearSubGroups() = viewModelScope.launch(dispatchers.IO) {
