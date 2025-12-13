@@ -19,6 +19,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavHostController
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.TrainingModel
@@ -29,7 +30,6 @@ import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
 import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.trainingProps
-import com.example.myworkout.presentation.ui.components.commons.Divider
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
@@ -53,6 +53,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
+
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = true
+        }
 
         setContent {
             val snackBarHostState = remember { SnackbarHostState() }
