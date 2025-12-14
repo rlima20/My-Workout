@@ -5,6 +5,7 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
@@ -16,6 +17,25 @@ class MuscleGroupUseCaseImpl(
 ) : MuscleGroupUseCase {
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
         repository.deleteGroupCascade(group)
+    }
+
+    override suspend fun unselectSubgroups(trainingModel: TrainingModel) {
+        val subGroupsToBeUnselected = repository.getSubGroupsByTrainingId(trainingModel.trainingId)
+        val subGroupsUnselected: MutableList<SubGroupModel> = mutableListOf()
+
+        subGroupsToBeUnselected.forEach {
+            subGroupsUnselected.add(
+                SubGroupModel(
+                    id = it.id,
+                    name = it.name,
+                    selected = false
+                )
+            )
+        }
+
+        subGroupsUnselected.forEach { subgroup ->
+            repository.updateNewSubGroup(subgroup)
+        }
     }
 
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {

@@ -71,7 +71,8 @@ fun TrainingCard(
     onUpdateTraining: (training: TrainingModel) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
     onDeleteTraining: (training: TrainingModel) -> Unit,
-    onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit
+    onUpdateSubGroup: (subGroup: SubGroupModel) -> Unit,
+    onClearSubGroups: (training: TrainingModel) -> Unit
 ) {
     // Training
     var isTrainingChecked by remember { mutableStateOf(training.status == Status.ACHIEVED) }
@@ -122,15 +123,15 @@ fun TrainingCard(
         showDialog = showDialog,
         onDismiss = { setInitialStates() },
         onConfirmation = {
-            onUpdateTraining(
-                TrainingModel(
-                    trainingId = training.trainingId,
-                    status = status,
-                    trainingName = training.trainingName,
-                    dayOfWeek = training.dayOfWeek,
-                    isChecked = isTrainingChecked
-                )
+            val training = TrainingModel(
+                trainingId = training.trainingId,
+                status = status,
+                trainingName = training.trainingName,
+                dayOfWeek = training.dayOfWeek,
+                isChecked = isTrainingChecked
             )
+            if (status == Status.MISSED) { onClearSubGroups(training) }
+            onUpdateTraining(training)
             setInitialStates()
         }
     )
@@ -493,7 +494,8 @@ fun TrainingCardPreview() {
                 onUpdateTraining = {},
                 onUpdateTrainingName = {},
                 onDeleteTraining = {},
-                onUpdateSubGroup = {}
+                onUpdateSubGroup = {},
+                onClearSubGroups = {}
             )
         }
     }

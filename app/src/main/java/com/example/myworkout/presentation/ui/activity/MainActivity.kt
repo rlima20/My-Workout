@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
@@ -242,7 +243,10 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun showSnackBar(snackBarHostState: SnackbarHostState) {
-        snackBarHostState.showSnackbar(getString(R.string.everything_ready))
+        snackBarHostState.showSnackbar(
+            message = getString(R.string.everything_ready),
+            duration = SnackbarDuration.Short
+        )
     }
 
     private fun clearGroupsAndSubGroupsSelected() {

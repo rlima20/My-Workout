@@ -63,6 +63,7 @@ internal fun HomeScreen(
                     onUpdateTraining = { viewModel.updateTraining(it) },
                     onUpdateTrainingName = { viewModel.updateTrainingName(it) },
                     onDeleteTraining = { viewModel.deleteTraining(it) },
+                    onClearSubGroups = { muscleGroupViewModel.unselectSubgroups(it) },
                     onUpdateSubGroup = {
                         muscleGroupViewModel
                             .updateNewSubGroup(
