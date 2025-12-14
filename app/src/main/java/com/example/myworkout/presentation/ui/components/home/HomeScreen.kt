@@ -60,11 +60,10 @@ internal fun HomeScreen(
                     training = workouts[index].first,
                     subGroups = workouts[index].second,
                     listOfDays = listOfDays,
-                    onUpdateTraining = {
-                        muscleGroupViewModel.unselectSubgroups(it)
-                        viewModel.updateTraining(it) },
+                    onUpdateTraining = { viewModel.updateTraining(it) },
                     onUpdateTrainingName = { viewModel.updateTrainingName(it) },
                     onDeleteTraining = { viewModel.deleteTraining(it) },
+                    onClearSubGroups = { muscleGroupViewModel.unselectSubgroups(it) },
                     onUpdateSubGroup = {
                         muscleGroupViewModel
                             .updateNewSubGroup(

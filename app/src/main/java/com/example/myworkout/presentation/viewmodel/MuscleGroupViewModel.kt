@@ -318,7 +318,6 @@ open class MuscleGroupViewModel(
         } catch (e: Exception) {
             setErrorState(e.message.toString())
         }
-
     }
 
     fun updateSubGroup(subGroup: MuscleSubGroupModel) = viewModelScope.launch(dispatchers.IO) {
