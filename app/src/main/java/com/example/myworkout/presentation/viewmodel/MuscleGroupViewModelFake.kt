@@ -7,6 +7,7 @@ import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.usecase.musclegroup.MuscleGroupUseCase
@@ -81,6 +82,10 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
     }
 
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun unselectSubgroups(trainingModel: TrainingModel) {
         TODO("Not yet implemented")
     }
 
