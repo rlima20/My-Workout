@@ -215,7 +215,7 @@ open class MuscleGroupViewModel(
                 async { useCase.insertMuscleSubGroup(muscleSubGroup) },
                 async { useCase.insertSubGroup(subgroup) },
                 async { useCase.fetchMuscleSubGroups() },
-                async {  _muscleSubGroups.value = useCase.getMuscleSubGroups() },
+                async { _muscleSubGroups.value = useCase.getMuscleSubGroups() },
                 async { useCase.fetchSubGroups() }
             )
             jobs.awaitAll()
@@ -308,6 +308,19 @@ open class MuscleGroupViewModel(
         clearSubGroupsInternal()
     }
 
+    fun unselectSubgroups(trainingModel: TrainingModel) {
+        setLoadingState()
+        try {
+            viewModelScope.launch(Dispatchers.IO) {
+                unselectSubgroupsInternal(trainingModel)
+            }
+            fetchSubGroups()
+        } catch (e: Exception) {
+            setErrorState(e.message.toString())
+        }
+
+    }
+
     fun updateSubGroup(subGroup: MuscleSubGroupModel) = viewModelScope.launch(dispatchers.IO) {
         setLoadingState()
         try {
@@ -367,6 +380,13 @@ open class MuscleGroupViewModel(
         setLoadingState()
         val muscleGroups = useCase.getMuscleGroups()
         _muscleGroups.value = muscleGroups
+        setSuccessState()
+    }
+
+    private suspend fun unselectSubgroupsInternal(training: TrainingModel) {
+        useCase.unselectSubgroups(training)
+        val subGroups = useCase.getSubGroups()
+        _subGroups.value = subGroups
         setSuccessState()
     }
 

@@ -1,14 +1,19 @@
 package com.example.myworkout.domain.usecase.musclegroup
 
+import androidx.lifecycle.viewModelScope
 import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
 import com.example.myworkout.domain.model.SubGroupModel
+import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.domain.model.TrainingMuscleGroupModel
 import com.example.myworkout.domain.repository.musclegroup.MuscleGroupRepository
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.enums.BodyPart
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.launch
 
 class MuscleGroupUseCaseImpl(
     private val repository: MuscleGroupRepository
@@ -17,6 +22,47 @@ class MuscleGroupUseCaseImpl(
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
         repository.deleteGroupCascade(group)
     }
+
+    override suspend fun unselectSubgroups(trainingModel: TrainingModel) {
+        val subGroupsToBeUnselected =
+            repository.getSubGroupsByTrainingId(trainingModel.trainingId)
+
+        val subGroupsUnselected: MutableList<SubGroupModel> = mutableListOf()
+
+        subGroupsToBeUnselected.forEach {
+            subGroupsUnselected.add(
+                SubGroupModel(
+                    id = it.id,
+                    name = it.name,
+                    selected = false
+                )
+            )
+        }
+
+        // Todo - subGroupsUnselected - Update todos esses subgrupos
+        subGroupsUnselected.forEach { subgroup ->
+            repository.updateNewSubGroup(subgroup)
+        }
+
+
+    }
+
+//    fun updateSubGroup(subGroup: MuscleSubGroupModel) = viewModelScope.launch(dispatchers.IO) {
+//        setLoadingState()
+//        try {
+//            useCase.updateSubGroup(subGroup)
+//
+//            val jobs = listOf(
+//                async { fetchMuscleGroupsInternal() }
+//            )
+//            jobs.awaitAll()
+//
+//            setSuccessState()
+//        } catch (e: Exception) {
+//            setErrorState(e.message.toString())
+//        }
+//    }
+
 
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {
         return repository.getMuscleSubGroupsByTrainingId(trainingId)
