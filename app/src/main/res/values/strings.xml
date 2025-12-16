@@ -81,4 +81,5 @@
     <string name="join_group_to_subgroup">*Vincule um subgrupo a um grupo</string>
     <string name="no_subgroup_found">Nenhum resultado encontrado</string>
     <string name="create_a_group">*Crie um grupo</string>
+    <string name="inform_training">*Informe um nome para o treino</string>
 </resources>
