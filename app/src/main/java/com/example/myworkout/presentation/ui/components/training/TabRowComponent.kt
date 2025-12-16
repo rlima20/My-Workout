@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.ScrollableTabRow
 import androidx.compose.material.Tab
+import androidx.compose.material.TabRowDefaults
+import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableIntState
@@ -13,9 +15,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.myworkout.Constants
+import com.example.myworkout.R
 import com.example.myworkout.domain.model.MuscleGroupModel
 
 @Composable
@@ -51,9 +55,21 @@ private fun SetScrollableTabRow(
         selectedTabIndex = selectedTabIndex.value,
         backgroundColor = Color(0x2A8D8D8D),
         edgePadding = 4.dp,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier
+                    .tabIndicatorOffset(
+                        tabPositions[selectedTabIndex.value]
+                    ),
+                color = colorResource(R.color.button_color),
+                height = 3.dp
+            )
+        },
         tabs = {
             muscleGroups.forEachIndexed { index, muscleGroup ->
                 Tab(
+                    selectedContentColor = colorResource(R.color.button_color),
+                    unselectedContentColor = colorResource(R.color.text_color),
                     selected = selectedTabIndex.value == index,
                     onClick = { onTabClick(muscleGroup, index) },
                     text = { Text(muscleGroup.name) },

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -66,6 +67,11 @@ fun NewTraining(
     var firstTimeScreenOpenedListener by remember { mutableStateOf(true) }
     if (firstTimeScreenOpenedListener) groupViewModel.setSelectedGroup(groupsWithRelations.first())
     val utils = Utils()
+    var showHint by remember { mutableStateOf(trainingName.isEmpty()) }
+
+    LaunchedEffect(trainingName) {
+        showHint = trainingName.isEmpty()
+    }
 
     Column(Modifier.fillMaxSize()) {
         TabRowComponent(
@@ -82,6 +88,8 @@ fun NewTraining(
             titleSection = stringResource(R.string.subgroups),
             firstButtonName = stringResource(R.string.button_section_save_button),
             firstButtonEnabled = trainingName.isNotEmpty(),
+            firstButtonHintEnabled = showHint && trainingsQuantity <= maxDaysQuantity,
+            firstButtonHintText = stringResource(R.string.inform_training),
             onFirstButtonClick = {
                 trainingViewModel.insertTraining(
                     TrainingModel(
