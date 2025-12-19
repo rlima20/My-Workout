@@ -20,7 +20,8 @@ data class TrainingProps(
     val appBarTitle: String,
     val listOfDays: List<Pair<DayOfWeek, Boolean>>,
     val navController: NavHostController,
-    val prefs: TrainingPrefs
+    val prefs: TrainingPrefs,
+    val isHomeScreenV2: Boolean
 )
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -31,6 +32,7 @@ fun trainingProps(trainingViewModel: TrainingViewModel): TrainingProps {
     val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()
     val appBarTitle by trainingViewModel.appBarTitle.collectAsState()
     val listOfDays by trainingViewModel.listOfDays.collectAsState()
+    val isHomeScreenV2 by trainingViewModel.isHomeScreenV2.collectAsState()
     val navController = rememberNavController()
     val prefs = TrainingPrefs()
 
@@ -41,6 +43,7 @@ fun trainingProps(trainingViewModel: TrainingViewModel): TrainingProps {
         appBarTitle = appBarTitle,
         listOfDays = listOfDays,
         navController = navController,
-        prefs = prefs
+        prefs = prefs,
+        isHomeScreenV2 = isHomeScreenV2
     )
 }

@@ -1,5 +1,6 @@
 package com.example.myworkout.presentation.ui.components.home
 
+import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,12 +17,15 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_MIN_SIZE
 import com.example.myworkout.Constants.Companion.LAZY_VERTICAL_GRID_SPACING
+import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
+import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
+import com.example.myworkout.presentation.ui.components.commons.ToggleItem
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
@@ -37,10 +41,11 @@ internal fun HomeScreen(
     muscleGroupViewModel: MuscleGroupViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
+    trainingCardProps: TrainingCardProps
 ) {
 
     LazyVerticalGrid(
-        modifier = Modifier
+        modifier = trainingCardProps.modifier
             .homeScreenCardPaddings()
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Top,
@@ -57,6 +62,7 @@ internal fun HomeScreen(
                 )
                 TrainingCard(
                     filterChipListModifier = modifier,
+                    trainingCardProps = trainingCardProps,
                     training = workouts[index].first,
                     subGroups = workouts[index].second,
                     listOfDays = listOfDays,
@@ -69,22 +75,50 @@ internal fun HomeScreen(
                             .updateNewSubGroup(
                                 it.copy(selected = !it.selected)
                             )
-                    }
+                    },
                 )
             }
         }
     }
 }
 
-@RequiresApi(35)
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
 @Preview
-fun HomeScreenPreview() {
+private fun HomeScreenPreviewFirst() {
     HomeScreen(
         modifier = Modifier,
         muscleGroupViewModel = MuscleGroupViewModelFake(),
         viewModel = TrainingViewModelFake(),
         listOfDays = Constants().getListOfDays(),
         workouts = Constants().getNewTrainingAndSubGroupsHomeScreenMock(),
+        trainingCardProps = TrainingCardProps(
+            modifier = Modifier,
+            topBarHeight = TRAINING_NAME_MAX_HEIGHT,
+            chipHeight = 30.dp,
+            cardHeight = 350.dp,
+            trainingNameFontSize = 12.sp
+        )
+    )
+}
+
+
+@RequiresApi(35)
+@Composable
+@Preview
+fun HomeScreenPreviewSecond() {
+    HomeScreen(
+        modifier = Modifier,
+        muscleGroupViewModel = MuscleGroupViewModelFake(),
+        viewModel = TrainingViewModelFake(),
+        listOfDays = Constants().getListOfDays(),
+        workouts = Constants().getNewTrainingAndSubGroupsHomeScreenMock(),
+        trainingCardProps = TrainingCardProps(
+            modifier = Modifier,
+            topBarHeight = 50.dp,
+            chipHeight = 50.dp,
+            cardHeight = 350.dp,
+            trainingNameFontSize = 12.sp
+        ),
     )
 }

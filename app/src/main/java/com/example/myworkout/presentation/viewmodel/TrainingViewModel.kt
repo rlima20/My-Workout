@@ -38,6 +38,9 @@ open class TrainingViewModel(
     private val _isHomeScreen = MutableStateFlow(true)
     val isHomeScreen: StateFlow<Boolean> get() = _isHomeScreen
 
+    private val _isHomeScreenV2 = MutableStateFlow(false)
+    val isHomeScreenV2: StateFlow<Boolean> get() = _isHomeScreenV2
+
     private val _appBarTitle = MutableStateFlow("Home")
     val appBarTitle: StateFlow<String> get() = _appBarTitle
 
@@ -49,6 +52,10 @@ open class TrainingViewModel(
             Pair(DayOfWeek.SATURDAY, true)
         )
     )
+
+    fun setHomeScreenV2 (value: Boolean){
+        _isHomeScreenV2.value = value
+    }
 
     val listOfDays: StateFlow<List<Pair<DayOfWeek, Boolean>>> = _listOfDays
 

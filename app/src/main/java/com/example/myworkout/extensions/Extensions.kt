@@ -81,7 +81,7 @@ fun NavHostController.navigateSingleTopTo(route: String) =
 @SuppressLint("UnnecessaryComposedModifier")
 fun Modifier.homeScreenCardPaddings(): Modifier = composed {
     this.padding(
-        top = 72.dp,
+        top = 0.dp,
         start = 16.dp,
         end = 16.dp,
         bottom = 72.dp

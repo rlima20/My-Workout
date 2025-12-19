@@ -3,7 +3,6 @@ package com.example.myworkout.presentation.ui.components.commons
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,12 +26,10 @@ import com.example.myworkout.R
 import com.example.myworkout.enums.Sort
 
 @Composable
-fun TwoOptionToggle(
-    optionA: String,
-    optionB: String,
-    selectedSort: String,
+fun ToggleItem(
     modifier: Modifier = Modifier,
-    onSelected: (String) -> Unit,
+    label: String,
+    selected: Boolean,
     fontSize: TextUnit = 12.sp,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     selectedColor: Color = MaterialTheme.colorScheme.primary,
@@ -40,41 +37,76 @@ fun TwoOptionToggle(
     roundBorderSelectedColor: Color = colorResource(R.color.button_color),
     roundBorderUnselectedColor: Color = Color.Gray,
     roundBackgroundSelectedColor: Color = colorResource(R.color.button_color),
-    roundBackgroundUnselectedColor: Color = Color.Transparent
+    roundBackgroundUnselectedColor: Color = Color.Transparent,
+    onClick: () -> Unit
 ) {
     Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.clickable { onClick() }
     ) {
-        ToggleItem(
-            label = optionA,
-            selected = selectedSort == optionA,
-            fontSize = fontSize,
-            textStyle = textStyle,
-            selectedColor = selectedColor,
-            unselectedColor = unselectedColor,
-            roundBorderSelectedColor = roundBorderSelectedColor,
-            roundBorderUnselectedColor = roundBorderUnselectedColor,
-            roundBackgroundSelectedColor = roundBackgroundSelectedColor,
-            roundBackgroundUnselectedColor = roundBackgroundUnselectedColor,
-            onClick = { onSelected(optionA) }
+        Box(
+            modifier = Modifier
+                .size(12.dp)
+                .border(
+                    width = 1.dp,
+                    color = setBorderColor(
+                        selected,
+                        roundBorderSelectedColor,
+                        roundBorderUnselectedColor
+                    ),
+                    shape = CircleShape
+                )
+                .background(
+                    color =
+                        setBackGroundColor(
+                            selected,
+                            roundBackgroundSelectedColor,
+                            roundBackgroundUnselectedColor
+                        ),
+                    shape = CircleShape
+                )
         )
 
-        ToggleItem(
-            label = optionB,
-            selected = selectedSort == optionB,
+        Spacer(modifier = Modifier.width(6.dp))
+
+        Text(
             fontSize = fontSize,
-            textStyle = textStyle,
-            selectedColor = selectedColor,
-            unselectedColor = unselectedColor,
-            roundBorderSelectedColor = roundBorderSelectedColor,
-            roundBorderUnselectedColor = roundBorderUnselectedColor,
-            roundBackgroundSelectedColor = roundBackgroundSelectedColor,
-            roundBackgroundUnselectedColor = roundBackgroundUnselectedColor,
-            onClick = { onSelected(optionB) }
+            text = label,
+            style = textStyle,
+            color = setColor(selected, selectedColor, unselectedColor)
         )
     }
 }
+
+@Composable
+private fun setColor(
+    selected: Boolean,
+    selectedColor: Color,
+    unselectedColor: Color
+): Color = setBorderColor(
+    selected,
+    selectedColor,
+    unselectedColor
+)
+
+@Composable
+private fun setBorderColor(
+    selected: Boolean,
+    roundBorderSelectedColor: Color,
+    roundBorderUnselectedColor: Color
+): Color = setBackGroundColor(
+    selected,
+    roundBorderSelectedColor,
+    roundBorderUnselectedColor
+)
+
+@Composable
+private fun setBackGroundColor(
+    selected: Boolean,
+    roundBackgroundSelectedColor: Color,
+    roundBackgroundUnselectedColor: Color
+): Color = if (selected) roundBackgroundSelectedColor
+else roundBackgroundUnselectedColor
 
 @Composable
 @Preview

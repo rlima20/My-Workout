@@ -1,6 +1,7 @@
 package com.example.myworkout.presentation.ui.activity
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        window.statusBarColor = Color.TRANSPARENT
 
         WindowInsetsControllerCompat(window, window.decorView).apply {
             isAppearanceLightStatusBars = true
@@ -94,8 +95,8 @@ class MainActivity : ComponentActivity() {
                         appBarTitle = trainingProps.appBarTitle,
                         listOfDays = trainingProps.listOfDays,
                         navController = trainingProps.navController,
-                        prefs = trainingProps.prefs
-
+                        prefs = trainingProps.prefs,
+                        isHomeScreenV2 = trainingProps.isHomeScreenV2
                     ),
                     muscleGroupProps = MuscleGroupProps(
                         workouts = muscleGroupProps.workouts,

@@ -18,11 +18,12 @@ import com.example.myworkout.extensions.defaultNavHostValues
 import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
+import com.example.myworkout.presentation.ui.activity.props.trainingProps
 import com.example.myworkout.presentation.ui.components.MuscleConfig
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
-import com.example.myworkout.presentation.ui.components.home.HomeScreen
 import com.example.myworkout.presentation.ui.components.home.LoadingComponent
+import com.example.myworkout.presentation.ui.components.home.homev2.HomeScreenManager
 import com.example.myworkout.presentation.ui.components.training.NewTraining
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
@@ -61,6 +62,7 @@ fun NavHost(
                 muscleGroupViewModel = muscleGroupViewModel,
                 listOfDays = trainingProps.listOfDays,
                 trainingViewState = trainingProps.viewState,
+                trainingProps = trainingProps,
                 onChangeRoute = actions.onChangeRouteToHomeScreen,
                 onNavigateToNewTraining = {
                     actions.onNavigateToGroupSubgroup()
@@ -154,6 +156,7 @@ private fun SetupTrainingStateObservers(
     muscleGroupViewModel: MuscleGroupViewModel,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
+    trainingProps: TrainingProps,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
@@ -189,12 +192,13 @@ private fun SetupTrainingStateObservers(
 
         is TrainingViewState.Success -> {
             onFetchWorkouts(trainingViewState.trainings)
-            HomeScreen(
+            HomeScreenManager(
+                modifier = Modifier,
                 workouts = workouts,
-                viewModel = viewModel,
-                muscleGroupViewModel = muscleGroupViewModel,
                 listOfDays = listOfDays,
-                modifier = Modifier
+                viewModel = viewModel,
+                isHomeScreenV2 = trainingProps.isHomeScreenV2,
+                muscleGroupViewModel = muscleGroupViewModel,
             )
         }
     }
