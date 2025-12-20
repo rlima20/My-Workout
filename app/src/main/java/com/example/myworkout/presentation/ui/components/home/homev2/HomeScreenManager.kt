@@ -14,16 +14,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT_V2
+import com.example.myworkout.R
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
-import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
 import com.example.myworkout.presentation.ui.components.commons.ToggleItem
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
@@ -59,6 +60,7 @@ fun HomeScreenManager(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, end = 16.dp),
                 label = "Home 2.0",
                 selected = isHomeScreenV2,
+                selectedColor = colorResource(R.color.button_color_2),
                 onClick = {
                     val newValue = !isHomeScreenV2
                     onHomeScreenV2(newValue)

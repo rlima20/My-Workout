@@ -314,6 +314,7 @@ private fun SetCheckboxSection(
     onShowDialog: (value: Boolean) -> Unit
 ) {
     Row(
+        modifier = Modifier.padding(bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Absolute.SpaceBetween
     ) {
