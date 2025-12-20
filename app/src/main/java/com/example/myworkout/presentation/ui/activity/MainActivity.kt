@@ -69,6 +69,15 @@ class MainActivity : ComponentActivity() {
             val actions = Actions(
                 onChangeRouteToHomeScreen = { isHome -> setIsHomeScreen(isHome) },
                 onChangeTopBarTitle = { title -> trainingViewModel.setAppBarTitle(title) },
+                onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(trainingProps.navController) },
+                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) },
+                onNavigateToHomeScreen = { navigateToHomeScreen(trainingProps.navController) },
+                onUpdateHomeScreenV2 = {
+                    trainingProps.prefs.setHomeScreenV2(
+                        this@MainActivity,
+                        it
+                    )
+                },
                 onDatabaseCreated = {
                     DatabaseCreationDone(
                         trainingProps.prefs,
@@ -76,14 +85,15 @@ class MainActivity : ComponentActivity() {
                         snackBarHostState,
                     )
                 },
-                onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(trainingProps.navController) },
-                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) },
-                onNavigateToHomeScreen = { navigateToHomeScreen(trainingProps.navController) }
             )
 
             with(trainingProps) {
                 setupInitialDatabase(prefs)
                 fetchInfoIfNotFirstInstall(prefs, trainings)
+                trainingViewModel.setHomeScreenV2(
+                    trainingProps.prefs.getHomeScreenV2(this@MainActivity)
+                )
+                trainingProps.prefs
             }
 
             MyWorkoutTheme {

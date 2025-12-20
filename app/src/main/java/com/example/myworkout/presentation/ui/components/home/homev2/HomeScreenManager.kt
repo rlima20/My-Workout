@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +23,7 @@ import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT_V2
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
+import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
 import com.example.myworkout.presentation.ui.components.commons.ToggleItem
 import com.example.myworkout.presentation.ui.components.home.HomeScreen
@@ -41,6 +41,7 @@ fun HomeScreenManager(
     viewModel: TrainingViewModel,
     muscleGroupViewModel: MuscleGroupViewModel,
     isHomeScreenV2: Boolean,
+    onHomeScreenV2: (value: Boolean) -> Unit
 ) {
 
     var innerHomeScreenV2 by remember { mutableStateOf(isHomeScreenV2) }
@@ -58,7 +59,11 @@ fun HomeScreenManager(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, end = 16.dp),
                 label = "Home 2.0",
                 selected = isHomeScreenV2,
-                onClick = { viewModel.setHomeScreenV2(!isHomeScreenV2) }
+                onClick = {
+                    val newValue = !isHomeScreenV2
+                    onHomeScreenV2(newValue)
+                    viewModel.setHomeScreenV2(newValue)
+                }
             )
         }
 
@@ -106,6 +111,7 @@ private fun HomeScreenPreview() {
         listOfDays = Constants().getListOfDays(),
         viewModel = TrainingViewModelFake(),
         muscleGroupViewModel = MuscleGroupViewModelFake(),
-        isHomeScreenV2 = true
+        onHomeScreenV2 = {},
+        isHomeScreenV2 = true,
     )
 }

@@ -18,7 +18,6 @@ import com.example.myworkout.extensions.defaultNavHostValues
 import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
-import com.example.myworkout.presentation.ui.activity.props.trainingProps
 import com.example.myworkout.presentation.ui.components.MuscleConfig
 import com.example.myworkout.presentation.ui.components.home.EmptyStateComponent
 import com.example.myworkout.presentation.ui.components.home.ErrorStateComponent
@@ -64,6 +63,7 @@ fun NavHost(
                 trainingViewState = trainingProps.viewState,
                 trainingProps = trainingProps,
                 onChangeRoute = actions.onChangeRouteToHomeScreen,
+                onHomeScreenV2 = { actions.onUpdateHomeScreenV2(it) },
                 onNavigateToNewTraining = {
                     actions.onNavigateToGroupSubgroup()
                     trainingViewModel.fetchTrainings()
@@ -157,6 +157,7 @@ private fun SetupTrainingStateObservers(
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     trainingViewState: TrainingViewState,
     trainingProps: TrainingProps,
+    onHomeScreenV2: (value: Boolean) -> Unit,
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
@@ -199,6 +200,7 @@ private fun SetupTrainingStateObservers(
                 viewModel = viewModel,
                 isHomeScreenV2 = trainingProps.isHomeScreenV2,
                 muscleGroupViewModel = muscleGroupViewModel,
+                onHomeScreenV2 = { onHomeScreenV2(it) }
             )
         }
     }
