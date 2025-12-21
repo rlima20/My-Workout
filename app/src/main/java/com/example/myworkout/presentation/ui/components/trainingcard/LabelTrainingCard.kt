@@ -18,7 +18,8 @@ fun LabelTrainingCard(
     fontSize: TextUnit = TextUnit.Unspecified,
     fontWeight: FontWeight? = null,
     fontFamily: FontFamily? = null,
-    textAlign: TextAlign? = null
+    textAlign: TextAlign? = null,
+    maxLines: Int = 1
 ) {
     Text(
         modifier = modifier,
@@ -27,7 +28,8 @@ fun LabelTrainingCard(
         fontSize = fontSize,
         fontWeight = fontWeight,
         fontFamily = fontFamily,
-        textAlign = textAlign
+        textAlign = textAlign,
+        maxLines = maxLines
     )
 }
 

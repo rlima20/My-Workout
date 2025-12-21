@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,14 +20,20 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -39,6 +46,8 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
+import com.example.myworkout.presentation.ui.components.commons.Divider
+import com.example.myworkout.presentation.ui.components.commons.FabSection
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
@@ -55,7 +64,14 @@ fun PagerScreen(
     muscleGroupViewModel: MuscleGroupViewModel,
     trainingCardProps: TrainingCardProps
 ) {
-    var myNotes by remember { mutableStateOf(Constants().emptyString()) }
+    var myNotes by remember { mutableStateOf(workout.first.myNotes) }
+    var editTextFocused by remember { mutableStateOf(false) }
+
+    with(workout.first.myNotes) {
+        LaunchedEffect(this) {
+            myNotes = workout.first.myNotes
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -64,13 +80,20 @@ fun PagerScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            LabelTrainingCard(
+                modifier = Modifier.padding(bottom = 8.dp),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = colorResource(R.color.title_color),
+                maxLines = 1,
+                text = workout.first.dayOfWeek.toPortugueseString(),
+            )
+        }
 
-        LabelTrainingCard(
-            text = workout.first.dayOfWeek.toPortugueseString(),
-            modifier = Modifier.padding(bottom = 8.dp),
-            color = colorResource(R.color.title_color),
-            fontSize = 20.sp
-        )
         TrainingCard(
             modifier = chooseModifier(trainingCardProps, Modifier),
             training = workout.first,
@@ -89,10 +112,37 @@ fun PagerScreen(
             }
         )
 
+        Divider()
+
         ScrollableTextCard(
+            modifier = Modifier.height(120.dp),
             text = myNotes,
-            onTextChange = { myNotes = it }
+            onTextChange = { myNotes = it },
+            onFocus = { editTextFocused = it }
         )
+
+        Row(
+            modifier = Modifier.padding(top = 8.dp),
+            horizontalArrangement = Arrangement.End
+        ) {
+            FabSection(
+                buttonName = stringResource(R.string.button_section_save_button),
+                enabled = editTextFocused,
+                onClick = {
+                    viewModel.updateTraining(
+                        TrainingModel(
+                            trainingId = workout.first.trainingId,
+                            status = workout.first.status,
+                            dayOfWeek = workout.first.dayOfWeek,
+                            trainingName = workout.first.trainingName,
+                            isChecked = workout.first.isChecked,
+                            myNotes = myNotes,
+                        )
+                    )
+                    editTextFocused = false
+                },
+            )
+        }
     }
 }
 
@@ -102,9 +152,11 @@ fun ScrollableTextCard(
     onTextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     hint: String = "Digite aqui...",
-    minHeight: Dp = 150.dp
+    minHeight: Dp = 150.dp,
+    onFocus: (focus: Boolean) -> Unit
 ) {
     val scrollState = rememberScrollState()
+    val focusRequester = remember { FocusRequester() }
 
     Column {
         Text(
@@ -113,7 +165,7 @@ fun ScrollableTextCard(
             fontWeight = FontWeight.SemiBold,
             color = colorResource(R.color.title_color),
             maxLines = 1,
-            text = "Minhas anotações"
+            text = stringResource(R.string.my_notes)
         )
 
         Card(
@@ -135,8 +187,10 @@ fun ScrollableTextCard(
                     onValueChange = onTextChange,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .verticalScroll(scrollState),
-                    textStyle = androidx.compose.ui.text.TextStyle(
+                        .verticalScroll(scrollState)
+                        .focusRequester(focusRequester)
+                        .onFocusChanged { focusState -> onFocus(focusState.isFocused) },
+                    textStyle = TextStyle(
                         fontSize = 16.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     ),

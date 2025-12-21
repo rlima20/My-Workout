@@ -82,4 +82,5 @@
     <string name="no_subgroup_found">Nenhum resultado encontrado</string>
     <string name="create_a_group">*Crie um grupo</string>
     <string name="inform_training">*Informe um nome para o treino</string>
+    <string name="my_notes">Minhas anotações</string>
 </resources>
