@@ -33,13 +33,14 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.Constants.Companion.SUB_GROUP_SECTION_BACKGROUND
 import com.example.myworkout.Constants.Companion.TRAINING_CARD_PADDING_BOTTOM
-import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_SHOULDER
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.SubGroupModel
@@ -49,14 +50,13 @@ import com.example.myworkout.enums.Status
 import com.example.myworkout.extensions.setBackGroundColor
 import com.example.myworkout.extensions.toDayOfWeek
 import com.example.myworkout.extensions.toPortugueseString
-import com.example.myworkout.extensions.trainingCardFilterChipListModifier
+import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
 import com.example.myworkout.presentation.ui.components.commons.AlertDialog
 import com.example.myworkout.presentation.ui.components.commons.CheckBox
 import com.example.myworkout.presentation.ui.components.commons.CustomDialog
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
 import com.example.myworkout.presentation.ui.components.commons.IconButton
-import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
-import com.example.myworkout.utils.Utils
+import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(35)
@@ -68,6 +68,7 @@ fun TrainingCard(
     training: TrainingModel,
     subGroups: List<SubGroupModel>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
+    trainingCardProps: TrainingCardProps,
     onUpdateTraining: (training: TrainingModel) -> Unit,
     onUpdateTrainingName: (value: String) -> Unit,
     onDeleteTraining: (training: TrainingModel) -> Unit,
@@ -130,7 +131,9 @@ fun TrainingCard(
                 dayOfWeek = training.dayOfWeek,
                 isChecked = isTrainingChecked
             )
-            if (status == Status.MISSED) { onClearSubGroups(training) }
+            if (status == Status.MISSED) {
+                onClearSubGroups(training)
+            }
             onUpdateTraining(training)
             setInitialStates()
         }
@@ -179,12 +182,10 @@ fun TrainingCard(
     )
 
     Card(
-        modifier = modifier
+        modifier = chooseModifier(trainingCardProps, modifier)
             .padding(bottom = TRAINING_CARD_PADDING_BOTTOM)
             .combinedClickable(
-                onClick = {
-                    showCustomDialog = false
-                },
+                onClick = { showCustomDialog = false },
                 onLongClick = {
                     dialogTitle = R.string.edit_training
                     showCustomDialog = true
@@ -203,31 +204,48 @@ fun TrainingCard(
         Column(modifier = Modifier.fillMaxWidth()) {
             SetTrainingName(
                 trainingName = training.trainingName,
-                status = training.status
+                height = trainingCardProps.topBarHeight,
+                status = training.status,
+                textSize = trainingCardProps.trainingNameFontSize
             )
-            SetSubGroupSection(
-                filterChipListModifier = filterChipListModifier,
-                training = training,
-                isEnabled = isEnabled,
-                subGroups = subGroups,
-                onUpdateSubGroup = { onUpdateSubGroup(it) }
-            )
-            SetCheckboxSection(
-                training = training,
-                onCheckTraining = {
-                    showCustomDialog = false
-                    isTrainingChecked = it
-                },
-                onChangeStatus = { status = it },
-                onChangeDialogText = { dialogText = it },
-                onChangeDialogTitle = { dialogTitle = it },
-                onShowDialog = {
-                    showCustomDialog = false
-                    showDialog = it
-                }
-            )
+            Column(
+                modifier = chooseModifier(trainingCardProps, Modifier),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                SetSubGroupSection(
+                    filterChipListModifier = filterChipListModifier,
+                    training = training,
+                    isEnabled = isEnabled,
+                    subGroups = subGroups,
+                    chipHeight = trainingCardProps.chipHeight,
+                    onUpdateSubGroup = { onUpdateSubGroup(it) }
+                )
+                SetCheckboxSection(
+                    training = training,
+                    onCheckTraining = {
+                        showCustomDialog = false
+                        isTrainingChecked = it
+                    },
+                    onChangeStatus = { status = it },
+                    onChangeDialogText = { dialogText = it },
+                    onChangeDialogTitle = { dialogTitle = it },
+                    onShowDialog = {
+                        showCustomDialog = false
+                        showDialog = it
+                    }
+                )
+            }
         }
     }
+}
+
+@Composable
+private fun chooseModifier(
+    trainingCardProps: TrainingCardProps,
+    modifier: Modifier
+): Modifier {
+    return if (trainingCardProps.cardHeight != null) modifier.height(trainingCardProps.cardHeight)
+    else modifier
 }
 
 @Composable
@@ -296,6 +314,7 @@ private fun SetCheckboxSection(
     onShowDialog: (value: Boolean) -> Unit
 ) {
     Row(
+        modifier = Modifier.padding(bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Absolute.SpaceBetween
     ) {
@@ -429,17 +448,22 @@ private fun DeleteAlertDialogSection(
 @Composable
 private fun SetTrainingName(
     trainingName: String,
-    status: Status
+    status: Status,
+    height: Dp,
+    textSize: TextUnit
 ) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .background(color = colorResource(status.setBackGroundColor()))
-            .height(TRAINING_NAME_MAX_HEIGHT)
+            .height(height)
             .fillMaxWidth(),
     ) {
-        if (status != Status.EMPTY) Text(trainingName)
+        if (status != Status.EMPTY) Text(
+            text = trainingName,
+            fontSize = textSize
+        )
     }
 }
 
@@ -447,6 +471,7 @@ private fun SetTrainingName(
 @Composable
 private fun SetSubGroupSection(
     filterChipListModifier: Modifier,
+    chipHeight: Dp,
     training: TrainingModel,
     isEnabled: Boolean,
     subGroups: List<SubGroupModel>,
@@ -459,10 +484,16 @@ private fun SetSubGroupSection(
     ) {
         if (training.status != Status.EMPTY) {
             FilterChipList(
-                modifier = filterChipListModifier.trainingCardFilterChipListModifier(),
+                modifier = filterChipListModifier
+                    .padding(
+                        start = DEFAULT_PADDING,
+                        end = DEFAULT_PADDING,
+                        top = DEFAULT_PADDING
+                    ),
                 backGroundColor = SUB_GROUP_SECTION_BACKGROUND,
                 orientation = HomeGrid,
                 orientationProps = HomeGridProps(
+                    chipHeight = chipHeight,
                     colors = Utils().selectableChipColors(),
                     listOfMuscleSubGroup = subGroups,
                     enabled = isEnabled,
@@ -491,6 +522,44 @@ fun TrainingCardPreview() {
                 subGroups = constants.newSubGroupsMock,
                 filterChipListModifier = Modifier,
                 listOfDays = Constants().getListOfDays(),
+                trainingCardProps = TrainingCardProps(
+                    modifier = Modifier,
+                    topBarHeight = 50.dp,
+                    chipHeight = 50.dp,
+                    cardHeight = null,
+                    trainingNameFontSize = 12.sp
+                ),
+                onUpdateTraining = {},
+                onUpdateTrainingName = {},
+                onDeleteTraining = {},
+                onUpdateSubGroup = {},
+                onClearSubGroups = {}
+            )
+        }
+    }
+}
+
+@RequiresApi(35)
+@Preview
+@Composable
+fun TrainingCardV2Preview() {
+    val constants = Constants()
+    val shoulder = TRAINING_NAME_SHOULDER
+    Column {
+        Status.values().forEach {
+            TrainingCard(
+                modifier = Modifier.padding(bottom = 4.dp),
+                training = constants.getTrainingMock(it, shoulder, DayOfWeek.MONDAY),
+                subGroups = constants.newSubGroupsMock,
+                filterChipListModifier = Modifier,
+                listOfDays = Constants().getListOfDays(),
+                trainingCardProps = TrainingCardProps(
+                    modifier = Modifier,
+                    topBarHeight = 50.dp,
+                    chipHeight = 50.dp,
+                    cardHeight = 400.dp,
+                    trainingNameFontSize = 12.sp
+                ),
                 onUpdateTraining = {},
                 onUpdateTrainingName = {},
                 onDeleteTraining = {},

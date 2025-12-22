@@ -498,6 +498,7 @@ class Constants {
         val FILTER_CHIP_LIST_PADDING_BOTTOM = 8.dp
         val TRAINING_CARD_PADDING_BOTTOM = 16.dp
         val TRAINING_NAME_MAX_HEIGHT = 30.dp
+        val TRAINING_NAME_MAX_HEIGHT_V2 = 50.dp
         val SUB_GROUP_SECTION_BACKGROUND = R.color.white
 
         // String values

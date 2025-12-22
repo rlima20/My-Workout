@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
@@ -87,6 +88,7 @@ data class GridMuscleGroupProps @OptIn(ExperimentalMaterialApi::class) construct
 ) : OrientationProps
 
 data class HomeGridProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val chipHeight: Dp,
     val colors: SelectableChipColors,
     val listOfMuscleSubGroup: List<SubGroupModel>,
     val enabled: Boolean = true,
@@ -179,10 +181,14 @@ object GridMuscleGroup : Orientation {
 object HomeGrid : Orientation {
     @OptIn(ExperimentalMaterialApi::class)
     @Composable
-    override fun Render(modifier: Modifier, props: OrientationProps) {
+    override fun Render(
+        modifier: Modifier,
+        props: OrientationProps
+    ) {
         props as HomeGridProps
         SetHomeGrid(
             modifier = modifier,
+            chipHeight = props.chipHeight,
             colors = props.colors,
             isEnabled = props.enabled,
             listOfMuscleSubGroup = props.listOfMuscleSubGroup,
@@ -268,7 +274,12 @@ private fun SetGridTraining(
         verticalArrangement = Arrangement.spacedBy(verticalSpacedBy)
     ) {
         listOfMuscleGroup.forEach { item ->
-            FilterChipTraining(colors, item, onItemClick)
+            FilterChipTraining(
+                modifier = modifier,
+                colors = colors,
+                item = item,
+                onItemClick = { onItemClick }
+            )
         }
     }
 }
@@ -361,6 +372,7 @@ fun SetGridMuscleGroup(
 @Composable
 private fun SetHomeGrid(
     modifier: Modifier,
+    chipHeight: Dp,
     colors: SelectableChipColors,
     isEnabled: Boolean,
     listOfMuscleSubGroup: List<SubGroupModel>,
@@ -375,10 +387,11 @@ private fun SetHomeGrid(
     ) {
         listOfMuscleSubGroup.forEach { item ->
             HomeFilterChip(
-                colors,
-                isEnabled,
-                item,
-                onItemClick
+                modifier = modifier.height(chipHeight),
+                colors = colors,
+                isEnabled = isEnabled,
+                item = item,
+                onItemClick = { onItemClick(it) }
             )
         }
     }
@@ -411,11 +424,13 @@ private fun FilterChip(
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 private fun FilterChipTraining(
+    modifier: Modifier = Modifier,
     colors: SelectableChipColors,
     item: MuscleGroupModel,
     onItemClick: (item: MuscleGroupModel) -> Unit,
 ) {
     FilterChip(
+        modifier = modifier,
         colors = colors,
         onClick = { onItemClick(item) },
         content = {
@@ -435,12 +450,14 @@ private fun FilterChipTraining(
 @Composable
 @OptIn(ExperimentalMaterialApi::class)
 private fun HomeFilterChip(
+    modifier: Modifier,
     colors: SelectableChipColors,
     isEnabled: Boolean,
     item: SubGroupModel,
     onItemClick: (item: SubGroupModel) -> Unit,
 ) {
     FilterChip(
+        modifier = modifier,
         colors = colors,
         selected = item.selected,
         enabled = true,

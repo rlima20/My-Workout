@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.myworkout.R
 
 @Composable
@@ -16,15 +17,26 @@ fun FabSection(
     buttonName: String = stringResource(R.string.next),
     onClick: () -> Unit
 ) {
-    Row(
-        horizontalArrangement = Arrangement.End,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        ExtendedFab(
-            modifier = Modifier.fillMaxWidth(),
-            icon = Icons.Default.ArrowForward,
-            text = buttonName,
-            onClick = { onClick() }
-        )
+    if (enabled) {
+        Row(
+            horizontalArrangement = Arrangement.End,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            ExtendedFab(
+                modifier = Modifier.fillMaxWidth(),
+                icon = Icons.Default.ArrowForward,
+                text = buttonName,
+                onClick = { onClick() }
+            )
+        }
     }
+}
+
+@Preview
+@Composable
+private fun FabSectionPreview() {
+    FabSection(
+        buttonName = stringResource(R.string.next),
+        onClick = {}
+    )
 }

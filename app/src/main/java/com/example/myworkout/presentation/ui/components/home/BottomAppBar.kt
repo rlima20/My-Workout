@@ -47,7 +47,7 @@ fun BottomAppBar(
     ) {
         BottomAppBar(
             modifier = Modifier
-                .height(56.dp)
+                .height(60.dp)
                 .fillMaxWidth(),
             containerColor = colorResource(R.color.top_bar_color),
             actions = {

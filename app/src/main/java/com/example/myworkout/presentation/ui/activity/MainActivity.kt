@@ -1,6 +1,7 @@
 package com.example.myworkout.presentation.ui.activity
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -30,7 +31,7 @@ import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
 import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
-import com.example.myworkout.presentation.ui.activity.props.trainingProps
+import com.example.myworkout.presentation.ui.activity.props.getTrainingProps
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
@@ -55,7 +56,7 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
+        window.statusBarColor = Color.TRANSPARENT
 
         WindowInsetsControllerCompat(window, window.decorView).apply {
             isAppearanceLightStatusBars = true
@@ -63,11 +64,20 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val snackBarHostState = remember { SnackbarHostState() }
-            val trainingProps = trainingProps(trainingViewModel)
+            val trainingProps = getTrainingProps(trainingViewModel)
             val muscleGroupProps = muscleGroupProps(muscleGroupViewModel)
             val actions = Actions(
                 onChangeRouteToHomeScreen = { isHome -> setIsHomeScreen(isHome) },
                 onChangeTopBarTitle = { title -> trainingViewModel.setAppBarTitle(title) },
+                onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(trainingProps.navController) },
+                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) },
+                onNavigateToHomeScreen = { navigateToHomeScreen(trainingProps.navController) },
+                onUpdateHomeScreenV2 = {
+                    trainingProps.prefs.setHomeScreenV2(
+                        this@MainActivity,
+                        it
+                    )
+                },
                 onDatabaseCreated = {
                     DatabaseCreationDone(
                         trainingProps.prefs,
@@ -75,14 +85,15 @@ class MainActivity : ComponentActivity() {
                         snackBarHostState,
                     )
                 },
-                onNavigateToGroupSubgroup = { navigateToNewTrainingScreen(trainingProps.navController) },
-                onNavigateToNewTraining = { navigateToNewTraining(trainingProps.navController) },
-                onNavigateToHomeScreen = { navigateToHomeScreen(trainingProps.navController) }
             )
 
             with(trainingProps) {
                 setupInitialDatabase(prefs)
                 fetchInfoIfNotFirstInstall(prefs, trainings)
+                trainingViewModel.setHomeScreenV2(
+                    trainingProps.prefs.getHomeScreenV2(this@MainActivity)
+                )
+                trainingProps.prefs
             }
 
             MyWorkoutTheme {
@@ -94,8 +105,8 @@ class MainActivity : ComponentActivity() {
                         appBarTitle = trainingProps.appBarTitle,
                         listOfDays = trainingProps.listOfDays,
                         navController = trainingProps.navController,
-                        prefs = trainingProps.prefs
-
+                        prefs = trainingProps.prefs,
+                        isHomeScreenV2 = trainingProps.isHomeScreenV2
                     ),
                     muscleGroupProps = MuscleGroupProps(
                         workouts = muscleGroupProps.workouts,
