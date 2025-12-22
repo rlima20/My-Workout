@@ -391,7 +391,7 @@ private fun SetHomeGrid(
                 colors = colors,
                 isEnabled = isEnabled,
                 item = item,
-                onItemClick = { onItemClick }
+                onItemClick = { onItemClick(it) }
             )
         }
     }
