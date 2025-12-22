@@ -26,7 +26,7 @@ data class TrainingProps(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun trainingProps(trainingViewModel: TrainingViewModel): TrainingProps {
+fun getTrainingProps(trainingViewModel: TrainingViewModel): TrainingProps {
     val trainings by trainingViewModel.trainings.collectAsState(listOf())
     val viewState by trainingViewModel.viewState.collectAsState()
     val isHomeScreen by trainingViewModel.isHomeScreen.collectAsState()

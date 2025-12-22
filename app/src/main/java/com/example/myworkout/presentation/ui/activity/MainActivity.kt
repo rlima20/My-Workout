@@ -31,7 +31,7 @@ import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
 import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
-import com.example.myworkout.presentation.ui.activity.props.trainingProps
+import com.example.myworkout.presentation.ui.activity.props.getTrainingProps
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
@@ -64,7 +64,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val snackBarHostState = remember { SnackbarHostState() }
-            val trainingProps = trainingProps(trainingViewModel)
+            val trainingProps = getTrainingProps(trainingViewModel)
             val muscleGroupProps = muscleGroupProps(muscleGroupViewModel)
             val actions = Actions(
                 onChangeRouteToHomeScreen = { isHome -> setIsHomeScreen(isHome) },

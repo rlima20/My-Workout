@@ -35,5 +35,8 @@ fun FabSection(
 @Preview
 @Composable
 private fun FabSectionPreview() {
-    FabSection(buttonName = "Salvar", onClick = {})
+    FabSection(
+        buttonName = stringResource(R.string.next),
+        onClick = {}
+    )
 }

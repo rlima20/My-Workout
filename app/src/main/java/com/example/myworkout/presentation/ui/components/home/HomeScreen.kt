@@ -25,7 +25,6 @@ import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.homeScreenCardPaddings
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
-import com.example.myworkout.presentation.ui.components.commons.ToggleItem
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel

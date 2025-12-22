@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +59,7 @@ fun HomeScreenManager(
         ) {
             ToggleItem(
                 modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, end = 16.dp),
-                label = "Home 2.0",
+                label = stringResource(R.string.home_2),
                 selected = isHomeScreenV2,
                 selectedColor = colorResource(R.color.button_color_2),
                 onClick = {
