@@ -278,7 +278,7 @@ private fun SetGridTraining(
                 modifier = modifier,
                 colors = colors,
                 item = item,
-                onItemClick = { onItemClick }
+                onItemClick = { onItemClick(it) }
             )
         }
     }

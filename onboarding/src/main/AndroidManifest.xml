@@ -12,7 +12,8 @@
             android:name=".ui.activity.OnboardingActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MyWorkout">
+            android:theme="@style/Theme.MyWorkout"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

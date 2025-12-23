@@ -103,7 +103,20 @@ fun PagerScreen(
             modifier = Modifier.height(120.dp),
             text = myNotes,
             onTextChange = { myNotes = it },
-            onFocus = { editTextFocused = it }
+            onFocus = { editTextFocused = it },
+            onOkClick = {
+                viewModel.updateTraining(
+                    TrainingModel(
+                        trainingId = workout.first.trainingId,
+                        status = workout.first.status,
+                        dayOfWeek = workout.first.dayOfWeek,
+                        trainingName = workout.first.trainingName,
+                        isChecked = workout.first.isChecked,
+                        myNotes = myNotes,
+                    )
+                )
+                editTextFocused = false
+            }
         )
 
         Row(
