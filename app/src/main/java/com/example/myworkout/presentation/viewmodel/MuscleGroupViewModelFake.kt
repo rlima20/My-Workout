@@ -63,6 +63,10 @@ class MuscleGroupUseCaseFake : MuscleGroupUseCase {
         TODO("Not yet implemented")
     }
 
+    override suspend fun deleteSubgroup(subgroup: MuscleSubGroupModel) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>) {
         TODO("Not yet implemented")
     }

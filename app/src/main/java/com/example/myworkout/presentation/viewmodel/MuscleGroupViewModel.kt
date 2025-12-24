@@ -300,6 +300,24 @@ open class MuscleGroupViewModel(
         }
     }
 
+    fun deleteSubgroup(subgroup: MuscleSubGroupModel) = viewModelScope.launch(dispatchers.IO) {
+        setLoadingState()
+        try {
+            useCase.deleteSubgroup(subgroup)
+
+            val jobs = listOf(
+                async { fetchMuscleSubGroups() },
+                // Todo - fetchNewSubgroups
+            )
+            // unselectMuscleGroup() Todo - Talvez fazer isso também
+            jobs.awaitAll()
+            // setSuccessDeleteGroup()
+            setSuccessState()
+        } catch (e: Exception) {
+            setErrorState(e.message.toString())
+        }
+    }
+
     private fun unselectMuscleGroup() {
         _objSelected.value = Pair(0, false)
     }

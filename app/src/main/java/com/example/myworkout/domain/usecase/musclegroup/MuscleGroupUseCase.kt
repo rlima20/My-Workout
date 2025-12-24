@@ -36,6 +36,7 @@ interface MuscleGroupUseCase {
     suspend fun getMuscleGroupsWithRelations(): List<MuscleGroupModel>
     suspend fun insertMuscleGroup(name: String, image: BodyPart): MuscleGroupModel
     suspend fun deleteGroup(group: MuscleGroupModel)
+    suspend fun deleteSubgroup(subgroup: MuscleSubGroupModel)
     suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>)
     suspend fun replaceRelationsForGroup(
         muscleGroupId: Int,

@@ -33,6 +33,7 @@ interface MuscleGroupRepository {
     fun updateNewSubGroup(subGroup: SubGroupModel)
     fun updateGroup(group: MuscleGroupModel)
     fun deleteGroup(group: MuscleGroupModel)
+    fun deleteSubgroup(subgroup: MuscleSubGroupModel)
     fun insertSubGroup(subGroup: SubGroupModel)
     fun fetchMuscleSubGroups()
     fun fetchSubGroups()
