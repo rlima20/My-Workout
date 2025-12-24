@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
+import com.example.myworkout.domain.mapper.toSubGroupWithoutSelection
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -182,13 +183,12 @@ fun MuscleConfig(
 
                 onConfirm = {
                     viewModel.updateSubGroup(it)
+                    viewModel.updateNewSubGroup(it.toSubGroupWithoutSelection())
                     showDialog = false
-                    // Todo - Aqui eu também tenho que alterar o newSubGroup
                 },
                 onDeleteSubgroup = {
                     viewModel.deleteSubgroup(it)
                     showDialog = false
-                    // Todo - Aqui eu também tenho que deletar o newSubGroup
                 }
             )
         }
@@ -519,18 +519,6 @@ private fun MuscleSubGroupSection(
             tintColor = colorResource(R.color.missed)
         )
     }
-
-//    FilterChipList(
-//        backGroundColor = R.color.white,
-//        orientation = Grid,
-//        orientationProps = GridProps(
-//            colors = Utils().selectableChipColors(),
-//            listOfMuscleSubGroup = muscleSubGroups,
-//            horizontalSpacedBy = 8.dp,
-//            verticalSpacedBy = 1.dp,
-//            onItemClick = { onAddMuscleSubGroup(it) }
-//        ),
-//    )
 
     FilterChipList(
         modifier = Modifier.fillMaxWidth(),

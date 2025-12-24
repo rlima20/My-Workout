@@ -90,9 +90,9 @@ data class GridMuscleGroupProps @OptIn(ExperimentalMaterialApi::class) construct
 data class GridMuscleSubGroupProps @OptIn(ExperimentalMaterialApi::class) constructor(
     val showDialog: Boolean,
     val listOfSubGroup: List<MuscleSubGroupModel>,
-    val onItemClick: (MuscleSubGroupModel) -> Unit,
-    val onConfirm: (MuscleSubGroupModel) -> Unit,
-    val onDeleteSubGroup: (MuscleSubGroupModel) -> Unit,
+    val onItemClick: (item: MuscleSubGroupModel) -> Unit,
+    val onConfirm: (item: MuscleSubGroupModel) -> Unit,
+    val onDeleteSubGroup: (item: MuscleSubGroupModel) -> Unit,
     val onShowDialog: (Boolean, Action) -> Unit,
 ) : OrientationProps
 
@@ -197,9 +197,9 @@ object GridSubGroup : Orientation {
             modifier = modifier,
             listOfSubGroup = props.listOfSubGroup,
             showDialog = props.showDialog,
-            onItemClick = { props.onItemClick },
-            onConfirm = { props.onConfirm },
-            onDeleteSubGroup = { props.onDeleteSubGroup },
+            onItemClick = { props.onItemClick(it) },
+            onConfirm = { props.onConfirm(it) },
+            onDeleteSubGroup = { props.onDeleteSubGroup(it) },
             onShowDialog = { value, action -> props.onShowDialog(value, action) },
         )
     }
@@ -211,10 +211,10 @@ fun SetGridSubGroup(
     modifier: Modifier = Modifier,
     showDialog: Boolean,
     listOfSubGroup: List<MuscleSubGroupModel>,
-    onItemClick: (MuscleSubGroupModel) -> Unit,
-    onConfirm: (MuscleSubGroupModel) -> Unit,
-    onDeleteSubGroup: (MuscleSubGroupModel) -> Unit,
-    onShowDialog: (Boolean, Action) -> Unit,
+    onItemClick: (item: MuscleSubGroupModel) -> Unit,
+    onConfirm: (item: MuscleSubGroupModel) -> Unit,
+    onDeleteSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    onShowDialog: (value: Boolean, action: Action) -> Unit,
 ) {
     FlowRow(
         modifier = modifier.fillMaxWidth(),

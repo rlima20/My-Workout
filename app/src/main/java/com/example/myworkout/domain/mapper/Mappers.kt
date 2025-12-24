@@ -76,6 +76,13 @@ fun MuscleSubGroupModel.toSubGroup(): SubGroupModel {
     )
 }
 
+fun MuscleSubGroupModel.toSubGroupWithoutSelection(): SubGroupModel {
+    return SubGroupModel(
+        id = this.id,
+        name = this.name,
+    )
+}
+
 fun List<MuscleSubGroupEntity?>.toListModel(): List<MuscleSubGroupModel> {
     return this.map {
         MuscleSubGroupModel(

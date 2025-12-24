@@ -1,12 +1,12 @@
 package com.example.myworkout.domain.room.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.training.homescreen.GroupSubGroupEntity
 import com.example.myworkout.domain.room.entity.training.homescreen.SubGroupEntity
 
@@ -29,6 +29,9 @@ interface SubGroupDao {
 
     @Query("DELETE FROM group_sub_group WHERE muscleGroupId = :muscleGroupId")
     suspend fun deleteByGroupId(muscleGroupId: Int)
+
+    @Delete
+    fun delete(subgroup: SubGroupEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(relations: List<GroupSubGroupEntity>)
