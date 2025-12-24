@@ -58,7 +58,7 @@ fun HomeScreenManager(
             horizontalArrangement = Arrangement.End,
         ) {
             ToggleItem(
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp, end = 16.dp),
+                modifier = Modifier.padding(top = 16.dp, bottom = 4.dp, end = 16.dp),
                 label = stringResource(R.string.home_2),
                 selected = isHomeScreenV2,
                 selectedColor = colorResource(R.color.button_color_2),

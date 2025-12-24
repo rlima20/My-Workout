@@ -129,7 +129,8 @@ fun TrainingCard(
                 status = status,
                 trainingName = training.trainingName,
                 dayOfWeek = training.dayOfWeek,
-                isChecked = isTrainingChecked
+                isChecked = isTrainingChecked,
+                myNotes = training.myNotes
             )
             if (status == Status.MISSED) {
                 onClearSubGroups(training)
