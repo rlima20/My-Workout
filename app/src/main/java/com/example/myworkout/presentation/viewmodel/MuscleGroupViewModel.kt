@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.MUSCLE_SUB_GROUP_NAMES
 import com.example.myworkout.domain.mapper.toGroupSubGroupModel
+import com.example.myworkout.domain.mapper.toSubGroup
 import com.example.myworkout.domain.model.GroupSubGroupModel
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
@@ -295,6 +296,23 @@ open class MuscleGroupViewModel(
             unselectMuscleGroup()
             jobs.awaitAll()
             setSuccessDeleteGroup()
+        } catch (e: Exception) {
+            setErrorState(e.message.toString())
+        }
+    }
+
+    fun deleteSubgroup(subgroup: MuscleSubGroupModel) = viewModelScope.launch(dispatchers.IO) {
+        setLoadingState()
+        try {
+            useCase.deleteSubgroup(subgroup)
+            useCase.deleteNewSubgroup(subgroup.toSubGroup())
+
+            val jobs = listOf(
+                async { fetchMuscleSubGroups() },
+                async { fetchSubGroupsInternal() }
+            )
+            jobs.awaitAll()
+            setSuccessState()
         } catch (e: Exception) {
             setErrorState(e.message.toString())
         }

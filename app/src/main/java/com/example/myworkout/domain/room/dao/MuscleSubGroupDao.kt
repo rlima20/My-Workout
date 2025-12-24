@@ -1,6 +1,7 @@
 package com.example.myworkout.domain.room.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -23,4 +24,7 @@ interface MuscleSubGroupDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateSubGroup(subGroup: MuscleSubGroupEntity)
+
+    @Delete
+    fun deleteSubgroup(subGroup: MuscleSubGroupEntity)
 }

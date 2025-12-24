@@ -87,6 +87,15 @@ data class GridMuscleGroupProps @OptIn(ExperimentalMaterialApi::class) construct
     val onShowDialog: (Boolean, Action) -> Unit,
 ) : OrientationProps
 
+data class GridMuscleSubGroupProps @OptIn(ExperimentalMaterialApi::class) constructor(
+    val showDialog: Boolean,
+    val listOfSubGroup: List<MuscleSubGroupModel>,
+    val onItemClick: (item: MuscleSubGroupModel) -> Unit,
+    val onConfirm: (item: MuscleSubGroupModel) -> Unit,
+    val onDeleteSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    val onShowDialog: (Boolean, Action) -> Unit,
+) : OrientationProps
+
 data class HomeGridProps @OptIn(ExperimentalMaterialApi::class) constructor(
     val chipHeight: Dp,
     val colors: SelectableChipColors,
@@ -175,6 +184,102 @@ object GridMuscleGroup : Orientation {
             onDeleteGroup = props.onDeleteGroup,
             onShowDialog = props.onShowDialog
         )
+    }
+}
+
+object GridSubGroup : Orientation {
+    @OptIn(ExperimentalMaterialApi::class)
+    @Composable
+    override fun Render(modifier: Modifier, props: OrientationProps) {
+        props as GridMuscleSubGroupProps
+
+        SetGridSubGroup(
+            modifier = modifier,
+            listOfSubGroup = props.listOfSubGroup,
+            showDialog = props.showDialog,
+            onItemClick = { props.onItemClick(it) },
+            onConfirm = { props.onConfirm(it) },
+            onDeleteSubGroup = { props.onDeleteSubGroup(it) },
+            onShowDialog = { value, action -> props.onShowDialog(value, action) },
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalLayoutApi::class)
+@Composable
+fun SetGridSubGroup(
+    modifier: Modifier = Modifier,
+    showDialog: Boolean,
+    listOfSubGroup: List<MuscleSubGroupModel>,
+    onItemClick: (item: MuscleSubGroupModel) -> Unit,
+    onConfirm: (item: MuscleSubGroupModel) -> Unit,
+    onDeleteSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    onShowDialog: (value: Boolean, action: Action) -> Unit,
+) {
+    FlowRow(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        listOfSubGroup.forEach { subgroup ->
+            val interactionSource = remember { MutableInteractionSource() }
+            val focusRequester = remember { FocusRequester() }
+            var name by remember(subgroup.name, showDialog) {
+                mutableStateOf(subgroup.name)
+            }
+
+            CustomSelectableChip(
+                modifier = Modifier,
+                text = subgroup.name,
+                selected = subgroup.selected,
+                enabled = true,
+                chipHeight = 36.dp,
+                textSize = 16.sp,
+                interactionSource = interactionSource,
+                onClick = { onItemClick(subgroup) },
+                onLongClick = {
+                    onShowDialog(
+                        true,
+                        Action.Edit(
+                            title = R.string.edit_group,
+                            onConfirm = {
+                                onConfirm(
+                                    subgroup.copy(name = name)
+                                )
+                            },
+                            content = {
+                                TextFieldComponent(
+                                    modifier = Modifier.padding(bottom = 16.dp),
+                                    text = name,
+                                    isSingleLine = true,
+                                    focusRequester = focusRequester,
+                                    onValueChange = { name = it },
+                                    enabled = true,
+                                    label = {
+                                        Text(
+                                            text = stringResource(R.string.training_name_string),
+                                            color = colorResource(R.color.title_color),
+                                            fontSize = 16.sp
+                                        )
+                                    }
+                                )
+                            }
+                        )
+                    )
+                },
+                onDoubledClick = {
+                    onShowDialog(
+                        true,
+                        Action.Delete(
+                            title = R.string.delete_group,
+                            onConfirm = { onDeleteSubGroup(subgroup) },
+                            content = { Text("Deseja deletar esse subgrupo?") }
+                        )
+                    )
+                }
+            )
+        }
     }
 }
 

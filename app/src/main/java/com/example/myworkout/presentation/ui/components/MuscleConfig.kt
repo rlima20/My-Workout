@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.DEFAULT_PADDING
 import com.example.myworkout.R
+import com.example.myworkout.domain.mapper.toSubGroupWithoutSelection
 import com.example.myworkout.domain.model.MuscleGroupModel
 import com.example.myworkout.domain.model.MuscleGroupMuscleSubGroupModel
 import com.example.myworkout.domain.model.MuscleSubGroupModel
@@ -49,10 +50,10 @@ import com.example.myworkout.presentation.ui.components.commons.TextFieldCompone
 import com.example.myworkout.presentation.ui.components.commons.TextIcon
 import com.example.myworkout.presentation.ui.components.commons.TwoOptionToggle
 import com.example.myworkout.presentation.ui.components.trainingcard.FilterChipList
-import com.example.myworkout.presentation.ui.components.trainingcard.Grid
 import com.example.myworkout.presentation.ui.components.trainingcard.GridMuscleGroup
 import com.example.myworkout.presentation.ui.components.trainingcard.GridMuscleGroupProps
-import com.example.myworkout.presentation.ui.components.trainingcard.GridProps
+import com.example.myworkout.presentation.ui.components.trainingcard.GridMuscleSubGroupProps
+import com.example.myworkout.presentation.ui.components.trainingcard.GridSubGroup
 import com.example.myworkout.presentation.ui.components.trainingcard.GridTraining
 import com.example.myworkout.presentation.ui.components.trainingcard.GridTrainingProps
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
@@ -177,7 +178,18 @@ fun MuscleConfig(
                     viewModel.sortAndFilterSubGroups()
                 },
                 query = innerQuery,
-                noResult = noResult
+                noResult = noResult,
+                showDialog = showDialog,
+
+                onConfirm = {
+                    viewModel.updateSubGroup(it)
+                    viewModel.updateNewSubGroup(it.toSubGroupWithoutSelection())
+                    showDialog = false
+                },
+                onDeleteSubgroup = {
+                    viewModel.deleteSubgroup(it)
+                    showDialog = false
+                }
             )
         }
         item {
@@ -320,6 +332,7 @@ private fun SubGroupsSelectionSection(
     selectedSort: String,
     query: String,
     noResult: Boolean,
+    showDialog: Boolean,
     onSearch: (text: String) -> Unit,
     onClear: () -> Unit,
     onShowDialog: (value: Boolean, action: Action) -> Unit,
@@ -327,6 +340,8 @@ private fun SubGroupsSelectionSection(
     onSaveRelation: (muscleGroupId: Int) -> Unit,
     onCreateNewSubgroup: (subGroupName: String) -> Unit,
     onSelectSort: (selectedSort: String) -> Unit,
+    onConfirm: (value: MuscleSubGroupModel) -> Unit,
+    onDeleteSubgroup: (value: MuscleSubGroupModel) -> Unit,
 ) {
     val constants = Constants()
     var newSubgroup by remember { mutableStateOf(constants.emptyString()) }
@@ -397,7 +412,11 @@ private fun SubGroupsSelectionSection(
                     onSearch = { onSearch(it) },
                     onClear = { onClear() },
                     onSelectSort = { onSelectSort(it) },
-                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) }
+                    onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
+                    showDialog = showDialog,
+                    onConfirm = { onConfirm(it) },
+                    onDeleteSubgroup = { onDeleteSubgroup(it) },
+                    onShowDialog = { value, action -> onShowDialog(value, action) }
                 )
             }
         }
@@ -451,6 +470,10 @@ private fun MuscleSubGroupSection(
     onClear: () -> Unit,
     onSelectSort: (selectedSort: String) -> Unit,
     onAddMuscleSubGroup: (item: MuscleSubGroupModel) -> Unit,
+    showDialog: Boolean,
+    onConfirm: (value: MuscleSubGroupModel) -> Unit,
+    onDeleteSubgroup: (value: MuscleSubGroupModel) -> Unit,
+    onShowDialog: (value: Boolean, action: Action) -> Unit,
 ) {
     var selectedSortInner by remember { mutableStateOf(selectedSort) }
     LaunchedEffect(selectedSort) { selectedSortInner = selectedSort }
@@ -478,7 +501,7 @@ private fun MuscleSubGroupSection(
     }
 
     CustomSearchBar(
-        modifier = Modifier.padding(bottom = 8.dp),
+        modifier = Modifier.padding(bottom = 16.dp),
         query = query,
         onValueChange = { onSearch(it) },
         onClear = { onClear() }
@@ -498,15 +521,17 @@ private fun MuscleSubGroupSection(
     }
 
     FilterChipList(
+        modifier = Modifier.fillMaxWidth(),
         backGroundColor = R.color.white,
-        orientation = Grid,
-        orientationProps = GridProps(
-            colors = Utils().selectableChipColors(),
-            listOfMuscleSubGroup = muscleSubGroups,
-            horizontalSpacedBy = 8.dp,
-            verticalSpacedBy = 1.dp,
-            onItemClick = { onAddMuscleSubGroup(it) }
-        ),
+        orientation = GridSubGroup,
+        orientationProps = GridMuscleSubGroupProps(
+            listOfSubGroup = muscleSubGroups,
+            showDialog = showDialog,
+            onItemClick = { onAddMuscleSubGroup(it) },
+            onConfirm = { onConfirm(it) },
+            onDeleteSubGroup = { onDeleteSubgroup(it) },
+            onShowDialog = { value, action -> onShowDialog(value, action) },
+        )
     )
 }
 

@@ -175,7 +175,8 @@ fun TrainingCard(
                     status = training.status,
                     trainingName = trainingNameInternal,
                     dayOfWeek = dayOfWeek.toDayOfWeek(),
-                    isChecked = training.isChecked
+                    isChecked = training.isChecked,
+                    myNotes = training.myNotes
                 )
             )
         }

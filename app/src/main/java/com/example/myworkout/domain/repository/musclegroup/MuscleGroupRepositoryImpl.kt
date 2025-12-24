@@ -224,6 +224,14 @@ class MuscleGroupRepositoryImpl(
         muscleGroupDao.deleteGroup(group.toEntity())
     }
 
+    override fun deleteSubgroup(subgroup: MuscleSubGroupModel) {
+        muscleSubGroupDao.deleteSubgroup(subgroup.toEntity())
+    }
+
+    override fun deleteNewSubgroup(subgroup: SubGroupModel) {
+        subGroupDao.delete(subgroup.toEntity())
+    }
+
     override fun insertSubGroup(subGroup: SubGroupModel) {
         subGroupDao.insert(subGroup.toEntity())
     }

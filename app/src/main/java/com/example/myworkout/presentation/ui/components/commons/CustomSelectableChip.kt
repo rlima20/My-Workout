@@ -21,6 +21,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myworkout.R
@@ -35,10 +37,12 @@ fun CustomSelectableChip(
     text: String,
     selected: Boolean,
     enabled: Boolean = true,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    chipHeight: Dp = 46.dp,
+    textSize: TextUnit = 18.sp,
     onClick: () -> Unit,
     onLongClick: () -> Unit,
     onDoubledClick: () -> Unit,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
 ) {
     val backgroundColor =
         if (selected) colorResource(id = R.color.button_color) else colorResource(id = R.color.empty)
@@ -47,7 +51,7 @@ fun CustomSelectableChip(
 
     Surface(
         modifier = modifier
-            .height(42.dp)
+            .height(chipHeight)
             .defaultMinSize(minWidth = 64.dp)
             .clip(RoundedCornerShape(20.dp))
             .combinedClickable(
@@ -75,7 +79,7 @@ fun CustomSelectableChip(
                 text = text,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                fontSize = 18.sp,
+                fontSize = textSize,
             )
         }
     }
