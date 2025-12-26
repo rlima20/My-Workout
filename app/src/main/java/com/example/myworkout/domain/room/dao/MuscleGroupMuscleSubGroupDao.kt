@@ -24,6 +24,12 @@ interface MuscleGroupMuscleSubGroupDao {
     @Query("DELETE FROM muscle_group_muscle_sub_group WHERE muscleGroupId = :muscleGroupId")
     suspend fun deleteByGroupId(muscleGroupId: Int)
 
+    @Query("DELETE FROM muscle_group_muscle_sub_group WHERE muscleSubGroupId = :muscleSubGroupId")
+    suspend fun deleteRelationMuscleSubGroup(muscleSubGroupId: Int)
+
+    @Query("DELETE FROM group_sub_group WHERE muscleSubGroupId = :muscleSubGroupId")
+    suspend fun deleteRelationSubGroup(muscleSubGroupId: Int)
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(relations: List<MuscleGroupMuscleSubGroupEntity>)
 
@@ -38,5 +44,11 @@ interface MuscleGroupMuscleSubGroupDao {
     ) {
         deleteByGroupId(muscleGroupId)
         insertAll(newRelations)
+    }
+
+    @Transaction
+    suspend fun deleteSingleRelation( muscleSubGroupId: Int) {
+        deleteRelationMuscleSubGroup(muscleSubGroupId)
+        deleteRelationSubGroup(muscleSubGroupId)
     }
 }

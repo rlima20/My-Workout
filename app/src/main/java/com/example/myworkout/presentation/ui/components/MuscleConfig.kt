@@ -186,8 +186,8 @@ fun MuscleConfig(
                     viewModel.updateNewSubGroup(it.toSubGroupWithoutSelection())
                     showDialog = false
                 },
-                onDeleteSubgroup = {
-                    viewModel.deleteSubgroup(it)
+                onDeleteSubgroup = { subgroup, groupSelectedId ->
+                    viewModel.deleteSubgroup(subgroup, groupSelectedId)
                     showDialog = false
                 }
             )
@@ -341,7 +341,10 @@ private fun SubGroupsSelectionSection(
     onCreateNewSubgroup: (subGroupName: String) -> Unit,
     onSelectSort: (selectedSort: String) -> Unit,
     onConfirm: (value: MuscleSubGroupModel) -> Unit,
-    onDeleteSubgroup: (value: MuscleSubGroupModel) -> Unit,
+    onDeleteSubgroup: (
+        value: MuscleSubGroupModel,
+        groupSelectedId: Int
+    ) -> Unit,
 ) {
     val constants = Constants()
     var newSubgroup by remember { mutableStateOf(constants.emptyString()) }
@@ -415,7 +418,7 @@ private fun SubGroupsSelectionSection(
                     onAddMuscleSubGroup = { onAddMuscleSubGroup(it) },
                     showDialog = showDialog,
                     onConfirm = { onConfirm(it) },
-                    onDeleteSubgroup = { onDeleteSubgroup(it) },
+                    onDeleteSubgroup = { onDeleteSubgroup(it, objSelected.first) },
                     onShowDialog = { value, action -> onShowDialog(value, action) }
                 )
             }

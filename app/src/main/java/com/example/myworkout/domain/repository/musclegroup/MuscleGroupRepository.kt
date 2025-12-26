@@ -17,6 +17,10 @@ interface MuscleGroupRepository {
     suspend fun getMuscleGroups(): List<MuscleGroupModel>
     fun insertMuscleGroup(muscleGroup: MuscleGroupModel)
     suspend fun deleteGroupCascade(group: MuscleGroupModel)
+    suspend fun deleteRelation(
+        muscleGroupId: Int,
+        muscleSubGroupId: Int
+    )
 
     // SubGroups
     suspend fun getMuscleSubGroups(): List<MuscleSubGroupModel>

@@ -301,22 +301,27 @@ open class MuscleGroupViewModel(
         }
     }
 
-    fun deleteSubgroup(subgroup: MuscleSubGroupModel) = viewModelScope.launch(dispatchers.IO) {
-        setLoadingState()
-        try {
-            useCase.deleteSubgroup(subgroup)
-            useCase.deleteNewSubgroup(subgroup.toSubGroup())
+    fun deleteSubgroup(subgroup: MuscleSubGroupModel, groupSelectedId: Int) =
+        viewModelScope.launch(dispatchers.IO) {
+            setLoadingState()
+            try {
+                useCase.deleteSubgroup(subgroup)
+                useCase.deleteNewSubgroup(subgroup.toSubGroup())
+                useCase.deleteRelation(
+                    muscleGroupId = groupSelectedId,
+                    muscleSubGroupId = subgroup.id
+                )
 
-            val jobs = listOf(
-                async { fetchMuscleSubGroups() },
-                async { fetchSubGroupsInternal() }
-            )
-            jobs.awaitAll()
-            setSuccessState()
-        } catch (e: Exception) {
-            setErrorState(e.message.toString())
+                val jobs = listOf(
+                    async { fetchMuscleSubGroups() },
+                    async { fetchSubGroupsInternal() }
+                )
+                jobs.awaitAll()
+                setSuccessState()
+            } catch (e: Exception) {
+                setErrorState(e.message.toString())
+            }
         }
-    }
 
     private fun unselectMuscleGroup() {
         _objSelected.value = Pair(0, false)

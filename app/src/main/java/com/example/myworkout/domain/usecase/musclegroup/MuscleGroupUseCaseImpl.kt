@@ -73,6 +73,16 @@ class MuscleGroupUseCaseImpl(
         repository.deleteNewSubgroup(subgroup)
     }
 
+    override suspend fun deleteRelation(
+        muscleGroupId: Int,
+        muscleSubGroupId: Int
+    ) {
+        repository.deleteRelation(
+            muscleGroupId = muscleGroupId,
+            muscleSubGroupId = muscleSubGroupId
+        )
+    }
+
     override suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>) {
         val updatedSubGroups = subGroups.map { it.copy(selected = false) }
         updatedSubGroups.forEach { updateSubGroup(it) }
