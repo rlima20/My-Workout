@@ -9,12 +9,12 @@ object HomeScreen : DestinationInterface {
     override val route = "home_screen"
 }
 
-object NewTraining : DestinationInterface {
+object MuscleConfig : DestinationInterface {
     override val icon = Icons.Filled.Add
     override val route = "new_training"
 }
 
-object New : DestinationInterface {
+object NewTraining : DestinationInterface {
     override val icon = Icons.Filled.Add
     override val route = "new"
 }

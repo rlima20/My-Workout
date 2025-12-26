@@ -35,8 +35,8 @@ import com.example.myworkout.presentation.ui.activity.props.getTrainingProps
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
 import com.example.myworkout.presentation.ui.navigation.NavHost
-import com.example.myworkout.presentation.ui.navigation.New
 import com.example.myworkout.presentation.ui.navigation.NewTraining
+import com.example.myworkout.presentation.ui.navigation.MuscleConfig
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
@@ -190,7 +190,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun navigateToNewTraining(navController: NavHostController) {
-        navController.navigateSingleTopTo(New.route)
+        navController.navigateSingleTopTo(NewTraining.route)
     }
 
     @Composable
@@ -226,7 +226,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun navigateToNewTrainingScreen(navController: NavHostController) {
-        navController.navigateSingleTopTo(NewTraining.route)
+        navController.navigateSingleTopTo(MuscleConfig.route)
     }
 
     private fun setIsHomeScreen(it: Boolean) {

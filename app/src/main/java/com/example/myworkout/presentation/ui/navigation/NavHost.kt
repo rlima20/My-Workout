@@ -73,7 +73,7 @@ fun NavHost(
             )
         }
 
-        composable(route = NewTraining.route) {
+        composable(route = MuscleConfig.route) {
             actions.onChangeRouteToHomeScreen(false)
             actions.onChangeTopBarTitle(muscleConfig)
 
@@ -98,7 +98,7 @@ fun NavHost(
             )
         }
 
-        composable(route = New.route) {
+        composable(route = NewTraining.route) {
             actions.onChangeRouteToHomeScreen(false)
             actions.onChangeTopBarTitle(newTrainingScreen)
             NewTraining(

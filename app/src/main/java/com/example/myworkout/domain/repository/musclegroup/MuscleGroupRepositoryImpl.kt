@@ -20,7 +20,6 @@ import com.example.myworkout.domain.room.dao.SubGroupDao
 import com.example.myworkout.domain.room.dao.TrainingMuscleGroupDao
 import com.example.myworkout.domain.room.entity.MuscleGroupMuscleSubGroupEntity
 import com.example.myworkout.domain.room.entity.TrainingMuscleGroupEntity
-import com.example.myworkout.domain.room.entity.training.homescreen.SubGroupEntity
 
 class MuscleGroupRepositoryImpl(
     private val muscleGroupDao: MuscleGroupDao,
@@ -33,6 +32,15 @@ class MuscleGroupRepositoryImpl(
 
     override suspend fun deleteGroupCascade(group: MuscleGroupModel) {
         muscleGroupDao.deleteMuscleGroupCascade(group.muscleGroupId)
+    }
+
+    override suspend fun deleteRelation(
+        muscleGroupId: Int,
+        muscleSubGroupId: Int
+    ) {
+        muscleGroupMuscleSubGroupDao.deleteSingleRelation(
+            muscleSubGroupId = muscleSubGroupId
+        )
     }
 
     override suspend fun getMuscleSubGroupsByTrainingId(trainingId: Int): List<MuscleSubGroupModel> {

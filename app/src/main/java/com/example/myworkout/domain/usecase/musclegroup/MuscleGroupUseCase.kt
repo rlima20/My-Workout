@@ -38,11 +38,17 @@ interface MuscleGroupUseCase {
     suspend fun deleteGroup(group: MuscleGroupModel)
     suspend fun deleteSubgroup(subgroup: MuscleSubGroupModel)
     suspend fun deleteNewSubgroup(subgroup: SubGroupModel)
+    suspend fun deleteRelation(
+        muscleGroupId: Int,
+        muscleSubGroupId: Int
+    )
+
     suspend fun clearSelectedMuscleSubGroups(subGroups: List<MuscleSubGroupModel>)
     suspend fun replaceRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<MuscleGroupMuscleSubGroupModel>
     )
+
     suspend fun replaceNewRelationsForGroup(
         muscleGroupId: Int,
         newRelations: List<GroupSubGroupModel>

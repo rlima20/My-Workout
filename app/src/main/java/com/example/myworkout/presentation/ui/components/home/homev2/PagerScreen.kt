@@ -97,8 +97,6 @@ fun PagerScreen(
             }
         )
 
-        Divider()
-
         ScrollableTextCard(
             modifier = Modifier.height(120.dp),
             text = myNotes,
