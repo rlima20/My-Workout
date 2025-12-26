@@ -8,5 +8,6 @@ data class CalorieGoalState(
     val tmb: Int = 0,
     val calorieGoal: Int = 0,
     val macros: MacroResult? = null,
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val error: String? = ""
 )

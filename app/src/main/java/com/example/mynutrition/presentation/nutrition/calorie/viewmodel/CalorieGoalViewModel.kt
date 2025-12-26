@@ -1,8 +1,5 @@
 package com.example.mynutrition.presentation.nutrition.calorie.viewmodel
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mynutrition.domain.model.enums.CalorieGoalType
@@ -11,6 +8,8 @@ import com.example.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.mynutrition.domain.usecase.CalculateTmbUseCase
 import com.example.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.mynutrition.presentation.nutrition.calorie.state.CalorieGoalState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CalorieGoalViewModel(
@@ -20,28 +19,39 @@ class CalorieGoalViewModel(
     private val macrosUseCase: CalculateMacrosUseCase
 ) : ViewModel() {
 
-    var state by mutableStateOf(CalorieGoalState())
-        private set
+    private val _uiState = MutableStateFlow(CalorieGoalState())
+    val uiState: StateFlow<CalorieGoalState> = _uiState
 
     init {
-        refresh()
+        load(CalorieGoalType.MAINTAIN)
     }
 
-    fun refresh(goal: CalorieGoalType = state.goalType) = viewModelScope.launch {
-        val info = getUserInfo() ?: return@launch
+    fun load(goal: CalorieGoalType) = viewModelScope.launch {
+        _uiState.value = _uiState.value.copy(isLoading = true)
+        try {
+            val info = getUserInfo() ?: run {
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = "Preencha suas informações primeiro"
+                )
+                return@launch
+            }
 
-        val tmb = tmbUseCase(info)
-        val goalKcal = calorieGoalUseCase(tmb, info.activityLevel, goal)
-        val macros = macrosUseCase(goalKcal)
+            val tmb = tmbUseCase(info)
+            val goalKcal = calorieGoalUseCase(tmb, info.activityLevel, goal)
+            val macros = macrosUseCase(goalKcal)
 
-        state = CalorieGoalState(
-            goalType = goal,
-            tmb = tmb,
-            calorieGoal = goalKcal,
-            macros = macros,
-            isLoading = false
-        )
+            _uiState.value = CalorieGoalState(
+                goalType = goal,
+                tmb = tmb,
+                calorieGoal = goalKcal,
+                macros = macros,
+                isLoading = false
+            )
+        } catch (t: Throwable) {
+            _uiState.value = _uiState.value.copy(isLoading = false, error = t.message)
+        }
     }
 
-    fun setGoal(goal: CalorieGoalType) = refresh(goal)
+    fun setGoal(goal: CalorieGoalType) = load(goal)
 }

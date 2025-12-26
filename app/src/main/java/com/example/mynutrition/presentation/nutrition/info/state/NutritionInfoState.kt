@@ -12,5 +12,6 @@ data class NutritionInfoState(
     val activity: ActivityLevel = ActivityLevel.MODERATE,
     val isEditing: Boolean = false,
     val isLoading: Boolean = false,
+    val error: String? = "",
     val success: Boolean = false
 )
