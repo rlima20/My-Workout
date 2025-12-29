@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.mynutrition.domain.model.UserInfo
+import com.example.mynutrition.domain.model.user.UserInfo
 import com.example.mynutrition.domain.model.enums.ActivityLevel
 import com.example.mynutrition.domain.model.enums.Sex
 import com.example.mynutrition.domain.usecase.GetUserInfoUseCase

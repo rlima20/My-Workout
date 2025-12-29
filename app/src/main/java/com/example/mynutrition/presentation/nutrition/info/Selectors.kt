@@ -1,4 +1,4 @@
-package com.example.mynutrition.presentation.nutrition.components
+package com.example.mynutrition.presentation.nutrition.info
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -21,7 +21,6 @@ import com.example.mynutrition.domain.model.enums.ActivityLevel
 import com.example.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.mynutrition.domain.model.enums.Sex
 
-// SexSelector (horizontal buttons)
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SexSelector(

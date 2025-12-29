@@ -1,4 +1,4 @@
-package com.example.mynutrition.domain.model
+package com.example.mynutrition.domain.model.user
 
 import com.example.mynutrition.domain.model.enums.ActivityLevel
 import com.example.mynutrition.domain.model.enums.Sex

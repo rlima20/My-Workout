@@ -13,8 +13,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.mynutrition.domain.model.enums.ActivityLevel
 import com.example.mynutrition.domain.model.enums.Sex
-import com.example.mynutrition.presentation.nutrition.components.ActivityLevelDropdown
-import com.example.mynutrition.presentation.nutrition.components.SexSelector
 import com.example.mynutrition.presentation.nutrition.info.state.NutritionInfoState
 
 @Composable

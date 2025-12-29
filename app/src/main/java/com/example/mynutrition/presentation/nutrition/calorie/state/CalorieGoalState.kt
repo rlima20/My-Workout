@@ -1,6 +1,6 @@
 package com.example.mynutrition.presentation.nutrition.calorie.state
 
-import com.example.mynutrition.domain.model.MacroResult
+import com.example.mynutrition.domain.model.macro.MacroResult
 import com.example.mynutrition.domain.model.enums.CalorieGoalType
 
 data class CalorieGoalState(

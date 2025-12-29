@@ -1,4 +1,4 @@
-package com.example.mynutrition.domain.model
+package com.example.mynutrition.domain.model.macro
 
 data class MacroResult(
     val carbsGrams: Int,

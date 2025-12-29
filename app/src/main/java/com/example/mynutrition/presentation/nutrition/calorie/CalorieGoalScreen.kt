@@ -10,11 +10,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.mynutrition.domain.model.MacroResult
+import com.example.mynutrition.domain.model.macro.MacroResult
 import com.example.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.mynutrition.presentation.nutrition.calorie.state.CalorieGoalState
-import com.example.mynutrition.presentation.nutrition.components.GoalToggle
-import com.example.mynutrition.presentation.nutrition.components.MacroCard
+import com.example.mynutrition.presentation.nutrition.info.GoalToggle
 
 @Composable
 fun CalorieGoalScreen(

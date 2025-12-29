@@ -23,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.mynutrition.presentation.nutrition.components.NutritionCard
 import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.SubGroupModel
@@ -60,11 +61,17 @@ fun PagerScreen(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        NutritionCard(
+            circularIndicatorSize = 70.dp,
+            circularStrokeWidth = 7.dp,
+            kcalTextSize = 12.sp
+        )
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start

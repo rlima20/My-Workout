@@ -1,6 +1,6 @@
 package com.example.mynutrition.domain.usecase
 
-import com.example.mynutrition.domain.model.MacroResult
+import com.example.mynutrition.domain.model.macro.MacroResult
 
 class CalculateMacrosUseCase {
 

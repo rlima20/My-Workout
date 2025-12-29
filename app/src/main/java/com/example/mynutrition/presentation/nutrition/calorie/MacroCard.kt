@@ -1,4 +1,4 @@
-package com.example.mynutrition.presentation.nutrition.components
+package com.example.mynutrition.presentation.nutrition.calorie
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -8,6 +8,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -19,4 +20,10 @@ fun MacroCard(title: String, grams: Int, kcal: Int, modifier: Modifier = Modifie
             Text(text = "$kcal kcal")
         }
     }
+}
+
+@Composable
+@Preview
+private fun MacroCardPreview(){
+    MacroCard(title = "Title", grams = 10, kcal = 10)
 }
