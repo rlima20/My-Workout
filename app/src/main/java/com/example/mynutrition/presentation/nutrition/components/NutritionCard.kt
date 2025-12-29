@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -27,6 +29,7 @@ import com.example.mynutrition.domain.model.macro.Colors
 import com.example.mynutrition.domain.model.macro.MacroUiModel
 import com.example.myworkout.R
 import com.example.myworkout.presentation.ui.components.commons.Divider
+import com.example.myworkout.presentation.ui.components.commons.FabSection
 import com.example.myworkout.utils.Utils
 
 
@@ -46,25 +49,39 @@ fun NutritionCard(
         ) {
         Column {
             Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 8.dp, start = 16.dp)
             ) {
-                TextInfo(
-                    modifier = Modifier.padding(end = 8.dp),
-                    text = "TBM:",
-                    icon = painterResource(R.drawable.baseline_info_24),
-                    onIconClick = {}
-                )
+                Row() {
+                    TextInfo(
+                        modifier = Modifier.padding(end = 8.dp),
+                        text = "TBM:",
+                        icon = painterResource(R.drawable.baseline_info_24),
+                        onIconClick = {}
+                    )
 
-                Text(
-                    modifier = Modifier.padding(bottom = 4.dp),
-                    text = "1200 Kcal",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colorResource(R.color.title_color),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                    Text(
+                        text = "1200 Kcal",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(R.color.title_color),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
+
+                Row() {
+                    FabSection(
+                        modifier = Modifier
+                            .padding(bottom = 6.dp, end = 16.dp)
+                            .size(120.dp, 25.dp),
+                        enabled = true,
+                        buttonName = "Recalcular",
+                        onClick = {}
+                    )
+                }
             }
 
             Divider()
@@ -73,7 +90,7 @@ fun NutritionCard(
                 modifier = Modifier.padding(top = 8.dp, start = 16.dp),
                 fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.SemiBold,
-                color = colorResource(R.color.text_color),
+                color = colorResource(R.color.title_color),
                 text = stringResource(R.string.macro_division)
             )
             val totalCalories = 1000

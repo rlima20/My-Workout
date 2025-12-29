@@ -22,7 +22,7 @@ import com.example.myworkout.R
 @Composable
 fun ExtendedFab(
     modifier: Modifier = Modifier,
-    icon: ImageVector,
+    icon: ImageVector?,
     text: String,
     pressedColor: Int = R.color.text_color,
     defaultColor: Int = R.color.button_color,
@@ -36,7 +36,7 @@ fun ExtendedFab(
     ExtendedFloatingActionButton(
         onClick = { onClick() },
         modifier = modifier,
-        icon = { Icon(icon, contentDescription) },
+        icon = { icon?.let { Icon(icon, contentDescription)} },
         text = { Text(text = text) },
         containerColor = color(isPressed, pressedColor, defaultColor),
         contentColor = colorResource(contentColor),
