@@ -131,7 +131,8 @@ fun NewTraining(
                 )
                 Tooltip(
                     text = stringResource(R.string.all_days_used),
-                    enabled = trainingsQuantity > maxDaysQuantity
+                    enabled = trainingsQuantity > maxDaysQuantity,
+                    onClick = {}
                 )
             }
         )

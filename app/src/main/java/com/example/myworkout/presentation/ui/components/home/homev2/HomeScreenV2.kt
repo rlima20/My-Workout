@@ -13,20 +13,14 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.myworkout.Constants
-import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT_V2
 import com.example.myworkout.domain.model.SubGroupModel
 import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
-import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModelFake
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
-import com.example.myworkout.presentation.viewmodel.TrainingViewModelFake
 import com.example.onboarding.ui.Components.DotIndicator
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -42,8 +36,7 @@ fun HomeScreenV2(
     muscleGroupViewModel: MuscleGroupViewModel,
     trainingCardProps: TrainingCardProps
 ) {
-    var initialPage = getIndex(workouts)
-    initialPage = setIndex(workouts, initialPage)
+    val initialPage = rememberInitialPage(workouts)
 
     val pagerState = rememberPagerState(
         initialPage = initialPage,
@@ -55,11 +48,13 @@ fun HomeScreenV2(
     }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
     ) {
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
         ) { pageIndex ->
             PagerScreen(
                 workout = workouts[pageIndex],
@@ -73,11 +68,13 @@ fun HomeScreenV2(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 80.dp),
+                .padding(top = 16.dp, bottom = 80.dp),
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(workouts.size) { index ->
-                DotIndicator(isSelected = pagerState.currentPage == index)
+                DotIndicator(
+                    isSelected = pagerState.currentPage == index
+                )
             }
         }
     }
@@ -85,56 +82,19 @@ fun HomeScreenV2(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-private fun setIndex(
-    workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
-    initialPage: Int
+private fun rememberInitialPage(
+    workouts: List<Pair<TrainingModel, List<SubGroupModel>>>
 ): Int {
-    var innerInitialPage = initialPage
-    workouts.forEachIndexed { index, workout ->
-        val dayOfWeek = workout.first.dayOfWeek.toPortugueseString().lowercase()
-        if (dayOfWeek == getCurrentDayOfWeek()) {
-            innerInitialPage = index
-        }
-    }
-    return innerInitialPage
+    val currentDay = getCurrentDayOfWeek()
+
+    return workouts.indexOfFirst {
+        it.first.dayOfWeek.toPortugueseString().lowercase() == currentDay
+    }.takeIf { it >= 0 } ?: 0
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun getIndex(workouts: List<Pair<TrainingModel, List<SubGroupModel>>>): Int {
-    var initialPage = 0
-
-    workouts.forEachIndexed { index, workout ->
-        val dayOfWeek = workout.first.dayOfWeek.toPortugueseString().lowercase()
-        if (dayOfWeek == getCurrentDayOfWeek()) {
-            initialPage = index
-        }
-    }
-
-    return initialPage
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-private fun getCurrentDayOfWeek(): String = LocalDate.now()
-    .dayOfWeek
-    .getDisplayName(TextStyle.FULL, Locale("pt", "BR"))
-    .substringBefore("-")
-
-@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
-@Composable
-@Preview
-private fun HomeScreenPreviewV2() {
-    HomeScreenV2(
-        modifier = Modifier,
-        muscleGroupViewModel = MuscleGroupViewModelFake(),
-        viewModel = TrainingViewModelFake(),
-        listOfDays = Constants().getListOfDays(),
-        workouts = Constants().getNewTrainingAndSubGroupsHomeScreenMock(),
-        trainingCardProps = TrainingCardProps(
-            modifier = Modifier,
-            topBarHeight = TRAINING_NAME_MAX_HEIGHT_V2,
-            chipHeight = 50.dp,
-            cardHeight = 800.dp,
-            trainingNameFontSize = 16.sp
-        )
-    )
-}
+private fun getCurrentDayOfWeek(): String =
+    LocalDate.now()
+        .dayOfWeek
+        .getDisplayName(TextStyle.FULL, Locale("pt", "BR"))
+        .substringBefore("-")

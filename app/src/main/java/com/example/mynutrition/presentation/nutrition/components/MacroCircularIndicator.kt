@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import com.example.mynutrition.domain.model.enums.MacroType
 import com.example.mynutrition.domain.model.macro.Colors
 import com.example.mynutrition.domain.model.macro.MacroUiModel
-import com.example.mynutrition.extensions.grams
 import com.example.myworkout.R
 
 @Composable
@@ -61,7 +60,7 @@ fun MacroCircularIndicator(
                 CircularProgressIndicator(
                     progress = { progress },
                     strokeWidth = circularStrokeWidth,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = colorResource(R.color.button_color),
                     trackColor = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -70,7 +69,7 @@ fun MacroCircularIndicator(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        color = colorResource(colors.calorieTextColor),
+                        color = colorResource(R.color.title_color),
                         text = stringResource(R.string.kcal, macro.kcal),
                         fontSize = kcalTextSize,
                         style = MaterialTheme.typography.titleMedium,
@@ -78,7 +77,7 @@ fun MacroCircularIndicator(
                     )
 
                     Text(
-                        text = stringResource(R.string.g, macro.grams()),
+                        text = stringResource(R.string.g, macro.grams),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -109,7 +108,8 @@ fun MacroCircularIndicatorProteinPreview() {
             macro = MacroUiModel(
                 name = stringResource(R.string.proteins),
                 type = MacroType.PROTEIN,
-                kcal = 250
+                kcal = 250,
+                grams = 50
             ),
             totalCalories = 1000
         )
@@ -137,7 +137,8 @@ fun MacroCircularIndicatorsAllPreview() {
                 macro = MacroUiModel(
                     name = stringResource(R.string.carbs),
                     type = MacroType.CARBS,
-                    kcal = 250
+                    kcal = 250,
+                    grams = 50
                 ),
                 totalCalories = totalCalories
             )
@@ -151,7 +152,8 @@ fun MacroCircularIndicatorsAllPreview() {
                 macro = MacroUiModel(
                     name = stringResource(R.string.proteins),
                     type = MacroType.PROTEIN,
-                    kcal = 250
+                    kcal = 250,
+                    grams = 50
                 ),
                 totalCalories = totalCalories
             )
@@ -165,7 +167,8 @@ fun MacroCircularIndicatorsAllPreview() {
                 macro = MacroUiModel(
                     name = stringResource(R.string.fats),
                     type = MacroType.FAT,
-                    kcal = 250
+                    kcal = 250,
+                    grams = 50
                 ),
                 totalCalories = totalCalories
             )
@@ -179,7 +182,8 @@ fun MacroCircularIndicatorsAllPreview() {
                 macro = MacroUiModel(
                     name = stringResource(R.string.fibers),
                     type = MacroType.FIBER,
-                    kcal = 250
+                    kcal = 250,
+                    grams = 50
                 ),
                 totalCalories = totalCalories
             )

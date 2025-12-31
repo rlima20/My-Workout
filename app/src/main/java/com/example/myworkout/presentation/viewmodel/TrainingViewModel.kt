@@ -44,11 +44,18 @@ open class TrainingViewModel(
     private val _trainingName = MutableStateFlow("")
     val trainingName: StateFlow<String> = _trainingName
 
+    private val _showNutritionCard = MutableStateFlow(false)
+    val showNutritionCard: StateFlow<Boolean> = _showNutritionCard
+
     private val _listOfDays = MutableStateFlow(
         listOf(
             Pair(DayOfWeek.SATURDAY, true)
         )
     )
+
+    fun setShowNutritionCard(value: Boolean){
+        _showNutritionCard.value = value
+    }
 
     fun setHomeScreenV2 (value: Boolean){
         _isHomeScreenV2.value = value

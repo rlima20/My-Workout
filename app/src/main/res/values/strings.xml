@@ -93,4 +93,6 @@
     <string name="proteins">Proteínas</string>
     <string name="carbs">Carboidratos</string>
     <string name="macro_division">Divisão ideal de macronutrientes</string>
+    <string name="recalculate">Recalcular</string>
+    <string name="nutrition_info_call">Descubra quantas calorias seu corpo precisa por dia. \nGanhe, mantenha ou perca peso com base no seu metabolismo. Clique aqui.</string>
 </resources>

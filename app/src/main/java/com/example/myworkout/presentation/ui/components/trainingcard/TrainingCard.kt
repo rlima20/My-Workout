@@ -56,7 +56,8 @@ import com.example.myworkout.presentation.ui.components.commons.CheckBox
 import com.example.myworkout.presentation.ui.components.commons.CustomDialog
 import com.example.myworkout.presentation.ui.components.commons.DropdownItem
 import com.example.myworkout.presentation.ui.components.commons.IconButton
-import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent import com.example.myworkout.utils.Utils
+import com.example.myworkout.presentation.ui.components.commons.TextFieldComponent
+import com.example.myworkout.utils.Utils
 
 @OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(35)
@@ -184,7 +185,7 @@ fun TrainingCard(
     )
 
     Card(
-        modifier = chooseModifier(trainingCardProps, modifier)
+        modifier = modifier
             .padding(bottom = TRAINING_CARD_PADDING_BOTTOM)
             .combinedClickable(
                 onClick = { showCustomDialog = false },

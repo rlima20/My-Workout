@@ -85,6 +85,12 @@ class MainActivity : ComponentActivity() {
                         snackBarHostState,
                     )
                 },
+                onSetNutritionCard = {
+                    trainingProps.prefs.setShowNutritionCard(this@MainActivity, it)
+                    trainingViewModel.setShowNutritionCard(
+                        trainingProps.prefs.getShowNutritionCard(this@MainActivity)
+                    )
+                }
             )
 
             with(trainingProps) {
@@ -92,6 +98,9 @@ class MainActivity : ComponentActivity() {
                 fetchInfoIfNotFirstInstall(prefs, trainings)
                 trainingViewModel.setHomeScreenV2(
                     trainingProps.prefs.getHomeScreenV2(this@MainActivity)
+                )
+                trainingViewModel.setShowNutritionCard(
+                    trainingProps.prefs.getShowNutritionCard(this@MainActivity)
                 )
                 trainingProps.prefs
             }
@@ -106,7 +115,8 @@ class MainActivity : ComponentActivity() {
                         listOfDays = trainingProps.listOfDays,
                         navController = trainingProps.navController,
                         prefs = trainingProps.prefs,
-                        isHomeScreenV2 = trainingProps.isHomeScreenV2
+                        isHomeScreenV2 = trainingProps.isHomeScreenV2,
+                        showNutritionCard = trainingProps.showNutritionCard,
                     ),
                     muscleGroupProps = MuscleGroupProps(
                         workouts = muscleGroupProps.workouts,

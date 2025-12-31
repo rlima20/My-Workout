@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -14,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,21 +26,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mynutrition.domain.model.enums.MacroType
 import com.example.mynutrition.domain.model.macro.Colors
+import com.example.mynutrition.domain.model.macro.MacroResult
 import com.example.mynutrition.domain.model.macro.MacroUiModel
+import com.example.mynutrition.domain.model.nutrition.NutritionResult
 import com.example.myworkout.R
 import com.example.myworkout.presentation.ui.components.commons.Divider
-import com.example.myworkout.presentation.ui.components.commons.FabSection
 import com.example.myworkout.utils.Utils
 
 
 @Composable
 fun NutritionCard(
-    circularIndicatorSize: Dp,
+    modifier: Modifier = Modifier,
     circularStrokeWidth: Dp,
-    kcalTextSize: TextUnit
+    kcalTextSize: TextUnit,
+    nutritionResult: NutritionResult
 ) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(bottom = 16.dp),
         colors = Utils().buttonSectionCardsColors(),
         shape = CardDefaults.elevatedShape,
         border = BorderStroke(1.dp, colorResource(R.color.border_color)),
@@ -48,127 +52,152 @@ fun NutritionCard(
 
         ) {
         Column {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp, start = 16.dp)
-            ) {
-                Row() {
-                    TextInfo(
-                        modifier = Modifier.padding(end = 8.dp),
-                        text = "TBM:",
-                        icon = painterResource(R.drawable.baseline_info_24),
-                        onIconClick = {}
-                    )
-
-                    Text(
-                        text = "1200 Kcal",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colorResource(R.color.title_color),
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-
-                Row() {
-                    FabSection(
-                        modifier = Modifier
-                            .padding(bottom = 6.dp, end = 16.dp)
-                            .size(120.dp, 25.dp),
-                        enabled = true,
-                        buttonName = "Recalcular",
-                        onClick = {}
-                    )
-                }
-            }
-
+            TbmInfo(tmb = nutritionResult.tmb)
             Divider()
-
-            Text(
-                modifier = Modifier.padding(top = 8.dp, start = 16.dp),
-                fontFamily = FontFamily.SansSerif,
-                fontWeight = FontWeight.SemiBold,
-                color = colorResource(R.color.title_color),
-                text = stringResource(R.string.macro_division)
+            MacroDivisionInfo(
+                kcalTextSize,
+                circularSize(),
+                circularStrokeWidth,
+                nutritionResult.macros
             )
-            val totalCalories = 1000
-
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .padding(
-                        start = 16.dp,
-                        top = 4.dp, end = 16.dp, bottom = 8.dp
-                    )
-                    .fillMaxWidth()
-            ) {
-                MacroCircularIndicator(
-                    kcalTextSize = kcalTextSize,
-                    circularIndicatorSize = circularIndicatorSize,
-                    circularStrokeWidth = circularStrokeWidth,
-                    macro = MacroUiModel(
-                        name = "Carboidratos",
-                        type = MacroType.CARBS,
-                        kcal = 250
-                    ),
-                    totalCalories = totalCalories,
-                    colors = Colors(
-                        calorieTextColor = R.color.text_color,
-                        macroTextColor = R.color.text_color
-                    ),
-                )
-
-                MacroCircularIndicator(
-                    kcalTextSize = kcalTextSize,
-                    circularIndicatorSize = circularIndicatorSize,
-                    circularStrokeWidth = circularStrokeWidth,
-                    colors = Colors(
-                        calorieTextColor = R.color.text_color,
-                        macroTextColor = R.color.text_color
-                    ),
-                    macro = MacroUiModel(
-                        name = "Proteínas",
-                        type = MacroType.PROTEIN,
-                        kcal = 250
-                    ),
-                    totalCalories = totalCalories
-                )
-
-                MacroCircularIndicator(
-                    kcalTextSize = kcalTextSize,
-                    circularIndicatorSize = circularIndicatorSize,
-                    circularStrokeWidth = circularStrokeWidth,
-                    colors = Colors(
-                        calorieTextColor = R.color.text_color,
-                        macroTextColor = R.color.text_color
-                    ),
-                    macro = MacroUiModel(
-                        name = "Gorduras",
-                        type = MacroType.FAT,
-                        kcal = 250
-                    ),
-                    totalCalories = totalCalories
-                )
-
-                MacroCircularIndicator(
-                    kcalTextSize = kcalTextSize,
-                    circularIndicatorSize = circularIndicatorSize,
-                    circularStrokeWidth = circularStrokeWidth,
-                    colors = Colors(
-                        calorieTextColor = R.color.text_color,
-                        macroTextColor = R.color.text_color
-                    ),
-                    macro = MacroUiModel(
-                        name = "Fibras",
-                        type = MacroType.FIBER,
-                        kcal = 250
-                    ),
-                    totalCalories = totalCalories
-                )
-            }
         }
+    }
+}
+
+@Composable
+private fun circularSize(): Dp {
+    val paddingStart = 16
+    val paddingEnd = 16
+    val spaceBetween = 48
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
+    val size: Int = (screenWidthDp - paddingStart - paddingEnd - spaceBetween) / 4
+    return size.dp
+}
+
+@Composable
+private fun MacroDivisionInfo(
+    kcalTextSize: TextUnit,
+    circularIndicatorSize: Dp,
+    circularStrokeWidth: Dp,
+    macroResult: MacroResult
+) {
+    Text(
+        modifier = Modifier.padding(top = 8.dp, start = 16.dp),
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        color = colorResource(R.color.title_color),
+        text = stringResource(R.string.macro_division)
+    )
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .padding(
+                start = 16.dp,
+                top = 4.dp,
+                end = 16.dp,
+                bottom = 8.dp
+            )
+            .fillMaxWidth()
+    ) {
+        MacroCircularIndicator(
+            kcalTextSize = kcalTextSize,
+            circularIndicatorSize = circularIndicatorSize,
+            circularStrokeWidth = circularStrokeWidth,
+            macro = MacroUiModel(
+                name = stringResource(R.string.carbs),
+                type = MacroType.CARBS,
+                kcal = macroResult.carbsKcal,
+                grams = macroResult.carbsGrams
+            ),
+            colors = Colors(
+                calorieTextColor = R.color.text_color,
+                macroTextColor = R.color.text_color
+            ),
+            totalCalories = getTotalCalories(macroResult)
+        )
+
+        MacroCircularIndicator(
+            kcalTextSize = kcalTextSize,
+            circularIndicatorSize = circularIndicatorSize,
+            circularStrokeWidth = circularStrokeWidth,
+            colors = Colors(
+                calorieTextColor = R.color.text_color,
+                macroTextColor = R.color.text_color
+            ),
+            macro = MacroUiModel(
+                name = stringResource(R.string.proteins),
+                type = MacroType.PROTEIN,
+                kcal = 250,
+                grams = macroResult.proteinsGrams
+            ),
+            totalCalories = getTotalCalories(macroResult)
+        )
+
+        MacroCircularIndicator(
+            kcalTextSize = kcalTextSize,
+            circularIndicatorSize = circularIndicatorSize,
+            circularStrokeWidth = circularStrokeWidth,
+            colors = Colors(
+                calorieTextColor = R.color.text_color,
+                macroTextColor = R.color.text_color
+            ),
+            macro = MacroUiModel(
+                name = stringResource(R.string.fats),
+                type = MacroType.FAT,
+                kcal = 250,
+                grams = macroResult.fatsGrams
+            ),
+            totalCalories = getTotalCalories(macroResult)
+        )
+
+        MacroCircularIndicator(
+            kcalTextSize = kcalTextSize,
+            circularIndicatorSize = circularIndicatorSize,
+            circularStrokeWidth = circularStrokeWidth,
+            colors = Colors(
+                calorieTextColor = R.color.text_color,
+                macroTextColor = R.color.text_color
+            ),
+            macro = MacroUiModel(
+                name = stringResource(R.string.fibers),
+                type = MacroType.FIBER,
+                kcal = 250,
+                grams = macroResult.fibersGrams
+            ),
+            totalCalories = getTotalCalories(macroResult)
+        )
+    }
+}
+
+fun getTotalCalories(macroResult: MacroResult): Int =
+    macroResult.carbsKcal +
+            macroResult.proteinsKcal +
+            macroResult.fatsKcal +
+            macroResult.fibersKcal
+
+@Composable
+private fun TbmInfo(tmb: Int) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, start = 16.dp)
+    ) {
+        TextInfo(
+            modifier = Modifier.padding(end = 8.dp),
+            text = "TBM:",
+            icon = painterResource(R.drawable.baseline_info_24),
+            onIconClick = {}
+        )
+
+        Text(
+            text = tmb.toString(),
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colorResource(R.color.title_color),
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }
 
@@ -177,7 +206,24 @@ fun NutritionCard(
 fun MacrosCardPreview() {
     MaterialTheme {
         NutritionCard(
-            100.dp, 5.dp, 10.sp
+            modifier = Modifier,
+            circularStrokeWidth = 100.dp,
+            kcalTextSize = 5.sp,
+            NutritionResult(
+                2000,
+                2200,
+                1900,
+                MacroResult(
+                    100,
+                    100,
+                    100,
+                    100,
+                    100,
+                    100,
+                    100,
+                    100
+                )
+            )
         )
     }
 }

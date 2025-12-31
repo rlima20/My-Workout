@@ -95,7 +95,7 @@ private fun HomeScreenPreviewFirst() {
             modifier = Modifier,
             topBarHeight = TRAINING_NAME_MAX_HEIGHT,
             chipHeight = 30.dp,
-            cardHeight = 350.dp,
+            cardHeight = 360.dp,
             trainingNameFontSize = 12.sp
         )
     )

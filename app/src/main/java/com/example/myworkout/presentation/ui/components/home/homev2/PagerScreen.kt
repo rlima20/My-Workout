@@ -5,12 +5,11 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,12 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mynutrition.presentation.nutrition.components.NutritionCard
 import com.example.myworkout.Constants
 import com.example.myworkout.R
 import com.example.myworkout.domain.model.SubGroupModel
@@ -33,8 +30,6 @@ import com.example.myworkout.domain.model.TrainingModel
 import com.example.myworkout.enums.DayOfWeek
 import com.example.myworkout.extensions.toPortugueseString
 import com.example.myworkout.presentation.ui.activity.props.TrainingCardProps
-import com.example.myworkout.presentation.ui.components.commons.Divider
-import com.example.myworkout.presentation.ui.components.commons.FabSection
 import com.example.myworkout.presentation.ui.components.commons.ScrollableTextCard
 import com.example.myworkout.presentation.ui.components.trainingcard.LabelTrainingCard
 import com.example.myworkout.presentation.ui.components.trainingcard.TrainingCard
@@ -53,7 +48,7 @@ fun PagerScreen(
     trainingCardProps: TrainingCardProps
 ) {
     var myNotes by remember { mutableStateOf(workout.first.myNotes) }
-    var editTextFocused by remember { mutableStateOf(false) }
+    val scrollState = rememberScrollState()
 
     with(workout.first.myNotes) {
         LaunchedEffect(this) {
@@ -64,16 +59,11 @@ fun PagerScreen(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp),
+            .verticalScroll(scrollState)
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        NutritionCard(
-            circularIndicatorSize = 70.dp,
-            circularStrokeWidth = 7.dp,
-            kcalTextSize = 12.sp
-        )
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Start
@@ -89,7 +79,7 @@ fun PagerScreen(
         }
 
         TrainingCard(
-            modifier = chooseModifier(trainingCardProps, Modifier),
+            modifier = Modifier,
             training = workout.first,
             subGroups = workout.second,
             listOfDays = listOfDays,
@@ -107,10 +97,10 @@ fun PagerScreen(
         )
 
         ScrollableTextCard(
-            modifier = Modifier.height(120.dp),
+            modifier = Modifier.height(80.dp),
             text = myNotes,
             onTextChange = { myNotes = it },
-            onFocus = { editTextFocused = it },
+            onFocus = { },
             onOkClick = {
                 viewModel.updateTraining(
                     TrainingModel(
@@ -122,47 +112,9 @@ fun PagerScreen(
                         myNotes = myNotes,
                     )
                 )
-                editTextFocused = false
             }
         )
-
-        Row(
-            modifier = Modifier.padding(top = 8.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            FabSection(
-                buttonName = stringResource(R.string.button_section_save_button),
-                enabled = editTextFocused,
-                icon = Icons.Default.ArrowForward,
-                onClick = {
-                    viewModel.updateTraining(
-                        TrainingModel(
-                            trainingId = workout.first.trainingId,
-                            status = workout.first.status,
-                            dayOfWeek = workout.first.dayOfWeek,
-                            trainingName = workout.first.trainingName,
-                            isChecked = workout.first.isChecked,
-                            myNotes = myNotes,
-                        )
-                    )
-                    editTextFocused = false
-                },
-            )
-        }
     }
-}
-
-@Composable
-private fun chooseModifier(
-    trainingCardProps: TrainingCardProps,
-    modifier: Modifier
-): Modifier {
-    val innerModifier = if (trainingCardProps.cardHeight != null) {
-        modifier.height(trainingCardProps.cardHeight)
-    } else {
-        modifier
-    }
-    return innerModifier
 }
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
