@@ -20,9 +20,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.mynutrition.domain.model.macro.MacroResult
-import com.example.mynutrition.domain.model.nutrition.NutritionResult
-import com.example.mynutrition.presentation.nutrition.components.NutritionCard
 import com.example.myworkout.Constants
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT
 import com.example.myworkout.Constants.Companion.TRAINING_NAME_MAX_HEIGHT_V2
@@ -48,9 +45,7 @@ fun HomeScreenManager(
     viewModel: TrainingViewModel,
     muscleGroupViewModel: MuscleGroupViewModel,
     isHomeScreenV2: Boolean,
-    showNutritionCard: Boolean,
     onHomeScreenV2: (value: Boolean) -> Unit,
-    onSetNutritionCard: (value: Boolean) -> Unit,
 ) {
 
     var innerHomeScreenV2 by remember { mutableStateOf(isHomeScreenV2) }
@@ -61,16 +56,14 @@ fun HomeScreenManager(
 
     Column(modifier = Modifier.padding(top = 50.dp)) {
         ToggleItemSection(isHomeScreenV2, onHomeScreenV2, viewModel)
-        NutritionCardSection(
-            showNutritionCard = showNutritionCard,
-            onSetNutritionCard = { onSetNutritionCard(it) })
+        NutritionCardSection()
         HomeScreenSection(
             innerHomeScreenV2,
             modifier,
             workouts,
             listOfDays,
             viewModel,
-            muscleGroupViewModel
+            muscleGroupViewModel,
         )
     }
 }
@@ -108,7 +101,7 @@ private fun HomeScreenSection(
     workouts: List<Pair<TrainingModel, List<SubGroupModel>>>,
     listOfDays: List<Pair<DayOfWeek, Boolean>>,
     viewModel: TrainingViewModel,
-    muscleGroupViewModel: MuscleGroupViewModel
+    muscleGroupViewModel: MuscleGroupViewModel,
 ) {
     if (innerHomeScreenV2) {
         HomeScreenV2(
@@ -144,47 +137,7 @@ private fun HomeScreenSection(
 }
 
 @Composable
-private fun NutritionCardSection(
-    showNutritionCard: Boolean,
-    onSetNutritionCard: (value: Boolean) -> Unit,
-) {
-    if (showNutritionCard) {
-        NutritionCard(
-            modifier = Modifier
-                .padding(
-                    top = 2.dp,
-                    start = 16.dp,
-                    end = 16.dp
-                ),
-            circularStrokeWidth = 7.dp,
-            kcalTextSize = 12.sp,
-            nutritionResult = NutritionResult(
-                tmb = 2000,
-                maintenanceCalories = 2000,
-                calorieGoal = 2500,
-                macros = MacroResult(
-                    100,
-                    100,
-                    100,
-                    100,
-                    100,
-                    100,
-                    100,
-                    100
-                )
-            )
-        )
-    } else {
-        Tooltip(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            backgroundColor = R.color.warning_home,
-            fontSize = 12.sp,
-            icon = painterResource(R.drawable.baseline_info_24),
-            text = stringResource(R.string.nutrition_info_call),
-            onClick = { onSetNutritionCard(true) }
-        )
-    }
-}
+private fun NutritionCardSection() { /* Todo - Aqui vai o módulo  */ }
 
 @RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @Composable
@@ -197,9 +150,7 @@ private fun HomeScreenWithoutNutritionPreview() {
         viewModel = TrainingViewModelFake(),
         muscleGroupViewModel = MuscleGroupViewModelFake(),
         isHomeScreenV2 = true,
-        showNutritionCard = false,
         onHomeScreenV2 = {},
-        onSetNutritionCard = {},
     )
 }
 
@@ -214,8 +165,6 @@ private fun HomeScreenWithNutritionPreview() {
         viewModel = TrainingViewModelFake(),
         muscleGroupViewModel = MuscleGroupViewModelFake(),
         isHomeScreenV2 = true,
-        showNutritionCard = true,
         onHomeScreenV2 = {},
-        onSetNutritionCard = {},
     )
 }

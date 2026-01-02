@@ -30,13 +30,13 @@ import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
-import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.getTrainingProps
+import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
+import com.example.myworkout.presentation.ui.navigation.MuscleConfig
 import com.example.myworkout.presentation.ui.navigation.NavHost
 import com.example.myworkout.presentation.ui.navigation.NewTraining
-import com.example.myworkout.presentation.ui.navigation.MuscleConfig
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
@@ -66,6 +66,7 @@ class MainActivity : ComponentActivity() {
             val snackBarHostState = remember { SnackbarHostState() }
             val trainingProps = getTrainingProps(trainingViewModel)
             val muscleGroupProps = muscleGroupProps(muscleGroupViewModel)
+
             val actions = Actions(
                 onChangeRouteToHomeScreen = { isHome -> setIsHomeScreen(isHome) },
                 onChangeTopBarTitle = { title -> trainingViewModel.setAppBarTitle(title) },
@@ -83,12 +84,6 @@ class MainActivity : ComponentActivity() {
                         trainingProps.prefs,
                         trainingProps.isHomeScreen,
                         snackBarHostState,
-                    )
-                },
-                onSetNutritionCard = {
-                    trainingProps.prefs.setShowNutritionCard(this@MainActivity, it)
-                    trainingViewModel.setShowNutritionCard(
-                        trainingProps.prefs.getShowNutritionCard(this@MainActivity)
                     )
                 }
             )
@@ -133,7 +128,7 @@ class MainActivity : ComponentActivity() {
                         noResult = muscleGroupProps.noResult
                     ),
                     snackBarHostState = snackBarHostState,
-                    actions = actions
+                    actions = actions,
                 )
             }
         }
@@ -237,6 +232,10 @@ class MainActivity : ComponentActivity() {
 
     private fun navigateToNewTrainingScreen(navController: NavHostController) {
         navController.navigateSingleTopTo(MuscleConfig.route)
+    }
+
+    // Todo
+    private fun navigateToNutritionInfoScreen(navController: NavHostController) {
     }
 
     private fun setIsHomeScreen(it: Boolean) {

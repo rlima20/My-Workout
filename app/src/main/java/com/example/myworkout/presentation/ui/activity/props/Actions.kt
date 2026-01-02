@@ -10,5 +10,4 @@ data class Actions(
     val onNavigateToGroupSubgroup: () -> Unit,
     val onNavigateToNewTraining: () -> Unit,
     val onNavigateToHomeScreen: () -> Unit,
-    val onSetNutritionCard: (Boolean) -> Unit
 )

@@ -22,3 +22,4 @@ dependencyResolutionManagement {
 rootProject.name = "My Workout"
 include(":app")
 include(":onboarding")
+include(":nutrition")

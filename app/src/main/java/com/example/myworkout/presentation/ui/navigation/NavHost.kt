@@ -70,7 +70,6 @@ fun NavHost(
                 },
                 onDatabaseCreated = { actions.onDatabaseCreated() },
                 onFetchWorkouts = { groupViewModel.fetchWorkouts(it) },
-                onSetNutritionCard = { actions.onSetNutritionCard(it) }
             )
         }
 
@@ -163,7 +162,6 @@ private fun SetupTrainingStateObservers(
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
     onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
-    onSetNutritionCard: (value: Boolean) -> Unit
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -200,11 +198,9 @@ private fun SetupTrainingStateObservers(
                 workouts = workouts,
                 listOfDays = listOfDays,
                 viewModel = viewModel,
-                showNutritionCard = trainingProps.showNutritionCard,
                 isHomeScreenV2 = trainingProps.isHomeScreenV2,
                 muscleGroupViewModel = muscleGroupViewModel,
                 onHomeScreenV2 = { onHomeScreenV2(it) },
-                onSetNutritionCard = { onSetNutritionCard(it) }
             )
         }
     }
