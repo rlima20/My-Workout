@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.calorie.state
+package com.example.nutrition.mynutrition.presentation.calorie.state
 
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.macro.MacroResult

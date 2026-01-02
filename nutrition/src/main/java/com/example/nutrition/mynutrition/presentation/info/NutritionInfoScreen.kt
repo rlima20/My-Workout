@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.info
+package com.example.nutrition.mynutrition.presentation.info
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
-import com.example.nutrition.mynutrition.presentation.nutrition.info.state.NutritionInfoState
+import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
 
 @Composable
 fun NutritionInfoScreen(

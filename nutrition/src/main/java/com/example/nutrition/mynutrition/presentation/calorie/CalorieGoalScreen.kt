@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.calorie
+package com.example.nutrition.mynutrition.presentation.calorie
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,8 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
-import com.example.nutrition.mynutrition.presentation.nutrition.calorie.state.CalorieGoalState
-import com.example.nutrition.mynutrition.presentation.nutrition.info.GoalToggle
+import com.example.nutrition.mynutrition.presentation.calorie.state.CalorieGoalState
+import com.example.nutrition.mynutrition.presentation.info.GoalToggle
 
 @Composable
 fun CalorieGoalScreen(

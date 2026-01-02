@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.navigation
+package com.example.nutrition.mynutrition.presentation.navigation
 
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable

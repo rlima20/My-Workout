@@ -12,4 +12,7 @@
     <color name="text_color">#434141</color>
     <color name="button_color">#646880</color>
     <color name="border_color">#E2E0E0</color>
+
+    <color name="warning">#F4DBBA</color>
+    <color name="warning_home">#F6E5CC</color>
 </resources>

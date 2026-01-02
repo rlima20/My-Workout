@@ -1,7 +1,7 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.calorie.props
+package com.example.nutrition.mynutrition.presentation.calorie.props
 
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
-import com.example.nutrition.mynutrition.presentation.nutrition.calorie.state.CalorieGoalState
+import com.example.nutrition.mynutrition.presentation.calorie.state.CalorieGoalState
 
 data class CalorieGoalProps(
     val state: CalorieGoalState,

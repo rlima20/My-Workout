@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.calorie
+package com.example.nutrition.mynutrition.presentation.calorie
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
