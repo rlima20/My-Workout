@@ -66,7 +66,6 @@ class MainActivity : ComponentActivity() {
             val snackBarHostState = remember { SnackbarHostState() }
             val trainingProps = getTrainingProps(trainingViewModel)
             val muscleGroupProps = muscleGroupProps(muscleGroupViewModel)
-
             val actions = Actions(
                 onChangeRouteToHomeScreen = { isHome -> setIsHomeScreen(isHome) },
                 onChangeTopBarTitle = { title -> trainingViewModel.setAppBarTitle(title) },
@@ -94,9 +93,6 @@ class MainActivity : ComponentActivity() {
                 trainingViewModel.setHomeScreenV2(
                     trainingProps.prefs.getHomeScreenV2(this@MainActivity)
                 )
-                trainingViewModel.setShowNutritionCard(
-                    trainingProps.prefs.getShowNutritionCard(this@MainActivity)
-                )
                 trainingProps.prefs
             }
 
@@ -111,7 +107,6 @@ class MainActivity : ComponentActivity() {
                         navController = trainingProps.navController,
                         prefs = trainingProps.prefs,
                         isHomeScreenV2 = trainingProps.isHomeScreenV2,
-                        showNutritionCard = trainingProps.showNutritionCard,
                     ),
                     muscleGroupProps = MuscleGroupProps(
                         workouts = muscleGroupProps.workouts,
@@ -232,10 +227,6 @@ class MainActivity : ComponentActivity() {
 
     private fun navigateToNewTrainingScreen(navController: NavHostController) {
         navController.navigateSingleTopTo(MuscleConfig.route)
-    }
-
-    // Todo
-    private fun navigateToNutritionInfoScreen(navController: NavHostController) {
     }
 
     private fun setIsHomeScreen(it: Boolean) {

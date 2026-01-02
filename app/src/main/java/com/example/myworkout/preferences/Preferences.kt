@@ -5,23 +5,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 class TrainingPrefs {
-
-    fun getShowNutritionCard(context: Context): Boolean{
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
-        val showNutritionCard = sharedPreferences.getBoolean(SHARED_PREFS_KEY_SHOW_NUTRITION_CARD, false)
-        return showNutritionCard
-    }
-
-    fun setShowNutritionCard(context: Context, value: Boolean) {
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences(
-                "my_preferences",
-                Context.MODE_PRIVATE
-            )
-        sharedPreferences.edit { putBoolean(SHARED_PREFS_KEY_SHOW_NUTRITION_CARD, value) }
-    }
-
     fun getHomeScreenV2(context: Context): Boolean {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)
@@ -58,6 +41,5 @@ class TrainingPrefs {
         const val SHARED_PREFS = "my_preferences"
         const val SHARED_PREFS_KEY = "is_not_first_install"
         const val SHARED_PREFS_KEY_IS_V2 = "is_home_screen_v2"
-        const val SHARED_PREFS_KEY_SHOW_NUTRITION_CARD = "show_nutrition_card"
     }
 }
