@@ -69,7 +69,7 @@ fun NavHost(
                     trainingViewModel.fetchTrainings()
                 },
                 onDatabaseCreated = { actions.onDatabaseCreated() },
-                onFetchWorkouts = { groupViewModel.fetchWorkouts(it) }
+                onFetchWorkouts = { groupViewModel.fetchWorkouts(it) },
             )
         }
 
@@ -161,7 +161,7 @@ private fun SetupTrainingStateObservers(
     onChangeRoute: (value: Boolean) -> Unit,
     onNavigateToNewTraining: () -> Unit,
     onDatabaseCreated: @Composable () -> Unit,
-    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit
+    onFetchWorkouts: (trainings: List<TrainingModel>) -> Unit,
 ) {
     when (trainingViewState) {
         is TrainingViewState.Loading -> {
@@ -200,7 +200,7 @@ private fun SetupTrainingStateObservers(
                 viewModel = viewModel,
                 isHomeScreenV2 = trainingProps.isHomeScreenV2,
                 muscleGroupViewModel = muscleGroupViewModel,
-                onHomeScreenV2 = { onHomeScreenV2(it) }
+                onHomeScreenV2 = { onHomeScreenV2(it) },
             )
         }
     }

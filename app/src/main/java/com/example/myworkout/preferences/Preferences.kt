@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.core.content.edit
 
 class TrainingPrefs {
-
     fun getHomeScreenV2(context: Context): Boolean {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(SHARED_PREFS, Context.MODE_PRIVATE)

@@ -30,13 +30,13 @@ import com.example.myworkout.preferences.TrainingPrefs
 import com.example.myworkout.presentation.ui.activity.props.Actions
 import com.example.myworkout.presentation.ui.activity.props.MuscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.TrainingProps
-import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
 import com.example.myworkout.presentation.ui.activity.props.getTrainingProps
+import com.example.myworkout.presentation.ui.activity.props.muscleGroupProps
 import com.example.myworkout.presentation.ui.components.home.TopBar
 import com.example.myworkout.presentation.ui.navigation.HomeScreen
+import com.example.myworkout.presentation.ui.navigation.MuscleConfig
 import com.example.myworkout.presentation.ui.navigation.NavHost
 import com.example.myworkout.presentation.ui.navigation.NewTraining
-import com.example.myworkout.presentation.ui.navigation.MuscleConfig
 import com.example.myworkout.presentation.ui.theme.MyWorkoutTheme
 import com.example.myworkout.presentation.viewmodel.MuscleGroupViewModel
 import com.example.myworkout.presentation.viewmodel.TrainingViewModel
@@ -84,7 +84,7 @@ class MainActivity : ComponentActivity() {
                         trainingProps.isHomeScreen,
                         snackBarHostState,
                     )
-                },
+                }
             )
 
             with(trainingProps) {
@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
                         listOfDays = trainingProps.listOfDays,
                         navController = trainingProps.navController,
                         prefs = trainingProps.prefs,
-                        isHomeScreenV2 = trainingProps.isHomeScreenV2
+                        isHomeScreenV2 = trainingProps.isHomeScreenV2,
                     ),
                     muscleGroupProps = MuscleGroupProps(
                         workouts = muscleGroupProps.workouts,
@@ -123,7 +123,7 @@ class MainActivity : ComponentActivity() {
                         noResult = muscleGroupProps.noResult
                     ),
                     snackBarHostState = snackBarHostState,
-                    actions = actions
+                    actions = actions,
                 )
             }
         }

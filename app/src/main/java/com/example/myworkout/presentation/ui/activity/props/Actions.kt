@@ -9,5 +9,5 @@ data class Actions(
     val onDatabaseCreated: @Composable (() -> Unit),
     val onNavigateToGroupSubgroup: () -> Unit,
     val onNavigateToNewTraining: () -> Unit,
-    val onNavigateToHomeScreen: () -> Unit
+    val onNavigateToHomeScreen: () -> Unit,
 )
