@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.navigation
+package com.example.nutrition.mynutrition.presentation.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

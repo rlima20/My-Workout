@@ -5,7 +5,7 @@ import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCase
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
-import com.example.nutrition.mynutrition.presentation.nutrition.info.viewmodel.NutritionInfoViewModel
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

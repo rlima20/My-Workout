@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.info
+package com.example.nutrition.mynutrition.presentation.info
 
 import android.os.Build
 import androidx.annotation.RequiresApi

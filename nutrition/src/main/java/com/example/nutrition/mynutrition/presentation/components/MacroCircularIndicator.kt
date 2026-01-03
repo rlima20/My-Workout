@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.components
+package com.example.nutrition.mynutrition.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

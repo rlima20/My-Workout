@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.info.viewmodel
+package com.example.nutrition.mynutrition.presentation.info.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import com.example.nutrition.mynutrition.domain.model.enums.Sex
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
-import com.example.nutrition.mynutrition.presentation.nutrition.info.state.NutritionInfoState
+import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

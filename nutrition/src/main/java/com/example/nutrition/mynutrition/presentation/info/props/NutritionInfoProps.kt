@@ -1,8 +1,8 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.props
+package com.example.nutrition.mynutrition.presentation.info.props
 
 import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
-import com.example.nutrition.mynutrition.presentation.nutrition.info.state.NutritionInfoState
+import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
 
 data class NutritionInfoProps(
     val state: NutritionInfoState,

@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.calorie.viewmodel
+package com.example.nutrition.mynutrition.presentation.calorie.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseC
 import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCase
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
-import com.example.nutrition.mynutrition.presentation.nutrition.calorie.state.CalorieGoalState
+import com.example.nutrition.mynutrition.presentation.calorie.state.CalorieGoalState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

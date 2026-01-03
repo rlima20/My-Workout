@@ -1,4 +1,4 @@
-package com.example.nutrition.mynutrition.presentation.nutrition.info.state
+package com.example.nutrition.mynutrition.presentation.info.state
 
 import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
