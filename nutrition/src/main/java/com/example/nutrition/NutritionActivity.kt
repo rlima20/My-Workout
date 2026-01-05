@@ -4,48 +4,58 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
-import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
+import com.example.nutrition.mynutrition.constants.getNutritionResult
+import com.example.nutrition.mynutrition.presentation.info.NutritionProps
+import com.example.nutrition.mynutrition.presentation.info.getNutritionProps
+import com.example.nutrition.mynutrition.presentation.navigation.NavHost
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
+import com.example.nutrition.mynutrition.presentation.nutrition.NutritionViewModel
 import com.example.nutrition.ui.theme.MyWorkoutTheme
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NutritionActivity : ComponentActivity() {
+
+    private val nutritionViewModel: NutritionViewModel by viewModel()
+
+    @RequiresApi(35)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            MyWorkoutTheme {
 
-                val showNutritionCard = false
-                NutritionComponent(
+        setContent {
+            val showNutritionCard by nutritionViewModel.showNutritionCard.collectAsState()
+            val nutritionProps = getNutritionProps()
+
+            setShowCardByPrefsValue(nutritionProps)
+
+            MyWorkoutTheme {
+                NavHost(
+                    navController = nutritionProps.navController,
+                    nutritionResult = nutritionProps.nutritionResult,
                     showNutritionCard = showNutritionCard,
-                    nutritionResult = getNutritionResult(),
-                    onToolTipClick = {}
+                    onToolTipClick = {
+                        nutritionProps.prefs.setShowNutritionCard(
+                            this@NutritionActivity,
+                            true
+                        )
+                        setShowCardByPrefsValue(nutritionProps)
+                    }
                 )
             }
         }
     }
-}
 
-private fun getNutritionResult(): NutritionResult =
-    NutritionResult(
-        tmb = 2000,
-        maintenanceCalories = 2000,
-        calorieGoal = 2500,
-        macros =
-            MacroResult(
-                100,
-                100,
-                100,
-                100,
-                100,
-                100,
-                100,
-                100
-            )
-    )
+    fun setShowCardByPrefsValue(props: NutritionProps) {
+        nutritionViewModel.setShowNutritionCard(
+            props.prefs.getShowNutritionCard(this@NutritionActivity)
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

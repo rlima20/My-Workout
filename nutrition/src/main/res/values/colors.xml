@@ -15,4 +15,5 @@
 
     <color name="warning">#F4DBBA</color>
     <color name="warning_home">#F6E5CC</color>
+    <color name="global_background_color">#F4F2F2</color>
 </resources>

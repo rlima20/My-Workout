@@ -1,11 +1,14 @@
 package com.example.nutrition.mynutrition.presentation.nutrition
 
+import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-private val _showNutritionCard = MutableStateFlow(false)
-val showNutritionCard: StateFlow<Boolean> = _showNutritionCard
+class NutritionViewModel : ViewModel() {
+    private val _showNutritionCard = MutableStateFlow(false)
+    val showNutritionCard: StateFlow<Boolean> = _showNutritionCard
 
-fun setShowNutritionCard(value: Boolean){
-    _showNutritionCard.value = value
+    fun setShowNutritionCard(value: Boolean) {
+        _showNutritionCard.value = value
+    }
 }
