@@ -1,19 +1,20 @@
 package com.example.nutrition.mynutrition.presentation.navigation
 
-import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nutrition.R
+import com.example.nutrition.mynutrition.constants.getNutritionInfoState
 import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
+import com.example.nutrition.mynutrition.presentation.info.NutritionInfoScreen
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
 import androidx.navigation.compose.NavHost as NavHostCompose
 
@@ -29,6 +30,7 @@ fun NavHost(
     val nutritionInfo: String = stringResource(R.string.nutritional_info)
 
     NavHostCompose(
+        modifier = Modifier.padding(top = 80.dp),
         navController = navController,
         startDestination = NutritionCard.route,
     ) {
@@ -39,13 +41,19 @@ fun NavHost(
                 onToolTipClick = { onToolTipClick() }
             )
         }
+        composable(route = NutritionInfo.route) {
+            NutritionInfoScreen(
+                state = getNutritionInfoState(),
+                onSave = {}
+            )
+        }
     }
 }
 
 @RequiresApi(35)
 @Composable
 @Preview(showBackground = true)
-private fun NavHostPreview(){
+private fun NavHostPreview() {
     NavHost(
         navController = rememberNavController(),
         nutritionResult = getNutritionResult(),

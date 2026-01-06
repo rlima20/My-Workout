@@ -44,13 +44,6 @@ class NutritionInfoViewModel(
         }
     }
 
-    fun onNameChanged(v: String) { _uiState.value = _uiState.value.copy(name = v) }
-    fun onAgeChanged(v: String) { _uiState.value = _uiState.value.copy(age = v) }
-    fun onSexChanged(v: Sex) { _uiState.value = _uiState.value.copy(sex = v) }
-    fun onHeightChanged(v: String) { _uiState.value = _uiState.value.copy(height = v) }
-    fun onWeightChanged(v: String) { _uiState.value = _uiState.value.copy(weight = v) }
-    fun onActivityChanged(v: ActivityLevel) { _uiState.value = _uiState.value.copy(activity = v) }
-
     fun onSave() = viewModelScope.launch {
         val state = _uiState.value
         _uiState.value = state.copy(isLoading = true, error = null)

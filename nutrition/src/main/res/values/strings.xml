@@ -12,4 +12,21 @@
     <string name="nutrition_info_call">Descubra quantas calorias seu corpo precisa por dia. \nGanhe, mantenha ou perca peso com base no seu metabolismo. Clique aqui.</string>
     <string name="all_days_used">Você já possui treinamentos em todos os dias da semana. Exclua algum treino para continuar.</string>
     <string name="nutritional_info">Informações nutricionais</string>
+
+   <!-- NutritionInfo =Screen strings -->
+    <string name="user_name">Nome</string>
+    <string name="user_age">Idade</string>
+    <string name="user_sex">Sexo</string>
+    <string name="user_height">Altura (cm)</string>
+    <string name="user_weight">Peso</string>
+    <string name="user_activity">Nível de atividade</string>
+    <string name="male">Masculino</string>
+    <string name="female">Faminino</string>
+    <string name="sedentary">Sedentário</string>
+    <string name="light">Leve</string>
+    <string name="moderate">Moderado</string>
+    <string name="high">Alto</string>
+    <string name="extreme">Extremo</string>
+    <string name="save">Salvar</string>
+    <string name="successfully_saved">Salvo com sucesso!</string>
 </resources>

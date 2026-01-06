@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="title_color">#6A6767</color>
+    <color name="title_color2">#B8B4B4</color>
     <color name="text_color">#434141</color>
     <color name="button_color">#646880</color>
     <color name="border_color">#E2E0E0</color>
@@ -16,4 +17,7 @@
     <color name="warning">#F4DBBA</color>
     <color name="warning_home">#F6E5CC</color>
     <color name="global_background_color">#F4F2F2</color>
+    <color name="text_field_background_color">#FBFAFA</color>
+    <color name="text_field_background_color2">#F0F0F0</color>
+    <color name="text_field_background_color3">#DEDDDD</color>
 </resources>

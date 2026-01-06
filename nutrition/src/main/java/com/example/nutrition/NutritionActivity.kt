@@ -9,10 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.nutrition.mynutrition.constants.getNutritionResult
+import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
 import com.example.nutrition.mynutrition.presentation.info.NutritionProps
 import com.example.nutrition.mynutrition.presentation.info.getNutritionProps
 import com.example.nutrition.mynutrition.presentation.navigation.NavHost
+import com.example.nutrition.mynutrition.presentation.navigation.NutritionInfo
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionViewModel
 import com.example.nutrition.ui.theme.MyWorkoutTheme
@@ -39,11 +42,15 @@ class NutritionActivity : ComponentActivity() {
                     nutritionResult = nutritionProps.nutritionResult,
                     showNutritionCard = showNutritionCard,
                     onToolTipClick = {
-                        nutritionProps.prefs.setShowNutritionCard(
-                            this@NutritionActivity,
-                            true
-                        )
-                        setShowCardByPrefsValue(nutritionProps)
+                        navigateToNutritionInfo(nutritionProps.navController)
+
+
+                        // Todo - fazer isso depois da tela de cadastro
+//                        nutritionProps.prefs.setShowNutritionCard(
+//                            this@NutritionActivity,
+//                            true
+//                        )
+//                        setShowCardByPrefsValue(nutritionProps)
                     }
                 )
             }
@@ -55,6 +62,10 @@ class NutritionActivity : ComponentActivity() {
             props.prefs.getShowNutritionCard(this@NutritionActivity)
         )
     }
+}
+
+private fun navigateToNutritionInfo(navHostController: NavHostController) {
+    navHostController.navigateSingleTopTo(NutritionInfo.route)
 }
 
 @Preview(showBackground = true)
