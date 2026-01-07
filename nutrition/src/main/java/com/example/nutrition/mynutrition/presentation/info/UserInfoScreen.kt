@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,10 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.R
-import com.example.nutrition.mynutrition.constants.getNutritionInfoState
 import com.example.nutrition.mynutrition.presentation.info.components.ActivityLevelDropdown
 import com.example.nutrition.mynutrition.presentation.info.components.SexSelector
 import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
@@ -29,7 +26,7 @@ import com.example.nutrition.mynutrition.utils.setButtonColor
 import com.example.nutrition.mynutrition.utils.setButtonTextColor
 
 @Composable
-fun NutritionInfoScreen(
+fun UserInfoScreen(
     state: NutritionInfoState,
     nutritionInfoViewModel: NutritionInfoViewModel
 ) {

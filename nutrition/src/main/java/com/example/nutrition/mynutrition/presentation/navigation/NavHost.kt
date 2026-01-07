@@ -9,9 +9,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.nutrition.R
-import com.example.nutrition.mynutrition.constants.getNutritionInfoState
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
-import com.example.nutrition.mynutrition.presentation.info.NutritionInfoScreen
+import com.example.nutrition.mynutrition.presentation.info.UserInfoScreen
 import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
 import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
@@ -43,7 +42,7 @@ fun NavHost(
             )
         }
         composable(route = NutritionInfo.route) {
-            NutritionInfoScreen(
+            UserInfoScreen(
                 state = nutritionInfoState,
                 nutritionInfoViewModel = nutritionInfoViewModel,
             )

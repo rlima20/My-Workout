@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp") version "2.0.21-1.0.25"
 }
 
 android {
@@ -41,6 +42,7 @@ android {
 dependencies {
     val koin = "3.5.6"
     val navVersion = "2.7.2"
+    val roomVersion = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
@@ -67,6 +69,11 @@ dependencies {
 
     // Navigation Compose
     implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation("androidx.room:room-runtime:$roomVersion")
 
     implementation("com.google.accompanist:accompanist-pager:0.31.3-beta")
     implementation("com.google.accompanist:accompanist-pager-indicators:0.36.0")
