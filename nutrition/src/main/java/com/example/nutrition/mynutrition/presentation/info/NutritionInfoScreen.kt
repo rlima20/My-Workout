@@ -23,6 +23,7 @@ import com.example.nutrition.mynutrition.constants.getNutritionInfoState
 import com.example.nutrition.mynutrition.presentation.info.components.ActivityLevelDropdown
 import com.example.nutrition.mynutrition.presentation.info.components.SexSelector
 import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
 import com.example.nutrition.mynutrition.utils.colors
 import com.example.nutrition.mynutrition.utils.setButtonColor
 import com.example.nutrition.mynutrition.utils.setButtonTextColor
@@ -30,7 +31,7 @@ import com.example.nutrition.mynutrition.utils.setButtonTextColor
 @Composable
 fun NutritionInfoScreen(
     state: NutritionInfoState,
-    onSave: (nutritionInfoState: NutritionInfoState) -> Unit
+    nutritionInfoViewModel: NutritionInfoViewModel
 ) {
     var name by remember { mutableStateOf(state.name) }
     LaunchedEffect(state.name) { name = state.name }
@@ -50,11 +51,11 @@ fun NutritionInfoScreen(
     var activity by remember { mutableStateOf(state.activity) }
     LaunchedEffect(state.activity) { activity = state.activity }
 
-    var buttonEnabled by remember { mutableStateOf( false ) }
+    var buttonEnabled by remember { mutableStateOf(false) }
     LaunchedEffect(name, age, weight, height) {
         buttonEnabled =
             name.isNotEmpty() && age.isNotEmpty() &&
-            height.isNotEmpty() && weight.isNotEmpty()
+                    height.isNotEmpty() && weight.isNotEmpty()
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
@@ -124,9 +125,17 @@ fun NutritionInfoScreen(
 
         Button(
             onClick = {
-                /* todo */
-                // Atualiza o state (UserInfoState)
-                // Faz um onSave(). O estado já vai estar atualizado.
+                nutritionInfoViewModel.updateUiState(
+                    NutritionInfoState(
+                        name = name,
+                        age = age,
+                        sex = sex,
+                        height = height,
+                        weight = weight,
+                        activity = activity
+                    )
+                )
+                nutritionInfoViewModel.onSave()
             },
             enabled = buttonEnabled,
             modifier = Modifier
@@ -142,17 +151,14 @@ fun NutritionInfoScreen(
     }
 }
 
-private fun setButtonEnabled(isEnabled: Boolean) {
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NutritionInfoScreenPreview() {
-    MaterialTheme {
-        NutritionInfoScreen(
-            state = getNutritionInfoState(),
-            onSave = {}
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun NutritionInfoScreenPreview() {
+//    MaterialTheme {
+//        NutritionInfoScreen(
+//            state = getNutritionInfoState(),
+//            onSave = {},
+//            nutritionInfoViewModel = TODO()
+//        )
+//    }
+//}

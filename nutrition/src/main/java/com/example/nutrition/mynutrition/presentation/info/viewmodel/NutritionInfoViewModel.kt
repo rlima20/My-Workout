@@ -2,8 +2,6 @@ package com.example.nutrition.mynutrition.presentation.info.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
-import com.example.nutrition.mynutrition.domain.model.enums.Sex
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
@@ -13,20 +11,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class NutritionInfoViewModel(
-    private val saveUserInfo: SaveUserInfoUseCase,
-    private val getUserInfo: GetUserInfoUseCase
+    private val saveUserInfoUseCase: SaveUserInfoUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NutritionInfoState())
     val uiState: StateFlow<NutritionInfoState> = _uiState
 
-    init { load() }
+    init {
+        load()
+    }
 
     private fun load() = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
         try {
-            val info = getUserInfo()
-            info?.let{
+            val info = getUserInfoUseCase.getUserInfo()
+            info?.let {
                 _uiState.value = _uiState.value.copy(
                     name = it.name,
                     age = it.age.toString(),
@@ -44,6 +44,10 @@ class NutritionInfoViewModel(
         }
     }
 
+    fun updateUiState(state: NutritionInfoState) {
+        _uiState.value = state
+    }
+
     fun onSave() = viewModelScope.launch {
         val state = _uiState.value
         _uiState.value = state.copy(isLoading = true, error = null)
@@ -56,7 +60,7 @@ class NutritionInfoViewModel(
                 weightKg = state.weight.toFloatOrNull() ?: 0f,
                 activityLevel = state.activity
             )
-            saveUserInfo(userInfo)
+            saveUserInfoUseCase.saveUser(userInfo)
             _uiState.value = state.copy(isLoading = false, success = true)
         } catch (t: Throwable) {
             _uiState.value = state.copy(isLoading = false, error = t.message)

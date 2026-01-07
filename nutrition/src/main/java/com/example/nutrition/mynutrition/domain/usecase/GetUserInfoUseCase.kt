@@ -1,7 +1,7 @@
 package com.example.nutrition.mynutrition.domain.usecase
 
-import com.example.nutrition.mynutrition.domain.repository.UserInfoRepository
+import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 
-class GetUserInfoUseCase(private val repo: UserInfoRepository) {
-    suspend operator fun invoke() = repo.getUserInfo()
+interface GetUserInfoUseCase {
+    suspend fun getUserInfo(): UserInfo?
 }

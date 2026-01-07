@@ -9,5 +9,4 @@ interface NutritionRepository {
     fun calculateTmb(info: UserInfo): Int
     fun calculateCalorieGoal(tmb: Int, activity: ActivityLevel, goal: CalorieGoalType): Int
     fun calculateMacros(totalKcal: Int): MacroResult
-
 }

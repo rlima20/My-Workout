@@ -5,16 +5,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.example.nutrition.R
 import com.example.nutrition.mynutrition.constants.getNutritionInfoState
-import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
 import com.example.nutrition.mynutrition.presentation.info.NutritionInfoScreen
+import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
 import androidx.navigation.compose.NavHost as NavHostCompose
 
@@ -24,6 +23,8 @@ fun NavHost(
     navController: NavHostController,
     nutritionResult: NutritionResult,
     showNutritionCard: Boolean,
+    nutritionInfoState: NutritionInfoState,
+    nutritionInfoViewModel: NutritionInfoViewModel,
     onToolTipClick: () -> Unit
 ) {
     // Todo - Nome da tela.
@@ -43,21 +44,21 @@ fun NavHost(
         }
         composable(route = NutritionInfo.route) {
             NutritionInfoScreen(
-                state = getNutritionInfoState(),
-                onSave = {}
+                state = nutritionInfoState,
+                nutritionInfoViewModel = nutritionInfoViewModel,
             )
         }
     }
 }
 
-@RequiresApi(35)
-@Composable
-@Preview(showBackground = true)
-private fun NavHostPreview() {
-    NavHost(
-        navController = rememberNavController(),
-        nutritionResult = getNutritionResult(),
-        showNutritionCard = false,
-        onToolTipClick = {}
-    )
-}
+//@RequiresApi(35)
+//@Composable
+//@Preview(showBackground = true)
+//private fun NavHostPreview() {
+//    NavHost(
+//        navController = rememberNavController(),
+//        nutritionResult = getNutritionResult(),
+//        showNutritionCard = false,
+//        onToolTipClick = {}
+//    )
+//}

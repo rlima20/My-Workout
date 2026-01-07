@@ -14,6 +14,7 @@ import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
 import com.example.nutrition.mynutrition.presentation.info.NutritionProps
 import com.example.nutrition.mynutrition.presentation.info.getNutritionProps
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
 import com.example.nutrition.mynutrition.presentation.navigation.NavHost
 import com.example.nutrition.mynutrition.presentation.navigation.NutritionInfo
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
@@ -24,6 +25,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class NutritionActivity : ComponentActivity() {
 
     private val nutritionViewModel: NutritionViewModel by viewModel()
+    private val nutritionInfoViewModel: NutritionInfoViewModel by viewModel()
 
     @RequiresApi(35)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,7 +34,7 @@ class NutritionActivity : ComponentActivity() {
 
         setContent {
             val showNutritionCard by nutritionViewModel.showNutritionCard.collectAsState()
-            val nutritionProps = getNutritionProps()
+            val nutritionProps = getNutritionProps(nutritionInfoViewModel)
 
             setShowCardByPrefsValue(nutritionProps)
 
@@ -41,6 +43,8 @@ class NutritionActivity : ComponentActivity() {
                     navController = nutritionProps.navController,
                     nutritionResult = nutritionProps.nutritionResult,
                     showNutritionCard = showNutritionCard,
+                    nutritionInfoState = nutritionProps.nutritionInfo,
+                    nutritionInfoViewModel = nutritionInfoViewModel,
                     onToolTipClick = {
                         navigateToNutritionInfo(nutritionProps.navController)
 

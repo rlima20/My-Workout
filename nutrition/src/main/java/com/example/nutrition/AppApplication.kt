@@ -1,7 +1,9 @@
 package com.example.nutrition
 
 import android.app.Application
-import com.example.nutrition.mynutrition.di.nutritionModule
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.example.nutrition.mynutrition.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -12,13 +14,14 @@ class AppApplication : Application() {
             private set
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
 
         startKoin {
             androidContext(applicationContext)
-            modules(nutritionModule)
+            modules(appModules)
         }
     }
 }

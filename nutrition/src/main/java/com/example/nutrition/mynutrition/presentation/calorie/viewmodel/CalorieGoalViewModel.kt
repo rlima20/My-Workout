@@ -3,7 +3,7 @@ package com.example.nutrition.mynutrition.presentation.calorie.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
-import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCase
+import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCase
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
@@ -13,9 +13,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class CalorieGoalViewModel(
-    private val getUserInfo: GetUserInfoUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
     private val tmbUseCase: CalculateTmbUseCase,
-    private val calorieGoalUseCase: CalculateCalorieGoalUseCase,
+    private val calorieGoalUseCase: CalculateCalorieGoalUseCaseImpl,
     private val macrosUseCase: CalculateMacrosUseCase
 ) : ViewModel() {
 
@@ -29,7 +29,7 @@ class CalorieGoalViewModel(
     fun load(goal: CalorieGoalType) = viewModelScope.launch {
         _uiState.value = _uiState.value.copy(isLoading = true)
         try {
-            val info = getUserInfo() ?: run {
+            val info = getUserInfoUseCase.getUserInfo() ?: run {
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     error = "Preencha suas informações primeiro"
@@ -37,9 +37,9 @@ class CalorieGoalViewModel(
                 return@launch
             }
 
-            val tmb = tmbUseCase(info)
-            val goalKcal = calorieGoalUseCase(tmb, info.activityLevel, goal)
-            val macros = macrosUseCase(goalKcal)
+            val tmb = tmbUseCase.calculateTmb(info)
+            val goalKcal = calorieGoalUseCase.calculateCalorieGoal(tmb, info.activityLevel, goal)
+            val macros = macrosUseCase.calculateMacros(goalKcal)
 
             _uiState.value = CalorieGoalState(
                 goalType = goal,
