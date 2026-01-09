@@ -11,21 +11,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
 import com.example.nutrition.mynutrition.preferences.NutritionPrefs
-import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfo
+import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfoViewModel
 
 data class NutritionProps(
     val navController: NavHostController,
     val nutritionResult: NutritionResult,
-    val nutritionInfo: NutritionInfoState,
+    val nutritionInfo: UserInfoState,
     val prefs: NutritionPrefs
 )
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun getNutritionProps(nutritionInfoViewModel: NutritionInfoViewModel): NutritionProps {
+fun getNutritionProps(nutritionInfoViewModel: UserInfoViewModel): NutritionProps {
     val navController = rememberNavController()
     val nutritionPrefs = NutritionPrefs()
     val nutritionInfoState by nutritionInfoViewModel.uiState.collectAsState()

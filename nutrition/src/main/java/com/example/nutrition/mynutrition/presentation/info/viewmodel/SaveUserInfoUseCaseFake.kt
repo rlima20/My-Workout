@@ -1,3 +1,0 @@
-package com.example.nutrition.mynutrition.presentation.info.viewmodel
-
-class SaveUserInfoUseCaseFake

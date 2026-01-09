@@ -1,10 +1,13 @@
 package com.example.nutrition.mynutrition.presentation.info
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,38 +18,45 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.R
+import com.example.nutrition.mynutrition.constants.getUserInfoState
+import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.presentation.info.components.ActivityLevelDropdown
+import com.example.nutrition.mynutrition.presentation.info.components.NumericOutlinedTextField
 import com.example.nutrition.mynutrition.presentation.info.components.SexSelector
-import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
+import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfoViewModel
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.viewmodelfake.UserInfoViewModelFake
 import com.example.nutrition.mynutrition.utils.colors
 import com.example.nutrition.mynutrition.utils.setButtonColor
 import com.example.nutrition.mynutrition.utils.setButtonTextColor
 
 @Composable
 fun UserInfoScreen(
-    state: NutritionInfoState,
-    nutritionInfoViewModel: NutritionInfoViewModel
+    userInfoState: UserInfoState,
+    nutritionInfoViewModel: UserInfoViewModel
 ) {
-    var name by remember { mutableStateOf(state.name) }
-    LaunchedEffect(state.name) { name = state.name }
+    nutritionInfoViewModel.fetchUserinfo()
 
-    var age by remember { mutableStateOf(state.age) }
-    LaunchedEffect(state.age) { age = state.age }
+    var name by remember { mutableStateOf(userInfoState.name) }
+    LaunchedEffect(userInfoState.name) { name = userInfoState.name }
 
-    var height by remember { mutableStateOf(state.height) }
-    LaunchedEffect(state.height) { height = state.height }
+    var age by remember { mutableStateOf(userInfoState.age) }
+    LaunchedEffect(userInfoState.age) { age = userInfoState.age }
 
-    var weight by remember { mutableStateOf(state.weight) }
-    LaunchedEffect(state.weight) { weight = state.weight }
+    var height by remember { mutableStateOf(userInfoState.height) }
+    LaunchedEffect(userInfoState.height) { height = userInfoState.height }
 
-    var sex by remember { mutableStateOf(state.sex) }
-    LaunchedEffect(state.sex) { sex = state.sex }
+    var weight by remember { mutableStateOf(userInfoState.weight) }
+    LaunchedEffect(userInfoState.weight) { weight = userInfoState.weight }
 
-    var activity by remember { mutableStateOf(state.activity) }
-    LaunchedEffect(state.activity) { activity = state.activity }
+    var sex by remember { mutableStateOf(userInfoState.sex) }
+    LaunchedEffect(userInfoState.sex) { sex = userInfoState.sex }
+
+    var activity by remember { mutableStateOf(userInfoState.activity) }
+    LaunchedEffect(userInfoState.activity) { activity = userInfoState.activity }
 
     var buttonEnabled by remember { mutableStateOf(false) }
     LaunchedEffect(name, age, weight, height) {
@@ -93,15 +103,14 @@ fun UserInfoScreen(
             colors = colors()
         )
 
-        OutlinedTextField(
+        NumericOutlinedTextField(
             value = weight,
             onValueChange = { weight = it },
-            singleLine = true,
-            label = { Text(stringResource(R.string.user_weight)) },
+            label = stringResource(R.string.user_weight),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp),
-            shape = RoundedCornerShape(12.dp),
+            allowDecimal = true,
             colors = colors()
         )
 
@@ -119,20 +128,18 @@ fun UserInfoScreen(
                 .padding(top = 8.dp)
         )
 
-
         Button(
             onClick = {
-                nutritionInfoViewModel.updateUiState(
-                    NutritionInfoState(
+                nutritionInfoViewModel.onSave(
+                    UserInfo(
                         name = name,
-                        age = age,
+                        age = age.toInt(),
                         sex = sex,
-                        height = height,
-                        weight = weight,
-                        activity = activity
+                        heightCm = height.toInt(),
+                        weightKg = weight.toFloat(),
+                        activityLevel = activity
                     )
                 )
-                nutritionInfoViewModel.onSave()
             },
             enabled = buttonEnabled,
             modifier = Modifier
@@ -148,14 +155,14 @@ fun UserInfoScreen(
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun NutritionInfoScreenPreview() {
-//    MaterialTheme {
-//        NutritionInfoScreen(
-//            state = getNutritionInfoState(),
-//            onSave = {},
-//            nutritionInfoViewModel = TODO()
-//        )
-//    }
-//}
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun NutritionInfoScreenPreview() {
+    MaterialTheme {
+        UserInfoScreen(
+            userInfoState = getUserInfoState(),
+            nutritionInfoViewModel = UserInfoViewModelFake()
+        )
+    }
+}

@@ -11,8 +11,8 @@ import androidx.navigation.compose.composable
 import com.example.nutrition.R
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
 import com.example.nutrition.mynutrition.presentation.info.UserInfoScreen
-import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
+import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfoViewModel
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
 import androidx.navigation.compose.NavHost as NavHostCompose
 
@@ -22,8 +22,8 @@ fun NavHost(
     navController: NavHostController,
     nutritionResult: NutritionResult,
     showNutritionCard: Boolean,
-    nutritionInfoState: NutritionInfoState,
-    nutritionInfoViewModel: NutritionInfoViewModel,
+    nutritionInfoState: UserInfoState,
+    nutritionInfoViewModel: UserInfoViewModel,
     onToolTipClick: () -> Unit
 ) {
     // Todo - Nome da tela.
@@ -43,7 +43,7 @@ fun NavHost(
         }
         composable(route = NutritionInfo.route) {
             UserInfoScreen(
-                state = nutritionInfoState,
+                userInfoState = nutritionInfoState,
                 nutritionInfoViewModel = nutritionInfoViewModel,
             )
         }

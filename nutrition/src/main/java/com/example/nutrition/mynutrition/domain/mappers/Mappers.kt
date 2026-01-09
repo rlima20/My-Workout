@@ -2,6 +2,18 @@ package com.example.nutrition.mynutrition.domain.mappers
 
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.room.entity.UserInfoEntity
+import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
+
+fun UserInfo.toUserInfoState(): UserInfoState {
+    return UserInfoState(
+        name = this.name,
+        age = this.age.toString(),
+        sex = this.sex,
+        height = this.heightCm.toString(),
+        weight = this.weightKg.toString(),
+        activity = this.activityLevel
+    )
+}
 
 fun UserInfo.toUserInfoEntity(): UserInfoEntity {
     return UserInfoEntity(

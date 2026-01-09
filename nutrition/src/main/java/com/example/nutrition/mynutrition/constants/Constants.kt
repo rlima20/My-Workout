@@ -4,7 +4,7 @@ import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
 import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
-import com.example.nutrition.mynutrition.presentation.info.state.NutritionInfoState
+import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
 
 fun getNutritionResult(): NutritionResult =
     NutritionResult(
@@ -24,16 +24,12 @@ fun getNutritionResult(): NutritionResult =
             )
     )
 
-fun getNutritionInfoState(): NutritionInfoState =
-    NutritionInfoState(
+fun getUserInfoState(): UserInfoState =
+    UserInfoState(
         name = "Raphael",
         age = "31",
         sex = Sex.MALE,
         height = "1,73",
         weight = "83",
-        activity = ActivityLevel.HIGH,
-        isEditing = false,
-        isLoading = false,
-        success = true,
-        error = ""
+        activity = ActivityLevel.HIGH
     )

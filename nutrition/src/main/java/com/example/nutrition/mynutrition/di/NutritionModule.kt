@@ -6,6 +6,7 @@ import com.example.nutrition.mynutrition.domain.repository.NutritionRepository
 import com.example.nutrition.mynutrition.domain.repository.NutritionRepositoryImpl
 import com.example.nutrition.mynutrition.domain.repository.UserInfoRepository
 import com.example.nutrition.mynutrition.domain.repository.UserInfoRepositoryImpl
+import com.example.nutrition.mynutrition.domain.room.database.AppDatabase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
@@ -17,18 +18,27 @@ import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCaseImpl
 import com.example.nutrition.mynutrition.presentation.calorie.viewmodel.CalorieGoalViewModel
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.NutritionInfoViewModel
+import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfoViewModel
 import com.example.nutrition.mynutrition.presentation.nutrition.NutritionViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+val databaseDI = module {
+    single{
+        AppDatabase.getInstance(get())
+    }
+}
+
+val userInfoDaoDI = module{
+    factory { get<AppDatabase>().userInfoDao() }
+}
 
 val nutritionRepositoryDI = module {
     factory<NutritionRepository> { NutritionRepositoryImpl() }
 }
 
 val userInfoRepositoryDI = module {
-    factory<UserInfoRepository> { UserInfoRepositoryImpl() }
+    factory<UserInfoRepository> { UserInfoRepositoryImpl(get()) }
 }
 
 val calculateCalorieGoalUseCaseDI = module {
@@ -64,7 +74,7 @@ val calorieGoalViewModelDI = module {
 
 val nutritionInfoViewModelDI = module {
     viewModel {
-        NutritionInfoViewModel(get(), get())
+        UserInfoViewModel(get(), get())
     }
 }
 
@@ -76,6 +86,8 @@ val nutritionViewModelDI = module {
 
 @RequiresApi(Build.VERSION_CODES.O)
 val appModules = listOf(
+    databaseDI,
+    userInfoDaoDI,
     nutritionRepositoryDI,
     userInfoRepositoryDI,
     calculateCalorieGoalUseCaseDI,
