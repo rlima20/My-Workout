@@ -17,9 +17,9 @@ import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCaseImpl
-import com.example.nutrition.mynutrition.presentation.calorie.viewmodel.CalorieGoalViewModel
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfoViewModel
-import com.example.nutrition.mynutrition.presentation.nutrition.NutritionViewModel
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.CalorieGoalViewModel
+import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
+import com.example.nutrition.mynutrition.presentation.core.nutrition.viewmodel.NutritionViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

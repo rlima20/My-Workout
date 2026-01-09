@@ -2,7 +2,7 @@ package com.example.nutrition.mynutrition.domain.mappers
 
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.room.entity.UserInfoEntity
-import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
+import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.state.UserInfoState
 
 fun UserInfo.toUserInfoState(): UserInfoState {
     return UserInfoState(

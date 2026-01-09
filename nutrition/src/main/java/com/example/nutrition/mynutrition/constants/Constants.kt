@@ -4,7 +4,7 @@ import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
 import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
-import com.example.nutrition.mynutrition.presentation.info.state.UserInfoState
+import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.state.UserInfoState
 
 fun getNutritionResult(): NutritionResult =
     NutritionResult(

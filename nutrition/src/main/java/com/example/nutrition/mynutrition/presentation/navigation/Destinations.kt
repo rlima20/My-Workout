@@ -1,9 +1,9 @@
 package com.example.nutrition.mynutrition.presentation.navigation
 
-object NutritionCard : DestinationInterface {
-    override val route = "nutrition_card"
+object NutritionScreen : DestinationInterface {
+    override val route = "nutrition"
 }
 
-object NutritionInfo : DestinationInterface {
-    override val route = "nutrition_info"
+object UserInfoScreen : DestinationInterface {
+    override val route = "user_info"
 }

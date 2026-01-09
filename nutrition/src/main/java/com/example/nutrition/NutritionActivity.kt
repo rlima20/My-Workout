@@ -11,21 +11,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import com.example.nutrition.mynutrition.constants.getNutritionResult
+import com.example.nutrition.mynutrition.constants.getUserInfoState
 import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
-import com.example.nutrition.mynutrition.presentation.info.NutritionProps
-import com.example.nutrition.mynutrition.presentation.info.getNutritionProps
-import com.example.nutrition.mynutrition.presentation.info.viewmodel.UserInfoViewModel
+import com.example.nutrition.mynutrition.presentation.core.calorie.props.getCalorieGoalProps
+import com.example.nutrition.mynutrition.presentation.core.userinfo.props.UserInfoProps
+import com.example.nutrition.mynutrition.presentation.core.userinfo.props.getUserInfoProps
+import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
 import com.example.nutrition.mynutrition.presentation.navigation.NavHost
-import com.example.nutrition.mynutrition.presentation.navigation.NutritionInfo
-import com.example.nutrition.mynutrition.presentation.nutrition.NutritionComponent
-import com.example.nutrition.mynutrition.presentation.nutrition.NutritionViewModel
+import com.example.nutrition.mynutrition.presentation.navigation.UserInfoScreen
+import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionComponent
+import com.example.nutrition.mynutrition.presentation.core.nutrition.props.getNutritionProps
+import com.example.nutrition.mynutrition.presentation.core.nutrition.viewmodel.NutritionViewModel
 import com.example.nutrition.ui.theme.MyWorkoutTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NutritionActivity : ComponentActivity() {
 
     private val nutritionViewModel: NutritionViewModel by viewModel()
-    private val nutritionInfoViewModel: UserInfoViewModel by viewModel()
+    private val userInfoViewModel: UserInfoViewModel by viewModel()
 
     @RequiresApi(35)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,20 +37,21 @@ class NutritionActivity : ComponentActivity() {
 
         setContent {
             val showNutritionCard by nutritionViewModel.showNutritionCard.collectAsState()
-            val nutritionProps = getNutritionProps(nutritionInfoViewModel)
+            val nutritionProps = getNutritionProps(nutritionViewModel)
+            val userInfoProps = getUserInfoProps(userInfoViewModel)
+            val calorieProps = getCalorieGoalProps()
 
-            setShowCardByPrefsValue(nutritionProps)
+            setShowCardByPrefsValue(userInfoProps)
 
             MyWorkoutTheme {
                 NavHost(
                     navController = nutritionProps.navController,
                     nutritionResult = nutritionProps.nutritionResult,
                     showNutritionCard = showNutritionCard,
-                    nutritionInfoState = nutritionProps.nutritionInfo,
-                    nutritionInfoViewModel = nutritionInfoViewModel,
+                    userInfoState = userInfoProps.userInfo,
+                    userInfoViewModel = userInfoViewModel,
                     onToolTipClick = {
                         navigateToNutritionInfo(nutritionProps.navController)
-
 
                         // Todo - fazer isso depois da tela de cadastro
 //                        nutritionProps.prefs.setShowNutritionCard(
@@ -61,7 +65,7 @@ class NutritionActivity : ComponentActivity() {
         }
     }
 
-    fun setShowCardByPrefsValue(props: NutritionProps) {
+    fun setShowCardByPrefsValue(props: UserInfoProps) {
         nutritionViewModel.setShowNutritionCard(
             props.prefs.getShowNutritionCard(this@NutritionActivity)
         )
@@ -69,7 +73,7 @@ class NutritionActivity : ComponentActivity() {
 }
 
 private fun navigateToNutritionInfo(navHostController: NavHostController) {
-    navHostController.navigateSingleTopTo(NutritionInfo.route)
+    navHostController.navigateSingleTopTo(UserInfoScreen.route)
 }
 
 @Preview(showBackground = true)
