@@ -7,3 +7,7 @@ object NutritionScreen : DestinationInterface {
 object UserInfoScreen : DestinationInterface {
     override val route = "user_info"
 }
+
+object CalorieGoalScreen : DestinationInterface {
+    override val route = "calorie_goal"
+}

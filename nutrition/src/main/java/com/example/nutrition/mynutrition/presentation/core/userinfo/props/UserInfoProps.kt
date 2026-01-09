@@ -10,11 +10,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.nutrition.mynutrition.preferences.NutritionPrefs
 import com.example.nutrition.mynutrition.presentation.core.baseprops.BaseProps
+import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UiState
 import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.state.UserInfoState
 import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
 
 data class UserInfoProps(
     val userInfo: UserInfoState,
+    val uiState: UiState,
     override val navController: NavHostController,
     override val prefs: NutritionPrefs,
 ) : BaseProps
@@ -26,10 +28,12 @@ fun getUserInfoProps(userInfoViewModel: UserInfoViewModel): UserInfoProps {
     val navController = rememberNavController()
     val nutritionPrefs = NutritionPrefs()
     val userInfoState by userInfoViewModel.userInfoState.collectAsState()
+    val uiState by userInfoViewModel.uiState.collectAsState()
 
     return UserInfoProps(
         navController = navController,
         prefs = nutritionPrefs,
         userInfo = userInfoState,
+        uiState = uiState
     )
 }

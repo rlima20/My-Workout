@@ -9,19 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavHostController
 import com.example.nutrition.mynutrition.constants.getNutritionResult
-import com.example.nutrition.mynutrition.constants.getUserInfoState
-import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
 import com.example.nutrition.mynutrition.presentation.core.calorie.props.getCalorieGoalProps
+import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionScreen
+import com.example.nutrition.mynutrition.presentation.core.nutrition.props.getNutritionProps
+import com.example.nutrition.mynutrition.presentation.core.nutrition.viewmodel.NutritionViewModel
 import com.example.nutrition.mynutrition.presentation.core.userinfo.props.UserInfoProps
 import com.example.nutrition.mynutrition.presentation.core.userinfo.props.getUserInfoProps
 import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
 import com.example.nutrition.mynutrition.presentation.navigation.NavHost
-import com.example.nutrition.mynutrition.presentation.navigation.UserInfoScreen
-import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionComponent
-import com.example.nutrition.mynutrition.presentation.core.nutrition.props.getNutritionProps
-import com.example.nutrition.mynutrition.presentation.core.nutrition.viewmodel.NutritionViewModel
 import com.example.nutrition.ui.theme.MyWorkoutTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -48,18 +44,8 @@ class NutritionActivity : ComponentActivity() {
                     navController = nutritionProps.navController,
                     nutritionResult = nutritionProps.nutritionResult,
                     showNutritionCard = showNutritionCard,
-                    userInfoState = userInfoProps.userInfo,
-                    userInfoViewModel = userInfoViewModel,
-                    onToolTipClick = {
-                        navigateToNutritionInfo(nutritionProps.navController)
-
-                        // Todo - fazer isso depois da tela de cadastro
-//                        nutritionProps.prefs.setShowNutritionCard(
-//                            this@NutritionActivity,
-//                            true
-//                        )
-//                        setShowCardByPrefsValue(nutritionProps)
-                    }
+                    userInfoProps = userInfoProps,
+                    userInfoViewModel = userInfoViewModel
                 )
             }
         }
@@ -72,15 +58,11 @@ class NutritionActivity : ComponentActivity() {
     }
 }
 
-private fun navigateToNutritionInfo(navHostController: NavHostController) {
-    navHostController.navigateSingleTopTo(UserInfoScreen.route)
-}
-
 @Preview(showBackground = true)
 @Composable
 fun NutritionActivityPreview() {
     MyWorkoutTheme {
-        NutritionComponent(
+        NutritionScreen(
             true,
             getNutritionResult(),
             {}
@@ -92,7 +74,7 @@ fun NutritionActivityPreview() {
 @Composable
 fun NutritionActivityFalsePreview() {
     MyWorkoutTheme {
-        NutritionComponent(
+        NutritionScreen(
             false,
             getNutritionResult(),
             {}

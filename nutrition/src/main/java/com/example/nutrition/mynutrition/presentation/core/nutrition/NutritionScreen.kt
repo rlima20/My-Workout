@@ -13,7 +13,7 @@ import com.example.nutrition.mynutrition.presentation.components.Tooltip
 import com.example.nutrition.mynutrition.presentation.components.NutritionCard
 
 @Composable
-fun NutritionComponent(
+fun NutritionScreen(
     showNutritionCard: Boolean,
     nutritionResult: NutritionResult,
     onToolTipClick: () -> Unit

@@ -10,13 +10,14 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.nutrition.mynutrition.constants.getNutritionResult
-import com.example.nutrition.mynutrition.constants.getUserInfoState
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
+import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
+import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionScreen
 import com.example.nutrition.mynutrition.presentation.core.userinfo.UserInfoScreen
-import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.state.UserInfoState
+import com.example.nutrition.mynutrition.presentation.core.userinfo.props.UserInfoProps
+import com.example.nutrition.mynutrition.presentation.core.userinfo.props.getUserInfoProps
 import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
 import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.viewmodelfake.UserInfoViewModelFake
-import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionComponent
 import androidx.navigation.compose.NavHost as NavHostCompose
 
 @RequiresApi(35)
@@ -25,9 +26,8 @@ fun NavHost(
     navController: NavHostController,
     nutritionResult: NutritionResult,
     showNutritionCard: Boolean,
-    userInfoState: UserInfoState,
+    userInfoProps: UserInfoProps,
     userInfoViewModel: UserInfoViewModel,
-    onToolTipClick: () -> Unit
 ) {
     NavHostCompose(
         modifier = Modifier.padding(top = 80.dp),
@@ -35,19 +35,18 @@ fun NavHost(
         startDestination = NutritionScreen.route,
     ) {
         composable(route = NutritionScreen.route) {
-            NutritionComponent(
+            NutritionScreen(
                 showNutritionCard = showNutritionCard,
                 nutritionResult = nutritionResult,
-                onToolTipClick = { onToolTipClick() }
+                onToolTipClick = { navController.navigateSingleTopTo(UserInfoScreen.route) }
             )
         }
+
         composable(route = UserInfoScreen.route) {
             UserInfoScreen(
-                userInfoState = userInfoState,
+                userInfoProps = userInfoProps,
                 nutritionInfoViewModel = userInfoViewModel,
-                onUserInfoSaved = {
-                    // todo - navegar para a tela de
-                }
+                onUserInfoSaved = { navController.navigateSingleTopTo(CalorieGoalScreen.route) }
             )
         }
     }
@@ -57,12 +56,12 @@ fun NavHost(
 @Composable
 @Preview(showBackground = true)
 private fun NavHostPreview() {
+    val viewModel = UserInfoViewModelFake()
     NavHost(
         navController = rememberNavController(),
         nutritionResult = getNutritionResult(),
         showNutritionCard = false,
-        userInfoState = getUserInfoState(),
-        userInfoViewModel = UserInfoViewModelFake(),
-        onToolTipClick = {},
-        )
+        userInfoProps = getUserInfoProps(viewModel),
+        userInfoViewModel = UserInfoViewModelFake()
+    )
 }
