@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+// Todo - Parei aqui
 class CalorieGoalViewModel(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val tmbUseCase: CalculateTmbUseCase,

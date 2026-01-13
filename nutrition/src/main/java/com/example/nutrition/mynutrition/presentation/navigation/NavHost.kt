@@ -3,15 +3,20 @@ package com.example.nutrition.mynutrition.presentation.navigation
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.nutrition.mynutrition.constants.getMacros
 import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
+import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
+import com.example.nutrition.mynutrition.presentation.core.calorie.CalorieGoalScreen
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
 import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionScreen
 import com.example.nutrition.mynutrition.presentation.core.userinfo.UserInfoScreen
 import com.example.nutrition.mynutrition.presentation.core.userinfo.props.UserInfoProps
@@ -46,7 +51,30 @@ fun NavHost(
             UserInfoScreen(
                 userInfoProps = userInfoProps,
                 nutritionInfoViewModel = userInfoViewModel,
-                onUserInfoSaved = { navController.navigateSingleTopTo(CalorieGoalScreen.route) }
+                onUserInfoSaved = { userInfo ->
+                    navController.navigateSingleTopTo(
+                        route = CalorieGoalScreen.route,
+                        argumentKey = "userInfo",
+                        argument = userInfo
+                    )
+                }
+            )
+        }
+
+        composable(route = CalorieGoalScreen.route) {
+            val userInfo = remember {
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<UserInfo>("userInfo")
+            }
+
+            CalorieGoalScreen(
+                userInfo = userInfo,
+                state = CalorieGoalState(
+                    isLoading = false,
+                    macros = getMacros()
+                ),
+                onGoalChanged = {}
             )
         }
     }

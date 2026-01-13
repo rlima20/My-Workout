@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
+import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.presentation.components.GoalToggle
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
 import com.example.nutrition.mynutrition.presentation.components.MacroCard
@@ -19,8 +20,10 @@ import com.example.nutrition.mynutrition.presentation.components.MacroCard
 @Composable
 fun CalorieGoalScreen(
     state: CalorieGoalState,
-    onGoalChanged: (CalorieGoalType) -> Unit
+    onGoalChanged: (CalorieGoalType) -> Unit,
+    userInfo: UserInfo?
 ) {
+
     if (state.isLoading) {
         CircularProgressIndicator(modifier = Modifier.padding(16.dp))
         return
@@ -81,7 +84,8 @@ fun CalorieGoalScreenPreview() {
                 ),
                 isLoading = false
             ),
-            onGoalChanged = {}
+            onGoalChanged = {},
+            userInfo = TODO(),
         )
     }
 }

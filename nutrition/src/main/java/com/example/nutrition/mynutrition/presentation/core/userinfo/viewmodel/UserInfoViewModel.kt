@@ -17,7 +17,7 @@ sealed class UiState {
     object Loading : UiState()
     data class Error(val message: String) : UiState()
     object SuccessFetch : UiState()
-    object SuccessSave : UiState()
+    data class SuccessSave(val userInfo: UserInfo) : UiState()
 }
 
 open class UserInfoViewModel(
@@ -52,8 +52,8 @@ open class UserInfoViewModel(
                 saveUserInfoUseCase.saveUser(userInfo)
                 getUserInfoUseCase.getUserInfo()?.let { userInfo ->
                     _userInfoState.value = userInfo.toUserInfoState()
+                    _uiState.value = UiState.SuccessSave(userInfo)
                 }
-                _uiState.value = UiState.SuccessSave
             } catch (t: Throwable) {
                 Log.e(ERROR, t.message.toString())
                 _uiState.value = UiState.Error(t.message.toString())

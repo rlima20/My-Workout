@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.R
-import com.example.nutrition.mynutrition.constants.getUserInfoState
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.presentation.components.ActivityLevelDropdown
 import com.example.nutrition.mynutrition.presentation.components.NumericOutlinedTextField
@@ -39,7 +39,7 @@ import com.example.nutrition.mynutrition.utils.setButtonTextColor
 fun UserInfoScreen(
     userInfoProps: UserInfoProps,
     nutritionInfoViewModel: UserInfoViewModel,
-    onUserInfoSaved: () -> Unit
+    onUserInfoSaved: (userInfo: UserInfo) -> Unit
 ) {
     nutritionInfoViewModel.fetchUserinfo()
     with(userInfoProps) {
@@ -161,7 +161,6 @@ fun UserInfoScreen(
                                     activityLevel = activity
                                 )
                             )
-                            onUserInfoSaved()
                         },
                         enabled = buttonEnabled,
                         modifier = Modifier
@@ -178,13 +177,15 @@ fun UserInfoScreen(
             }
 
             is UiState.Error -> {
-                //TelaDeErro
+                // todo - TelaDeErro
             }
+
             is UiState.Loading -> {
-                //LoadingComponente
+                CircularProgressIndicator(modifier = Modifier.padding(16.dp))
             }
+
             is UiState.SuccessSave -> {
-                //NavegaparaateladeCalorias
+                onUserInfoSaved(uiState.userInfo)
             }
         }
     }

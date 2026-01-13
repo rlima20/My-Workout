@@ -24,6 +24,18 @@ fun getNutritionResult(): NutritionResult =
             )
     )
 
+fun getMacros(): MacroResult =
+    MacroResult(
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+    )
+
 fun getUserInfoState(): UserInfoState =
     UserInfoState(
         name = "Raphael",
