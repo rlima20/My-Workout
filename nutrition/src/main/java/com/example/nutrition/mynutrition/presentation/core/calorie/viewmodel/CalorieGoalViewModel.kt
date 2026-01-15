@@ -3,6 +3,7 @@ package com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
+import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCase
@@ -12,11 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-// Todo - Parei aqui
 class CalorieGoalViewModel(
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val tmbUseCase: CalculateTmbUseCase,
-    private val calorieGoalUseCase: CalculateCalorieGoalUseCaseImpl,
+    private val calorieGoalUseCase: CalculateCalorieGoalUseCase,
     private val macrosUseCase: CalculateMacrosUseCase
 ) : ViewModel() {
 
@@ -43,7 +43,6 @@ class CalorieGoalViewModel(
             val macros = macrosUseCase.calculateMacros(goalKcal)
 
             _uiState.value = CalorieGoalState(
-                goalType = goal,
                 tmb = tmb,
                 calorieGoal = goalKcal,
                 macros = macros,

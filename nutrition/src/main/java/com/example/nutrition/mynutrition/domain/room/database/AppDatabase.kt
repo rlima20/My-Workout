@@ -13,7 +13,7 @@ private const val DATA_BASE_NAME = "database"
     entities = [
         UserInfoEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserInfoDao

@@ -5,6 +5,8 @@ import androidx.compose.material.ChipDefaults
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -13,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.R
 import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
+import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
 
 @Composable
@@ -38,7 +41,8 @@ fun setButtonColor(isEnabled: Boolean): ButtonColors {
     return ButtonDefaults.buttonColors(
         containerColor = colorResource(color),
         disabledContainerColor = colorResource(color),
-        disabledContentColor = colorResource(R.color.text_color))
+        disabledContentColor = colorResource(R.color.text_color)
+    )
 }
 
 @Composable
@@ -68,10 +72,25 @@ object UiFieldDefaults {
 }
 
 @Composable
-fun textFieldText(selected: ActivityLevel): String = when (selected) {
+fun textActivityLevel(selected: ActivityLevel): String = when (selected) {
     ActivityLevel.SEDENTARY -> stringResource(R.string.sedentary)
     ActivityLevel.LIGHT -> stringResource(R.string.light)
     ActivityLevel.MODERATE -> stringResource(R.string.moderate)
     ActivityLevel.HIGH -> stringResource(R.string.high)
     ActivityLevel.EXTREME -> stringResource(R.string.extreme)
 }
+
+@Composable
+fun textGoalType(selected: CalorieGoalType): String = when (selected) {
+    CalorieGoalType.MAINTAIN -> stringResource(R.string.maintain)
+    CalorieGoalType.GAIN -> stringResource(R.string.gain)
+    CalorieGoalType.LOSE -> stringResource(R.string.lose)
+}
+
+@Composable
+fun getCardColors(): CardColors = CardDefaults.cardColors(
+    containerColor = colorResource(R.color.training_section_card_color),
+    contentColor = colorResource(R.color.training_section_card_color),
+    disabledContainerColor = colorResource(R.color.training_section_card_color),
+    disabledContentColor = colorResource(R.color.training_section_card_color)
+)

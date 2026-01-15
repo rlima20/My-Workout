@@ -29,4 +29,10 @@
     <string name="extreme">Extremo</string>
     <string name="save">Salvar</string>
     <string name="successfully_saved">Salvo com sucesso!</string>
+    <string name="goal_type">Tipo de objetivo</string>
+    <string name="activity_level">Nível de atividade</string>
+    <string name="maintain">Manter</string>
+    <string name="gain">Ganhar</string>
+    <string name="lose">Perder</string>
+    <string name="error_message">Erro! Clique para tentar novamente.</string>
 </resources>

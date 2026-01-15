@@ -10,12 +10,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.nutrition.mynutrition.constants.getMacros
 import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.domain.model.nutrition.NutritionResult
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
+import com.example.nutrition.mynutrition.preferences.NutritionPrefs
 import com.example.nutrition.mynutrition.presentation.core.calorie.CalorieGoalScreen
+import com.example.nutrition.mynutrition.presentation.core.calorie.props.CalorieGoalProps
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
 import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionScreen
 import com.example.nutrition.mynutrition.presentation.core.userinfo.UserInfoScreen
@@ -32,6 +33,7 @@ fun NavHost(
     nutritionResult: NutritionResult,
     showNutritionCard: Boolean,
     userInfoProps: UserInfoProps,
+    calorieGoalProps: CalorieGoalProps,
     userInfoViewModel: UserInfoViewModel,
 ) {
     NavHostCompose(
@@ -69,11 +71,8 @@ fun NavHost(
             }
 
             CalorieGoalScreen(
+                calorieGoalProps = calorieGoalProps,
                 userInfo = userInfo,
-                state = CalorieGoalState(
-                    isLoading = false,
-                    macros = getMacros()
-                ),
                 onGoalChanged = {}
             )
         }
@@ -90,6 +89,12 @@ private fun NavHostPreview() {
         nutritionResult = getNutritionResult(),
         showNutritionCard = false,
         userInfoProps = getUserInfoProps(viewModel),
+        calorieGoalProps = CalorieGoalProps(
+            state = CalorieGoalState(),
+            navController = rememberNavController(),
+            prefs = NutritionPrefs(),
+            onGoalChanged = {}
+        ),
         userInfoViewModel = UserInfoViewModelFake()
     )
 }

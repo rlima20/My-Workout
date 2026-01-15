@@ -11,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.nutrition.mynutrition.constants.getNutritionResult
 import com.example.nutrition.mynutrition.presentation.core.calorie.props.getCalorieGoalProps
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.CalorieGoalViewModel
 import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionScreen
 import com.example.nutrition.mynutrition.presentation.core.nutrition.props.getNutritionProps
 import com.example.nutrition.mynutrition.presentation.core.nutrition.viewmodel.NutritionViewModel
@@ -25,6 +26,7 @@ class NutritionActivity : ComponentActivity() {
 
     private val nutritionViewModel: NutritionViewModel by viewModel()
     private val userInfoViewModel: UserInfoViewModel by viewModel()
+    private val calorieGoalViewModel: CalorieGoalViewModel by viewModel()
 
     @RequiresApi(35)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +37,7 @@ class NutritionActivity : ComponentActivity() {
             val showNutritionCard by nutritionViewModel.showNutritionCard.collectAsState()
             val nutritionProps = getNutritionProps(nutritionViewModel)
             val userInfoProps = getUserInfoProps(userInfoViewModel)
-            val calorieProps = getCalorieGoalProps()
+            val calorieProps = getCalorieGoalProps(calorieGoalViewModel)
 
             setShowCardByPrefsValue(userInfoProps)
 
@@ -45,6 +47,7 @@ class NutritionActivity : ComponentActivity() {
                     nutritionResult = nutritionProps.nutritionResult,
                     showNutritionCard = showNutritionCard,
                     userInfoProps = userInfoProps,
+                    calorieGoalProps = calorieProps,
                     userInfoViewModel = userInfoViewModel
                 )
             }

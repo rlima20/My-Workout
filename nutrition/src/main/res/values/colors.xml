@@ -20,4 +20,6 @@
     <color name="text_field_background_color">#FBFAFA</color>
     <color name="text_field_background_color2">#F0F0F0</color>
     <color name="text_field_background_color3">#DEDDDD</color>
+    <color name="training_section_card_color">#FBFAFA</color>
+
 </resources>

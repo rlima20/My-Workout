@@ -22,7 +22,8 @@ fun UserInfo.toUserInfoEntity(): UserInfoEntity {
         sex = this.sex,
         weightKg = this.weightKg,
         heightCm = this.heightCm,
-        activityLevel = this.activityLevel
+        activityLevel = this.activityLevel,
+        goalType = this.goalType,
     )
 }
 
@@ -33,6 +34,7 @@ fun UserInfoEntity.toUserInfo(): UserInfo {
         sex = this.sex,
         weightKg = this.weightKg,
         heightCm = this.heightCm,
-        activityLevel = this.activityLevel
+        activityLevel = this.activityLevel,
+        goalType = this.goalType,
     )
 }

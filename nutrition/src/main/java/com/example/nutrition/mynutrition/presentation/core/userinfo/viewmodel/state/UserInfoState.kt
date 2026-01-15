@@ -1,6 +1,7 @@
 package com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.state
 
 import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
+import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
 
 data class UserInfoState(
@@ -9,5 +10,6 @@ data class UserInfoState(
     val sex: Sex = Sex.MALE,
     val height: String = "",
     val weight: String = "",
-    val activity: ActivityLevel = ActivityLevel.MODERATE
+    val activity: ActivityLevel = ActivityLevel.MODERATE,
+    val goalType: CalorieGoalType = CalorieGoalType.MAINTAIN,
 )

@@ -5,6 +5,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Button
@@ -18,12 +19,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutrition.R
+import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
+import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
-import com.example.nutrition.mynutrition.presentation.components.ActivityLevelDropdown
+import com.example.nutrition.mynutrition.presentation.components.Dropdown
+import com.example.nutrition.mynutrition.presentation.components.EmptyStateComponent
 import com.example.nutrition.mynutrition.presentation.components.NumericOutlinedTextField
 import com.example.nutrition.mynutrition.presentation.components.SexSelector
 import com.example.nutrition.mynutrition.presentation.core.userinfo.props.UserInfoProps
@@ -34,6 +39,8 @@ import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.vi
 import com.example.nutrition.mynutrition.utils.colors
 import com.example.nutrition.mynutrition.utils.setButtonColor
 import com.example.nutrition.mynutrition.utils.setButtonTextColor
+import com.example.nutrition.mynutrition.utils.textActivityLevel
+import com.example.nutrition.mynutrition.utils.textGoalType
 
 @Composable
 fun UserInfoScreen(
@@ -72,6 +79,11 @@ fun UserInfoScreen(
         var activity by remember { mutableStateOf(userInfo.activity) }
         LaunchedEffect(userInfo.activity) {
             activity = userInfo.activity
+        }
+
+        var goalType by remember { mutableStateOf(userInfo.goalType) }
+        LaunchedEffect(userInfo.goalType) {
+            goalType = userInfo.goalType
         }
 
 
@@ -141,12 +153,26 @@ fun UserInfoScreen(
                         modifier = Modifier.padding(top = 8.dp)
                     )
 
-                    ActivityLevelDropdown(
+                    Dropdown(
                         selected = activity,
                         onSelect = { activity = it },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 8.dp)
+                            .padding(top = 8.dp),
+                        options = ActivityLevel.entries,
+                        label = stringResource(R.string.activity_level),
+                        textMapper = { textActivityLevel(it) }
+                    )
+
+                    Dropdown(
+                        selected = goalType,
+                        onSelect = { goalType = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp),
+                        options = CalorieGoalType.entries,
+                        label = stringResource(R.string.goal_type),
+                        textMapper = { textGoalType(it) }
                     )
 
                     Button(
@@ -177,7 +203,12 @@ fun UserInfoScreen(
             }
 
             is UiState.Error -> {
-                // todo - TelaDeErro
+                EmptyStateComponent(
+                    modifier = Modifier.size(150.dp, 180.dp),
+                    text = stringResource(R.string.error_message),
+                    painter = painterResource(R.drawable.baseline_info),
+                    onClick = { nutritionInfoViewModel.fetchUserinfo() }
+                )
             }
 
             is UiState.Loading -> {

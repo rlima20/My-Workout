@@ -18,18 +18,18 @@ import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCaseImpl
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.CalorieGoalViewModel
-import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
 import com.example.nutrition.mynutrition.presentation.core.nutrition.viewmodel.NutritionViewModel
+import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.UserInfoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val databaseDI = module {
-    single{
+    single {
         AppDatabase.getInstance(get())
     }
 }
 
-val userInfoDaoDI = module{
+val userInfoDaoDI = module {
     factory { get<AppDatabase>().userInfoDao() }
 }
 
@@ -61,18 +61,7 @@ val saveUserInfoUseCaseDI = module {
     factory<SaveUserInfoUseCase> { SaveUserInfoUseCaseImpl(get()) }
 }
 
-val calorieGoalViewModelDI = module {
-    viewModel {
-        CalorieGoalViewModel(
-            get(),
-            get(),
-            get(),
-            get()
-        )
-    }
-}
-
-val nutritionInfoViewModelDI = module {
+val userInfoViewModelDI = module {
     viewModel {
         UserInfoViewModel(get(), get())
     }
@@ -81,6 +70,17 @@ val nutritionInfoViewModelDI = module {
 val nutritionViewModelDI = module {
     viewModel {
         NutritionViewModel()
+    }
+}
+
+val calorieGoalViewModelDI = module {
+    viewModel {
+        CalorieGoalViewModel(
+            get(),
+            get(),
+            get(),
+            get()
+        )
     }
 }
 
@@ -95,7 +95,7 @@ val appModules = listOf(
     calculateTmbUseCaseDI,
     getUserInfoUseCaseDI,
     saveUserInfoUseCaseDI,
+    userInfoViewModelDI,
+    nutritionViewModelDI,
     calorieGoalViewModelDI,
-    nutritionInfoViewModelDI,
-    nutritionViewModelDI
 )

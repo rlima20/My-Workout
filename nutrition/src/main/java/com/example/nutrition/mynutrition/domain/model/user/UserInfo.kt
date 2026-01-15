@@ -2,6 +2,7 @@ package com.example.nutrition.mynutrition.domain.model.user
 
 import android.os.Parcelable
 import com.example.nutrition.mynutrition.domain.model.enums.ActivityLevel
+import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.enums.Sex
 import kotlinx.android.parcel.Parcelize
 
@@ -12,5 +13,6 @@ data class UserInfo(
     val sex: Sex,
     val heightCm: Int,
     val weightKg: Float,
-    val activityLevel: ActivityLevel
+    val activityLevel: ActivityLevel,
+    val goalType: CalorieGoalType = CalorieGoalType.MAINTAIN,
 ) : Parcelable

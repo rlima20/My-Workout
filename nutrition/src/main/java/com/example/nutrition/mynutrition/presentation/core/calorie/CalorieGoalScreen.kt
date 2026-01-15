@@ -10,30 +10,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.rememberNavController
+import com.example.nutrition.mynutrition.constants.getUserInfo
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
-import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
-import com.example.nutrition.mynutrition.presentation.components.GoalToggle
-import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
+import com.example.nutrition.mynutrition.preferences.NutritionPrefs
 import com.example.nutrition.mynutrition.presentation.components.MacroCard
+import com.example.nutrition.mynutrition.presentation.core.calorie.props.CalorieGoalProps
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
 
 @Composable
 fun CalorieGoalScreen(
-    state: CalorieGoalState,
+    calorieGoalProps: CalorieGoalProps,
     onGoalChanged: (CalorieGoalType) -> Unit,
     userInfo: UserInfo?
 ) {
+    // todo - Calcular tbm
+    // todo - calcular meta diária
+    // Todo - popular macro result
 
-    if (state.isLoading) {
+    if (calorieGoalProps.state.isLoading) {
         CircularProgressIndicator(modifier = Modifier.padding(16.dp))
         return
     }
 
     Column(modifier = Modifier.padding(16.dp)) {
-        GoalToggle(selected = state.goalType, onSelect = onGoalChanged)
-        Text("TMB: ${state.tmb} kcal", modifier = Modifier.padding(top = 12.dp))
-        Text("Meta diária: ${state.calorieGoal} kcal", modifier = Modifier.padding(top = 6.dp))
-        state.macros?.let { macros ->
+        Text("TMB: ${calorieGoalProps.state.tmb} kcal", modifier = Modifier.padding(top = 12.dp))
+        Text(
+            "Meta diária: ${calorieGoalProps.state.calorieGoal} kcal",
+            modifier = Modifier.padding(top = 6.dp)
+        )
+        calorieGoalProps.state.macros?.let { macros ->
             MacroCard(
                 title = "Carboidratos",
                 grams = macros.carbsGrams,
@@ -59,7 +66,7 @@ fun CalorieGoalScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        state.error?.let { Text(it) }
+        calorieGoalProps.state.error?.let { Text(it) }
     }
 }
 
@@ -68,24 +75,16 @@ fun CalorieGoalScreen(
 fun CalorieGoalScreenPreview() {
     MaterialTheme {
         CalorieGoalScreen(
-            state = CalorieGoalState(
-                goalType = CalorieGoalType.MAINTAIN,
-                tmb = 1750,
-                calorieGoal = 2600,
-                macros = MacroResult(
-                    carbsGrams = 325,
-                    proteinsGrams = 160,
-                    fatsGrams = 72,
-                    fibersGrams = 36,
-                    carbsKcal = 1300,
-                    proteinsKcal = 640,
-                    fatsKcal = 648,
-                    fibersKcal = 72
+            calorieGoalProps = CalorieGoalProps(
+                state = CalorieGoalState(
+                    isLoading = false
                 ),
-                isLoading = false
+                onGoalChanged = {},
+                navController = rememberNavController(),
+                prefs = NutritionPrefs()
             ),
             onGoalChanged = {},
-            userInfo = TODO(),
+            userInfo = getUserInfo(),
         )
     }
 }
