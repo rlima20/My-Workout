@@ -1,23 +1,63 @@
 package com.example.nutrition.mynutrition.domain.usecase
 
+import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.macro.MacroResult
+import kotlin.math.roundToInt
+
+data class MacroDistribution(
+    val carbs: Double,
+    val proteins: Double,
+    val fats: Double
+)
 
 class CalculateMacrosUseCaseImpl : CalculateMacrosUseCase {
-    override fun calculateMacros(totalKcal: Int): MacroResult {
-        val carbsKcal = (totalKcal * 0.50).toInt()
-        val proteinsKcal = (totalKcal * 0.25).toInt()
-        val fatsKcal = (totalKcal * 0.25).toInt()
-        val fibersGrams = (totalKcal / 1000.0 * 14).toInt()
+
+    override fun calculateMacros(
+        totalKcal: Int,
+        goalType: CalorieGoalType
+    ): MacroResult {
+
+        val distribution = macroDistributionByGoal(goalType)
+
+        val carbsKcal = (totalKcal * distribution.carbs).roundToInt()
+        val proteinsKcal = (totalKcal * distribution.proteins).roundToInt()
+        val fatsKcal = (totalKcal * distribution.fats).roundToInt()
+
+        val fibersGrams = (totalKcal / 1000.0 * 14).roundToInt()
 
         return MacroResult(
             carbsGrams = carbsKcal / 4,
             proteinsGrams = proteinsKcal / 4,
             fatsGrams = fatsKcal / 9,
             fibersGrams = fibersGrams,
+
             carbsKcal = carbsKcal,
             proteinsKcal = proteinsKcal,
             fatsKcal = fatsKcal,
-            fibersKcal = fibersGrams * 2
+            fibersKcal = 0 // fibras não entram no total calórico
+        )
+    }
+
+    private fun macroDistributionByGoal(
+        goalType: CalorieGoalType
+    ): MacroDistribution = when (goalType) {
+
+        CalorieGoalType.LOSE -> MacroDistribution(
+            carbs = 0.40,
+            proteins = 0.30,
+            fats = 0.30
+        )
+
+        CalorieGoalType.MAINTAIN -> MacroDistribution(
+            carbs = 0.50,
+            proteins = 0.25,
+            fats = 0.25
+        )
+
+        CalorieGoalType.GAIN -> MacroDistribution(
+            carbs = 0.55,
+            proteins = 0.25,
+            fats = 0.20
         )
     }
 }

@@ -9,10 +9,12 @@ import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.preferences.NutritionPrefs
 import com.example.nutrition.mynutrition.presentation.core.baseprops.BaseProps
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.CalorieGoalViewModel
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.UiState
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
 
 data class CalorieGoalProps(
-    val state: CalorieGoalState,
+    val calorieGoalState: CalorieGoalState,
+    val uiState: UiState,
     val onGoalChanged: (CalorieGoalType) -> Unit,
     override val navController: NavHostController,
     override val prefs: NutritionPrefs
@@ -22,12 +24,14 @@ data class CalorieGoalProps(
 fun getCalorieGoalProps(calorieGoalViewModel: CalorieGoalViewModel): CalorieGoalProps {
     val navController = rememberNavController()
     val nutritionPrefs = NutritionPrefs()
-    val state by calorieGoalViewModel.uiState.collectAsState()
+    val calorieGoalState by calorieGoalViewModel.calorieGoalState.collectAsState()
+    val uiState by calorieGoalViewModel.uiState.collectAsState()
 
     return CalorieGoalProps(
         navController = navController,
         prefs = nutritionPrefs,
-        state = state,
+        calorieGoalState = calorieGoalState,
+        uiState = uiState,
         onGoalChanged = {}
     )
 }

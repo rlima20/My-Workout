@@ -17,7 +17,10 @@ import com.example.nutrition.mynutrition.extensions.navigateSingleTopTo
 import com.example.nutrition.mynutrition.preferences.NutritionPrefs
 import com.example.nutrition.mynutrition.presentation.core.calorie.CalorieGoalScreen
 import com.example.nutrition.mynutrition.presentation.core.calorie.props.CalorieGoalProps
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.CalorieGoalViewModel
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.UiState
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
+import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.viewmodelfake.CalorieGoalViewModelFake
 import com.example.nutrition.mynutrition.presentation.core.nutrition.NutritionScreen
 import com.example.nutrition.mynutrition.presentation.core.userinfo.UserInfoScreen
 import com.example.nutrition.mynutrition.presentation.core.userinfo.props.UserInfoProps
@@ -35,6 +38,7 @@ fun NavHost(
     userInfoProps: UserInfoProps,
     calorieGoalProps: CalorieGoalProps,
     userInfoViewModel: UserInfoViewModel,
+    calorieGoalViewModel: CalorieGoalViewModel
 ) {
     NavHostCompose(
         modifier = Modifier.padding(top = 80.dp),
@@ -73,7 +77,8 @@ fun NavHost(
             CalorieGoalScreen(
                 calorieGoalProps = calorieGoalProps,
                 userInfo = userInfo,
-                onGoalChanged = {}
+                onGoalChanged = {},
+                calorieGoalViewModel = calorieGoalViewModel
             )
         }
     }
@@ -90,11 +95,13 @@ private fun NavHostPreview() {
         showNutritionCard = false,
         userInfoProps = getUserInfoProps(viewModel),
         calorieGoalProps = CalorieGoalProps(
-            state = CalorieGoalState(),
+            calorieGoalState = CalorieGoalState(),
             navController = rememberNavController(),
             prefs = NutritionPrefs(),
-            onGoalChanged = {}
+            onGoalChanged = {},
+            uiState = UiState.CalculateCalorieGoalSuccess,
         ),
-        userInfoViewModel = UserInfoViewModelFake()
+        userInfoViewModel = UserInfoViewModelFake(),
+        calorieGoalViewModel = CalorieGoalViewModelFake()
     )
 }

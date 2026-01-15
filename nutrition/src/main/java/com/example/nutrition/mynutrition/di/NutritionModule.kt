@@ -78,7 +78,6 @@ val calorieGoalViewModelDI = module {
         CalorieGoalViewModel(
             get(),
             get(),
-            get(),
             get()
         )
     }

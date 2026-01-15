@@ -48,7 +48,8 @@ class NutritionActivity : ComponentActivity() {
                     showNutritionCard = showNutritionCard,
                     userInfoProps = userInfoProps,
                     calorieGoalProps = calorieProps,
-                    userInfoViewModel = userInfoViewModel
+                    userInfoViewModel = userInfoViewModel,
+                    calorieGoalViewModel = calorieGoalViewModel
                 )
             }
         }

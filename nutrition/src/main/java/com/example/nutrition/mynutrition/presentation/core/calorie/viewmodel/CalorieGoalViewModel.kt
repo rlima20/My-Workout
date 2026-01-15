@@ -2,56 +2,75 @@ package com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
+import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCase
-import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCase
-import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.state.CalorieGoalState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class CalorieGoalViewModel(
-    private val getUserInfoUseCase: GetUserInfoUseCase,
+sealed class UiState {
+    object Loading : UiState()
+    data class Error(val message: String) : UiState()
+    object SuccessFetch : UiState()
+    object CalculateCalorieGoalSuccess : UiState()
+}
+
+open class CalorieGoalViewModel(
     private val tmbUseCase: CalculateTmbUseCase,
     private val calorieGoalUseCase: CalculateCalorieGoalUseCase,
-    private val macrosUseCase: CalculateMacrosUseCase
+    private val calculateMacrosUseCase: CalculateMacrosUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CalorieGoalState())
-    val uiState: StateFlow<CalorieGoalState> = _uiState
+    private val _uiState = MutableStateFlow<UiState>(UiState.Loading)
+    val uiState: StateFlow<UiState> = _uiState
 
-    init {
-        load(CalorieGoalType.MAINTAIN)
-    }
+    private val _calorieGoalState = MutableStateFlow(CalorieGoalState())
+    val calorieGoalState: StateFlow<CalorieGoalState> = _calorieGoalState
 
-    fun load(goal: CalorieGoalType) = viewModelScope.launch {
-        _uiState.value = _uiState.value.copy(isLoading = true)
+    fun calculateCalorieGoal(userInfo: UserInfo?) = viewModelScope.launch {
+        setLoadingState()
         try {
-            val info = getUserInfoUseCase.getUserInfo() ?: run {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    error = "Preencha suas informações primeiro"
+            userInfo?.let {
+                // Calcula taxa de metabolismo basal
+                val tmb = tmbUseCase.calculateTmb(it)
+
+                // Calcula objetivo de calorias
+                val goalKcal = calorieGoalUseCase.calculateCalorieGoal(
+                    tmb = tmb,
+                    activityLevel = it.activityLevel,
+                    goalType = it.goalType
                 )
-                return@launch
+
+                // Calcula os macro nutrientes
+                val macroResult = calculateMacrosUseCase.calculateMacros(
+                    totalKcal = goalKcal,
+                    goalType = it.goalType
+                )
+
+                // Salva estado da tela
+                _calorieGoalState.value = CalorieGoalState(
+                    tmb = tmb,
+                    calorieGoal = goalKcal,
+                    macros = macroResult,
+                )
+
+                // Todo - Persistir no banco de dados
+                // CalorieGoalEntity
+                _uiState.value = UiState.CalculateCalorieGoalSuccess
             }
-
-            val tmb = tmbUseCase.calculateTmb(info)
-            val goalKcal = calorieGoalUseCase.calculateCalorieGoal(tmb, info.activityLevel, goal)
-            val macros = macrosUseCase.calculateMacros(goalKcal)
-
-            _uiState.value = CalorieGoalState(
-                tmb = tmb,
-                calorieGoal = goalKcal,
-                macros = macros,
-                isLoading = false
-            )
         } catch (t: Throwable) {
-            _uiState.value = _uiState.value.copy(isLoading = false, error = t.message)
+            setErrorState(t.message.toString())
         }
     }
 
-    fun setGoal(goal: CalorieGoalType) = load(goal)
+    private fun setLoadingState() {
+        _uiState.value = UiState.Loading
+    }
+
+    private fun setErrorState(message: String) {
+        _uiState.value = UiState.Error(message)
+    }
 }
