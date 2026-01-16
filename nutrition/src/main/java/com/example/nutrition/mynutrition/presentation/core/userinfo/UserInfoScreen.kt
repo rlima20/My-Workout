@@ -184,7 +184,8 @@ fun UserInfoScreen(
                                     sex = sex,
                                     heightCm = height.toInt(),
                                     weightKg = weight.toFloat(),
-                                    activityLevel = activity
+                                    activityLevel = activity,
+                                    goalType = goalType
                                 )
                             )
                         },

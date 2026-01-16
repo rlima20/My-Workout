@@ -11,7 +11,8 @@ fun UserInfo.toUserInfoState(): UserInfoState {
         sex = this.sex,
         height = this.heightCm.toString(),
         weight = this.weightKg.toString(),
-        activity = this.activityLevel
+        activity = this.activityLevel,
+        goalType = this.goalType
     )
 }
 
