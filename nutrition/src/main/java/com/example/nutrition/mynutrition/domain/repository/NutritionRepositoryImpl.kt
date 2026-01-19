@@ -39,7 +39,6 @@ class NutritionRepositoryImpl : NutritionRepository {
         val carbsGrams = carbsKcal / 4
         val proteinsGrams = proteinsKcal / 4
         val fatsGrams = fatsKcal / 9
-        val fibersKcal = fibersGrams * 2 // aproximação (2 kcal/g de fibra como placeholder)
 
         return MacroResult(
             carbsGrams = carbsGrams,
@@ -49,7 +48,6 @@ class NutritionRepositoryImpl : NutritionRepository {
             carbsKcal = carbsKcal,
             proteinsKcal = proteinsKcal,
             fatsKcal = fatsKcal,
-            fibersKcal = fibersKcal
         )
     }
 }

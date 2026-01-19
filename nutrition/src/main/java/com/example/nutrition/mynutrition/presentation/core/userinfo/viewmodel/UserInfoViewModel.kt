@@ -45,20 +45,21 @@ open class UserInfoViewModel(
             }
         }
 
-    fun onSave(userInfo: UserInfo) =
+    fun onSave(userInfo: UserInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             _uiState.value = UiState.Loading
             try {
                 saveUserInfoUseCase.saveUser(userInfo)
-                getUserInfoUseCase.getUserInfo()?.let { userInfo ->
-                    _userInfoState.value = userInfo.toState()
-                    _uiState.value = UiState.SuccessSave(userInfo)
-                }
+
+                val userInfo = getUserInfoUseCase.getUserInfo()
+                _userInfoState.value = userInfo!!.toState()
+                _uiState.value = UiState.SuccessSave(userInfo)
             } catch (t: Throwable) {
                 Log.e(ERROR, t.message.toString())
                 _uiState.value = UiState.Error(t.message.toString())
             }
         }
+    }
 
     companion object {
         const val ERROR = "Error"

@@ -34,7 +34,6 @@ class CalculateMacrosUseCaseImpl : CalculateMacrosUseCase {
             carbsKcal = carbsKcal,
             proteinsKcal = proteinsKcal,
             fatsKcal = fatsKcal,
-            fibersKcal = 0 // fibras não entram no total calórico
         )
     }
 

@@ -22,16 +22,3 @@ data class CalorieGoalEntity(
     val calorieGoal: Int = 0,
     val macrosId: Int? = null
 )
-
-
-//@Entity(tableName = "calorie_goal")
-//data class CalorieGoalEntity(
-//    @PrimaryKey(autoGenerate = true)
-//    val calorieGoalId: Int,
-//    val tmb: Int = 0,
-//    val calorieGoal: Int = 0,
-//    val macros: MacroResultEntity? = null,
-//)
-
-// Todo - Criar modelo e Entity de MacroResult - ok
-// Todo - Criar relacionamento simples entre CalorieGoalEntitty e MacroResult Entity

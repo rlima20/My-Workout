@@ -1,7 +1,11 @@
 package com.example.nutrition.mynutrition.domain.usecase
 
-import com.example.nutrition.mynutrition.domain.model.calorie.CalorieGoal
+import com.example.nutrition.mynutrition.domain.room.entity.MacroResultEntity
 
 interface SaveCalorieGoalUseCase {
-    fun saveCalorieGoal(calorieGoal: CalorieGoal)
+    suspend fun saveCalorieGoal(
+        tmb: Int,
+        calorieGoal: Int,
+        macros: MacroResultEntity
+    )
 }

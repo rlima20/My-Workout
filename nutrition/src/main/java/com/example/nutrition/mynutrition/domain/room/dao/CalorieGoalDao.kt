@@ -11,7 +11,7 @@ import com.example.nutrition.mynutrition.domain.room.entity.CalorieGoalWithMacro
 @Dao
 interface CalorieGoalDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(calorieGoalEntity: CalorieGoalEntity)
+    suspend fun insert(calorieGoalEntity: CalorieGoalEntity)
 
     @Transaction
     @Query("SELECT * FROM calorie_goal")

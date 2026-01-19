@@ -8,5 +8,7 @@ import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.Cal
 class CalorieGoalViewModelFake : CalorieGoalViewModel(
     tmbUseCase = CalculateTmbUseCaseFake(),
     calorieGoalUseCase = CalculateCalorieGoalUseCaseFake(),
-    calculateMacrosUseCase = CalculateMacrosUseCaseFake()
+    calculateMacrosUseCase = CalculateMacrosUseCaseFake(),
+    saveCalorieGoalUseCase = SaveCalorieGoalUseCaseFake(),
+    getCalorieGoalWithMacrosUseCase = GetCalorieGoalWithMacrosUseCaseFake()
 )

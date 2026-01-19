@@ -2,6 +2,7 @@ package com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.nutrition.mynutrition.domain.mappers.toEntity
 import com.example.nutrition.mynutrition.domain.model.calorie.CalorieGoal
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
@@ -61,17 +62,15 @@ open class CalorieGoalViewModel(
         )
     }
 
-    private fun calculateAndPersistCalorieGoal(userInfo: UserInfo) {
+    private suspend fun calculateAndPersistCalorieGoal(userInfo: UserInfo) {
         val tmb = calculateTmb(userInfo)
         val calorieGoal = calculateCalorieGoal(userInfo, tmb)
         val macros = calculateMacros(calorieGoal, userInfo.goalType)
 
-        saveCalorieGoal(
-            CalorieGoal(
-                tmb = tmb,
-                calorieGoal = calorieGoal,
-                macrosId = macros.macroResultId,
-            )
+        saveCalorieGoalUseCase.saveCalorieGoal(
+            tmb = tmb,
+            calorieGoal = calorieGoal,
+            macros = macros.toEntity()
         )
     }
 
@@ -96,9 +95,9 @@ open class CalorieGoalViewModel(
             goalType = goalType
         )
 
-    private fun saveCalorieGoal(calorieGoal: CalorieGoal) {
-        saveCalorieGoalUseCase.saveCalorieGoal(calorieGoal)
-    }
+//    private fun saveCalorieGoal(calorieGoal: CalorieGoal) {
+//        saveCalorieGoalUseCase.saveCalorieGoal(calorieGoal)
+//    }
 
 //    fun calculateCalorieGoalOld(userInfo: UserInfo?) = viewModelScope.launch {
 //        setLoadingState()

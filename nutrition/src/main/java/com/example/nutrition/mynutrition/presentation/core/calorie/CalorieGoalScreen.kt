@@ -89,7 +89,7 @@ fun CalorieGoalScreen(
                     MacroCard(
                         title = "Fibras",
                         grams = macros.fibersGrams,
-                        kcal = macros.fibersKcal,
+                        kcal = 0,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }

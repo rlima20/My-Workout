@@ -196,9 +196,7 @@ private fun MacroDivisionInfo(
 fun getTotalCalories(macroResult: MacroResult): Int =
     macroResult.carbsKcal +
             macroResult.proteinsKcal +
-            macroResult.fatsKcal +
-            macroResult.fibersKcal
-
+            macroResult.fatsKcal
 @Composable
 private fun TbmInfo(tmb: Int) {
     Row(

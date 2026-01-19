@@ -1,7 +1,7 @@
 package com.example.nutrition.mynutrition.domain.model.macro
 
 data class MacroResult(
-    val macroResultId: Int,
+    val macroResultId: Int = 0,
     val carbsGrams: Int,
     val carbsKcal: Int,
     val proteinsGrams: Int,
@@ -9,5 +9,4 @@ data class MacroResult(
     val fatsGrams: Int,
     val fatsKcal: Int,
     val fibersGrams: Int,
-    val fibersKcal: Int
 )

@@ -86,7 +86,7 @@ fun CalorieGoalEntity.toModel(): CalorieGoal {
 
 fun MacroResult.toEntity(): MacroResultEntity {
     return MacroResultEntity(
-        macrosId = this.macroResultId,
+        macrosId = 0,
         carbsGrams = this.carbsGrams,
         carbsKcal = this.carbsKcal,
         proteinsGrams = this.proteinsGrams,
@@ -108,6 +108,5 @@ fun MacroResultEntity.toModel(): MacroResult {
         fatsGrams = this.fatsGrams,
         fatsKcal = this.fatsKcal,
         fibersGrams = this.fibersGrams,
-        fibersKcal = this.fatsKcal
     )
 }

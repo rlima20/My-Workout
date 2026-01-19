@@ -9,7 +9,7 @@ import com.example.nutrition.mynutrition.domain.room.dao.CalorieGoalDao
 class CalorieGoalRepositoryImpl(
     private val calorieGoalDao: CalorieGoalDao
 ) : CalorieGoalRepository {
-    override fun saveCalorieGoal(calorieGoal: CalorieGoal) {
+    override suspend fun saveCalorieGoal(calorieGoal: CalorieGoal) {
         calorieGoalDao.insert(calorieGoal.toEntity())
     }
 

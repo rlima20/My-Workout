@@ -2,6 +2,8 @@ package com.example.nutrition.mynutrition.di
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import com.example.nutrition.mynutrition.domain.repository.CalorieGoalRepository
+import com.example.nutrition.mynutrition.domain.repository.CalorieGoalRepositoryImpl
 import com.example.nutrition.mynutrition.domain.repository.NutritionRepository
 import com.example.nutrition.mynutrition.domain.repository.NutritionRepositoryImpl
 import com.example.nutrition.mynutrition.domain.repository.UserInfoRepository
@@ -41,6 +43,10 @@ val calorieGoalDaoDI = module {
     factory { get<AppDatabase>().calorieGoalDao() }
 }
 
+val macroResultDaoDI = module {
+    factory { get<AppDatabase>().macroResultDao() }
+}
+
 val nutritionRepositoryDI = module {
     factory<NutritionRepository> { NutritionRepositoryImpl() }
 }
@@ -49,8 +55,16 @@ val userInfoRepositoryDI = module {
     factory<UserInfoRepository> { UserInfoRepositoryImpl(get()) }
 }
 
+val calorieGoalRepositoryDI = module {
+    factory<CalorieGoalRepository> { CalorieGoalRepositoryImpl(get()) }
+}
+
 val calculateCalorieGoalUseCaseDI = module {
     factory<CalculateCalorieGoalUseCase> { CalculateCalorieGoalUseCaseImpl() }
+}
+
+val getCalorieGoalWithMacrosUseCaseDI = module {
+    factory<GetCalorieGoalWithMacrosUseCase> { GetCalorieGoalWithMacrosUseCaseImpl(get()) }
 }
 
 val calculateMacrosUseCaseDI = module {
@@ -70,7 +84,12 @@ val saveUserInfoUseCaseDI = module {
 }
 
 val saveCalorieGoalUseCaseDI = module {
-    factory<SaveCalorieGoalUseCase> { SaveCalorieGoalUseCaseImpl(get()) }
+    factory<SaveCalorieGoalUseCase> {
+        SaveCalorieGoalUseCaseImpl(
+            get(),
+            get()
+        )
+    }
 }
 
 val getCalorieGoalUseCaseDI = module {
@@ -104,10 +123,13 @@ val calorieGoalViewModelDI = module {
 @RequiresApi(Build.VERSION_CODES.O)
 val appModules = listOf(
     databaseDI,
+    macroResultDaoDI,
     userInfoDaoDI,
     calorieGoalDaoDI,
     nutritionRepositoryDI,
     userInfoRepositoryDI,
+    calorieGoalRepositoryDI,
+    getCalorieGoalWithMacrosUseCaseDI,
     calculateCalorieGoalUseCaseDI,
     calculateMacrosUseCaseDI,
     calculateTmbUseCaseDI,

@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.nutrition.mynutrition.domain.room.dao.CalorieGoalDao
+import com.example.nutrition.mynutrition.domain.room.dao.MacroResultDao
 import com.example.nutrition.mynutrition.domain.room.dao.UserInfoDao
 import com.example.nutrition.mynutrition.domain.room.entity.CalorieGoalEntity
 import com.example.nutrition.mynutrition.domain.room.entity.MacroResultEntity
@@ -23,6 +24,7 @@ private const val DATA_BASE_NAME = "database"
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userInfoDao(): UserInfoDao
     abstract fun calorieGoalDao(): CalorieGoalDao
+    abstract fun macroResultDao(): MacroResultDao
 
     companion object {
 
