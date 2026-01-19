@@ -3,7 +3,7 @@ package com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nutrition.mynutrition.domain.mappers.toUserInfoState
+import com.example.nutrition.mynutrition.domain.mappers.toState
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
@@ -36,7 +36,7 @@ open class UserInfoViewModel(
             _uiState.value = UiState.Loading
             try {
                 getUserInfoUseCase.getUserInfo()?.let { userInfo ->
-                    _userInfoState.value = userInfo.toUserInfoState()
+                    _userInfoState.value = userInfo.toState()
                 }
                 _uiState.value = UiState.SuccessFetch
             } catch (t: Throwable) {
@@ -51,7 +51,7 @@ open class UserInfoViewModel(
             try {
                 saveUserInfoUseCase.saveUser(userInfo)
                 getUserInfoUseCase.getUserInfo()?.let { userInfo ->
-                    _userInfoState.value = userInfo.toUserInfoState()
+                    _userInfoState.value = userInfo.toState()
                     _uiState.value = UiState.SuccessSave(userInfo)
                 }
             } catch (t: Throwable) {

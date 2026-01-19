@@ -13,8 +13,12 @@ import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateMacrosUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCase
 import com.example.nutrition.mynutrition.domain.usecase.CalculateTmbUseCaseImpl
+import com.example.nutrition.mynutrition.domain.usecase.GetCalorieGoalWithMacrosUseCase
+import com.example.nutrition.mynutrition.domain.usecase.GetCalorieGoalWithMacrosUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCaseImpl
+import com.example.nutrition.mynutrition.domain.usecase.SaveCalorieGoalUseCase
+import com.example.nutrition.mynutrition.domain.usecase.SaveCalorieGoalUseCaseImpl
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCaseImpl
 import com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel.CalorieGoalViewModel
@@ -31,6 +35,10 @@ val databaseDI = module {
 
 val userInfoDaoDI = module {
     factory { get<AppDatabase>().userInfoDao() }
+}
+
+val calorieGoalDaoDI = module {
+    factory { get<AppDatabase>().calorieGoalDao() }
 }
 
 val nutritionRepositoryDI = module {
@@ -61,6 +69,14 @@ val saveUserInfoUseCaseDI = module {
     factory<SaveUserInfoUseCase> { SaveUserInfoUseCaseImpl(get()) }
 }
 
+val saveCalorieGoalUseCaseDI = module {
+    factory<SaveCalorieGoalUseCase> { SaveCalorieGoalUseCaseImpl(get()) }
+}
+
+val getCalorieGoalUseCaseDI = module {
+    factory<GetCalorieGoalWithMacrosUseCase> { GetCalorieGoalWithMacrosUseCaseImpl(get()) }
+}
+
 val userInfoViewModelDI = module {
     viewModel {
         UserInfoViewModel(get(), get())
@@ -78,6 +94,8 @@ val calorieGoalViewModelDI = module {
         CalorieGoalViewModel(
             get(),
             get(),
+            get(),
+            get(),
             get()
         )
     }
@@ -87,6 +105,7 @@ val calorieGoalViewModelDI = module {
 val appModules = listOf(
     databaseDI,
     userInfoDaoDI,
+    calorieGoalDaoDI,
     nutritionRepositoryDI,
     userInfoRepositoryDI,
     calculateCalorieGoalUseCaseDI,
@@ -94,6 +113,8 @@ val appModules = listOf(
     calculateTmbUseCaseDI,
     getUserInfoUseCaseDI,
     saveUserInfoUseCaseDI,
+    saveCalorieGoalUseCaseDI,
+    getCalorieGoalUseCaseDI,
     userInfoViewModelDI,
     nutritionViewModelDI,
     calorieGoalViewModelDI,

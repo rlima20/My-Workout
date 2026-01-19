@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.nutrition.mynutrition.domain.room.entity.UserInfoEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserInfoDao {
