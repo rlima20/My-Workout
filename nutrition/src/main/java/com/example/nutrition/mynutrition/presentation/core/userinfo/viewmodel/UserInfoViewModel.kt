@@ -9,9 +9,12 @@ import com.example.nutrition.mynutrition.domain.usecase.GetUserInfoUseCase
 import com.example.nutrition.mynutrition.domain.usecase.SaveUserInfoUseCase
 import com.example.nutrition.mynutrition.presentation.core.userinfo.viewmodel.state.UserInfoState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class UiState {
     object Loading : UiState()
@@ -45,18 +48,31 @@ open class UserInfoViewModel(
             }
         }
 
+    /**
+     * Atualização de estado deve estar na MainThread.
+     * Operações de banco devem estar em Threads Separadas.
+     * Com a atualização de ui fora da MainThread
+     * o estado muda por baixo dos panos mas a UI não reage.
+     */
     fun onSave(userInfo: UserInfo) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _uiState.value = UiState.Loading
-            try {
-                saveUserInfoUseCase.saveUser(userInfo)
 
-                val userInfo = getUserInfoUseCase.getUserInfo()
-                _userInfoState.value = userInfo!!.toState()
+            try {
+                withContext(Dispatchers.IO) {
+                    saveUserInfoUseCase.saveUser(userInfo)
+                }
+
+                val userInfoInner = withContext(Dispatchers.IO) {
+                    getUserInfoUseCase.getUserInfo()
+                }
+
+                _userInfoState.value = userInfoInner!!.toState()
                 _uiState.value = UiState.SuccessSave(userInfo)
+
             } catch (t: Throwable) {
                 Log.e(ERROR, t.message.toString())
-                _uiState.value = UiState.Error(t.message.toString())
+                _uiState.value = UiState.Error(t.message.orEmpty())
             }
         }
     }
