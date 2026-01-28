@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "macro_result")
 data class MacroResultEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey(autoGenerate = false)
     val macrosId: Int,
     val carbsGrams: Int,
     val carbsKcal: Int,

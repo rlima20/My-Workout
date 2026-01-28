@@ -6,6 +6,7 @@ import com.example.nutrition.mynutrition.domain.usecase.SaveCalorieGoalUseCase
 
 class SaveCalorieGoalUseCaseFake() : SaveCalorieGoalUseCase {
     override suspend fun saveCalorieGoal(
+        id: Int,
         tmb: Int,
         calorieGoal: Int,
         macros: MacroResultEntity

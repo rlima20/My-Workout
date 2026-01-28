@@ -14,6 +14,7 @@ class SaveCalorieGoalUseCaseImpl(
 
     @Transaction
     override suspend fun saveCalorieGoal(
+        id: Int,
         tmb: Int,
         calorieGoal: Int,
         macros: MacroResultEntity
@@ -22,6 +23,7 @@ class SaveCalorieGoalUseCaseImpl(
 
         calorieGoalDao.insert(
             CalorieGoalEntity(
+                calorieGoalId = id,
                 tmb = tmb,
                 calorieGoal = calorieGoal,
                 macrosId = macrosId

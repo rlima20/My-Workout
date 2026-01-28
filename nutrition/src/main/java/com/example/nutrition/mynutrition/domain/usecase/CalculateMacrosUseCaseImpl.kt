@@ -26,6 +26,7 @@ class CalculateMacrosUseCaseImpl : CalculateMacrosUseCase {
         val fibersGrams = (totalKcal / 1000.0 * 14).roundToInt()
 
         return MacroResult(
+            macroResultId = 1,
             carbsGrams = carbsKcal / 4,
             proteinsGrams = proteinsKcal / 4,
             fatsGrams = fatsKcal / 9,

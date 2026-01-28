@@ -3,7 +3,6 @@ package com.example.nutrition.mynutrition.presentation.core.calorie.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nutrition.mynutrition.domain.mappers.toEntity
-import com.example.nutrition.mynutrition.domain.model.calorie.CalorieGoal
 import com.example.nutrition.mynutrition.domain.model.enums.CalorieGoalType
 import com.example.nutrition.mynutrition.domain.model.user.UserInfo
 import com.example.nutrition.mynutrition.domain.usecase.CalculateCalorieGoalUseCase
@@ -68,6 +67,7 @@ open class CalorieGoalViewModel(
         val macros = calculateMacros(calorieGoal, userInfo.goalType)
 
         saveCalorieGoalUseCase.saveCalorieGoal(
+            id = 1,
             tmb = tmb,
             calorieGoal = calorieGoal,
             macros = macros.toEntity()
@@ -94,55 +94,6 @@ open class CalorieGoalViewModel(
             totalKcal = totalKcal,
             goalType = goalType
         )
-
-//    private fun saveCalorieGoal(calorieGoal: CalorieGoal) {
-//        saveCalorieGoalUseCase.saveCalorieGoal(calorieGoal)
-//    }
-
-//    fun calculateCalorieGoalOld(userInfo: UserInfo?) = viewModelScope.launch {
-//        setLoadingState()
-//        try {
-//            userInfo?.let {
-//                // Calcula taxa de metabolismo basal
-//                val tmb = tmbUseCase.calculateTmb(it)
-//
-//                // Calcula objetivo de calorias
-//                val goalKcal = calorieGoalUseCase.calculateCalorieGoal(
-//                    tmb = tmb,
-//                    activityLevel = it.activityLevel,
-//                    goalType = it.goalType
-//                )
-//
-//                // Calcula os macro nutrientes
-//                val macroResult = calculateMacrosUseCase.calculateMacros(
-//                    totalKcal = goalKcal,
-//                    goalType = it.goalType
-//                )
-//
-//                // Persiste no banco de dados
-//                saveCalorieGoalUseCase.saveCalorieGoal(
-//                    CalorieGoal(
-//                        tmb = tmb,
-//                        calorieGoal = goalKcal,
-//                    )
-//                )
-//
-//                // Salva estado da tela com o que está no banco
-//                getCalorieGoalUseCase.getCalorieGoal().run {
-//                    _calorieGoalState.value =
-//                        CalorieGoalState(
-//                            tmb = this.tmb,
-//                            calorieGoal = this.calorieGoal,
-//                            macros = this.macros,
-//                        )
-//                }
-//
-//                _uiState.value = UiState.CalculateCalorieGoalSuccess
-//            }
-//        } catch (t: Throwable) {
-//            setErrorState(t.message.toString())
-//        }
-//    }
 
     private fun setLoadingState() {
         _uiState.value = UiState.Loading

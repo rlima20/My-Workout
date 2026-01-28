@@ -10,6 +10,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,10 +37,11 @@ fun CalorieGoalScreen(
     userInfo: UserInfo?,
     onGoalChanged: (CalorieGoalType) -> Unit,
 ) {
-
-    calorieGoalViewModel.calculateCalorieGoal(
-        userInfo = userInfo,
-    )
+    LaunchedEffect(userInfo) {
+        calorieGoalViewModel.calculateCalorieGoal(
+            userInfo = userInfo,
+        )
+    }
 
     when (calorieGoalProps.uiState) {
         is UiState.Loading -> {
